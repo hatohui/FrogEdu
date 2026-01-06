@@ -1,0 +1,106 @@
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Build outputs
+bin/
+obj/
+*.dll
+*.exe
+*.pdb
+
+# NuGet
+*.nupkg
+*.snupkg
+.nuget/
+
+# IDE and Editor
+.vscode/
+.vs/
+*.sln.iml
+*.user
+*.userprefs
+.idea/
+*.swp
+*.swo
+*~
+
+# Visual Studio
+.vscode
+.vs
+.vs/
+Properties/PublishProfiles/
+PublishProfiles/
+
+# ReSharper
+_ReSharper*/
+*.DotSettings.user
+
+# Build results
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+x64/
+x86/
+[Ww][Ii][Nn]32/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+bld/
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+*.log
+
+# Node (for any frontend tooling)
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Test Results
+TestResults/
+.trx
+
+# Local environment files
+appsettings.local.json
+appsettings.Development.json
+.env
+.env.local
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Temporary files
+*.tmp
+tmp/
+temp/
+
+# OS files
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+
+# Docker
+Dockerfile
+docker-compose.yml
+docker-compose.override.yml
+.dockerignore
+
+# CI/CD
+.github/
+.gitlab-ci.yml
+.azure-pipelines/
+
+# Documentation
+README.md
+CHANGELOG.md
+docs/
+
+# Package manager lock files (optional - uncomment if you want to exclude)
+# package-lock.json
+# yarn.lock
