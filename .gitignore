@@ -23,3 +23,19 @@ dist-ssr
 *.sln
 *.sw?
 .env
+
+# .NET
+bin/
+obj/
+.vs/
+*.dll
+*.exe
+*.pdb
+*.user
+*.userosscache
+*.sln.docstates
+appsettings.*.json
+!appsettings.Development.json
+.vscode/
+launchSettings.json
+
