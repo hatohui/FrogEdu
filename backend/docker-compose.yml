@@ -1,0 +1,14 @@
+name: "frogapi"
+
+services:
+  frogdb:
+    image: postgres:17
+    container_name: frogapi_frogdb
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: frogdb
+    volumes:
+      - ./bin/frogdb_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
