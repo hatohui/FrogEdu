@@ -1,0 +1,101 @@
+{
+	"config": {
+		"select_language": "Select language"
+	},
+	"errors": {
+		"title": "Error",
+		"browser_video_tag": "Your browser does not support the video tag.",
+		"NO_FOODS_FOUND": "No foods found",
+		"NO_CATEGORIES_FOUND": "No categories found",
+		"NO_PEOPLE_FOUND": "No people found",
+		"ROUTE_NOT_FOUND": "Route not found",
+		"UNKNOWN_ERROR": "An error occurred",
+		"internal_server_error": "Internal server error",
+		"not_found": "Not found",
+		"unauthorized": "Unauthorized",
+		"forbidden": "Forbidden",
+		"validation_error": "Validation error",
+		"timeout": "Request timeout"
+	},
+	"common": {
+		"back": "Back",
+		"confirm": "Confirm",
+		"cancel": "Cancel"
+	},
+	"health": {
+		"title": "System Health",
+		"subtitle": "Monitor the status of all system services",
+		"overall_status": "Overall System Status",
+		"healthy": "Healthy",
+		"unhealthy": "Unhealthy",
+		"all_operational": "All systems are operational",
+		"issues_detected": "One or more services are experiencing issues",
+		"database": "Database",
+		"database_description": "PostgreSQL Connection",
+		"redis": "Redis",
+		"redis_description": "Cache & Session Store",
+		"status": "Status",
+		"service": "Service",
+		"connection": "Connection",
+		"active": "Active",
+		"failed": "Failed",
+		"unknown": "Unknown",
+		"system_info": "System Information",
+		"system_info_description": "Additional service details",
+		"services_monitored": "Services Monitored",
+		"healthy_services": "Healthy Services",
+		"last_checked": "Last Checked",
+		"loading": "Loading system health..."
+	},
+	"dev": {
+		"title": "Development Testing",
+		"subtitle": "Test various components and utilities",
+		"lorem": "The quick brown fox jumps over the lazy dog. This is a sample text to demonstrate the translation system working correctly across multiple languages.",
+		"language_test": {
+			"title": "Language Test",
+			"description": "Test language switching and translations",
+			"select_language": "Select Language",
+			"current_language": "Current Language",
+			"translation_test": "Translation test"
+		},
+		"theme_test": {
+			"title": "Theme Test",
+			"description": "Test theme switching functionality",
+			"select_theme": "Select Theme",
+			"current_theme": "Current Theme",
+			"light": "Light",
+			"dark": "Dark"
+		},
+		"storage_test": {
+			"title": "LocalStorage Test",
+			"description": "View all keys stored in localStorage",
+			"total_keys": "Total Keys",
+			"no_keys": "No keys in localStorage"
+		},
+		"toast_test": {
+			"title": "Toast Test (Sonner)",
+			"description": "Test different types of toast notifications",
+			"success": "Success",
+			"success_message": "Success!",
+			"success_description": "Operation completed successfully",
+			"error": "Error",
+			"error_message": "Error!",
+			"error_description": "Something went wrong",
+			"info": "Info",
+			"info_message": "Info",
+			"info_description": "Here is some information",
+			"warning": "Warning",
+			"warning_message": "Warning!",
+			"warning_description": "Please be careful",
+			"promise": "Promise",
+			"promise_loading": "Loading...",
+			"promise_success": "Data loaded!",
+			"promise_error": "Failed to load",
+			"with_action": "With Action",
+			"event_created": "Event Created",
+			"undo_description": "You can undo this action",
+			"undo": "Undo",
+			"action_undone": "Action undone"
+		}
+	}
+}
