@@ -1,133 +1,185 @@
 # Frontend Technical Specification: Edu-AI Classroom
 
-## 1. Overview
+**⚠️ NOTICE:** This file has been reorganized into modular feature specs.
 
-This document outlines the frontend architecture for the "Edu-AI Classroom" platform. The application is built using React (Vite) and provides interfaces for Teachers (Dashboard, Exam Gen) and Students (AI Tutor).
+**Please refer to:**
 
-## 2. Technology Stack
+## Overview & Architecture
 
-- **Framework:** React 19 (via Vite)
-- **Language:** TypeScript 5.x (Strict Mode)
-- **Styling:** Tailwind CSS
-- **Component Library:** Shadcn UI (Radix Primitives)
-- **State/Async Management:** TanStack Query (React Query)
-- **Routing:** React Router DOM (Dynamic Routing)
-- **Internationalization:** i18next
-- **Build Tool:** Vite
+- **[00-frontend-overview.md](./00-frontend-overview.md)** - Technology stack, architecture principles, project structure, routing, state management
 
-## 3. Development Workflow (AI-Assisted)
+## Feature Specifications
 
-The development process leverages specific MCP (Model Context Protocol) servers to ensure code quality and documentation accuracy.
+Each feature has detailed implementation specs with:
 
-### 3.1 Context7 MCP
+- ✅ User stories with acceptance criteria
+- ✅ UI/UX mockups and requirements
+- ✅ Component architecture and code examples
+- ✅ API integration details
+- ✅ State management (TanStack Query hooks)
+- ✅ Granular implementation tasks with checkboxes
+- ✅ Technical validation criteria
 
-- **Usage:** Used to resolve up-to-date library IDs and documentation for React, Vite, and third-party packages.
-- **Rule:** Before integrating a new complex library, the Agent must query Context7 to verify version compatibility and best practices.
+### Core Features
 
-### 3.2 Shadcn MCP
+1. **[01-auth-feature.md](./01-auth-feature.md)** - Authentication & User Management
+   - Login, registration, password reset
+   - JWT token management
+   - User profile management
+   - Protected routes
+2. **[02-dashboard-feature.md](./02-dashboard-feature.md)** - Teacher Dashboard & Layout
+   - Dashboard layout system (sidebar, header)
+   - Navigation components
+   - Overview statistics
+   - Quick actions
+3. **[03-content-feature.md](./03-content-feature.md)** - Content Library
+   - Textbook browsing and filtering
+   - Chapter navigation
+   - Page preview with S3 integration
+4. **[04-assessment-feature.md](./04-assessment-feature.md)** - Smart Exam Generator
+   - Exam matrix builder
+   - Question bank integration
+   - Exam preview and PDF export
+   - Question selection and replacement
+5. **[05-ai-tutor-feature.md](./05-ai-tutor-feature.md)** - AI Student Tutor
+   - Chat interface with streaming
+   - Socratic dialogue
+   - Reference panel with textbook content
+   - Conversation history
 
-- **Usage:** Used to generate and install Shadcn UI components.
-- **Rule:** Do not manually copy-paste component code if the MCP can install it. Ensure `components.json` serves as the source of truth.
+---
 
-## 4. Architecture & Folder Structure
+## Development Workflow
 
-The project follows a feature-based structure to ensure scalability alongside the microservices backend.
+### Phase 1: Setup (Complete ✅)
 
+- [x] Vite + React 19 + TypeScript
+- [x] Tailwind CSS configured
+- [x] React Router with dynamic routing
+- [x] i18next for internationalization
+
+### Phase 2: Infrastructure (In Progress 🔄)
+
+- [ ] Shadcn UI components installation
+- [ ] TanStack Query setup
+- [ ] Axios interceptors
+- [ ] Auth context
+- [ ] Layout system
+
+### Phase 3: Feature Development (Blocked ⏸️)
+
+**⚠️ DO NOT START UNTIL "LFG" COMMAND IS GIVEN**
+
+Work through features in this order:
+
+1. Authentication (01-auth-feature.md)
+2. Dashboard Layout (02-dashboard-feature.md)
+3. Content Library (03-content-feature.md)
+4. Exam Generator (04-assessment-feature.md)
+5. AI Tutor (05-ai-tutor-feature.md)
+
+---
+
+## Technical Standards
+
+### Mandatory Rules
+
+**TypeScript:**
+
+- [ ] Strict mode enabled
+- [ ] No `any` types
+- [ ] All props and state typed
+
+**React:**
+
+- [ ] Functional components only
+- [ ] Custom hooks for reusable logic
+- [ ] Separation of concerns (container vs presentational)
+
+**Shadcn UI:**
+
+- [ ] Install via MCP tools (not manual copy-paste)
+- [ ] Use for all UI elements
+- [ ] Customize in `/components/ui/` after installation
+
+**TanStack Query:**
+
+- [ ] All API calls use TanStack Query
+- [ ] Hierarchical query keys
+- [ ] Proper stale time configuration
+- [ ] Optimistic updates where appropriate
+
+**Styling:**
+
+- [ ] Tailwind utility classes (95% of styling)
+- [ ] No inline styles
+- [ ] Responsive breakpoints (sm:, md:, lg:)
+- [ ] Dark mode support via CSS variables
+
+**Internationalization:**
+
+- [ ] All user-facing text uses i18next
+- [ ] No hardcoded strings
+- [ ] Namespaced translation keys
+
+### Code Quality Checklist
+
+Before marking any task complete:
+
+- [ ] TypeScript compiles with zero errors
+- [ ] ESLint shows no warnings
+- [ ] Components are properly typed
+- [ ] Loading, error, empty states handled
+- [ ] Responsive on mobile, tablet, desktop
+- [ ] Keyboard navigation works
+- [ ] ARIA labels present
+- [ ] No `console.log` statements
+
+---
+
+## API Integration
+
+All API calls go through a single gateway:
+
+```typescript
+// services/axios.ts
+const api = axios.create({
+  baseURL: import.meta.env.VITE_API_GATEWAY_URL,
+  timeout: 30000,
+});
+
+// Request interceptor: attach JWT
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem("accessToken");
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
+
+// Response interceptor: handle 401 (token refresh)
+api.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    if (error.response?.status === 401) {
+      // Trigger token refresh or logout
+    }
+    return Promise.reject(error);
+  }
+);
 ```
-src/
-├── common/              # Shared constants, enums
-├── components/          # Shared UI components
-│   ├── ui/              # Shadcn primitives (Button, Card, etc.)
-│   └── common/          # Composite shared components (Container, Loading)
-├── config/              # App configuration (Theme, TanStack, i18n)
-├── features/            # Feature-specific modules (replicating Service boundaries)
-│   ├── auth/            # Cognito integration components
-│   ├── content/         # Textbook/Lesson management
-│   ├── assessment/      # Exam generation, Question banks
-│   ├── ai-tutor/        # Chat interface, Socratic logic visualizers
-│   └── user/            # Profile management
-├── hooks/               # Global hooks (useAuth)
-├── layouts/             # App shells (DashboardLayout, StudentLayout)
-├── lib/                 # Utility libraries (axios instance, utils)
-├── pages/               # Route entry points
-├── services/            # API wrappers (one file per backend service)
-└── types/               # Global TypeScript definitions
-```
 
-## 5. Core Features & UI Requirements
+---
 
-### 5.1 Teacher Dashboard
+## Next Steps for AI Agents
 
-- **Layout:** Sidebar navigation, Header with User Profile.
-- **Functionality:**
-  - Create/Manage Classes.
-  - Access "Smart Exam Generator".
-  - View "Content Library".
+1. **Read** the overview (00-frontend-overview.md)
+2. **Study** the specific feature spec you'll work on
+3. **Wait** for "LFG" command before implementing
+4. **Follow** the implementation tasks in order
+5. **Update** checkboxes as you complete tasks
+6. **Validate** against acceptance criteria before marking complete
 
-### 5.2 Smart Exam Generator (Assessment Module)
+---
 
-- **UI:** Multi-step wizard or Split-pane view.
-- **Matrix Builder:**
-  - Interactive table to define distribution (e.g., 30% Easy, 50% Medium).
-  - Dropdowns for Textbook/Chapter mappings (fetched from Content Service).
-- **Preview:** Real-time PDF preview (rendered from S3 URL or generated client-side).
-
-### 5.3 AI Student Tutor
-
-- **UI:** Chat interface with rich-text support (Markdown/MathJax).
-- **Interaction:**
-  - Input field for student questions.
-  - "Thinking" indicators for stream responses.
-  - Side panel for reference material (Textbook pages).
-
-## 6. API Integration
-
-- **Gateway:** All requests route through a single API Gateway URL.
-- **Authentication:**
-  - AWS Cognito JWTs attached to `Authorization` header via Axios interceptors.
-- **Code Generation:** API client code (interfaces/services) should be aligned with backend DTOs.
-
-## 7. Milestones & Tasks
-
-### Milestone 1: Project Setup & Core Infrastructure - [ ]
-
-- [x] Initialize Vite Project with React 19 & TypeScript.
-- [ ] Setup Tailwind CSS & Shadcn UI (via Shadcn MCP).
-- [ ] Configure TanStack Query & Axios Interceptors (Auth).
-- [ ] Setup React Router DOM with Dynamic Routing.
-- [ ] Implement Basic Layouts (AuthLayout, DashboardLayout).
-- [ ] Set up i18next for multi-language support.
-
-### Milestone 2: Authentication & User Profile - [ ]
-
-- [ ] Create Login/Register Pages (Cognito Integration).
-- [ ] Implement `useAuth` hook with Context API.
-- [ ] Create User Profile Page (View/Edit).
-- [ ] Protect Private Routes (React Router Guards).
-
-### Milestone 3: Content & Teacher Dashboard - [ ]
-
-- [ ] Build Teacher Dashboard Landing Page.
-- [ ] Create "Content Library" View (List Textbooks/Chapters).
-- [ ] Implement Content Detail View (PDF Preview/Viewer).
-- [ ] Dashboard Widgets (Recent Activity, Quick Actions).
-
-### Milestone 4: Smart Exam Generator - [ ]
-
-- [ ] Build "New Exam" Wizard/Form.
-- [ ] Implement Matrix Builder (Distribution Table).
-- [ ] Create Question Selection Interface (Mapping Textbooks).
-- [ ] Build Exam Preview Component (PDF/Docx Rendering).
-
-### Milestone 5: AI Student Tutor - [ ]
-
-- [ ] Implement Chat Interface (Messages, Input, Stream).
-- [ ] Integrate Markdown/MathJax Rendering for Tutor Responses.
-- [ ] Build Side Panel for Lesson References.
-- [ ] Connect Chat to AI-Orchestrator Service (Mock initially).
-
-### Milestone 6: Polish & Optimization - [ ]
-
-- [ ] Optimize Bundle Size (Main splits).
-- [ ] Audit Accessibility (A11y) for primary school students.
-- [ ] Comprehensive E2E Testing.
+**Remember:** This is a living spec. Update it if you discover missing requirements or better approaches during implementation.

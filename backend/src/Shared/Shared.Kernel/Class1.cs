@@ -1,6 +1,3 @@
 ﻿namespace FrogEdu.Shared.Kernel;
 
-public class Class1
-{
-
-}
+public class Class1 { }
