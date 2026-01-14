@@ -16,10 +16,10 @@ terraform {
     }
   }
 
-  cloud { 
-    organization = "soltunemontepre" 
-    workspaces { 
-      name = "dev" 
-    } 
-  } 
+  cloud {
+    organization = "soltunemontepre"
+    workspaces {
+      name = "dev"
+    }
+  }
 }

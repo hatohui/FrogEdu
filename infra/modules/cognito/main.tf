@@ -2,18 +2,6 @@
 # Cognito Module - User Authentication
 # =============================================================================
 
-variable "project_name" {
-  type = string
-}
-
-variable "environment" {
-  type = string
-}
-
-variable "aws_region" {
-  type = string
-}
-
 # User Pool
 resource "aws_cognito_user_pool" "main" {
   name = "${var.project_name}-${var.environment}-users"
@@ -121,37 +109,4 @@ resource "aws_cognito_user_group" "admins" {
   user_pool_id = aws_cognito_user_pool.main.id
   description  = "Administrators"
   precedence   = 0
-}
-
-# Outputs
-output "user_pool_id" {
-  value = aws_cognito_user_pool.main.id
-}
-
-output "user_pool_arn" {
-  value = aws_cognito_user_pool.main.arn
-}
-
-output "user_pool_endpoint" {
-  value = aws_cognito_user_pool.main.endpoint
-}
-
-output "web_client_id" {
-  value = aws_cognito_user_pool_client.web_client.id
-}
-
-output "domain" {
-  value = aws_cognito_user_pool_domain.main.domain
-}
-
-output "issuer_url" {
-  value = "https://cognito-idp.${var.aws_region}.amazonaws.com/${aws_cognito_user_pool.main.id}"
-}
-
-output "user_pool" {
-  value = {
-    id       = aws_cognito_user_pool.main.id
-    arn      = aws_cognito_user_pool.main.arn
-    endpoint = aws_cognito_user_pool.main.endpoint
-  }
 }

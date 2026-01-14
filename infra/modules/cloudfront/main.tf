@@ -2,27 +2,6 @@
 # CloudFront Module - CDN for API Gateway
 # =============================================================================
 
-variable "project_name" {
-  type = string
-}
-
-variable "environment" {
-  type = string
-}
-
-variable "api_gateway_domain" {
-  type = string
-}
-
-variable "api_gateway_stage" {
-  type = string
-}
-
-variable "origin_verify_secret" {
-  type      = string
-  sensitive = true
-}
-
 resource "aws_cloudfront_distribution" "api" {
   enabled             = true
   is_ipv6_enabled     = true
@@ -79,16 +58,4 @@ resource "aws_cloudfront_distribution" "api" {
     cloudfront_default_certificate = true
     minimum_protocol_version       = "TLSv1.2_2021"
   }
-}
-
-output "distribution_id" {
-  value = aws_cloudfront_distribution.api.id
-}
-
-output "distribution_domain" {
-  value = aws_cloudfront_distribution.api.domain_name
-}
-
-output "distribution_arn" {
-  value = aws_cloudfront_distribution.api.arn
 }

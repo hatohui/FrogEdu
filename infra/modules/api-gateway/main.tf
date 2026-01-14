@@ -2,22 +2,6 @@
 # API Gateway Module - REST API
 # =============================================================================
 
-variable "project_name" {
-  type = string
-}
-
-variable "environment" {
-  type = string
-}
-
-variable "cognito_user_pool" {
-  type = object({
-    id       = string
-    arn      = string
-    endpoint = string
-  })
-}
-
 # REST API
 resource "aws_api_gateway_rest_api" "main" {
   name        = "${var.project_name}-${var.environment}-api"
@@ -116,29 +100,4 @@ resource "aws_api_gateway_integration_response" "options" {
     "method.response.header.Access-Control-Allow-Methods" = "'GET,POST,PUT,DELETE,OPTIONS'"
     "method.response.header.Access-Control-Allow-Origin"  = "'*'"
   }
-}
-
-# Outputs
-output "api_id" {
-  value = aws_api_gateway_rest_api.main.id
-}
-
-output "root_resource_id" {
-  value = aws_api_gateway_rest_api.main.root_resource_id
-}
-
-output "execution_arn" {
-  value = aws_api_gateway_rest_api.main.execution_arn
-}
-
-output "invoke_url" {
-  value = aws_api_gateway_stage.main.invoke_url
-}
-
-output "authorizer_id" {
-  value = aws_api_gateway_authorizer.cognito.id
-}
-
-output "api_domain" {
-  value = replace(aws_api_gateway_stage.main.invoke_url, "/^https?://([^/]*).*/", "$1")
 }

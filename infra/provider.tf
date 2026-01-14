@@ -1,18 +1,11 @@
-# =============================================================================
-# Provider Configuration
-# =============================================================================
-# Note: Providers must use variables directly, not locals or data sources
-# The Doppler data source will be available after providers are initialized
-
-# Doppler Provider - Must be configured first
 provider "doppler" {
   doppler_token = var.doppler_token
 }
 
-# AWS Provider - All serverless compute and auth services
-# Note: Uses variables with defaults, will be overridden by Doppler values in resources
 provider "aws" {
-  region = var.aws_region
+  region     = var.aws_region
+  access_key = var.AWS_ACCESS_KEY_ID
+  secret_key = var.AWS_SECRET_ACCESS_KEY
 
   default_tags {
     tags = {
@@ -24,8 +17,6 @@ provider "aws" {
   }
 }
 
-# Cloudflare Provider - Frontend hosting and object storage
-# Note: Token must be set via TF_VAR_cloudflare_api_token environment variable
 provider "cloudflare" {
-  api_token = var.cloudflare_api_token != "" ? var.cloudflare_api_token : null
+  api_token = var.CLOUDFLARE_API_TOKEN
 }

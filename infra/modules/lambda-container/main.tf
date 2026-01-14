@@ -2,76 +2,6 @@
 # Lambda Container Module - Docker-based Lambda Functions
 # =============================================================================
 
-variable "function_name" {
-  type        = string
-  description = "Name of the Lambda function"
-}
-
-variable "ecr_image_uri" {
-  type        = string
-  description = "ECR image URI (e.g., 123456789.dkr.ecr.region.amazonaws.com/repo:tag)"
-}
-
-variable "project_name" {
-  type = string
-}
-
-variable "environment" {
-  type = string
-}
-
-variable "execution_role" {
-  type = object({
-    arn  = string
-    name = string
-  })
-}
-
-variable "memory_size" {
-  type    = number
-  default = 512
-}
-
-variable "timeout" {
-  type    = number
-  default = 30
-}
-
-variable "architectures" {
-  type    = list(string)
-  default = ["x86_64"]
-}
-
-variable "environment_variables" {
-  type    = map(string)
-  default = {}
-}
-
-variable "api_gateway_id" {
-  type = string
-}
-
-variable "api_gateway_root_id" {
-  type = string
-}
-
-variable "api_gateway_execution_arn" {
-  type = string
-}
-
-variable "cognito_authorizer_id" {
-  type = string
-}
-
-variable "routes" {
-  type = list(object({
-    path          = string
-    http_method   = string
-    auth_required = bool
-  }))
-  default = []
-}
-
 # Lambda Function
 resource "aws_lambda_function" "this" {
   function_name = "${var.project_name}-${var.environment}-${var.function_name}"
@@ -131,17 +61,4 @@ resource "aws_lambda_permission" "api_gateway" {
   function_name = aws_lambda_function.this.function_name
   principal     = "apigateway.amazonaws.com"
   source_arn    = "${var.api_gateway_execution_arn}/*/*"
-}
-
-# Outputs
-output "function_arn" {
-  value = aws_lambda_function.this.arn
-}
-
-output "function_name" {
-  value = aws_lambda_function.this.function_name
-}
-
-output "invoke_arn" {
-  value = aws_lambda_function.this.invoke_arn
 }

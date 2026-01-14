@@ -50,9 +50,20 @@ variable "project_name" {
   default     = "frogedu"
 }
 
-variable "cloudflare_api_token" {
-  description = "Cloudflare API token (set via TF_VAR_cloudflare_api_token or pulled from Doppler)"
+variable "AWS_ACCESS_KEY_ID" {
+  description = "AWS access key ID (pulled from Doppler via TF_VAR_AWS_ACCESS_KEY_ID)"
   type        = string
   sensitive   = true
-  default     = ""
+}
+
+variable "AWS_SECRET_ACCESS_KEY" {
+  description = "AWS secret access key (pulled from Doppler via TF_VAR_AWS_SECRET_ACCESS_KEY)"
+  type        = string
+  sensitive   = true
+}
+
+variable "CLOUDFLARE_API_TOKEN" {
+  description = "Cloudflare API token (pulled from Doppler via TF_VAR_CLOUDFLARE_API_TOKEN)"
+  type        = string
+  sensitive   = true
 }

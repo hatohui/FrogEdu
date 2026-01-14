@@ -75,6 +75,20 @@ output "r2_endpoint" {
 }
 
 # =============================================================================
+# ECR
+# =============================================================================
+
+output "ecr_repositories" {
+  description = "ECR repository URLs for Docker images"
+  value       = module.ecr.repository_urls
+}
+
+output "ecr_registry_id" {
+  description = "ECR registry ID (AWS account ID)"
+  value       = module.ecr.registry_id
+}
+
+# =============================================================================
 # Frontend Environment Variables
 # =============================================================================
 
