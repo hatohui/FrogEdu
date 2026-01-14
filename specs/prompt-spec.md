@@ -48,14 +48,12 @@ We are building **Edu-AI Classroom** using an **AI-DLC (AI Development Life Cycl
 - [ ] **MUST read the relevant spec file** before starting any task.
 - [ ] **MUST verify all prerequisites** (dependencies, infrastructure) are in place.
 - [ ] **MUST follow coding standards** defined in technical specs.
-- [ ] **MUST write tests** (unit + integration) for all business logic.
 - [ ] **MUST update checkbox to `[x]`** immediately after completing a task.
 - [ ] **MUST validate the implementation** against acceptance criteria.
 - [ ] **MUST commit with descriptive messages** referencing the spec task ID.
 
 ### Phase 3: Validation & Iteration
 
-- [ ] Run automated tests (unit, integration, E2E).
 - [ ] Perform code review (self-review using linters, analyzers).
 - [ ] Verify against acceptance criteria in specs.
 - [ ] Update documentation if implementation differs from spec.
