@@ -26,12 +26,21 @@ resource "aws_api_gateway_deployment" "main" {
   rest_api_id = aws_api_gateway_rest_api.main.id
 
   triggers = {
-    redeployment = sha1(jsonencode(aws_api_gateway_rest_api.main.body))
+    redeployment = sha1(jsonencode([
+      aws_api_gateway_rest_api.main.id,
+      aws_api_gateway_method.options.id,
+      aws_api_gateway_integration.options.id,
+    ]))
   }
 
   lifecycle {
     create_before_destroy = true
   }
+
+  depends_on = [
+    aws_api_gateway_method.options,
+    aws_api_gateway_integration.options,
+  ]
 }
 
 # Stage
@@ -100,4 +109,6 @@ resource "aws_api_gateway_integration_response" "options" {
     "method.response.header.Access-Control-Allow-Methods" = "'GET,POST,PUT,DELETE,OPTIONS'"
     "method.response.header.Access-Control-Allow-Origin"  = "'*'"
   }
+
+  depends_on = [aws_api_gateway_integration.options]
 }

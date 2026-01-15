@@ -2,12 +2,55 @@
 # CloudFront Module - CDN for API Gateway
 # =============================================================================
 
+terraform {
+  required_providers {
+    aws = {
+      source                = "hashicorp/aws"
+      version               = ">= 5.0"
+      configuration_aliases = [aws.us_east_1]
+    }
+  }
+}
+
+# ACM Certificate for custom domain (must be in us-east-1 for CloudFront)
+resource "aws_acm_certificate" "api" {
+  count = var.custom_domain != "" ? 1 : 0
+
+  provider          = aws.us_east_1
+  domain_name       = var.custom_domain
+  validation_method = "DNS"
+
+  lifecycle {
+    create_before_destroy = true
+  }
+
+  tags = {
+    Name        = "${var.project_name}-${var.environment}-api-cert"
+    Environment = var.environment
+    Project     = var.project_name
+  }
+}
+
+# ACM Certificate Validation (waits for DNS validation to complete)
+resource "aws_acm_certificate_validation" "api" {
+  count = var.custom_domain != "" ? 1 : 0
+
+  provider                = aws.us_east_1
+  certificate_arn         = aws_acm_certificate.api[0].arn
+  validation_record_fqdns = [for dvo in aws_acm_certificate.api[0].domain_validation_options : dvo.resource_record_name]
+
+  timeouts {
+    create = "30m"
+  }
+}
+
 resource "aws_cloudfront_distribution" "api" {
   enabled             = true
   is_ipv6_enabled     = true
   comment             = "${var.project_name}-${var.environment} API CDN"
-  price_class         = "PriceClass_200"
+  price_class         = "PriceClass_All"
   wait_for_deployment = false
+  aliases             = var.custom_domain != "" ? [var.custom_domain] : []
 
   origin {
     domain_name = var.api_gateway_domain
@@ -34,18 +77,11 @@ resource "aws_cloudfront_distribution" "api" {
     cached_methods         = ["GET", "HEAD", "OPTIONS"]
     compress               = true
 
-    forwarded_values {
-      query_string = true
-      headers      = ["Authorization", "Accept", "Content-Type"]
+    # Use managed cache policy (CachingDisabled for API)
+    cache_policy_id = "4135ea2d-6df8-44a3-9df3-4b5a84be39ad"
 
-      cookies {
-        forward = "none"
-      }
-    }
-
-    min_ttl     = 0
-    default_ttl = 0
-    max_ttl     = 0
+    # Use managed origin request policy (AllViewer)
+    origin_request_policy_id = "216adef6-5c7f-47e4-b989-5492eafa07d3"
   }
 
   restrictions {
@@ -55,7 +91,17 @@ resource "aws_cloudfront_distribution" "api" {
   }
 
   viewer_certificate {
-    cloudfront_default_certificate = true
+    cloudfront_default_certificate = var.custom_domain == ""
+    acm_certificate_arn            = var.custom_domain != "" ? aws_acm_certificate.api[0].arn : null
+    ssl_support_method             = var.custom_domain != "" ? "sni-only" : null
     minimum_protocol_version       = "TLSv1.2_2021"
   }
+
+  tags = {
+    Name        = "${var.project_name}-${var.environment}-api-cdn"
+    Environment = var.environment
+    Project     = var.project_name
+  }
+
+  depends_on = [aws_acm_certificate_validation.api]
 }

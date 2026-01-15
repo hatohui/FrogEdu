@@ -1,9 +1,6 @@
 # =============================================================================
 # ECR Module - Elastic Container Registry
 # =============================================================================
-# AWS ECR is the ONLY supported container registry for Lambda functions
-# DockerHub and other registries are NOT supported by AWS Lambda
-# =============================================================================
 
 resource "aws_ecr_repository" "this" {
   for_each = var.repositories
@@ -39,11 +36,12 @@ resource "aws_ecr_lifecycle_policy" "this" {
     rules = [
       {
         rulePriority = 1
-        description  = "Keep last ${each.value.lifecycle_policy_keep} images"
+        description  = "Expire untagged images after ${each.value.lifecycle_expire_days} days"
         selection = {
-          tagStatus   = "any"
-          countType   = "imageCountMoreThan"
-          countNumber = each.value.lifecycle_policy_keep
+          tagStatus   = "untagged"
+          countType   = "sinceImagePushed"
+          countUnit   = "days"
+          countNumber = each.value.lifecycle_expire_days
         }
         action = {
           type = "expire"
@@ -51,12 +49,11 @@ resource "aws_ecr_lifecycle_policy" "this" {
       },
       {
         rulePriority = 2
-        description  = "Expire untagged images after ${each.value.lifecycle_expire_days} days"
+        description  = "Keep last ${each.value.lifecycle_policy_keep} images"
         selection = {
-          tagStatus   = "untagged"
-          countType   = "sinceImagePushed"
-          countUnit   = "days"
-          countNumber = each.value.lifecycle_expire_days
+          tagStatus   = "any"
+          countType   = "imageCountMoreThan"
+          countNumber = each.value.lifecycle_policy_keep
         }
         action = {
           type = "expire"

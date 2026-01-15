@@ -6,9 +6,10 @@
 module "cognito" {
   source = "./modules/cognito"
 
-  project_name = local.project_name
-  environment  = local.environment
-  aws_region   = local.aws_region
+  project_name    = local.project_name
+  environment     = local.environment
+  aws_region      = local.aws_region
+  frontend_domain = local.frontend_domain
 }
 
 # IAM roles and policies
@@ -32,11 +33,16 @@ module "api_gateway" {
 module "cloudfront" {
   source = "./modules/cloudfront"
 
+  providers = {
+    aws.us_east_1 = aws.us_east_1
+  }
+
   project_name         = local.project_name
   environment          = local.environment
   api_gateway_domain   = module.api_gateway.api_domain
   api_gateway_stage    = local.environment
   origin_verify_secret = try(data.doppler_secrets.this.map.CLOUDFRONT_ORIGIN_VERIFY_SECRET, "temp-secret-${local.environment}")
+  custom_domain        = local.api_domain
 }
 
 # ECR Repositories for Lambda Container Images

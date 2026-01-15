@@ -20,4 +20,8 @@ locals {
   lambda_timeout       = try(tonumber(data.doppler_secrets.this.map.TF_LAMBDA_TIMEOUT), 30)
   lambda_memory_size   = try(tonumber(data.doppler_secrets.this.map.TF_LAMBDA_MEMORY_SIZE), 512)
   lambda_architectures = try(split(",", data.doppler_secrets.this.map.TF_LAMBDA_ARCHITECTURES), ["arm64"])
+
+  # Domain configuration
+  api_domain      = try(data.doppler_secrets.this.map.TF_API_DOMAIN, "")
+  frontend_domain = try(data.doppler_secrets.this.map.TF_FRONTEND_DOMAIN, "localhost:5173")
 }

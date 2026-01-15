@@ -27,3 +27,9 @@ variable "origin_verify_secret" {
   type        = string
   sensitive   = true
 }
+
+variable "custom_domain" {
+  description = "Custom domain name for the API (e.g., frogedu.org). Leave empty to use CloudFront default domain"
+  type        = string
+  default     = ""
+}

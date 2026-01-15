@@ -46,6 +46,10 @@ resource "aws_cognito_user_pool" "main" {
   }
 
   deletion_protection = var.environment == "production" ? "ACTIVE" : "INACTIVE"
+
+  lifecycle {
+    ignore_changes = [schema]
+  }
 }
 
 # User Pool Client
@@ -59,12 +63,12 @@ resource "aws_cognito_user_pool_client" "web_client" {
 
   callback_urls = [
     "http://localhost:5173/auth/callback",
-    var.environment == "production" ? "https://frogedu.com/auth/callback" : "https://${var.environment}.frogedu.com/auth/callback"
+    "https://${var.frontend_domain}/auth/callback"
   ]
 
   logout_urls = [
     "http://localhost:5173",
-    var.environment == "production" ? "https://frogedu.com" : "https://${var.environment}.frogedu.com"
+    "https://${var.frontend_domain}"
   ]
 
   supported_identity_providers = ["COGNITO"]

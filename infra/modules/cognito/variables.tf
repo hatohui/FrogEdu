@@ -16,3 +16,9 @@ variable "aws_region" {
   description = "AWS region where resources will be created"
   type        = string
 }
+
+variable "frontend_domain" {
+  description = "Frontend domain for OAuth callbacks (e.g., frogedu.org)"
+  type        = string
+  default     = "localhost:5173"
+}

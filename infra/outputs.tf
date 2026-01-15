@@ -49,14 +49,31 @@ output "cognito_issuer_url" {
 # CloudFront
 # =============================================================================
 
+output "api_domain" {
+  description = "Custom API domain (api.frogedu.org)"
+  value       = local.api_domain
+}
+
 output "cloudfront_domain" {
-  description = "CloudFront distribution domain"
+  description = "CloudFront distribution domain (use this for DNS CNAME)"
   value       = module.cloudfront.distribution_domain
 }
 
 output "cloudfront_distribution_id" {
   description = "CloudFront distribution ID"
   value       = module.cloudfront.distribution_id
+}
+
+output "acm_certificate_arn" {
+  description = "ACM certificate ARN for custom domain"
+  value       = module.cloudfront.acm_certificate_arn
+  sensitive   = true
+}
+
+output "acm_certificate_validation_records" {
+  description = "DNS records needed to validate the ACM certificate"
+  value       = module.cloudfront.acm_certificate_validation_records
+  sensitive   = true
 }
 # =============================================================================
 # ECR
@@ -79,7 +96,7 @@ output "ecr_registry_id" {
 output "frontend_env_vars" {
   description = "Environment variables for frontend .env file"
   value = {
-    VITE_API_GATEWAY_URL      = module.api_gateway.invoke_url
+    VITE_API_URL               = "https://${local.api_domain}"
     VITE_COGNITO_USER_POOL_ID = module.cognito.user_pool_id
     VITE_COGNITO_CLIENT_ID    = module.cognito.web_client_id
     VITE_AWS_REGION           = local.aws_region
