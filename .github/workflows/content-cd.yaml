@@ -1,5 +1,8 @@
 name: content-cd
 
+permissions:
+  contents: read
+
 on:
   push:
     branches:
@@ -14,7 +17,10 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v6
         with:
-          path: backend
+          path: .
+          sparse-checkout: |
+            backend/Shared
+            backend/Services/Content
 
       - name: print what's inside
-        run: ls backend
+        run: ls
