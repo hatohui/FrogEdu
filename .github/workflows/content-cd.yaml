@@ -39,12 +39,21 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
 
-      - name: Build, tag, and push docker image to Amazon ECR
-        working-directory: backend/
+      - name: Promote build image to latest
         env:
           REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           REPOSITORY: frogedu-dev-content-api
-          IMAGE_TAG: ${{ github.sha }}
         run: |
-          docker build -f Services/Content/Dockerfile -t $REGISTRY/$REPOSITORY:$IMAGE_TAG .
-          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
+          docker pull $REGISTRY/$REPOSITORY:build
+          docker tag $REGISTRY/$REPOSITORY:build $REGISTRY/$REPOSITORY:latest
+          docker push $REGISTRY/$REPOSITORY:latest
+
+      - name: Update Lambda Function
+        env:
+          FUNCTION_NAME: frogedu-dev-content-api
+          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          REPOSITORY: frogedu-dev-content-api
+        run: |
+          aws lambda update-function-code \
+            --function-name $FUNCTION_NAME \
+            --image-uri $REGISTRY/$REPOSITORY:latest

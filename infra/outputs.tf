@@ -99,6 +99,20 @@ output "github_oidc_provider_arn" {
 }
 
 # =============================================================================
+# Lambda Functions
+# =============================================================================
+
+output "lambda_functions" {
+  description = "Lambda function ARNs"
+  value = {
+    content    = module.content_lambda.function_arn
+    user       = module.user_lambda.function_arn
+    assessment = module.assessment_lambda.function_arn
+    ai         = module.ai_lambda.function_arn
+  }
+}
+
+# =============================================================================
 # Frontend Environment Variables
 # =============================================================================
 

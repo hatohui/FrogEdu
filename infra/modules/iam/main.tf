@@ -51,7 +51,7 @@ resource "aws_iam_openid_connect_provider" "github_actions" {
 # IAM policy for ECR access
 resource "aws_iam_policy" "github_actions_ecr" {
   name        = "${var.project_name}-${var.environment}-github-actions-ecr"
-  description = "Policy for GitHub Actions to push/pull images to/from ECR"
+  description = "Policy for GitHub Actions to push/pull images to/from ECR and update Lambda functions"
 
   policy = jsonencode({
     Version = "2012-10-17"
@@ -81,6 +81,15 @@ resource "aws_iam_policy" "github_actions_ecr" {
           "ecr:PutImage"
         ]
         Resource = "arn:aws:ecr:*:*:repository/${var.project_name}-*"
+      },
+      {
+        Sid    = "UpdateLambdaFunctions"
+        Effect = "Allow"
+        Action = [
+          "lambda:UpdateFunctionCode",
+          "lambda:GetFunction"
+        ]
+        Resource = "arn:aws:lambda:*:*:function:${var.project_name}-*"
       }
     ]
   })
