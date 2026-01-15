@@ -5,7 +5,7 @@ COPY Services/Content/ Services/Content/
 COPY Shared/ Shared/
 
 WORKDIR /src/Services/Content
-RUN dotnet restore Content.sln
+RUN dotnet restore Content.API/FrogEdu.Content.API.csproj
 RUN dotnet publish Content.API/FrogEdu.Content.API.csproj -c Release -o /app/publish
 
 # Build runtime image
