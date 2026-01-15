@@ -85,13 +85,27 @@ output "ecr_registry_id" {
 }
 
 # =============================================================================
+# IAM - GitHub Actions
+# =============================================================================
+
+output "github_actions_role_arn" {
+  description = "ARN of the GitHub Actions role for ECR access (add this to GitHub secrets)"
+  value       = module.iam.github_actions_ecr_role_arn
+}
+
+output "github_oidc_provider_arn" {
+  description = "ARN of the GitHub Actions OIDC provider"
+  value       = module.iam.github_oidc_provider_arn
+}
+
+# =============================================================================
 # Frontend Environment Variables
 # =============================================================================
 
 output "frontend_env_vars" {
   description = "Environment variables for frontend .env file"
   value = {
-    VITE_API_URL               = nonsensitive("https://${local.api_domain}")
+    VITE_API_URL              = nonsensitive("https://${local.api_domain}")
     VITE_COGNITO_USER_POOL_ID = module.cognito.user_pool_id
     VITE_COGNITO_CLIENT_ID    = module.cognito.web_client_id
     VITE_AWS_REGION           = local.aws_region

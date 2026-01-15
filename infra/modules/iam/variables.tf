@@ -11,3 +11,15 @@ variable "environment" {
   description = "Environment name (e.g., dev, staging, production)"
   type        = string
 }
+
+variable "github_org" {
+  description = "GitHub organization name for OIDC trust"
+  type        = string
+  default     = "*"
+}
+
+variable "github_repo" {
+  description = "GitHub repository name for OIDC trust (format: org/repo or * for all repos)"
+  type        = string
+  default     = "*"
+}
