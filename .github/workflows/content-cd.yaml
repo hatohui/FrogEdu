@@ -1,0 +1,20 @@
+name: content-cd
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  content-cd:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v6
+        with:
+          path: backend
+
+      - name: print what's inside
+        run: ls backend
