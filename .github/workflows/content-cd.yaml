@@ -23,7 +23,7 @@ jobs:
             backend/Services/Content
 
       - name: print what's inside
-        run: ls
+        run: ls -a
 
       - name: print backend contents
-        run: ls backend
+        run: ls -a backend
