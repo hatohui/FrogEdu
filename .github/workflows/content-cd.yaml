@@ -37,7 +37,7 @@ jobs:
         working-directory: backend/
         env:
           REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          REPOSITORY: frogedu-content-api
+          REPOSITORY: frogedu-dev-content-api
           IMAGE_TAG: ${{ github.sha }}
         run: |
           docker build -f Services/Content/Dockerfile -t $REGISTRY/$REPOSITORY:$IMAGE_TAG .
