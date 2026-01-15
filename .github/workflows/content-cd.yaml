@@ -27,3 +27,6 @@ jobs:
 
       - name: print backend contents
         run: ls -a backend
+
+      - name: print Service
+        run: ls -a backend/Services/
