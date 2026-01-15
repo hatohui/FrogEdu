@@ -30,9 +30,6 @@ locals {
     for route in var.routes : route.path => split("/", route.path)
   }
 
-  # Get unique parent paths (first segment only)
-  parent_paths = distinct([for route in var.routes : split("/", route.path)[0]])
-
   # Separate parent routes and child routes
   parent_routes = {
     for route in var.routes : route.path => route
@@ -43,15 +40,30 @@ locals {
     for route in var.routes : route.path => route
     if length(split("/", route.path)) > 1
   }
+
+  # Get parent paths that need to be created (not already in parent_routes)
+  needed_parent_paths = distinct([
+    for route in var.routes : split("/", route.path)[0]
+    if length(split("/", route.path)) > 1 && !contains(keys(local.parent_routes), split("/", route.path)[0])
+  ])
 }
 
-# Create parent resources (e.g., /users, /contents)
-resource "aws_api_gateway_resource" "parent_routes" {
-  for_each = toset(local.parent_paths)
+# Create parent resources only for parents that don't have their own route
+resource "aws_api_gateway_resource" "standalone_parents" {
+  for_each = toset(local.needed_parent_paths)
 
   rest_api_id = var.api_gateway_id
   parent_id   = var.api_gateway_root_id
   path_part   = each.value
+}
+
+# Create parent resources for routes that are parents themselves (e.g., /users)
+resource "aws_api_gateway_resource" "parent_routes" {
+  for_each = local.parent_routes
+
+  rest_api_id = var.api_gateway_id
+  parent_id   = var.api_gateway_root_id
+  path_part   = each.value.path
 }
 
 # Create child resources (e.g., /users/health)
@@ -59,7 +71,7 @@ resource "aws_api_gateway_resource" "child_routes" {
   for_each = local.child_routes
 
   rest_api_id = var.api_gateway_id
-  parent_id   = aws_api_gateway_resource.parent_routes[split("/", each.key)[0]].id
+  parent_id   = contains(keys(local.parent_routes), split("/", each.key)[0]) ? aws_api_gateway_resource.parent_routes[split("/", each.key)[0]].id : aws_api_gateway_resource.standalone_parents[split("/", each.key)[0]].id
   path_part   = split("/", each.key)[1]
 }
 
