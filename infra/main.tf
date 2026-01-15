@@ -73,5 +73,11 @@ module "ecr" {
       lifecycle_policy_keep = 10
       lifecycle_expire_days = 7
     }
+    user-api = {
+      image_tag_mutability  = "MUTABLE"
+      scan_on_push          = true
+      lifecycle_policy_keep = 10
+      lifecycle_expire_days = 7
+    }
   }
 }
