@@ -39,6 +39,12 @@ resource "aws_api_gateway_method" "routes" {
   http_method   = each.value.http_method
   authorization = each.value.auth_required ? "COGNITO_USER_POOLS" : "NONE"
   authorizer_id = each.value.auth_required ? var.cognito_authorizer_id : null
+
+  # Require X-Origin-Verify header when validation is enabled
+  request_validator_id = var.request_validator_id != "" ? var.request_validator_id : null
+  request_parameters = var.origin_verify_secret != "" ? {
+    "method.request.header.X-Origin-Verify" = true
+  } : null
 }
 
 resource "aws_api_gateway_integration" "routes" {
@@ -50,6 +56,11 @@ resource "aws_api_gateway_integration" "routes" {
   integration_http_method = "POST"
   type                    = "AWS_PROXY"
   uri                     = aws_lambda_function.this.invoke_arn
+
+  # Pass header validation in request parameters
+  request_parameters = var.origin_verify_secret != "" ? {
+    "integration.request.header.X-Origin-Verify" = "method.request.header.X-Origin-Verify"
+  } : null
 }
 
 # Lambda Permissions

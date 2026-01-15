@@ -21,6 +21,29 @@ resource "aws_api_gateway_authorizer" "cognito" {
   provider_arns   = [var.cognito_user_pool.arn]
 }
 
+# Request Validator - requires headers to be present
+resource "aws_api_gateway_request_validator" "header_validator" {
+  count = var.origin_verify_secret != "" ? 1 : 0
+
+  name                        = "${var.project_name}-${var.environment}-header-validator"
+  rest_api_id                 = aws_api_gateway_rest_api.main.id
+  validate_request_body       = false
+  validate_request_parameters = true
+}
+
+# Gateway Response for missing required header
+resource "aws_api_gateway_gateway_response" "unauthorized" {
+  count = var.origin_verify_secret != "" ? 1 : 0
+
+  rest_api_id   = aws_api_gateway_rest_api.main.id
+  response_type = "UNAUTHORIZED"
+  status_code   = "403"
+
+  response_templates = {
+    "application/json" = "{\"message\":\"Direct access not allowed. Use api.frogedu.org\"}"
+  }
+}
+
 # Deployment
 resource "aws_api_gateway_deployment" "main" {
   rest_api_id = aws_api_gateway_rest_api.main.id
@@ -96,6 +119,38 @@ resource "aws_api_gateway_method_response" "options" {
     "method.response.header.Access-Control-Allow-Methods" = true
     "method.response.header.Access-Control-Allow-Origin"  = true
   }
+}
+
+# =============================================================================
+# Custom Domain Configuration
+# =============================================================================
+
+# Custom Domain Name
+resource "aws_api_gateway_domain_name" "main" {
+  count = var.custom_domain != "" ? 1 : 0
+
+  domain_name              = var.custom_domain
+  regional_certificate_arn = var.acm_certificate_arn
+
+  endpoint_configuration {
+    types = ["REGIONAL"]
+  }
+
+  tags = {
+    Name        = "${var.project_name}-${var.environment}-api-domain"
+    Environment = var.environment
+    Project     = var.project_name
+  }
+}
+
+# Base Path Mapping - maps /api/* to the stage
+resource "aws_api_gateway_base_path_mapping" "main" {
+  count = var.custom_domain != "" ? 1 : 0
+
+  api_id      = aws_api_gateway_rest_api.main.id
+  stage_name  = aws_api_gateway_stage.main.stage_name
+  domain_name = aws_api_gateway_domain_name.main[0].domain_name
+  base_path   = "api"
 }
 
 resource "aws_api_gateway_integration_response" "options" {

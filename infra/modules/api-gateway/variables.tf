@@ -20,3 +20,22 @@ variable "cognito_user_pool" {
     endpoint = string
   })
 }
+
+variable "custom_domain" {
+  description = "Custom domain name for API (e.g., api.frogedu.org)"
+  type        = string
+  default     = ""
+}
+
+variable "acm_certificate_arn" {
+  description = "ACM certificate ARN for custom domain (must be in same region as API Gateway)"
+  type        = string
+  default     = ""
+}
+
+variable "origin_verify_secret" {
+  description = "Secret header value to verify requests come from CloudFront only"
+  type        = string
+  sensitive   = true
+  default     = ""
+}

@@ -74,6 +74,19 @@ variable "cognito_authorizer_id" {
   type        = string
 }
 
+variable "request_validator_id" {
+  description = "ID of the request validator for API Gateway (optional)"
+  type        = string
+  default     = ""
+}
+
+variable "origin_verify_secret" {
+  description = "Secret value for X-Origin-Verify header to restrict access to CloudFront only"
+  type        = string
+  sensitive   = true
+  default     = ""
+}
+
 variable "routes" {
   description = "List of API Gateway routes to create for this Lambda function"
   type = list(object({

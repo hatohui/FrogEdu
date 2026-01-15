@@ -26,6 +26,11 @@ output "api_gateway_id" {
   value       = module.api_gateway.api_id
 }
 
+output "custom_api_url" {
+  description = "Custom API URL (use this)"
+  value       = "https://api.frogedu.org/api"
+}
+
 # =============================================================================
 # Cognito
 # =============================================================================
@@ -105,7 +110,7 @@ output "github_oidc_provider_arn" {
 output "frontend_env_vars" {
   description = "Environment variables for frontend .env file"
   value = {
-    VITE_API_URL              = nonsensitive("https://${local.api_domain}")
+    VITE_API_URL              = nonsensitive("https://api.frogedu.org/api")
     VITE_COGNITO_USER_POOL_ID = module.cognito.user_pool_id
     VITE_COGNITO_CLIENT_ID    = module.cognito.web_client_id
     VITE_AWS_REGION           = local.aws_region
