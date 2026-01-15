@@ -61,9 +61,3 @@ variable "AWS_SECRET_ACCESS_KEY" {
   type        = string
   sensitive   = true
 }
-
-variable "CLOUDFLARE_API_TOKEN" {
-  description = "Cloudflare API token (pulled from Doppler via TF_VAR_CLOUDFLARE_API_TOKEN)"
-  type        = string
-  sensitive   = true
-}

@@ -58,22 +58,6 @@ output "cloudfront_distribution_id" {
   description = "CloudFront distribution ID"
   value       = module.cloudfront.distribution_id
 }
-
-# =============================================================================
-# Cloudflare
-# =============================================================================
-
-output "r2_bucket_name" {
-  description = "Cloudflare R2 bucket name"
-  value       = module.cloudflare.bucket_name
-}
-
-output "r2_endpoint" {
-  description = "Cloudflare R2 S3-compatible endpoint"
-  value       = module.cloudflare.r2_endpoint
-  sensitive   = true
-}
-
 # =============================================================================
 # ECR
 # =============================================================================

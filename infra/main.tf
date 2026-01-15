@@ -39,16 +39,6 @@ module "cloudfront" {
   origin_verify_secret = try(data.doppler_secrets.this.map.CLOUDFRONT_ORIGIN_VERIFY_SECRET, "temp-secret-${local.environment}")
 }
 
-# Cloudflare R2 Storage
-module "cloudflare" {
-  source = "./modules/cloudflare"
-
-  project_name            = local.project_name
-  environment             = local.environment
-  cloudflare_account_id   = data.doppler_secrets.this.map.CLOUDFLARE_ACCOUNT_ID
-  cloudflare_account_name = data.doppler_secrets.this.map.CLOUDFLARE_ACCOUNT_NAME
-}
-
 # ECR Repositories for Lambda Container Images
 module "ecr" {
   source = "./modules/ecr"
