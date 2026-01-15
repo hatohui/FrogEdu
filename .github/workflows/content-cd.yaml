@@ -24,3 +24,6 @@ jobs:
 
       - name: print what's inside
         run: ls
+
+      - name: print backend contents
+        run: ls backend
