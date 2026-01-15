@@ -17,4 +17,4 @@ jobs:
           path: backend
 
       - name: print what's inside
-        run: ls backend
+        run: ls
