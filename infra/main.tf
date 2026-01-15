@@ -81,3 +81,143 @@ module "ecr" {
     }
   }
 }
+
+# =============================================================================
+# Lambda Functions - Containerized Microservices
+# =============================================================================
+
+# Content Service Lambda
+module "content_lambda" {
+  source = "./modules/lambda-container"
+
+  project_name  = local.project_name
+  environment   = local.environment
+  function_name = "content-api"
+
+  ecr_image_uri  = "${module.ecr.repository_urls["content-api"]}:latest"
+  execution_role = module.iam.lambda_execution_role
+
+  memory_size   = local.lambda_memory_size
+  timeout       = local.lambda_timeout
+  architectures = local.lambda_architectures
+
+  environment_variables = {
+    ASPNETCORE_ENVIRONMENT = local.environment
+  }
+
+  # API Gateway integration
+  api_gateway_id            = module.api_gateway.api_id
+  api_gateway_root_id       = module.api_gateway.root_resource_id
+  api_gateway_execution_arn = module.api_gateway.execution_arn
+  cognito_authorizer_id     = module.api_gateway.cognito_authorizer_id
+
+  routes = [
+    {
+      path          = "content"
+      http_method   = "ANY"
+      auth_required = true
+    }
+  ]
+}
+
+# User Service Lambda
+module "user_lambda" {
+  source = "./modules/lambda-container"
+
+  project_name  = local.project_name
+  environment   = local.environment
+  function_name = "user-api"
+
+  ecr_image_uri  = "${module.ecr.repository_urls["user-api"]}:latest"
+  execution_role = module.iam.lambda_execution_role
+
+  memory_size   = local.lambda_memory_size
+  timeout       = local.lambda_timeout
+  architectures = local.lambda_architectures
+
+  environment_variables = {
+    ASPNETCORE_ENVIRONMENT = local.environment
+  }
+
+  # API Gateway integration
+  api_gateway_id            = module.api_gateway.api_id
+  api_gateway_root_id       = module.api_gateway.root_resource_id
+  api_gateway_execution_arn = module.api_gateway.execution_arn
+  cognito_authorizer_id     = module.api_gateway.cognito_authorizer_id
+
+  routes = [
+    {
+      path          = "users"
+      http_method   = "ANY"
+      auth_required = true
+    }
+  ]
+}
+
+# Assessment Service Lambda
+module "assessment_lambda" {
+  source = "./modules/lambda-container"
+
+  project_name  = local.project_name
+  environment   = local.environment
+  function_name = "assessment-api"
+
+  ecr_image_uri  = "${module.ecr.repository_urls["assessment-api"]}:latest"
+  execution_role = module.iam.lambda_execution_role
+
+  memory_size   = local.lambda_memory_size
+  timeout       = local.lambda_timeout
+  architectures = local.lambda_architectures
+
+  environment_variables = {
+    ASPNETCORE_ENVIRONMENT = local.environment
+  }
+
+  # API Gateway integration
+  api_gateway_id            = module.api_gateway.api_id
+  api_gateway_root_id       = module.api_gateway.root_resource_id
+  api_gateway_execution_arn = module.api_gateway.execution_arn
+  cognito_authorizer_id     = module.api_gateway.cognito_authorizer_id
+
+  routes = [
+    {
+      path          = "assessments"
+      http_method   = "ANY"
+      auth_required = true
+    }
+  ]
+}
+
+# AI Service Lambda
+module "ai_lambda" {
+  source = "./modules/lambda-container"
+
+  project_name  = local.project_name
+  environment   = local.environment
+  function_name = "ai-api"
+
+  ecr_image_uri  = "${module.ecr.repository_urls["ai-api"]}:latest"
+  execution_role = module.iam.lambda_execution_role
+
+  memory_size   = local.lambda_memory_size
+  timeout       = local.lambda_timeout
+  architectures = local.lambda_architectures
+
+  environment_variables = {
+    ASPNETCORE_ENVIRONMENT = local.environment
+  }
+
+  # API Gateway integration
+  api_gateway_id            = module.api_gateway.api_id
+  api_gateway_root_id       = module.api_gateway.root_resource_id
+  api_gateway_execution_arn = module.api_gateway.execution_arn
+  cognito_authorizer_id     = module.api_gateway.cognito_authorizer_id
+
+  routes = [
+    {
+      path          = "ai"
+      http_method   = "ANY"
+      auth_required = true
+    }
+  ]
+}

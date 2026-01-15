@@ -27,6 +27,11 @@ output "authorizer_id" {
   value       = aws_api_gateway_authorizer.cognito.id
 }
 
+output "cognito_authorizer_id" {
+  description = "Cognito authorizer ID (alias for compatibility)"
+  value       = aws_api_gateway_authorizer.cognito.id
+}
+
 output "api_domain" {
   description = "API Gateway domain name"
   value       = replace(aws_api_gateway_stage.main.invoke_url, "/^https?://([^/]*).*/", "$1")

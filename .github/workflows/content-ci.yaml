@@ -1,23 +1,23 @@
-name: ai-cd
+name: content-ci
 
 permissions:
   id-token: write
   contents: read
 
 on:
-  push:
+  pull_request:
     branches:
       - main
     paths:
-      - "backend/Services/AI/**.cs"
+      - "backend/Services/Content/**.cs"
       - "backend/Shared/**.cs"
-      - ".github/workflows/ai-cd.yaml"
-      - "backend/Services/AI/**.csproj"
+      - ".github/workflows/content-ci.yaml"
+      - "backend/Services/Content/**.csproj"
       - "backend/Shared/**.csproj"
   workflow_dispatch:
 
 jobs:
-  ai-cd:
+  content-ci:
     runs-on: ubuntu-latest
 
     steps:
@@ -27,7 +27,7 @@ jobs:
           sparse-checkout-cone-mode: false
           sparse-checkout: |
             backend/Shared
-            backend/Services/AI
+            backend/Services/Content
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v5.1.1
@@ -39,21 +39,11 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
 
-      - name: Promote build image to latest
+      - name: Build, tag, and push docker image to Amazon ECR
+        working-directory: backend/
         env:
           REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          REPOSITORY: frogedu-dev-ai-api
+          REPOSITORY: frogedu-dev-content-api
         run: |
-          docker pull $REGISTRY/$REPOSITORY:build
-          docker tag $REGISTRY/$REPOSITORY:build $REGISTRY/$REPOSITORY:latest
-          docker push $REGISTRY/$REPOSITORY:latest
-
-      - name: Update Lambda Function
-        env:
-          FUNCTION_NAME: frogedu-dev-ai-api
-          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          REPOSITORY: frogedu-dev-ai-api
-        run: |
-          aws lambda update-function-code \
-            --function-name $FUNCTION_NAME \
-            --image-uri $REGISTRY/$REPOSITORY:latest
+          docker build -f Services/Content/Dockerfile -t $REGISTRY/$REPOSITORY:build .
+          docker push $REGISTRY/$REPOSITORY:build
