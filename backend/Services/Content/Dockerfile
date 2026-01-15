@@ -8,7 +8,6 @@ WORKDIR /src/Services/Content
 RUN dotnet restore Content.API/FrogEdu.Content.API.csproj
 RUN dotnet publish Content.API/FrogEdu.Content.API.csproj -c Release -o /app/publish
 
-# Build runtime image
 FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS runtime
 WORKDIR /app
 COPY --from=build /app/publish .
