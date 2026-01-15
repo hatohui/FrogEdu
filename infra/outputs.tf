@@ -49,11 +49,6 @@ output "cognito_issuer_url" {
 # CloudFront
 # =============================================================================
 
-output "api_domain" {
-  description = "Custom API domain (api.frogedu.org)"
-  value       = local.api_domain
-}
-
 output "cloudfront_domain" {
   description = "CloudFront distribution domain (use this for DNS CNAME)"
   value       = module.cloudfront.distribution_domain
@@ -96,7 +91,7 @@ output "ecr_registry_id" {
 output "frontend_env_vars" {
   description = "Environment variables for frontend .env file"
   value = {
-    VITE_API_URL               = "https://${local.api_domain}"
+    VITE_API_URL               = nonsensitive("https://${local.api_domain}")
     VITE_COGNITO_USER_POOL_ID = module.cognito.user_pool_id
     VITE_COGNITO_CLIENT_ID    = module.cognito.web_client_id
     VITE_AWS_REGION           = local.aws_region

@@ -1,8 +1,6 @@
 # =============================================================================
 # Global Variables - Required for Providers
 # =============================================================================
-# NOTE: Providers cannot use data sources or locals, so we need basic variables
-# These will be pulled from Doppler and used in resources via locals
 
 # =============================================================================
 # Doppler Configuration (Required)

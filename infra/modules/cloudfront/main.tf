@@ -51,6 +51,7 @@ resource "aws_cloudfront_distribution" "api" {
   price_class         = "PriceClass_All"
   wait_for_deployment = false
   aliases             = var.custom_domain != "" ? [var.custom_domain] : []
+  web_acl_id          = var.web_acl_id
 
   origin {
     domain_name = var.api_gateway_domain
