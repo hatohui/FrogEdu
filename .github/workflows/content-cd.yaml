@@ -17,7 +17,6 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v6
         with:
-          path: .
           sparse-checkout: |
             backend/Shared
             backend/Services/Content
