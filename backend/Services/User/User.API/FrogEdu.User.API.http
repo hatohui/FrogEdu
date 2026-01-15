@@ -1,0 +1,6 @@
+@FrogEdu.User.API_HostAddress = http://localhost:5174
+
+GET {{FrogEdu.User.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
