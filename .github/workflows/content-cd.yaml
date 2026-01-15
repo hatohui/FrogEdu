@@ -1,6 +1,7 @@
 name: content-cd
 
 permissions:
+  id-token: write
   contents: read
 
 on:
@@ -21,10 +22,6 @@ jobs:
           sparse-checkout: |
             backend/Shared
             backend/Services/Content
-      - name: Set up Docker
-        uses: docker/setup-docker-action@v4
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v5.1.1
@@ -43,5 +40,5 @@ jobs:
           REPOSITORY: frogedu-content-service
           IMAGE_TAG: ${{ github.sha }}
         run: |
-          docker docker build -f Services/Content/Dockerfile -t $REGISTRY/$REPOSITORY:$IMAGE_TAG .
+          docker build -f Services/Content/Dockerfile -t $REGISTRY/$REPOSITORY:$IMAGE_TAG .
           docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
