@@ -2,7 +2,6 @@
 # =============================================================================
 # Doppler Integration - Single Source of Truth
 # =============================================================================
-# All configuration values are pulled from Doppler (no tfvars needed)
 data "doppler_secrets" "this" {
   project = var.doppler_project
   config  = var.doppler_config
