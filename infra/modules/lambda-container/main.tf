@@ -23,19 +23,51 @@ resource "aws_lambda_function" "this" {
 }
 
 # API Gateway Resources and Methods
-resource "aws_api_gateway_resource" "routes" {
-  for_each = { for idx, route in var.routes : route.path => route }
+# Parse nested paths and create parent resources
+locals {
+  # Split paths into segments
+  route_segments = {
+    for route in var.routes : route.path => split("/", route.path)
+  }
+
+  # Get unique parent paths (first segment only)
+  parent_paths = distinct([for route in var.routes : split("/", route.path)[0]])
+
+  # Separate parent routes and child routes
+  parent_routes = {
+    for route in var.routes : route.path => route
+    if length(split("/", route.path)) == 1
+  }
+
+  child_routes = {
+    for route in var.routes : route.path => route
+    if length(split("/", route.path)) > 1
+  }
+}
+
+# Create parent resources (e.g., /users, /contents)
+resource "aws_api_gateway_resource" "parent_routes" {
+  for_each = toset(local.parent_paths)
 
   rest_api_id = var.api_gateway_id
   parent_id   = var.api_gateway_root_id
-  path_part   = each.value.path
+  path_part   = each.value
+}
+
+# Create child resources (e.g., /users/health)
+resource "aws_api_gateway_resource" "child_routes" {
+  for_each = local.child_routes
+
+  rest_api_id = var.api_gateway_id
+  parent_id   = aws_api_gateway_resource.parent_routes[split("/", each.key)[0]].id
+  path_part   = split("/", each.key)[1]
 }
 
 resource "aws_api_gateway_method" "routes" {
   for_each = { for idx, route in var.routes : route.path => route }
 
   rest_api_id   = var.api_gateway_id
-  resource_id   = aws_api_gateway_resource.routes[each.key].id
+  resource_id   = length(split("/", each.key)) == 1 ? aws_api_gateway_resource.parent_routes[each.key].id : aws_api_gateway_resource.child_routes[each.key].id
   http_method   = each.value.http_method
   authorization = each.value.auth_required ? "COGNITO_USER_POOLS" : "NONE"
   authorizer_id = each.value.auth_required ? var.cognito_authorizer_id : null
@@ -51,7 +83,7 @@ resource "aws_api_gateway_integration" "routes" {
   for_each = { for idx, route in var.routes : route.path => route }
 
   rest_api_id             = var.api_gateway_id
-  resource_id             = aws_api_gateway_resource.routes[each.key].id
+  resource_id             = length(split("/", each.key)) == 1 ? aws_api_gateway_resource.parent_routes[each.key].id : aws_api_gateway_resource.child_routes[each.key].id
   http_method             = aws_api_gateway_method.routes[each.key].http_method
   integration_http_method = "POST"
   type                    = "AWS_PROXY"
