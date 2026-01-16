@@ -42,7 +42,7 @@ app.UseCors("AllowSpecificOrigins");
 
 // Health check endpoint
 app.MapGet(
-        "/health",
+        "/api/contents/health",
         () =>
             Results.Ok(
                 new

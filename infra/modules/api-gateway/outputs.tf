@@ -12,14 +12,19 @@ output "root_resource_id" {
   value       = aws_api_gateway_rest_api.main.root_resource_id
 }
 
+output "api_resource_id" {
+  description = "REST API /api resource ID (parent for all service routes)"
+  value       = aws_api_gateway_resource.api.id
+}
+
 output "execution_arn" {
   description = "Execution ARN for Lambda permissions"
   value       = aws_api_gateway_rest_api.main.execution_arn
 }
 
-output "invoke_url" {
-  description = "API Gateway invoke URL"
-  value       = aws_api_gateway_stage.main.invoke_url
+output "api_domain" {
+  description = "API Gateway domain name (execute-api endpoint)"
+  value       = "${aws_api_gateway_rest_api.main.id}.execute-api.${data.aws_region.current.name}.amazonaws.com"
 }
 
 output "authorizer_id" {
@@ -35,11 +40,6 @@ output "cognito_authorizer_id" {
 output "request_validator_id" {
   description = "Request validator ID for header validation"
   value       = var.origin_verify_secret != "" ? aws_api_gateway_request_validator.header_validator[0].id : ""
-}
-
-output "api_domain" {
-  description = "API Gateway domain name"
-  value       = replace(aws_api_gateway_stage.main.invoke_url, "/^https?://([^/]*).*/", "$1")
 }
 
 output "custom_domain_name" {

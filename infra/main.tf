@@ -110,7 +110,7 @@ module "content_lambda" {
 
   # API Gateway integration
   api_gateway_id            = module.api_gateway.api_id
-  api_gateway_root_id       = module.api_gateway.root_resource_id
+  api_gateway_root_id       = module.api_gateway.api_resource_id # Use /api as parent
   api_gateway_execution_arn = module.api_gateway.execution_arn
   cognito_authorizer_id     = module.api_gateway.cognito_authorizer_id
   request_validator_id      = module.api_gateway.request_validator_id
@@ -147,7 +147,7 @@ module "user_lambda" {
 
   # API Gateway integration
   api_gateway_id            = module.api_gateway.api_id
-  api_gateway_root_id       = module.api_gateway.root_resource_id
+  api_gateway_root_id       = module.api_gateway.api_resource_id # Use /api as parent
   api_gateway_execution_arn = module.api_gateway.execution_arn
   cognito_authorizer_id     = module.api_gateway.cognito_authorizer_id
   request_validator_id      = module.api_gateway.request_validator_id
@@ -184,7 +184,7 @@ module "assessment_lambda" {
 
   # API Gateway integration
   api_gateway_id            = module.api_gateway.api_id
-  api_gateway_root_id       = module.api_gateway.root_resource_id
+  api_gateway_root_id       = module.api_gateway.api_resource_id # Use /api as parent
   api_gateway_execution_arn = module.api_gateway.execution_arn
   cognito_authorizer_id     = module.api_gateway.cognito_authorizer_id
   request_validator_id      = module.api_gateway.request_validator_id
@@ -221,7 +221,7 @@ module "ai_lambda" {
 
   # API Gateway integration
   api_gateway_id            = module.api_gateway.api_id
-  api_gateway_root_id       = module.api_gateway.root_resource_id
+  api_gateway_root_id       = module.api_gateway.api_resource_id # Use /api as parent
   api_gateway_execution_arn = module.api_gateway.execution_arn
   cognito_authorizer_id     = module.api_gateway.cognito_authorizer_id
   request_validator_id      = module.api_gateway.request_validator_id
@@ -235,4 +235,42 @@ module "ai_lambda" {
       auth_required = false
     }
   ]
+}
+
+# =============================================================================
+# API Gateway Deployment & Stage (After all Lambda routes are created)
+# =============================================================================
+
+resource "aws_api_gateway_deployment" "main" {
+  rest_api_id = module.api_gateway.api_id
+
+  triggers = {
+    # Redeploy when Lambda integrations change
+    redeployment = sha1(jsonencode([
+      module.user_lambda.function_arn,
+      module.content_lambda.function_arn,
+      module.assessment_lambda.function_arn,
+      module.ai_lambda.function_arn,
+    ]))
+  }
+
+  lifecycle {
+    create_before_destroy = true
+  }
+
+  depends_on = [
+    module.api_gateway,
+    module.user_lambda,
+    module.content_lambda,
+    module.assessment_lambda,
+    module.ai_lambda,
+  ]
+}
+
+resource "aws_api_gateway_stage" "main" {
+  deployment_id = aws_api_gateway_deployment.main.id
+  rest_api_id   = module.api_gateway.api_id
+  stage_name    = local.environment
+
+  depends_on = [aws_api_gateway_deployment.main]
 }

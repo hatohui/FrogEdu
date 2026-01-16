@@ -18,7 +18,7 @@ output "aws_region" {
 
 output "api_gateway_url" {
   description = "API Gateway invoke URL"
-  value       = module.api_gateway.invoke_url
+  value       = "https://${module.api_gateway.api_domain}/${local.environment}"
 }
 
 output "api_gateway_id" {

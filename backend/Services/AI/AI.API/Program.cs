@@ -39,7 +39,7 @@ app.UseCors("AllowSpecificOrigins");
 
 // Health check endpoint
 app.MapGet(
-        "/health",
+        "/api/ai/health",
         () =>
             Results.Ok(
                 new

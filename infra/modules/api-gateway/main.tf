@@ -2,6 +2,8 @@
 # API Gateway Module - REST API
 # =============================================================================
 
+data "aws_region" "current" {}
+
 # REST API
 resource "aws_api_gateway_rest_api" "main" {
   name        = "${var.project_name}-${var.environment}-api"
@@ -69,50 +71,8 @@ resource "aws_api_gateway_gateway_response" "unauthorized" {
   }
 }
 
-# Deployment
-resource "aws_api_gateway_deployment" "main" {
-  rest_api_id = aws_api_gateway_rest_api.main.id
-
-  triggers = {
-    redeployment = sha1(jsonencode([
-      aws_api_gateway_rest_api.main.id,
-      aws_api_gateway_method.options.id,
-      aws_api_gateway_integration.options.id,
-    ]))
-  }
-
-  lifecycle {
-    create_before_destroy = true
-  }
-
-  depends_on = [
-    aws_api_gateway_method.options,
-    aws_api_gateway_integration.options,
-  ]
-}
-
-# Stage
-resource "aws_api_gateway_stage" "main" {
-  deployment_id = aws_api_gateway_deployment.main.id
-  rest_api_id   = aws_api_gateway_rest_api.main.id
-  stage_name    = var.environment
-}
-
-# Method Settings (free tier only)
-resource "aws_api_gateway_method_settings" "main" {
-  rest_api_id = aws_api_gateway_rest_api.main.id
-  stage_name  = aws_api_gateway_stage.main.stage_name
-  method_path = "*/*"
-
-  settings {
-    metrics_enabled        = true
-    logging_level          = "OFF"
-    data_trace_enabled     = false
-    throttling_rate_limit  = 1000
-    throttling_burst_limit = 2000
-    caching_enabled        = false
-  }
-}
+# Note: Deployment is managed in main.tf to ensure proper dependency on Lambda routes
+# This module only creates the API Gateway REST API and its base configuration
 
 # CORS OPTIONS method
 resource "aws_api_gateway_method" "options" {
@@ -120,6 +80,15 @@ resource "aws_api_gateway_method" "options" {
   resource_id   = aws_api_gateway_rest_api.main.root_resource_id
   http_method   = "OPTIONS"
   authorization = "NONE"
+}
+
+# =============================================================================
+# API Parent Resource - All routes nested under /api
+# =============================================================================
+resource "aws_api_gateway_resource" "api" {
+  rest_api_id = aws_api_gateway_rest_api.main.id
+  parent_id   = aws_api_gateway_rest_api.main.root_resource_id
+  path_part   = "api"
 }
 
 resource "aws_api_gateway_integration" "options" {
@@ -169,11 +138,12 @@ resource "aws_api_gateway_domain_name" "main" {
 }
 
 # Base Path Mapping - maps /api/* to the stage
+# Note: Stage is managed in main.tf, so this requires stage_name variable
 resource "aws_api_gateway_base_path_mapping" "main" {
   count = var.custom_domain != "" ? 1 : 0
 
   api_id      = aws_api_gateway_rest_api.main.id
-  stage_name  = aws_api_gateway_stage.main.stage_name
+  stage_name  = var.environment # Use environment as stage name
   domain_name = aws_api_gateway_domain_name.main[0].domain_name
   base_path   = "api"
 }
