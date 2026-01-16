@@ -137,15 +137,15 @@ resource "aws_api_gateway_domain_name" "main" {
   }
 }
 
-# Base Path Mapping - maps /api/* to the stage
-# Note: Stage is managed in main.tf, so this requires stage_name variable
+# Base Path Mapping - maps custom domain root to the stage (empty base path = no prefix)
+# This allows api.frogedu.org/api/users/health to route to the dev stage
 resource "aws_api_gateway_base_path_mapping" "main" {
   count = var.custom_domain != "" ? 1 : 0
 
   api_id      = aws_api_gateway_rest_api.main.id
-  stage_name  = var.environment # Use environment as stage name
+  stage_name  = var.environment # Maps to 'dev' stage
   domain_name = aws_api_gateway_domain_name.main[0].domain_name
-  base_path   = "api"
+  base_path   = "" # Empty = root path, no prefix added
 }
 
 resource "aws_api_gateway_integration_response" "options" {

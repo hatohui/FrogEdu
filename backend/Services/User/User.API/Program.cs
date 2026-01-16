@@ -41,14 +41,20 @@ app.UseRouting();
 app.UseCors("AllowSpecificOrigins");
 
 // Health check endpoint
-app.MapGet("/api/users/health", () =>
-    Results.Ok(new
-    {
-        status = "healthy",
-        service = "user-api",
-        timestamp = DateTime.UtcNow,
-    })
-).WithName("HealthCheck").WithOpenApi();
+app.MapGet(
+        "/api/users/health",
+        () =>
+            Results.Ok(
+                new
+                {
+                    status = "healthy",
+                    service = "user-api",
+                    timestamp = DateTime.UtcNow,
+                }
+            )
+    )
+    .WithName("HealthCheck")
+    .WithOpenApi();
 
 var summaries = new[]
 {

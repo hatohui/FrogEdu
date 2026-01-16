@@ -54,9 +54,9 @@ resource "aws_cloudfront_distribution" "api" {
   web_acl_id          = var.web_acl_id
 
   origin {
-    domain_name = var.api_gateway_domain
+    domain_name = var.api_gateway_domain # execute-api domain
     origin_id   = "apigateway"
-    origin_path = "/${var.api_gateway_stage}"
+    origin_path = "/${var.api_gateway_stage}" # Prepends /dev to all requests
 
     custom_origin_config {
       http_port              = 80
