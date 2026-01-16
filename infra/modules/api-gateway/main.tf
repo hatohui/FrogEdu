@@ -29,6 +29,7 @@ data "aws_iam_policy_document" "api_policy" {
     actions = ["execute-api:Invoke"]
 
     resources = [
+      "${aws_api_gateway_rest_api.main.execution_arn}/${var.environment}/GET/api/*/health",
       "${aws_api_gateway_rest_api.main.execution_arn}/${var.environment}/GET/*/health",
     ]
   }
