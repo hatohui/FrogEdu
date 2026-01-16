@@ -12,6 +12,78 @@ resource "aws_api_gateway_rest_api" "main" {
   }
 }
 
+# =============================================================================
+# REST API Policy - Allow health checks from anywhere, restrict others to CloudFront
+# =============================================================================
+data "aws_iam_policy_document" "api_policy" {
+  # Allow health check endpoints from anywhere (CloudFront or direct access)
+  statement {
+    sid    = "AllowHealthChecks"
+    effect = "Allow"
+
+    principals {
+      type        = "*"
+      identifiers = ["*"]
+    }
+
+    actions = ["execute-api:Invoke"]
+
+    resources = [
+      "${aws_api_gateway_rest_api.main.execution_arn}/${var.environment}/GET/*/health",
+    ]
+  }
+
+  # Allow all other routes only with X-Origin-Verify header (CloudFront only)
+  dynamic "statement" {
+    for_each = var.origin_verify_secret != "" ? [1] : []
+
+    content {
+      sid    = "AllowCloudFrontOnly"
+      effect = "Allow"
+
+      principals {
+        type        = "*"
+        identifiers = ["*"]
+      }
+
+      actions = ["execute-api:Invoke"]
+
+      resources = [
+        "${aws_api_gateway_rest_api.main.execution_arn}/*/*/*",
+      ]
+
+      condition {
+        test     = "StringEquals"
+        variable = "aws:UserAgent"
+        values   = ["Amazon CloudFront"]
+      }
+    }
+  }
+
+  # Fallback: If no CloudFront protection, allow all
+  dynamic "statement" {
+    for_each = var.origin_verify_secret == "" ? [1] : []
+
+    content {
+      sid    = "AllowAll"
+      effect = "Allow"
+
+      principals {
+        type        = "*"
+        identifiers = ["*"]
+      }
+
+      actions   = ["execute-api:Invoke"]
+      resources = ["${aws_api_gateway_rest_api.main.execution_arn}/*"]
+    }
+  }
+}
+
+resource "aws_api_gateway_rest_api_policy" "main" {
+  rest_api_id = aws_api_gateway_rest_api.main.id
+  policy      = data.aws_iam_policy_document.api_policy.json
+}
+
 # Cognito Authorizer
 resource "aws_api_gateway_authorizer" "cognito" {
   name            = "${var.project_name}-${var.environment}-cognito"
@@ -21,7 +93,8 @@ resource "aws_api_gateway_authorizer" "cognito" {
   provider_arns   = [var.cognito_user_pool.arn]
 }
 
-# Request Validator - requires headers to be present
+# Request Validator - requires headers to be present (only for authenticated routes)
+# Health routes will not use this validator, allowing them to bypass X-Origin-Verify
 resource "aws_api_gateway_request_validator" "header_validator" {
   count = var.origin_verify_secret != "" ? 1 : 0
 
@@ -31,7 +104,7 @@ resource "aws_api_gateway_request_validator" "header_validator" {
   validate_request_parameters = true
 }
 
-# Gateway Response for missing required header
+# Gateway Response for missing required header (only affects authenticated routes)
 resource "aws_api_gateway_gateway_response" "unauthorized" {
   count = var.origin_verify_secret != "" ? 1 : 0
 
