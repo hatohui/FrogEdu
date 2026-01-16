@@ -5,7 +5,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddOpenApi();
 
 // Add AWS Lambda support - enables running both locally and in Lambda
-builder.Services.AddAWSLambdaHosting(LambdaEventSource.HttpApi);
+builder.Services.AddAWSLambdaHosting(LambdaEventSource.RestApi);
 
 // Add CORS
 builder.Services.AddCors(options =>
