@@ -46,7 +46,7 @@ module "cloudfront" {
   api_gateway_domain   = module.api_gateway.api_domain
   api_gateway_stage    = local.environment
   origin_verify_secret = try(data.doppler_secrets.this.map.CLOUDFRONT_ORIGIN_VERIFY_SECRET, "temp-secret-${local.environment}")
-  custom_domain        = local.api_domain
+  custom_domain        = ""                                                                                                                     # Disable CloudFront custom domain - DNS points directly to CloudFront domain
   web_acl_id           = "arn:aws:wafv2:us-east-1:630633962130:global/webacl/CreatedByCloudFront-3152e2ae/a30508da-915f-4206-91a5-eb034e211fb1" # Required by flat-rate pricing plan
 }
 
