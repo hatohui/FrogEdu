@@ -84,9 +84,10 @@ resource "aws_api_gateway_method" "routes" {
   authorization = each.value.auth_required ? "COGNITO_USER_POOLS" : "NONE"
   authorizer_id = each.value.auth_required ? var.cognito_authorizer_id : null
 
-  # Require X-Origin-Verify header when validation is enabled
-  request_validator_id = var.request_validator_id != "" ? var.request_validator_id : null
-  request_parameters = var.origin_verify_secret != "" ? {
+  # Require X-Origin-Verify header only for auth-required routes when validation is enabled
+  # This allows health checks and public endpoints to be accessed directly
+  request_validator_id = var.request_validator_id != "" && each.value.auth_required ? var.request_validator_id : null
+  request_parameters = var.origin_verify_secret != "" && each.value.auth_required ? {
     "method.request.header.X-Origin-Verify" = true
   } : null
 }
@@ -101,8 +102,8 @@ resource "aws_api_gateway_integration" "routes" {
   type                    = "AWS_PROXY"
   uri                     = aws_lambda_function.this.invoke_arn
 
-  # Pass header validation in request parameters
-  request_parameters = var.origin_verify_secret != "" ? {
+  # Pass header validation only for auth-required routes
+  request_parameters = var.origin_verify_secret != "" && each.value.auth_required ? {
     "integration.request.header.X-Origin-Verify" = "method.request.header.X-Origin-Verify"
   } : null
 }
