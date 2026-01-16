@@ -4,6 +4,9 @@ var builder = WebApplication.CreateBuilder(args);
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
+// Add AWS Lambda support - enables running both locally and in Lambda
+builder.Services.AddAWSLambdaHosting(LambdaEventSource.HttpApi);
+
 // Add CORS
 builder.Services.AddCors(options =>
 {

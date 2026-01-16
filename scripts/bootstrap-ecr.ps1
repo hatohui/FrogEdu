@@ -1,15 +1,21 @@
 # Bootstrap ECR Images for Initial Deployment
 # Run this BEFORE terraform apply on first deployment
-# Usage: doppler run -- .\scripts\bootstrap-ecr.ps1
+# Usage: doppler run -- pwsh .\scripts\bootstrap-ecr.ps1
 
 param(
-    [string]$Region = "ap-southeast-1",
-    [string]$AccountId = "630633962130"
+    [string]$Region = $env:TF_AWS_REGION,
+    [string]$AccountId = ""
 )
 
 $ErrorActionPreference = "Stop"
 
+# Get region from environment if not provided
+if ([string]::IsNullOrEmpty($Region)) {
+    $Region = "ap-southeast-1"
+}
+
 Write-Host "[*] Bootstrapping ECR Images..." -ForegroundColor Cyan
+Write-Host "   Region: $Region" -ForegroundColor Gray
 
 # Service mapping: name -> folder
 $services = @{
@@ -22,14 +28,15 @@ $services = @{
 # AWS ECR Login
 Write-Host "`n[*] Logging into Amazon ECR..." -ForegroundColor Yellow
 
-# Test AWS credentials first
-$identity = aws sts get-caller-identity 2>&1
+# Get AWS account ID from STS
+Write-Host "   Getting AWS account ID..." -ForegroundColor Gray
+$identity = aws sts get-caller-identity --query Account --output text
 if ($LASTEXITCODE -ne 0) {
-    Write-Host "[ERROR] AWS credentials not configured properly" -ForegroundColor Red
-    Write-Host "   Output: $identity" -ForegroundColor Gray
+    Write-Host "[ERROR] Failed to get AWS account ID. Make sure AWS credentials are configured." -ForegroundColor Red
     exit 1
 }
-Write-Host "   AWS Identity verified" -ForegroundColor Gray
+$AccountId = $identity.Trim()
+Write-Host "   AWS Account: $AccountId" -ForegroundColor Gray
 
 # Check if ECR repositories exist
 Write-Host "   Checking ECR repositories..." -ForegroundColor Gray

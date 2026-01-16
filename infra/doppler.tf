@@ -16,8 +16,8 @@ locals {
 
   # Lambda configuration
   lambda_package_type  = try(data.doppler_secrets.this.map.TF_LAMBDA_PACKAGE_TYPE, "Image")
-  lambda_timeout       = try(tonumber(data.doppler_secrets.this.map.TF_LAMBDA_TIMEOUT), 30)
-  lambda_memory_size   = try(tonumber(data.doppler_secrets.this.map.TF_LAMBDA_MEMORY_SIZE), 512)
+  lambda_timeout       = try(tonumber(data.doppler_secrets.this.map.TF_LAMBDA_TIMEOUT), 60)
+  lambda_memory_size   = try(tonumber(data.doppler_secrets.this.map.TF_LAMBDA_MEMORY_SIZE), 1024)
   lambda_architectures = try(split(",", data.doppler_secrets.this.map.TF_LAMBDA_ARCHITECTURES), ["x86_64"])
 
   # Domain configuration

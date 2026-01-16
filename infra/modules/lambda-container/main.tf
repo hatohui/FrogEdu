@@ -2,6 +2,17 @@
 # Lambda Container Module - Docker-based Lambda Functions
 # =============================================================================
 
+# CloudWatch Log Group for Lambda
+resource "aws_cloudwatch_log_group" "lambda" {
+  name              = "/aws/lambda/${var.project_name}-${var.environment}-${var.function_name}"
+  retention_in_days = 7 # Free tier: 7 days or less
+
+  tags = {
+    Environment = var.environment
+    Service     = var.function_name
+  }
+}
+
 # Lambda Function
 resource "aws_lambda_function" "this" {
   function_name = "${var.project_name}-${var.environment}-${var.function_name}"
@@ -20,6 +31,8 @@ resource "aws_lambda_function" "this" {
   lifecycle {
     ignore_changes = [image_uri]
   }
+
+  depends_on = [aws_cloudwatch_log_group.lambda]
 }
 
 # API Gateway Resources and Methods
