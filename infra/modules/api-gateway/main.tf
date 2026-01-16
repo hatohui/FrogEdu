@@ -13,12 +13,12 @@ resource "aws_api_gateway_rest_api" "main" {
 }
 
 # =============================================================================
-# REST API Policy - Allow health checks from anywhere, restrict others to CloudFront
+# REST API Policy - Allow all access (CloudFront handles origin protection)
 # =============================================================================
 data "aws_iam_policy_document" "api_policy" {
-  # Allow health check endpoints from anywhere (CloudFront or direct access)
+  # Allow all access - CloudFront provides origin protection via X-Origin-Verify header
   statement {
-    sid    = "AllowHealthChecks"
+    sid    = "AllowAll"
     effect = "Allow"
 
     principals {
@@ -26,57 +26,8 @@ data "aws_iam_policy_document" "api_policy" {
       identifiers = ["*"]
     }
 
-    actions = ["execute-api:Invoke"]
-
-    resources = [
-      "${aws_api_gateway_rest_api.main.execution_arn}/${var.environment}/GET/api/*/health",
-      "${aws_api_gateway_rest_api.main.execution_arn}/${var.environment}/GET/*/health",
-    ]
-  }
-
-  # Allow all other routes only with X-Origin-Verify header (CloudFront only)
-  dynamic "statement" {
-    for_each = var.origin_verify_secret != "" ? [1] : []
-
-    content {
-      sid    = "AllowCloudFrontOnly"
-      effect = "Allow"
-
-      principals {
-        type        = "*"
-        identifiers = ["*"]
-      }
-
-      actions = ["execute-api:Invoke"]
-
-      resources = [
-        "${aws_api_gateway_rest_api.main.execution_arn}/*/*/*",
-      ]
-
-      condition {
-        test     = "StringEquals"
-        variable = "aws:UserAgent"
-        values   = ["Amazon CloudFront"]
-      }
-    }
-  }
-
-  # Fallback: If no CloudFront protection, allow all
-  dynamic "statement" {
-    for_each = var.origin_verify_secret == "" ? [1] : []
-
-    content {
-      sid    = "AllowAll"
-      effect = "Allow"
-
-      principals {
-        type        = "*"
-        identifiers = ["*"]
-      }
-
-      actions   = ["execute-api:Invoke"]
-      resources = ["${aws_api_gateway_rest_api.main.execution_arn}/*"]
-    }
+    actions   = ["execute-api:Invoke"]
+    resources = ["${aws_api_gateway_rest_api.main.execution_arn}/*"]
   }
 }
 

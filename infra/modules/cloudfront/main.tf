@@ -83,6 +83,10 @@ resource "aws_cloudfront_distribution" "api" {
 
     # Use managed origin request policy (AllViewer)
     origin_request_policy_id = "216adef6-5c7f-47e4-b989-5492eafa07d3"
+
+    # Use managed CORS response headers policy (CORS-With-Preflight)
+    # This allows the Lambda CORS headers to pass through to the browser
+    response_headers_policy_id = "5cc3b908-e619-4b99-88e5-2cf7f45965bd"
   }
 
   restrictions {

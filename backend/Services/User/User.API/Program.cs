@@ -36,8 +36,9 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 }
 
-app.UseCors("AllowSpecificOrigins");
 app.UseHttpsRedirection();
+app.UseRouting();
+app.UseCors("AllowSpecificOrigins");
 
 // Health check endpoint
 app.MapGet(
