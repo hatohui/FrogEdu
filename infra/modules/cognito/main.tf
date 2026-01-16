@@ -71,7 +71,7 @@ resource "aws_cognito_user_pool_client" "web_client" {
     "https://${var.frontend_domain}"
   ]
 
-  supported_identity_providers = ["COGNITO"]
+  supported_identity_providers = ["COGNITO", "Google"]
 
   access_token_validity  = 15
   id_token_validity      = 15
@@ -85,6 +85,8 @@ resource "aws_cognito_user_pool_client" "web_client" {
 
   prevent_user_existence_errors = "ENABLED"
   enable_token_revocation       = true
+
+  depends_on = [aws_cognito_identity_provider.google]
 }
 
 # User Pool Domain
@@ -113,4 +115,29 @@ resource "aws_cognito_user_group" "admins" {
   user_pool_id = aws_cognito_user_pool.main.id
   description  = "Administrators"
   precedence   = 0
+}
+
+# Google OAuth Identity Provider
+resource "aws_cognito_identity_provider" "google" {
+  user_pool_id  = aws_cognito_user_pool.main.id
+  provider_name = "Google"
+  provider_type = "Google"
+
+  provider_details = {
+    client_id        = var.google_client_id
+    client_secret    = var.google_client_secret
+    authorize_scopes = "profile email openid"
+  }
+
+  attribute_mapping = {
+    email       = "email"
+    username    = "sub"
+    given_name  = "given_name"
+    family_name = "family_name"
+    picture     = "picture"
+  }
+
+  lifecycle {
+    ignore_changes = [provider_details]
+  }
 }

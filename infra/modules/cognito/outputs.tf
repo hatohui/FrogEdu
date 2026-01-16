@@ -40,3 +40,10 @@ output "user_pool" {
     endpoint = aws_cognito_user_pool.main.endpoint
   }
 }
+
+output "hosted_ui_url" {
+  description = "Cognito Hosted UI URL"
+  value       = "https://${aws_cognito_user_pool_domain.main.domain}.auth.${data.aws_region.current.id}.amazoncognito.com"
+}
+
+data "aws_region" "current" {}

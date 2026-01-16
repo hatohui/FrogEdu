@@ -1,0 +1,118 @@
+import { create } from 'zustand'
+import {
+	getCurrentUser,
+	signOut as amplifySignOut,
+	signIn as amplifySignIn,
+	signUp as amplifySignUp,
+	fetchAuthSession,
+	signInWithRedirect,
+} from 'aws-amplify/auth'
+import type { AuthUser } from 'aws-amplify/auth'
+
+interface AuthState {
+	isAuthenticated: boolean
+	user: AuthUser | null
+	isLoading: boolean
+	error: string | null
+	signIn: (email: string, password: string) => Promise<void>
+	signUp: (email: string, password: string) => Promise<void>
+	signInWithGoogle: () => Promise<void>
+	signOut: () => Promise<void>
+	refreshAuth: () => Promise<void>
+	clearError: () => void
+}
+
+export const useAuthStore = create<AuthState>()((set, get) => ({
+	isAuthenticated: false,
+	user: null,
+	isLoading: true,
+	error: null,
+
+	signIn: async (email: string, password: string) => {
+		set({ isLoading: true, error: null })
+		try {
+			await amplifySignIn({ username: email, password })
+			await get().refreshAuth()
+		} catch (error) {
+			const message =
+				error instanceof Error
+					? error.message
+					: 'Failed to sign in. Please check your credentials.'
+			set({ error: message, isLoading: false })
+			throw error
+		}
+	},
+
+	signUp: async (email: string, password: string) => {
+		set({ isLoading: true, error: null })
+		try {
+			await amplifySignUp({
+				username: email,
+				password,
+				options: {
+					userAttributes: {
+						email,
+					},
+				},
+			})
+			set({ isLoading: false })
+		} catch (error) {
+			const message =
+				error instanceof Error
+					? error.message
+					: 'Failed to create account. Please try again.'
+			set({ error: message, isLoading: false })
+			throw error
+		}
+	},
+
+	signInWithGoogle: async () => {
+		set({ isLoading: true, error: null })
+		try {
+			await signInWithRedirect({
+				provider: 'Google',
+				customState: 'oauth-login',
+			})
+			// Note: The user will be redirected to Google,
+			// so this function won't complete here
+		} catch (error) {
+			const message =
+				error instanceof Error
+					? error.message
+					: 'Failed to sign in with Google. Please try again.'
+			set({ error: message, isLoading: false })
+			throw error
+		}
+	},
+
+	signOut: async () => {
+		try {
+			await amplifySignOut()
+			set({ user: null, isAuthenticated: false, error: null })
+		} catch (error) {
+			console.error('Error signing out:', error)
+			const message =
+				error instanceof Error ? error.message : 'Failed to sign out'
+			set({ error: message })
+		}
+	},
+
+	refreshAuth: async () => {
+		set({ isLoading: true, error: null })
+		try {
+			const currentUser = await getCurrentUser()
+			const session = await fetchAuthSession()
+
+			if (currentUser && session.tokens) {
+				set({ user: currentUser, isAuthenticated: true, isLoading: false })
+			} else {
+				set({ user: null, isAuthenticated: false, isLoading: false })
+			}
+		} catch (error) {
+			console.log('Not authenticated:', error)
+			set({ user: null, isAuthenticated: false, isLoading: false })
+		}
+	},
+
+	clearError: () => set({ error: null }),
+}))

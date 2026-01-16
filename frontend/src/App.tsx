@@ -11,6 +11,7 @@ import tanstackConfig from './config/tanstack'
 import { useTranslation } from 'react-i18next'
 import { ReactQueryDevtoolsPanel } from '@tanstack/react-query-devtools'
 import { GlobalLoading } from './components/common/GlobalLoading'
+import './config/amplify'
 
 registerGSAPPlugins()
 

@@ -22,3 +22,15 @@ variable "frontend_domain" {
   type        = string
   default     = "localhost:5173"
 }
+
+variable "google_client_id" {
+  description = "Google OAuth client ID"
+  type        = string
+  sensitive   = true
+}
+
+variable "google_client_secret" {
+  description = "Google OAuth client secret"
+  type        = string
+  sensitive   = true
+}

@@ -6,10 +6,12 @@
 module "cognito" {
   source = "./modules/cognito"
 
-  project_name    = local.project_name
-  environment     = local.environment
-  aws_region      = local.aws_region
-  frontend_domain = local.frontend_domain
+  project_name         = local.project_name
+  environment          = local.environment
+  aws_region           = local.aws_region
+  frontend_domain      = local.frontend_domain
+  google_client_id     = try(data.doppler_secrets.this.map.GOOGLE_CLIENT_ID, "placeholder-id")
+  google_client_secret = try(data.doppler_secrets.this.map.GOOGLE_CLIENT_SECRET, "placeholder-secret")
 }
 
 # IAM roles and policies
@@ -114,15 +116,11 @@ module "content_lambda" {
   request_validator_id      = module.api_gateway.request_validator_id
   origin_verify_secret      = try(data.doppler_secrets.this.map.CLOUDFRONT_ORIGIN_VERIFY_SECRET, "")
 
+  # Use proxy+ to strip /api/contents prefix - Lambda receives only the sub-path
   routes = [
     {
-      path          = "contents"
+      path          = "contents/{proxy+}"
       http_method   = "ANY"
-      auth_required = true
-    },
-    {
-      path          = "contents/health"
-      http_method   = "GET"
       auth_required = false
     }
   ]
@@ -155,15 +153,11 @@ module "user_lambda" {
   request_validator_id      = module.api_gateway.request_validator_id
   origin_verify_secret      = try(data.doppler_secrets.this.map.CLOUDFRONT_ORIGIN_VERIFY_SECRET, "")
 
+  # Use proxy+ to strip /api/users prefix - Lambda receives only the sub-path
   routes = [
     {
-      path          = "users"
+      path          = "users/{proxy+}"
       http_method   = "ANY"
-      auth_required = true
-    },
-    {
-      path          = "users/health"
-      http_method   = "GET"
       auth_required = false
     }
   ]
@@ -196,15 +190,11 @@ module "assessment_lambda" {
   request_validator_id      = module.api_gateway.request_validator_id
   origin_verify_secret      = try(data.doppler_secrets.this.map.CLOUDFRONT_ORIGIN_VERIFY_SECRET, "")
 
+  # Use proxy+ to strip /api/assessments prefix - Lambda receives only the sub-path
   routes = [
     {
-      path          = "assessments"
+      path          = "assessments/{proxy+}"
       http_method   = "ANY"
-      auth_required = true
-    },
-    {
-      path          = "assessments/health"
-      http_method   = "GET"
       auth_required = false
     }
   ]
@@ -237,15 +227,11 @@ module "ai_lambda" {
   request_validator_id      = module.api_gateway.request_validator_id
   origin_verify_secret      = try(data.doppler_secrets.this.map.CLOUDFRONT_ORIGIN_VERIFY_SECRET, "")
 
+  # Use proxy+ to strip /api/ai prefix - Lambda receives only the sub-path
   routes = [
     {
-      path          = "ai"
+      path          = "ai/{proxy+}"
       http_method   = "ANY"
-      auth_required = true
-    },
-    {
-      path          = "ai/health"
-      http_method   = "GET"
       auth_required = false
     }
   ]
