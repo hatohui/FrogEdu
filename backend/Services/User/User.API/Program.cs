@@ -40,21 +40,51 @@ app.UseHttpsRedirection();
 app.UseRouting();
 app.UseCors("AllowSpecificOrigins");
 
-// Health check endpoint
-app.MapGet(
-        "/health",
-        () =>
-            Results.Ok(
-                new
-                {
-                    status = "healthy",
-                    service = "user-api",
-                    timestamp = DateTime.UtcNow,
-                }
-            )
-    )
-    .WithName("HealthCheck")
-    .WithOpenApi();
+// Health check endpoint - try multiple path patterns
+app.MapGet("/health", () =>
+    Results.Ok(new
+    {
+        status = "healthy",
+        service = "user-api",
+        path = "/health",
+        timestamp = DateTime.UtcNow,
+    })
+).WithName("HealthCheck").WithOpenApi();
+
+app.MapGet("/users/health", () =>
+    Results.Ok(new
+    {
+        status = "healthy",
+        service = "user-api",
+        path = "/users/health",
+        timestamp = DateTime.UtcNow,
+    })
+).WithName("HealthCheck2").WithOpenApi();
+
+// Root path test
+app.MapGet("/", () =>
+    Results.Ok(new
+    {
+        status = "healthy",
+        service = "user-api",
+        path = "/",
+        message = "Root endpoint",
+        timestamp = DateTime.UtcNow,
+    })
+).WithName("Root").WithOpenApi();
+
+// Diagnostic catch-all route - logs all requests
+app.MapFallback((HttpContext context) =>
+{
+    Console.WriteLine($"[FALLBACK] Method: {context.Request.Method}, Path: {context.Request.Path}, PathBase: {context.Request.PathBase}");
+    return Results.Ok(new
+    {
+        message = "Fallback route",
+        path = context.Request.Path.ToString(),
+        pathBase = context.Request.PathBase.ToString(),
+        method = context.Request.Method
+    });
+});
 
 var summaries = new[]
 {
