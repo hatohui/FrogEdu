@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router'
 import { useAuthStore } from '@/stores/authStore'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Eye, EyeOff, Loader2 } from 'lucide-react'
+import { Eye, EyeOff, Loader2, ArrowLeft } from 'lucide-react'
 import {
 	Card,
 	CardContent,
@@ -85,6 +85,14 @@ const RegisterPage = (): React.JSX.Element => {
 	return (
 		<ProtectedRoute requireAuth={false}>
 			<div className='flex min-h-screen items-center justify-center bg-gradient-to-br from-green-50 to-green-100 dark:from-green-950 dark:to-gray-900 p-4'>
+				<Button
+					variant='ghost'
+					size='icon'
+					className='absolute top-4 left-4'
+					onClick={() => navigate('/')}
+				>
+					<ArrowLeft className='h-6 w-6' />
+				</Button>
 				<Card className='w-full max-w-md shadow-xl'>
 					<CardHeader className='space-y-1 text-center'>
 						<div className='flex justify-center mb-4'>

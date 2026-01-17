@@ -43,7 +43,7 @@ interface SidebarProps {
 
 const Sidebar = ({ className, onClose }: SidebarProps): React.ReactElement => {
 	const location = useLocation()
-	const { user, signOut } = useAuthStore()
+	const { user, userProfile, signOut } = useAuthStore()
 
 	const handleSignOut = async () => {
 		await signOut()
@@ -51,9 +51,9 @@ const Sidebar = ({ className, onClose }: SidebarProps): React.ReactElement => {
 	}
 
 	const getUserInitials = () => {
-		if (!user) return 'U'
-		// Try to get initials from username or email
-		const name = user.username || ''
+		if (!userProfile && !user) return 'U'
+		// Try to get initials from name, email, or username
+		const name = userProfile?.name || userProfile?.email || user?.username || ''
 		const parts = name.split(' ')
 		if (parts.length >= 2) {
 			return `${parts[0][0]}${parts[1][0]}`.toUpperCase()
@@ -90,7 +90,11 @@ const Sidebar = ({ className, onClose }: SidebarProps): React.ReactElement => {
 					onClick={onClose}
 				>
 					<div className='w-10 h-10 rounded-lg bg-primary flex items-center justify-center text-primary-foreground font-bold text-xl transition-transform group-hover:scale-105'>
-						🐸
+						<img
+							src='/frog.png'
+							alt='FrogEdu Logo'
+							className='w-full h-full object-contain'
+						/>
 					</div>
 					<div className='flex flex-col'>
 						<span className='font-bold text-lg text-sidebar-foreground'>
@@ -139,14 +143,20 @@ const Sidebar = ({ className, onClose }: SidebarProps): React.ReactElement => {
 			<div className='p-4 space-y-3'>
 				<div className='flex items-center space-x-3 px-4 py-3 rounded-lg bg-sidebar-accent/50'>
 					<Avatar className='h-10 w-10'>
-						<AvatarImage src={user?.username} alt={user?.username || 'User'} />
+						<AvatarImage
+							src={userProfile?.picture}
+							alt={userProfile?.name || userProfile?.email || 'User'}
+						/>
 						<AvatarFallback className='bg-primary text-primary-foreground'>
 							{getUserInitials()}
 						</AvatarFallback>
 					</Avatar>
 					<div className='flex-1 min-w-0'>
 						<p className='text-sm font-medium text-sidebar-foreground truncate'>
-							{user?.username || 'User'}
+							{userProfile?.name ||
+								userProfile?.email ||
+								user?.username ||
+								'User'}
 						</p>
 						<p className='text-xs text-sidebar-foreground/60 truncate'>
 							Teacher

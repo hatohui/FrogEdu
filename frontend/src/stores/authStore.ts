@@ -9,9 +9,20 @@ import {
 } from 'aws-amplify/auth'
 import type { AuthUser } from 'aws-amplify/auth'
 
+interface UserProfile {
+	sub: string
+	email?: string
+	name?: string
+	given_name?: string
+	family_name?: string
+	picture?: string
+	username?: string
+}
+
 interface AuthState {
 	isAuthenticated: boolean
 	user: AuthUser | null
+	userProfile: UserProfile | null
 	isLoading: boolean
 	error: string | null
 	signIn: (email: string, password: string) => Promise<void>
@@ -25,6 +36,7 @@ interface AuthState {
 export const useAuthStore = create<AuthState>()((set, get) => ({
 	isAuthenticated: false,
 	user: null,
+	userProfile: null,
 	isLoading: true,
 	error: null,
 
@@ -69,6 +81,18 @@ export const useAuthStore = create<AuthState>()((set, get) => ({
 	signInWithGoogle: async () => {
 		set({ isLoading: true, error: null })
 		try {
+			// Check if user is already signed in
+			try {
+				const currentUser = await getCurrentUser()
+				if (currentUser) {
+					// User is already signed in, redirect to dashboard
+					window.location.href = '/dashboard'
+					return
+				}
+			} catch {
+				// User is not signed in, proceed with Google sign-in
+			}
+
 			await signInWithRedirect({
 				provider: 'Google',
 				customState: 'oauth-login',
@@ -88,7 +112,12 @@ export const useAuthStore = create<AuthState>()((set, get) => ({
 	signOut: async () => {
 		try {
 			await amplifySignOut()
-			set({ user: null, isAuthenticated: false, error: null })
+			set({
+				user: null,
+				userProfile: null,
+				isAuthenticated: false,
+				error: null,
+			})
 		} catch (error) {
 			console.error('Error signing out:', error)
 			const message =
@@ -104,13 +133,41 @@ export const useAuthStore = create<AuthState>()((set, get) => ({
 			const session = await fetchAuthSession()
 
 			if (currentUser && session.tokens) {
-				set({ user: currentUser, isAuthenticated: true, isLoading: false })
+				// Get user profile from ID token payload instead of fetchUserAttributes
+				// fetchUserAttributes requires aws.cognito.signin.user.admin scope which OAuth doesn't provide
+				const idToken = session.tokens.idToken
+				const userProfile: UserProfile = {
+					sub: currentUser.userId,
+					email: idToken?.payload.email as string | undefined,
+					name: idToken?.payload.name as string | undefined,
+					given_name: idToken?.payload.given_name as string | undefined,
+					family_name: idToken?.payload.family_name as string | undefined,
+					picture: idToken?.payload.picture as string | undefined,
+					username: currentUser.username,
+				}
+
+				set({
+					user: currentUser,
+					userProfile,
+					isAuthenticated: true,
+					isLoading: false,
+				})
 			} else {
-				set({ user: null, isAuthenticated: false, isLoading: false })
+				set({
+					user: null,
+					userProfile: null,
+					isAuthenticated: false,
+					isLoading: false,
+				})
 			}
 		} catch (error) {
 			console.log('Not authenticated:', error)
-			set({ user: null, isAuthenticated: false, isLoading: false })
+			set({
+				user: null,
+				userProfile: null,
+				isAuthenticated: false,
+				isLoading: false,
+			})
 		}
 	},
 

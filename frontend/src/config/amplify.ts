@@ -11,6 +11,19 @@ const amplifyConfig: ResourcesConfig = {
 			identityPoolId: import.meta.env.VITE_COGNITO_IDENTITY_POOL_ID,
 			loginWith: {
 				email: true,
+				oauth: {
+					domain: import.meta.env.VITE_COGNITO_DOMAIN || '',
+					scopes: ['openid', 'email', 'profile'],
+					redirectSignIn: [
+						import.meta.env.VITE_OAUTH_REDIRECT_SIGN_IN ||
+							window.location.origin,
+					],
+					redirectSignOut: [
+						import.meta.env.VITE_OAUTH_REDIRECT_SIGN_OUT ||
+							window.location.origin,
+					],
+					responseType: 'code',
+				},
 			},
 			signUpVerificationMethod: 'code' as const,
 			userAttributes: {

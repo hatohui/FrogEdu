@@ -66,8 +66,15 @@ const DashboardPage = (): React.ReactElement => {
 	]
 
 	const getUserDisplayName = () => {
-		if (!user) return 'Teacher'
-		return user.username || 'Teacher'
+		const userProfile = useAuthStore.getState().userProfile
+		if (!userProfile && !user) return 'Teacher'
+		return (
+			userProfile?.name ||
+			userProfile?.given_name ||
+			userProfile?.email?.split('@')[0] ||
+			user?.username ||
+			'Teacher'
+		)
 	}
 
 	if (isLoading) {

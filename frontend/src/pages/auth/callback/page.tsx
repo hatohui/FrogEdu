@@ -14,8 +14,8 @@ const AuthCallbackPage = (): React.JSX.Element => {
 			try {
 				// Refresh auth state to get the new user session
 				await refreshAuth()
-				// Redirect to main app
-				navigate('/')
+				// Redirect to dashboard
+				navigate('/dashboard', { replace: true })
 			} catch (error) {
 				console.error('OAuth callback error:', error)
 				// Redirect to login with error
