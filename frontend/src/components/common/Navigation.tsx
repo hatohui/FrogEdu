@@ -1,78 +1,67 @@
 import React from 'react'
-import { Link, useLocation } from 'react-router'
+import { Link, useLocation, useNavigate } from 'react-router'
 import { Button } from '@/components/ui/button'
+import { Home, Sun, Moon, LogOut, User, Settings } from 'lucide-react'
 import {
-	Activity,
-	Home,
-	User,
-	BookOpen,
-	Brain,
-	ClipboardCheck,
-	Monitor,
-} from 'lucide-react'
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuLabel,
+	DropdownMenuSeparator,
+	DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { useAuthStore } from '@/stores/authStore'
+import { useTheme } from '@/config/theme'
 
 const Navigation = (): React.JSX.Element => {
 	const location = useLocation()
+	const navigate = useNavigate()
+	const { user, userProfile, signOut } = useAuthStore()
+	const [theme, toggleTheme] = useTheme()
 
-	const navItems = [
+	const handleSignOut = async () => {
+		await signOut()
+		navigate('/')
+	}
+
+	const getUserInitials = () => {
+		if (!userProfile && !user) return 'U'
+		const name = userProfile?.name || userProfile?.email || user?.username || ''
+		const parts = name.split(' ')
+		if (parts.length >= 2) {
+			return `${parts[0][0]}${parts[1][0]}`.toUpperCase()
+		}
+		return name.substring(0, 2).toUpperCase()
+	}
+
+	const staticNavItems = [
 		{ path: '/', label: 'Home', icon: Home },
-		{ path: '/health', label: 'Health Check', icon: Activity },
-		{ path: '/dashboard', label: 'Dashboard', icon: Monitor },
-		{ path: '/content', label: 'Content', icon: BookOpen },
-		{ path: '/assessments', label: 'Assessments', icon: ClipboardCheck },
-		{ path: '/ai', label: 'AI Tutor', icon: Brain },
-		{ path: '/profile', label: 'Profile', icon: User },
+		{ path: '/about', label: 'About', icon: Home },
 	]
 
 	return (
-		<nav className='bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700'>
+		<nav className='bg-card border-b border-border'>
 			<div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'>
-				<div className='flex justify-between h-16'>
-					<div className='flex items-center space-x-8'>
-						<div className='flex items-center space-x-2'>
-							<img src='/frog.png' alt='FrogEdu Logo' width={32} height={32} />
-							<span className='text-xl font-bold text-gray-900 dark:text-white'>
-								FrogEdu
-							</span>
+				<div className='flex justify-between items-center h-16'>
+					{/* Left - Logo */}
+					<Link
+						to='/'
+						className='flex items-center space-x-2 hover:opacity-80 transition-opacity flex-shrink-0'
+					>
+						<div className='w-8 h-8 rounded-lg bg-primary flex items-center justify-center text-primary-foreground font-bold text-lg'>
+							<img
+								src='/frog.png'
+								alt='FrogEdu Logo'
+								className='w-full h-full object-contain'
+							/>
 						</div>
+						<span className='text-xl font-bold'>FrogEdu</span>
+					</Link>
 
-						<div className='hidden md:flex items-center space-x-4'>
-							{navItems.map(item => {
-								const Icon = item.icon
-								const isActive = location.pathname === item.path
-
-								return (
-									<Button
-										key={item.path}
-										variant={isActive ? 'default' : 'ghost'}
-										size='sm'
-										asChild
-									>
-										<Link
-											to={item.path}
-											className='flex items-center space-x-2'
-										>
-											<Icon className='h-4 w-4' />
-											<span>{item.label}</span>
-										</Link>
-									</Button>
-								)
-							})}
-						</div>
-					</div>
-
-					<div className='flex items-center space-x-4'>
-						<Button variant='outline' size='sm' asChild>
-							<Link to='/login'>Login</Link>
-						</Button>
-					</div>
-				</div>
-
-				{/* Mobile Navigation */}
-				<div className='md:hidden pb-3'>
-					<div className='flex flex-wrap gap-2'>
-						{navItems.slice(0, 4).map(item => {
-							const Icon = item.icon
+					{/* Center - Navigation Items */}
+					<div className='hidden md:flex items-center space-x-4 absolute left-1/2 transform -translate-x-1/2'>
+						{staticNavItems.map(item => {
 							const isActive = location.pathname === item.path
 
 							return (
@@ -82,8 +71,126 @@ const Navigation = (): React.JSX.Element => {
 									size='sm'
 									asChild
 								>
-									<Link to={item.path} className='flex items-center space-x-2'>
-										<Icon className='h-4 w-4' />
+									<Link to={item.path}>
+										<span>{item.label}</span>
+									</Link>
+								</Button>
+							)
+						})}
+					</div>
+
+					{/* Right side - Actions & User Menu */}
+					<div className='flex items-center space-x-2 flex-shrink-0'>
+						{/* Dark Mode Toggle */}
+						<Button
+							variant='ghost'
+							size='icon'
+							onClick={toggleTheme}
+							className='h-10 w-10'
+							title={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
+						>
+							{theme === 'light' ? (
+								<Moon className='h-5 w-5' />
+							) : (
+								<Sun className='h-5 w-5' />
+							)}
+						</Button>
+
+						{/* Authenticated User Menu */}
+						{user ? (
+							<>
+								{/* Dashboard Button (when logged in) */}
+								<Button
+									variant='outline'
+									size='sm'
+									onClick={() => navigate('/dashboard')}
+									className='hidden sm:flex items-center gap-2'
+								>
+									<Home className='h-4 w-4' />
+									<span>Dashboard</span>
+								</Button>
+
+								<DropdownMenu>
+									<DropdownMenuTrigger asChild>
+										<Button
+											variant='ghost'
+											className='relative h-10 w-10 rounded-full'
+										>
+											<Avatar className='h-10 w-10'>
+												<AvatarImage
+													src={userProfile?.picture}
+													alt={
+														userProfile?.name || userProfile?.email || 'User'
+													}
+												/>
+												<AvatarFallback className='bg-primary text-primary-foreground'>
+													{getUserInitials()}
+												</AvatarFallback>
+											</Avatar>
+										</Button>
+									</DropdownMenuTrigger>
+
+									<DropdownMenuContent align='end' className='w-56'>
+										<DropdownMenuLabel className='flex flex-col space-y-1'>
+											<span className='text-sm font-medium'>
+												{userProfile?.name ||
+													userProfile?.email ||
+													user?.username ||
+													'User'}
+											</span>
+											<span className='text-xs text-muted-foreground'>
+												{userProfile?.email || user?.username || ''}
+											</span>
+										</DropdownMenuLabel>
+
+										<DropdownMenuSeparator />
+
+										<DropdownMenuItem asChild>
+											<Link to='/profile' className='cursor-pointer'>
+												<User className='mr-2 h-4 w-4' />
+												<span>Profile</span>
+											</Link>
+										</DropdownMenuItem>
+
+										<DropdownMenuItem asChild>
+											<Link to='/settings' className='cursor-pointer'>
+												<Settings className='mr-2 h-4 w-4' />
+												<span>Settings</span>
+											</Link>
+										</DropdownMenuItem>
+
+										<DropdownMenuSeparator />
+
+										<DropdownMenuItem onClick={handleSignOut}>
+											<LogOut className='mr-2 h-4 w-4' />
+											<span>Logout</span>
+										</DropdownMenuItem>
+									</DropdownMenuContent>
+								</DropdownMenu>
+							</>
+						) : (
+							/* Guest Login Button */
+							<Button variant='outline' size='sm' asChild>
+								<Link to='/login'>Login</Link>
+							</Button>
+						)}
+					</div>
+				</div>
+
+				{/* Mobile Navigation */}
+				<div className='md:hidden pb-3'>
+					<div className='flex flex-wrap gap-2'>
+						{staticNavItems.map(item => {
+							const isActive = location.pathname === item.path
+
+							return (
+								<Button
+									key={item.path}
+									variant={isActive ? 'default' : 'ghost'}
+									size='sm'
+									asChild
+								>
+									<Link to={item.path}>
 										<span className='text-xs'>{item.label}</span>
 									</Link>
 								</Button>

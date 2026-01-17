@@ -1,5 +1,5 @@
 import React from 'react'
-import { Menu, LogOut, User, Settings } from 'lucide-react'
+import { Menu, LogOut, User, Settings, Sun, Moon, Home } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
 	DropdownMenu,
@@ -10,8 +10,9 @@ import {
 	DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { Link } from 'react-router'
+import { Link, useNavigate } from 'react-router'
 import { useAuthStore } from '@/stores/authStore'
+import { useTheme } from '@/config/theme'
 
 interface HeaderProps {
 	onMenuClick?: () => void
@@ -23,6 +24,8 @@ const Header = ({
 	className = '',
 }: HeaderProps): React.ReactElement => {
 	const { user, userProfile, signOut } = useAuthStore()
+	const [theme, toggleTheme] = useTheme()
+	const navigate = useNavigate()
 
 	const handleSignOut = async () => {
 		await signOut()
@@ -74,10 +77,35 @@ const Header = ({
 				</h1>
 			</div>
 
-			{/* Right side - User Menu */}
-			<div className='flex items-center space-x-4'>
-				{/* Notification bell (placeholder) */}
-				{/* Future: Add notification badge here */}
+			{/* Right side - Actions & User Menu */}
+			<div className='flex items-center space-x-2'>
+				{/* Dark Mode Toggle */}
+				<Button
+					variant='ghost'
+					size='icon'
+					onClick={toggleTheme}
+					className='h-10 w-10'
+					title={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
+				>
+					{theme === 'light' ? (
+						<Moon className='h-5 w-5' />
+					) : (
+						<Sun className='h-5 w-5' />
+					)}
+				</Button>
+
+				{/* Dashboard Button (when logged in) */}
+				{user && (
+					<Button
+						variant='outline'
+						size='sm'
+						onClick={() => navigate('/dashboard')}
+						className='hidden sm:flex items-center gap-2'
+					>
+						<Home className='h-4 w-4' />
+						<span>Dashboard</span>
+					</Button>
+				)}
 
 				{/* User Avatar & Dropdown */}
 				<DropdownMenu>
@@ -113,7 +141,7 @@ const Header = ({
 						<DropdownMenuItem asChild>
 							<Link to='/profile' className='cursor-pointer'>
 								<User className='mr-2 h-4 w-4' />
-								<span>Profile Settings</span>
+								<span>Profile</span>
 							</Link>
 						</DropdownMenuItem>
 
@@ -128,7 +156,7 @@ const Header = ({
 
 						<DropdownMenuItem onClick={handleSignOut}>
 							<LogOut className='mr-2 h-4 w-4' />
-							<span>Sign Out</span>
+							<span>Logout</span>
 						</DropdownMenuItem>
 					</DropdownMenuContent>
 				</DropdownMenu>
