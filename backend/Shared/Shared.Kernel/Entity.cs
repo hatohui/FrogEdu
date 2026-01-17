@@ -5,12 +5,19 @@
 /// </summary>
 public abstract class Entity
 {
+    private readonly List<IDomainEvent> _domainEvents = new();
+
     public Guid Id { get; protected set; }
     public DateTime CreatedAt { get; protected set; }
     public DateTime UpdatedAt { get; protected set; }
     public string? CreatedBy { get; protected set; }
     public string? UpdatedBy { get; protected set; }
     public bool IsDeleted { get; protected set; }
+
+    /// <summary>
+    /// Domain events for this entity
+    /// </summary>
+    public IReadOnlyList<IDomainEvent> DomainEvents => _domainEvents.AsReadOnly();
 
     protected Entity()
     {
@@ -26,10 +33,32 @@ public abstract class Entity
         UpdatedAt = DateTime.UtcNow;
     }
 
+    /// <summary>
+    /// Add a domain event to be raised
+    /// </summary>
+    protected void AddDomainEvent(IDomainEvent domainEvent)
+    {
+        _domainEvents.Add(domainEvent);
+    }
+
+    /// <summary>
+    /// Clear all domain events
+    /// </summary>
+    public void ClearDomainEvents()
+    {
+        _domainEvents.Clear();
+    }
+
     public void MarkAsDeleted()
     {
         IsDeleted = true;
         UpdatedAt = DateTime.UtcNow;
+    }
+
+    protected void MarkAsUpdated(string? updatedBy = null)
+    {
+        UpdatedAt = DateTime.UtcNow;
+        UpdatedBy = updatedBy;
     }
 
     public void UpdateTimestamp(string? updatedBy = null)
