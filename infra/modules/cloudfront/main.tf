@@ -56,7 +56,7 @@ resource "aws_cloudfront_distribution" "api" {
   origin {
     domain_name = var.api_gateway_domain # execute-api domain
     origin_id   = "apigateway"
-    origin_path = "/${var.api_gateway_stage}" # Prepends /dev to all requests
+    origin_path = "/${var.api_gateway_stage}"
 
     custom_origin_config {
       http_port              = 80
@@ -82,10 +82,8 @@ resource "aws_cloudfront_distribution" "api" {
     cache_policy_id = "4135ea2d-6df8-44a3-9df3-4b5a84be39ad"
 
     # Use managed origin request policy (AllViewer)
-    origin_request_policy_id = "216adef6-5c7f-47e4-b989-5492eafa07d3"
+    origin_request_policy_id = "59781a5b-3903-41f3-afcb-af62929ccde1"
 
-    # Use managed CORS response headers policy (CORS-With-Preflight)
-    # This allows the Lambda CORS headers to pass through to the browser
     response_headers_policy_id = "5cc3b908-e619-4b99-88e5-2cf7f45965bd"
   }
 

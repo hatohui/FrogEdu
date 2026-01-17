@@ -24,7 +24,7 @@ output "execution_arn" {
 
 output "api_domain" {
   description = "API Gateway domain name (execute-api endpoint)"
-  value       = "${aws_api_gateway_rest_api.main.id}.execute-api.${data.aws_region.current.name}.amazonaws.com"
+  value       = "${aws_api_gateway_rest_api.main.id}.execute-api.${data.aws_region.current.region}.amazonaws.com"
 }
 
 output "authorizer_id" {
