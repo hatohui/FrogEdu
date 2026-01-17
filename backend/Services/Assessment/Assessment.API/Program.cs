@@ -1,3 +1,6 @@
+using FrogEdu.Assessment.Infrastructure.Persistence;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -54,6 +57,44 @@ app.MapGet(
             )
     )
     .WithName("HealthCheck")
+    .WithOpenApi();
+
+// Database health endpoint
+app.MapGet(
+        "/api/assessments/health/db",
+        async () =>
+        {
+            try
+            {
+                var connectionString =
+                    Environment.GetEnvironmentVariable("ASSESSMENT_DB_CONNECTION_STRING")
+                    ?? "postgresql://root:root@frog-assessment-db:5434/assessment?sslmode=disable";
+
+                var options = new DbContextOptionsBuilder<AssessmentDbContext>()
+                    .UseNpgsql(connectionString)
+                    .Options;
+
+                await using var ctx = new AssessmentDbContext(options);
+                var canConnect = await ctx.Database.CanConnectAsync();
+
+                return canConnect
+                    ? Results.Ok(
+                        new
+                        {
+                            status = "healthy",
+                            service = "assessment-db",
+                            timestamp = DateTime.UtcNow,
+                        }
+                    )
+                    : Results.Problem(title: "Database not reachable", statusCode: 503);
+            }
+            catch (Exception ex)
+            {
+                return Results.Problem(title: ex.Message, statusCode: 500);
+            }
+        }
+    )
+    .WithName("HealthCheckDb")
     .WithOpenApi();
 
 var summaries = new[]

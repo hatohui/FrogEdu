@@ -1,0 +1,244 @@
+name: frogedu-microservices all
+
+services:
+  frog-user-db:
+    image: postgres:17-alpine
+    container_name: frog-user-db
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: user
+    ports:
+      - "0.0.0.0:5432:5432"
+    volumes:
+      - frog_user_db_data:/var/lib/postgresql/data
+    networks:
+      - frogedu-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U root -d user"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  frog-content-db:
+    image: postgres:17-alpine
+    container_name: frog-content-db
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: content
+    ports:
+      - "5433:5432"
+    volumes:
+      - frog_content_db_data:/var/lib/postgresql/data
+    networks:
+      - frogedu-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U root -d content"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  frog-assessment-db:
+    image: postgres:17-alpine
+    container_name: frog-assessment-db
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: assessment
+    ports:
+      - "5434:5432"
+    volumes:
+      - frog_assessment_db_data:/var/lib/postgresql/data
+    networks:
+      - frogedu-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U root -d assessment"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  frog-ai-db:
+    image: postgres:17-alpine
+    container_name: frog-ai-db
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: ai
+    ports:
+      - "5435:5432"
+    volumes:
+      - frog_ai_db_data:/var/lib/postgresql/data
+    networks:
+      - frogedu-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U root -d ai"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  frog-storage:
+    image: minio/minio:latest
+    container_name: frog-storage
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - frog_storage_data:/data
+    networks:
+      - frogedu-network
+    command: minio server /data --console-address ":9001"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+
+  # Microservices
+  frog-user-service:
+    build:
+      context: .
+      dockerfile: Services/User/dev.Dockerfile
+    container_name: frog-user-service
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://+:8080
+      USER_DB_CONNECTION_STRING: "postgresql://root:root@frog-user-db:5432/user?sslmode=disable"
+    ports:
+      - "8000:8080"
+    volumes:
+      - ./Services/User:/src/Services/User
+      - ./Shared:/src/Shared
+    networks:
+      - frogedu-network
+    depends_on:
+      frog-user-db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  frog-content-service:
+    build:
+      context: .
+      dockerfile: Services/Content/dev.Dockerfile
+    container_name: frog-content-service
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://+:8080
+      CONTENT_DB_CONNECTION_STRING: "postgresql://root:root@frog-content-db:5433/content?sslmode=disable"
+    ports:
+      - "8001:8080"
+    volumes:
+      - ./Services/Content:/src/Services/Content
+      - ./Shared:/src/Shared
+    networks:
+      - frogedu-network
+    depends_on:
+      frog-content-db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  frog-assessment-service:
+    build:
+      context: .
+      dockerfile: Services/Assessment/dev.Dockerfile
+    container_name: frog-assessment-service
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://+:8080
+      ASSESSMENT_DB_CONNECTION_STRING: "postgresql://root:root@frog-assessment-db:5434/assessment?sslmode=disable"
+    ports:
+      - "8002:8080"
+    volumes:
+      - ./Services/Assessment:/src/Services/Assessment
+      - ./Shared:/src/Shared
+    networks:
+      - frogedu-network
+    depends_on:
+      frog-assessment-db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  frog-ai-service:
+    build:
+      context: .
+      dockerfile: Services/AI/dev.Dockerfile
+    container_name: frog-ai-service
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://+:8080
+      AI_DB_CONNECTION_STRING: "postgresql://root:root@frog-ai-db:5435/ai?sslmode=disable"
+    ports:
+      - "8003:8080"
+    volumes:
+      - ./Services/AI:/src/Services/AI
+      - ./Shared:/src/Shared
+    networks:
+      - frogedu-network
+    depends_on:
+      frog-ai-db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  frog-api-gateway:
+    image: nginx:alpine
+    container_name: frog-api-gateway
+    ports:
+      - "3000:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    networks:
+      - frogedu-network
+    depends_on:
+      - frog-user-service
+      - frog-content-service
+      - frog-assessment-service
+      - frog-ai-service
+      - frog-storage
+    environment:
+      - USER_SERVICE_URL=http://frog-user-service:8080
+      - CONTENT_SERVICE_URL=http://frog-content-service:8080
+      - ASSESSMENT_SERVICE_URL=http://frog-assessment-service:8080
+      - AI_SERVICE_URL=http://frog-ai-service:8080
+      - STORAGE_SERVICE_URL=http://frog-storage:9000
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "wget",
+          "--quiet",
+          "--tries=1",
+          "--spider",
+          "http://localhost:80/health",
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+networks:
+  frogedu-network:
+
+volumes:
+  frog_user_db_data:
+  frog_content_db_data:
+  frog_assessment_db_data:
+  frog_ai_db_data:
+  frog_storage_data:

@@ -1,4 +1,4 @@
-name: frogedu-microservices
+name: frogedu-microservices all
 
 services:
   frog-user-db:
@@ -97,6 +97,96 @@ services:
       timeout: 20s
       retries: 3
 
+  # Microservices
+  frog-user-service:
+    build:
+      context: .
+      dockerfile: Services/User/Dockerfile
+    container_name: frog-user-service
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://+:8080
+      USER_DB_CONNECTION_STRING: "postgresql://root:root@frog-user-db:5432/user?sslmode=disable"
+    ports:
+      - "8000:8080"
+    networks:
+      - frogedu-network
+    depends_on:
+      frog-user-db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  frog-content-service:
+    build:
+      context: .
+      dockerfile: Services/Content/Dockerfile
+    container_name: frog-content-service
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://+:8080
+      CONTENT_DB_CONNECTION_STRING: "postgresql://root:root@frog-content-db:5433/content?sslmode=disable"
+    ports:
+      - "8001:8080"
+    networks:
+      - frogedu-network
+    depends_on:
+      frog-content-db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  frog-assessment-service:
+    build:
+      context: .
+      dockerfile: Services/Assessment/Dockerfile
+    container_name: frog-assessment-service
+
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://+:8080
+      ASSESSMENT_DB_CONNECTION_STRING: "postgresql://root:root@frog-assessment-db:5434/assessment?sslmode=disable"
+    ports:
+      - "8002:8080"
+    networks:
+      - frogedu-network
+    depends_on:
+      frog-assessment-db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  frog-ai-service:
+    build:
+      context: .
+      dockerfile: Services/AI/Dockerfile
+    container_name: frog-ai-service
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://+:8080
+      AI_DB_CONNECTION_STRING: "postgresql://root:root@frog-ai-db:5435/ai?sslmode=disable"
+    ports:
+      - "8003:8080"
+    networks:
+      - frogedu-network
+    depends_on:
+      frog-ai-db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
   frog-api-gateway:
     image: nginx:alpine
     container_name: frog-api-gateway
@@ -107,12 +197,16 @@ services:
     networks:
       - frogedu-network
     depends_on:
+      - frog-user-service
+      - frog-content-service
+      - frog-assessment-service
+      - frog-ai-service
       - frog-storage
     environment:
-      - USER_SERVICE_URL=http://user-service:8080
-      - CONTENT_SERVICE_URL=http://content-service:8080
-      - ASSESSMENT_SERVICE_URL=http://assessment-service:8080
-      - AI_SERVICE_URL=http://ai-service:8080
+      - USER_SERVICE_URL=http://frog-user-service:8080
+      - CONTENT_SERVICE_URL=http://frog-content-service:8080
+      - ASSESSMENT_SERVICE_URL=http://frog-assessment-service:8080
+      - AI_SERVICE_URL=http://frog-ai-service:8080
       - STORAGE_SERVICE_URL=http://frog-storage:9000
     healthcheck:
       test:

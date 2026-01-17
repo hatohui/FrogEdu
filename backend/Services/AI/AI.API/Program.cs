@@ -1,3 +1,6 @@
+using FrogEdu.AI.Infrastructure.Persistence;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddOpenApi();
@@ -51,6 +54,67 @@ app.MapGet(
             )
     )
     .WithName("HealthCheck")
+    .WithOpenApi();
+
+// Database health endpoint
+app.MapGet(
+        "/api/ai/health/db",
+        async () =>
+        {
+            try
+            {
+                var connectionString =
+                    Environment.GetEnvironmentVariable("AI_DB_CONNECTION_STRING")
+                    ?? "postgresql://root:root@frog-ai-db:5435/ai?sslmode=disable";
+
+                var options = new DbContextOptionsBuilder<AiDbContext>()
+                    .UseNpgsql(connectionString)
+                    .Options;
+
+                await using var ctx = new AiDbContext(options);
+                var canConnect = await ctx.Database.CanConnectAsync();
+
+                if (canConnect)
+                {
+                    return Results.Ok(
+                        new
+                        {
+                            status = "healthy",
+                            service = "ai-db",
+                            timestamp = DateTime.UtcNow,
+                        }
+                    );
+                }
+                else
+                {
+                    return Results.Json(
+                        new
+                        {
+                            status = "unhealthy",
+                            service = "ai-db",
+                            timestamp = DateTime.UtcNow,
+                            error = "Database not reachable",
+                        },
+                        statusCode: 503
+                    );
+                }
+            }
+            catch (Exception ex)
+            {
+                return Results.Json(
+                    new
+                    {
+                        status = "unhealthy",
+                        service = "ai-db",
+                        timestamp = DateTime.UtcNow,
+                        error = ex.Message,
+                    },
+                    statusCode: 500
+                );
+            }
+        }
+    )
+    .WithName("HealthCheckDb")
     .WithOpenApi();
 
 await app.RunAsync();

@@ -1,6 +1,7 @@
 import React from 'react'
 import { useQueries } from '@tanstack/react-query'
-import axios from 'axios'
+import apiClient from '@/services/axios'
+import { isAxiosError } from 'axios'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Alert, AlertDescription } from '@/components/ui/alert'
@@ -15,37 +16,57 @@ import {
 	AlertTriangle,
 } from 'lucide-react'
 
-// Health check configuration for all services
+const ApiUrl = import.meta.env.VITE_API_URL
+
 const healthEndpoints = [
 	{
 		name: 'Content Service',
-		url: 'https://api.frogedu.org/api/contents/health',
+		path: '/contents/health',
 		description: 'Content management and library service',
 		critical: true,
 	},
 	{
 		name: 'User Service',
-		url: 'https://api.frogedu.org/api/users/health',
+		path: '/users/health',
 		description: 'User authentication and profile service',
 		critical: true,
 	},
 	{
 		name: 'Assessment Service',
-		url: 'https://api.frogedu.org/api/assessments/health',
+		path: '/assessments/health',
 		description: 'Quiz and assessment engine',
 		critical: false,
 	},
 	{
 		name: 'AI Service',
-		url: 'https://api.frogedu.org/api/ai/health',
+		path: '/ai/health',
 		description: 'AI tutoring and smart assistance',
 		critical: false,
 	},
+	// Database connectivity checks
 	{
-		name: 'API Gateway',
-		url: 'https://api.frogedu.org/api',
-		description: 'Main API Gateway routing',
+		name: 'Content DB',
+		path: '/contents/health/db',
+		description: 'Content service database connectivity',
 		critical: true,
+	},
+	{
+		name: 'User DB',
+		path: '/users/health/db',
+		description: 'User service database connectivity',
+		critical: true,
+	},
+	{
+		name: 'Assessment DB',
+		path: '/assessments/health/db',
+		description: 'Assessment service database connectivity',
+		critical: false,
+	},
+	{
+		name: 'AI DB',
+		path: '/ai/health/db',
+		description: 'AI service database connectivity',
+		critical: false,
 	},
 ]
 
@@ -68,7 +89,7 @@ const HealthPage = (): React.JSX.Element => {
 				const startTime = Date.now()
 
 				try {
-					const response = await axios.get(endpoint.url, {
+					const response = await apiClient.get(endpoint.path, {
 						timeout: 10000,
 						validateStatus: status => status < 500, // Accept anything below 500 as potentially healthy
 					})
@@ -93,7 +114,7 @@ const HealthPage = (): React.JSX.Element => {
 				} catch (error) {
 					const responseTime = Date.now() - startTime
 
-					if (axios.isAxiosError(error)) {
+					if (isAxiosError(error)) {
 						return {
 							status: 'unhealthy',
 							responseTime,
@@ -253,6 +274,11 @@ const HealthPage = (): React.JSX.Element => {
 						const status = query.isLoading
 							? 'loading'
 							: query.data?.status || 'unknown'
+						const sanitizedApiUrl = ApiUrl?.replace(/\/+$/, '')
+						const resolvedUrl = sanitizedApiUrl
+							? `${sanitizedApiUrl}/api${endpoint.path}`
+							: endpoint.path
+						const responseTime = query.data?.responseTime
 
 						return (
 							<Card key={endpoint.name} className='relative'>
@@ -275,25 +301,25 @@ const HealthPage = (): React.JSX.Element => {
 												Endpoint:
 											</span>
 											<span className='font-mono text-xs truncate ml-2'>
-												{endpoint.url}
+												{resolvedUrl}
 											</span>
 										</div>
 
-										{query.data?.responseTime && (
+										{typeof responseTime === 'number' && (
 											<div className='flex justify-between'>
 												<span className='text-gray-600 dark:text-gray-400'>
 													Response Time:
 												</span>
 												<span
 													className={`${
-														query.data.responseTime < 1000
+														responseTime < 1000
 															? 'text-green-600'
-															: query.data.responseTime < 3000
+															: responseTime < 3000
 																? 'text-orange-600'
 																: 'text-red-600'
 													}`}
 												>
-													{query.data.responseTime}ms
+													{responseTime}ms
 												</span>
 											</div>
 										)}

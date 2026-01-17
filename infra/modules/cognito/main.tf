@@ -63,12 +63,14 @@ resource "aws_cognito_user_pool_client" "web_client" {
 
   callback_urls = [
     "http://localhost:5173/auth/callback",
-    "https://${var.frontend_domain}/auth/callback"
+    "https://${var.frontend_domain}/auth/callback",
+    "https://www.${var.frontend_domain}/auth/callback"
   ]
 
   logout_urls = [
     "http://localhost:5173",
-    "https://${var.frontend_domain}"
+    "https://${var.frontend_domain}",
+    "https://www.${var.frontend_domain}"
   ]
 
   supported_identity_providers = ["COGNITO", "Google"]

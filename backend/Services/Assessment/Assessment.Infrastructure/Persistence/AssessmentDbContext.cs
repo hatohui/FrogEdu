@@ -21,13 +21,30 @@ public class AssessmentDbContext : DbContext
     {
         base.OnModelCreating(modelBuilder);
 
+        // Configure PostgreSQL specific settings
+        modelBuilder.HasDefaultSchema("public");
+
         // Apply configurations
         modelBuilder.ApplyConfiguration(new QuestionConfiguration());
         modelBuilder.ApplyConfiguration(new QuestionOptionConfiguration());
         modelBuilder.ApplyConfiguration(new ExamPaperConfiguration());
         modelBuilder.ApplyConfiguration(new ExamQuestionConfiguration());
 
-        // Seed data (optional - will be added later)
+        // Set default values for timestamp columns
+        foreach (var entityType in modelBuilder.Model.GetEntityTypes())
+        {
+            var createdAtProp = entityType.FindProperty("CreatedAt");
+            if (createdAtProp?.ClrType == typeof(DateTime))
+            {
+                createdAtProp.SetDefaultValueSql("CURRENT_TIMESTAMP");
+            }
+
+            var updatedAtProp = entityType.FindProperty("UpdatedAt");
+            if (updatedAtProp?.ClrType == typeof(DateTime))
+            {
+                updatedAtProp.SetDefaultValueSql("CURRENT_TIMESTAMP");
+            }
+        }
     }
 
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
