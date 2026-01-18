@@ -3,3 +3,8 @@
 **/.vs/
 **/.vscode/
 **/node_modules/
+
+**.http
+**.Development.json
+.env.example
+.env
