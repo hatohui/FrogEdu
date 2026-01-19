@@ -14,13 +14,20 @@ public class Page : Entity
     public string S3Key { get; private set; }
     public string? Description { get; private set; }
     public Guid ChapterId { get; private set; }
+    public Guid? LessonId { get; private set; } // Optional - pages can belong to lessons
 
     // Navigation property
     public Chapter Chapter { get; private set; } = null!;
 
     private Page() { } // For EF Core
 
-    private Page(int pageNumber, string s3Key, string? description, Guid chapterId)
+    private Page(
+        int pageNumber,
+        string s3Key,
+        string? description,
+        Guid chapterId,
+        Guid? lessonId = null
+    )
     {
         if (pageNumber <= 0)
             throw new ValidationException(nameof(PageNumber), "Page number must be greater than 0");
@@ -32,11 +39,18 @@ public class Page : Entity
         S3Key = s3Key;
         Description = description;
         ChapterId = chapterId;
+        LessonId = lessonId;
     }
 
-    public static Page Create(int pageNumber, string s3Key, string? description, Guid chapterId)
+    public static Page Create(
+        int pageNumber,
+        string s3Key,
+        string? description,
+        Guid chapterId,
+        Guid? lessonId = null
+    )
     {
-        return new Page(pageNumber, s3Key, description, chapterId);
+        return new Page(pageNumber, s3Key, description, chapterId, lessonId);
     }
 
     public void UpdateS3Key(string s3Key)

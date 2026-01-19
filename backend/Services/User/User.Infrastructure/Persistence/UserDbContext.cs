@@ -1,4 +1,5 @@
 using FrogEdu.User.Domain.Entities;
+using FrogEdu.User.Infrastructure.Persistence.Configurations;
 using Microsoft.EntityFrameworkCore;
 using UserEntity = FrogEdu.User.Domain.Entities.User;
 
@@ -15,6 +16,9 @@ public class UserDbContext : DbContext
         : base(options) { }
 
     public DbSet<UserEntity> Users => Set<UserEntity>();
+    public DbSet<Class> Classes => Set<Class>();
+    public DbSet<Enrollment> Enrollments => Set<Enrollment>();
+    public DbSet<Notification> Notifications => Set<Notification>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -23,39 +27,11 @@ public class UserDbContext : DbContext
         // Configure PostgreSQL specific settings
         modelBuilder.HasDefaultSchema("public");
 
-        // User entity configuration
-        modelBuilder.Entity<UserEntity>(entity =>
-        {
-            entity.HasKey(e => e.Id);
-            entity
-                .Property(e => e.CognitoId)
-                .HasConversion(
-                    v => v.Value,
-                    v => FrogEdu.User.Domain.ValueObjects.CognitoUserId.Create(v)
-                )
-                .IsRequired();
-            entity
-                .Property(e => e.Email)
-                .HasConversion(v => v.Value, v => FrogEdu.User.Domain.ValueObjects.Email.Create(v))
-                .IsRequired()
-                .HasMaxLength(256);
-            entity
-                .Property(e => e.FullName)
-                .HasConversion(
-                    v => v.FirstName + " " + v.LastName,
-                    v =>
-                        FrogEdu.User.Domain.ValueObjects.FullName.Create(
-                            v.Substring(0, v.IndexOf(' ') > 0 ? v.IndexOf(' ') : v.Length),
-                            v.IndexOf(' ') > 0 ? v.Substring(v.IndexOf(' ') + 1) : ""
-                        )
-                )
-                .IsRequired()
-                .HasMaxLength(256);
-            entity.HasIndex(e => e.CognitoId).IsUnique();
-            entity.HasIndex(e => e.Email);
-            entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
-            entity.Property(e => e.UpdatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
-        });
+        // Apply configurations
+        modelBuilder.ApplyConfiguration(new UserConfiguration());
+        modelBuilder.ApplyConfiguration(new ClassConfiguration());
+        modelBuilder.ApplyConfiguration(new EnrollmentConfiguration());
+        modelBuilder.ApplyConfiguration(new NotificationConfiguration());
 
         // Set default values for timestamp columns
         foreach (var entityType in modelBuilder.Model.GetEntityTypes())

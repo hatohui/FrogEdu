@@ -16,6 +16,12 @@ public class AssessmentDbContext : DbContext
     public DbSet<QuestionOption> QuestionOptions => Set<QuestionOption>();
     public DbSet<ExamPaper> ExamPapers => Set<ExamPaper>();
     public DbSet<ExamQuestion> ExamQuestions => Set<ExamQuestion>();
+    public DbSet<QuestionBank> QuestionBanks => Set<QuestionBank>();
+    public DbSet<ExamSection> ExamSections => Set<ExamSection>();
+    public DbSet<Submission> Submissions => Set<Submission>();
+    public DbSet<Answer> Answers => Set<Answer>();
+    public DbSet<Rubric> Rubrics => Set<Rubric>();
+    public DbSet<ExamGeneration> ExamGenerations => Set<ExamGeneration>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -29,6 +35,12 @@ public class AssessmentDbContext : DbContext
         modelBuilder.ApplyConfiguration(new QuestionOptionConfiguration());
         modelBuilder.ApplyConfiguration(new ExamPaperConfiguration());
         modelBuilder.ApplyConfiguration(new ExamQuestionConfiguration());
+        modelBuilder.ApplyConfiguration(new QuestionBankConfiguration());
+        modelBuilder.ApplyConfiguration(new ExamSectionConfiguration());
+        modelBuilder.ApplyConfiguration(new SubmissionConfiguration());
+        modelBuilder.ApplyConfiguration(new AnswerConfiguration());
+        modelBuilder.ApplyConfiguration(new RubricConfiguration());
+        modelBuilder.ApplyConfiguration(new ExamGenerationConfiguration());
 
         // Set default values for timestamp columns
         foreach (var entityType in modelBuilder.Model.GetEntityTypes())

@@ -16,6 +16,11 @@ public class ContentDbContext : DbContext
     public DbSet<Chapter> Chapters => Set<Chapter>();
     public DbSet<Page> Pages => Set<Page>();
 
+    // Note: Subject is a value object owned by Textbook, not a separate entity
+    public DbSet<Lesson> Lessons => Set<Lesson>();
+    public DbSet<Tag> Tags => Set<Tag>();
+    public DbSet<Asset> Assets => Set<Asset>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -27,6 +32,11 @@ public class ContentDbContext : DbContext
         modelBuilder.ApplyConfiguration(new TextbookConfiguration());
         modelBuilder.ApplyConfiguration(new ChapterConfiguration());
         modelBuilder.ApplyConfiguration(new PageConfiguration());
+        // SubjectConfiguration removed - Subject is a value object
+        modelBuilder.ApplyConfiguration(new LessonConfiguration());
+        modelBuilder.ApplyConfiguration(new TagConfiguration());
+        modelBuilder.ApplyConfiguration(new LessonTagConfiguration());
+        modelBuilder.ApplyConfiguration(new AssetConfiguration());
 
         // Set default values for timestamp columns
         foreach (var entityType in modelBuilder.Model.GetEntityTypes())

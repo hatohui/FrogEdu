@@ -15,6 +15,8 @@ public class AiDbContext : DbContext
     public DbSet<TutorSession> TutorSessions => Set<TutorSession>();
     public DbSet<ConversationMessage> ConversationMessages => Set<ConversationMessage>();
     public DbSet<PromptTemplate> PromptTemplates => Set<PromptTemplate>();
+    public DbSet<SessionArtifact> SessionArtifacts => Set<SessionArtifact>();
+    public DbSet<SessionEvent> SessionEvents => Set<SessionEvent>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -27,6 +29,8 @@ public class AiDbContext : DbContext
         modelBuilder.ApplyConfiguration(new TutorSessionConfiguration());
         modelBuilder.ApplyConfiguration(new ConversationMessageConfiguration());
         modelBuilder.ApplyConfiguration(new PromptTemplateConfiguration());
+        modelBuilder.ApplyConfiguration(new SessionArtifactConfiguration());
+        modelBuilder.ApplyConfiguration(new SessionEventConfiguration());
 
         // Set default values for timestamp columns
         foreach (var entityType in modelBuilder.Model.GetEntityTypes())

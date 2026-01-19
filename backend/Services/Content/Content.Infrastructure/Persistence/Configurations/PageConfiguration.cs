@@ -25,6 +25,8 @@ public class PageConfiguration : IEntityTypeConfiguration<Page>
 
         builder.Property(p => p.ChapterId).IsRequired();
 
+        builder.Property(p => p.LessonId); // Optional - pages can belong to lessons
+
         builder.Property(p => p.CreatedAt).IsRequired();
 
         builder.Property(p => p.UpdatedAt).IsRequired();
@@ -35,6 +37,8 @@ public class PageConfiguration : IEntityTypeConfiguration<Page>
 
         builder.Property(p => p.IsDeleted).IsRequired().HasDefaultValue(false);
 
+        builder.Property(p => p.RowVersion).IsRowVersion();
+
         // Configure relationships
         builder
             .HasOne(p => p.Chapter)
@@ -44,6 +48,8 @@ public class PageConfiguration : IEntityTypeConfiguration<Page>
 
         // Indexes
         builder.HasIndex(p => p.ChapterId).HasDatabaseName("IX_Pages_ChapterId");
+
+        builder.HasIndex(p => p.LessonId).HasDatabaseName("IX_Pages_LessonId");
 
         builder
             .HasIndex(p => new { p.ChapterId, p.PageNumber })
