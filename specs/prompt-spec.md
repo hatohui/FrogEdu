@@ -262,16 +262,25 @@ export function ExamCard({ exam }: ExamCardProps) {
 }
 ```
 
-#### State Management (TanStack Query)
+#### State Management (Zustand + TanStack Query)
 
 **MUST Follow:**
 
+- [ ] **Data Fetching:** Use `TanStack Query` for all server-state (API calls).
+- [ ] **Client State:** Use `Zustand` for global UI state (theme, sidebar, session).
 - [ ] **Query Keys:** Use hierarchical query keys: `['exams', 'list']`, `['exams', examId]`.
 - [ ] **Mutations:** Use `useMutation` for all write operations.
 - [ ] **Optimistic Updates:** Implement for better UX (e.g., adding questions).
 - [ ] **Error Handling:** Show user-friendly error messages via toast notifications.
-- [ ] **Stale Time:** Configure appropriate `staleTime` (e.g., 5 minutes for static content).
-- [ ] **Refetch Strategies:** Use `refetchOnWindowFocus` for real-time data.
+
+#### Form Handling (React Hook Form + Zod)
+
+**MUST Follow:**
+
+- [ ] **Schema Definition:** Define Zod schemas for all forms.
+- [ ] **Type Inference:** Infer TypeScript types from Zod schemas: `z.infer<typeof schema>`.
+- [ ] **Validation:** Connect React Hook Form with `zodResolver`.
+- [ ] **Components:** Use Shadcn `Form` components (which wrap React Hook Form).
 
 #### Folder Structure & Organization
 
@@ -359,7 +368,7 @@ api.interceptors.response.use(
       // Trigger token refresh or logout
     }
     return Promise.reject(error);
-  }
+  },
 );
 ```
 
@@ -376,14 +385,14 @@ export const assessmentService = {
   generateExam: async (matrix: ExamMatrix): Promise<Exam> => {
     const { data } = await api.post<Exam>(
       "/api/assessment/exams/generate",
-      matrix
+      matrix,
     );
     return data;
   },
 
   downloadExam: async (examId: string): Promise<string> => {
     const { data } = await api.get<{ url: string }>(
-      `/api/assessment/exams/${examId}/download`
+      `/api/assessment/exams/${examId}/download`,
     );
     return data.url; // Presigned S3 URL
   },
@@ -451,13 +460,11 @@ An AI-integrated educational platform for Vietnamese primary schools.
 ### Core Features:
 
 1. **Teacher Dashboard**
-
    - Create and manage classes with invite codes.
    - AI-assisted lesson planning and content curation.
    - Access to digital textbook library (Grade 1-5).
 
 2. **Smart Exam Generator**
-
    - Define **Exam Matrix** (Ma trận đề thi): Distribution of questions by difficulty and chapter.
    - Automated question selection from Question Bank (MCQ + Essay).
    - Manual override: Teachers can replace AI-selected questions.

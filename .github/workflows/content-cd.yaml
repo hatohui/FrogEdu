@@ -62,11 +62,10 @@ jobs:
         env:
           REPOSITORY: frogedu-dev-content-api
         run: |
-          # Get images to delete (everything except :latest and :build tags)
           IMAGES_TO_DELETE=$(aws ecr describe-images \
-            --repository-name $REPOSITORY \
-            --query 'imageDetails[?(!contains(imageTags, `latest`) && !contains(imageTags, `build`)) || !imageTags].imageDigest' \
-            --output text)
+              --repository-name $REPOSITORY \
+              --query 'imageDetails[?(!contains(imageTags || `[]`, `latest`) && !contains(imageTags || `[]`, `build`)) || !imageTags].imageDigest' \
+              --output text)
 
           if [ -n "$IMAGES_TO_DELETE" ]; then
             for digest in $IMAGES_TO_DELETE; do

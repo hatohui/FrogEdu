@@ -1,7 +1,36 @@
 import apiService, { type ApiResponse } from './api.service'
+import axiosInstance from './axios'
 
 /**
- * User DTOs
+ * User DTOs - aligned with backend
+ */
+export interface UserDto {
+	id: string
+	cognitoId: string
+	email: string
+	firstName: string
+	lastName: string
+	role: 'Teacher' | 'Student'
+	avatarUrl?: string
+	isEmailVerified: boolean
+	lastLoginAt?: string
+	createdAt: string
+	updatedAt: string
+}
+
+export interface UpdateProfileDto {
+	firstName: string
+	lastName: string
+}
+
+export interface AvatarPresignedUrlDto {
+	uploadUrl: string
+	avatarUrl: string
+	expiresAt: string
+}
+
+/**
+ * Legacy UserProfile interface for backwards compatibility
  */
 export interface UserProfile {
 	id: string
@@ -39,29 +68,74 @@ export interface ChangePasswordRequest {
  * Handles user profile and account management
  */
 class UserService {
-	private readonly baseUrl = '/api/user'
+	private readonly baseUrl = '/api/users'
 
 	/**
-	 * Get current user profile
+	 * Get current user profile from backend
+	 */
+	async getCurrentUser(): Promise<UserDto> {
+		const response = await axiosInstance.get<UserDto>(`${this.baseUrl}/me`)
+		return response.data
+	}
+
+	/**
+	 * Update user profile
+	 */
+	async updateProfile(updates: UpdateProfileDto): Promise<void> {
+		await axiosInstance.put(`${this.baseUrl}/me`, updates)
+	}
+
+	/**
+	 * Get presigned URL for avatar upload
+	 */
+	async getAvatarUploadUrl(
+		contentType: string
+	): Promise<AvatarPresignedUrlDto> {
+		const response = await axiosInstance.post<AvatarPresignedUrlDto>(
+			`${this.baseUrl}/me/avatar`,
+			{ contentType }
+		)
+		return response.data
+	}
+
+	/**
+	 * Confirm avatar upload (after uploading to S3)
+	 */
+	async confirmAvatarUpload(avatarUrl: string): Promise<void> {
+		await axiosInstance.put(`${this.baseUrl}/me/avatar`, { avatarUrl })
+	}
+
+	/**
+	 * Upload avatar file to S3 using presigned URL
+	 */
+	async uploadAvatar(file: File): Promise<string> {
+		// Get presigned URL
+		const { uploadUrl, avatarUrl } = await this.getAvatarUploadUrl(file.type)
+
+		// Upload to S3
+		await fetch(uploadUrl, {
+			method: 'PUT',
+			body: file,
+			headers: {
+				'Content-Type': file.type,
+			},
+		})
+
+		// Confirm upload
+		await this.confirmAvatarUpload(avatarUrl)
+
+		return avatarUrl
+	}
+
+	/**
+	 * Get current user profile (legacy)
 	 */
 	async getProfile(): Promise<ApiResponse<UserProfile>> {
 		return apiService.get<UserProfile>(`${this.baseUrl}/profile`)
 	}
 
 	/**
-	 * Update user profile
-	 */
-	async updateProfile(
-		updates: UpdateProfileRequest
-	): Promise<ApiResponse<UserProfile>> {
-		return apiService.put<UserProfile, UpdateProfileRequest>(
-			`${this.baseUrl}/profile`,
-			updates
-		)
-	}
-
-	/**
-	 * Upload profile picture
+	 * Upload profile picture (legacy)
 	 * Returns presigned S3 URL for upload
 	 */
 	async getProfilePictureUploadUrl(

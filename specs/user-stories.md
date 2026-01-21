@@ -7,6 +7,9 @@
 3.  **Content Library Management**
 4.  **Smart Exam Generation (Assessment)**
 5.  **AI Student Tutor**
+6.  **Payment & Subscription**
+7.  **Question Bank Management (Pro)**
+8.  **Analytics**
 
 ---
 
@@ -99,6 +102,120 @@
 **As a** Student,
 **I want to** ask the AI Tutor a question about my homework in natural language,
 **So that** I can get help without waiting for the teacher.
+
+**Acceptance Criteria:**
+
+- [ ] Interface allows text input for questions.
+- [ ] Integration with AI Service (Gemini) to process queries.
+- [ ] Response includes relevant textbook context (RAG).
+- [ ] System checks monthly query quota for free tier.
+
+### Story 5.2: Socratic Guidance
+
+**As a** Student,
+**I want to** receive hints and guiding questions instead of direct answers,
+**So that** I actually learn the logic behind the problem.
+
+**Acceptance Criteria:**
+
+- [ ] AI prompt is engineered to refuse direct answers.
+- [ ] AI provides step-by-step reasoning or hints.
+- [ ] Follow-up questions are supported.
+
+### Story 5.3: Textbook References
+
+**As a** Student,
+**I want to** see links or snippets from the textbook relevant to my question,
+**So that** I can read the source material to support my understanding.
+
+**Acceptance Criteria:**
+
+- [ ] Response includes citations/links to specific textbook chapters/pages.
+- [ ] Clicking citation opens the Textbook viewer.
+
+---
+
+## 6. Payment & Subscription
+
+### Story 6.1: Upgrade to Pro
+
+**As a** Teacher,
+**I want to** upgrade my account to the Pro plan,
+**So that** I can access unlimited exams, all grades, and advanced features.
+
+**Acceptance Criteria:**
+
+- [ ] Display pricing plans (Monthly/Yearly).
+- [ ] Integrate with Payment Gateway (VNPay/Stripe).
+- [ ] Update user role/claims upon successful payment.
+- [ ] Send email receipt.
+
+### Story 6.2: Subscription Management
+
+**As a** Pro Teacher,
+**I want to** view my subscription status and next billing date,
+**So that** I can manage my expenses.
+
+**Acceptance Criteria:**
+
+- [ ] Dashboard shows "Pro" badge and valid-until date.
+- [ ] Option to cancel subscription (revert to Free at end of period).
+
+---
+
+## 7. Question Bank Management (Pro)
+
+### Story 7.1: Create Custom Question
+
+**As a** Pro Teacher,
+**I want to** add my own questions to a private question bank,
+**So that** I can use them in future exams.
+
+**Acceptance Criteria:**
+
+- [ ] Form to input question text, answer options, and correct answer.
+- [ ] Ability to tag with Grade, Subject, Chapter, Difficulty.
+- [ ] Support for rich text or image attachments.
+
+### Story 7.2: Bulk Import
+
+**As a** Pro Teacher,
+**I want to** import questions from an Excel/CSV file,
+**So that** I can quickly migrate my existing resources.
+
+**Acceptance Criteria:**
+
+- [ ] Provide a downloadable template.
+- [ ] Validate uploaded file format and content.
+- [ ] Show summary of successful vs failed imports.
+
+---
+
+## 8. Analytics
+
+### Story 8.1: Basic Stats (Free)
+
+**As a** Teacher,
+**I want to** see basic usage statistics,
+**So that** I know how many students are active.
+
+**Acceptance Criteria:**
+
+- [ ] Dashboard shows total students count.
+- [ ] Dashboard shows total exams generated count.
+
+### Story 8.2: Advanced Insights (Pro)
+
+**As a** Pro Teacher,
+**I want to** see detailed student performance and AI usage patterns,
+**So that** I can identify struggling students.
+
+**Acceptance Criteria:**
+
+- [ ] Charts showing class performance trends.
+- [ ] List of "Struggling Students" based on quiz results (if available) or AI query topics.
+- [ ] Export data to PDF/Excel.
+      **So that** I can get help without waiting for the teacher.
 
 ### Story 5.2: Socratic Guidance
 

@@ -1,3 +1,4 @@
+using FrogEdu.User.Application.Interfaces;
 using FrogEdu.User.Domain.Entities;
 using FrogEdu.User.Infrastructure.Persistence.Configurations;
 using Microsoft.EntityFrameworkCore;
@@ -10,7 +11,7 @@ namespace FrogEdu.User.Infrastructure.Persistence;
 /// Manages user profiles, authentication data, and class enrollment
 /// Database: frog-user-db (PostgreSQL via Neon)
 /// </summary>
-public class UserDbContext : DbContext
+public class UserDbContext : DbContext, IUnitOfWork
 {
     public UserDbContext(DbContextOptions<UserDbContext> options)
         : base(options) { }

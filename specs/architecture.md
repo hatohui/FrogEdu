@@ -101,6 +101,13 @@ Zero-trust architecture with JWT-based authentication, encrypted data in transit
 └─────────────────────────────────────────────────────────────────────────────┘
                                     ▼
 ┌─────────────────────────────────────────────────────────────────────────────┐
+│                            AWS WAF (SECURITY)                                │
+│  • Web Application Firewall                                                 │
+│  • Protects against common web exploits                                     │
+│  • IP Rate limiting                                                         │
+└─────────────────────────────────────────────────────────────────────────────┘
+                                    ▼
+┌─────────────────────────────────────────────────────────────────────────────┐
 │                       AWS API GATEWAY (REST API)                             │
 │  ┌──────────────────────────────────────────────────────────────────────┐  │
 │  │  API Endpoints:                                                      │  │
@@ -137,7 +144,7 @@ Zero-trust architecture with JWT-based authentication, encrypted data in transit
           ▼                    ▼                    ▼
 ┌───────────────────┐  ┌──────────────────┐  ┌──────────────────────────────┐
 │  AWS COGNITO      │  │  NEON POSTGRES   │  │  GOOGLE GEMINI AI            │
-│                   │  │                  │  │                              │
+│                   │  │  (1 DB per Svc)  │  │                              │
 │  • User Pool      │  │  • UserDB        │  │  • Content generation        │
 │  • Identity Pool  │  │  • ContentDB     │  │  • Question generation       │
 │  • JWT issuance   │  │  • AssessmentDB  │  │  • Answer evaluation         │
@@ -162,8 +169,11 @@ Zero-trust architecture with JWT-based authentication, encrypted data in transit
 | **Framework**        | React 18 + TypeScript | UI component library                |
 | **Build Tool**       | Vite 6                | Fast development & optimized builds |
 | **Routing**          | React Router v6       | Client-side routing                 |
-| **State Management** | Tanstack Query        | Server state management             |
+| **State Management** | Zustand               | Global client state management      |
+| **Data Fetching**    | Tanstack Query        | Server state management & caching   |
+| **Forms**            | React Hook Form + Zod | Form handling and schema validation |
 | **UI Components**    | shadcn/ui             | Accessible component library        |
+| **Icons**            | lucide-react          | SVG Icon library                    |
 | **Styling**          | Tailwind CSS          | Utility-first CSS                   |
 | **Animation**        | GSAP                  | High-performance animations         |
 | **i18n**             | i18next               | Internationalization (EN/VI)        |
@@ -176,8 +186,10 @@ Zero-trust architecture with JWT-based authentication, encrypted data in transit
 | ------------------ | ----------------------- | ----------------------------------- |
 | **Runtime**        | .NET 9 (C#)             | Application code                    |
 | **Architecture**   | Clean Architecture      | Separation of concerns              |
+| **Communication**  | gRPC (Internal) / REST  | Service-to-service & Client APIs    |
 | **Compute**        | AWS Lambda              | Serverless functions                |
 | **API Gateway**    | AWS API Gateway         | RESTful API management              |
+| **Security**       | AWS WAF                 | Web Application Firewall            |
 | **CDN**            | AWS CloudFront          | Global content delivery             |
 | **Authentication** | AWS Cognito             | User authentication & authorization |
 | **Database**       | Neon Postgres           | Serverless PostgreSQL               |

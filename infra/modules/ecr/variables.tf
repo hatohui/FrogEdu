@@ -18,7 +18,7 @@ variable "repositories" {
     image_tag_mutability  = optional(string, "MUTABLE")
     scan_on_push          = optional(bool, true)
     encryption_type       = optional(string, "AES256")
-    lifecycle_policy_keep = optional(number, 10)
+    lifecycle_policy_keep = optional(number, 3)
     lifecycle_expire_days = optional(number, 7)
   }))
   default = {}

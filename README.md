@@ -288,7 +288,6 @@ Tb-3. example of valid PR titles.
 
 - **Pull Request Description:**  
   The PR description should include the commit description and reference the related issue using one of the following keywords:
-
   - `close`
   - `closes`
   - `closed`

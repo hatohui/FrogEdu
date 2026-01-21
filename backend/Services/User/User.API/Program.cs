@@ -1,14 +1,65 @@
+using FrogEdu.User.API.Endpoints;
+using FrogEdu.User.Application;
+using FrogEdu.User.Infrastructure;
 using FrogEdu.User.Infrastructure.Persistence;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+// Add services to the container
 builder.Services.AddOpenApi();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.SwaggerDoc("v1", new() { Title = "FrogEdu User API", Version = "v1" });
+});
 
 // Add AWS Lambda support - enables running both locally and in Lambda
 builder.Services.AddAWSLambdaHosting(LambdaEventSource.RestApi);
+
+// Add Application & Infrastructure services
+builder.Services.AddApplicationServices();
+builder.Services.AddInfrastructureServices(builder.Configuration);
+
+// Configure JWT Authentication with Cognito
+var cognitoRegion = builder.Configuration["AWS:Cognito:Region"] ?? "ap-southeast-1";
+var cognitoUserPoolId =
+    builder.Configuration["AWS:Cognito:UserPoolId"]
+    ?? Environment.GetEnvironmentVariable("COGNITO_USER_POOL_ID")
+    ?? "";
+
+var authority = $"https://cognito-idp.{cognitoRegion}.amazonaws.com/{cognitoUserPoolId}";
+
+builder
+    .Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.Authority = authority;
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidIssuer = authority,
+            ValidateAudience = false, // Cognito doesn't use audience in access tokens
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+        };
+
+        options.Events = new JwtBearerEvents
+        {
+            OnAuthenticationFailed = context =>
+            {
+                var logger = context.HttpContext.RequestServices.GetRequiredService<
+                    ILogger<Program>
+                >();
+                logger.LogWarning("Authentication failed: {Error}", context.Exception.Message);
+                return Task.CompletedTask;
+            },
+        };
+    });
+
+builder.Services.AddAuthorization();
 
 // Add CORS
 builder.Services.AddCors(options =>
@@ -33,15 +84,24 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// Configure the HTTP request pipeline
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
 
 app.UseHttpsRedirection();
 app.UseRouting();
 app.UseCors("AllowSpecificOrigins");
+
+app.UseAuthentication();
+app.UseAuthorization();
+
+// Map endpoints
+app.MapUserEndpoints();
+app.MapAuthEndpoints();
 
 // Health check endpoint
 app.MapGet(
@@ -57,25 +117,17 @@ app.MapGet(
             )
     )
     .WithName("HealthCheck")
+    .WithTags("Health")
     .WithOpenApi();
 
 // Database health endpoint
 app.MapGet(
         "/api/users/health/db",
-        async () =>
+        async (UserDbContext context) =>
         {
             try
             {
-                var connectionString =
-                    Environment.GetEnvironmentVariable("USER_DB_CONNECTION_STRING")
-                    ?? "postgresql://root:root@frog-user-db:5432/user?sslmode=disable";
-
-                var options = new DbContextOptionsBuilder<UserDbContext>()
-                    .UseNpgsql(connectionString)
-                    .Options;
-
-                await using var ctx = new UserDbContext(options);
-                var canConnect = await ctx.Database.CanConnectAsync();
+                var canConnect = await context.Database.CanConnectAsync();
 
                 return canConnect
                     ? Results.Ok(
@@ -95,42 +147,10 @@ app.MapGet(
         }
     )
     .WithName("HealthCheckDb")
+    .WithTags("Health")
     .WithOpenApi();
-
-var summaries = new[]
-{
-    "Freezing",
-    "Bracing",
-    "Chilly",
-    "Cool",
-    "Mild",
-    "Warm",
-    "Balmy",
-    "Hot",
-    "Sweltering",
-    "Scorching",
-};
-
-app.MapGet(
-        "/weatherforecast",
-        () =>
-        {
-            var forecast = Enumerable
-                .Range(1, 5)
-                .Select(index => new WeatherForecast(
-                    DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-                    Random.Shared.Next(-20, 55),
-                    summaries[Random.Shared.Next(summaries.Length)]
-                ))
-                .ToArray();
-            return forecast;
-        }
-    )
-    .WithName("GetWeatherForecast");
 
 app.Run();
 
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}
+// Make Program class accessible for integration tests
+public partial class Program { }
