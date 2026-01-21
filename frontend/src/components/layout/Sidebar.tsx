@@ -1,7 +1,7 @@
 import React from 'react'
 import { Link, useLocation } from 'react-router'
 import { cn } from '@/utils/shadcn'
-import { Home, BookOpen, FileText, User, LogOut, X } from 'lucide-react'
+import { Home, BookOpen, FileText, User, LogOut, X, Users } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
 import { useAuthStore } from '@/stores/authStore'
@@ -18,6 +18,11 @@ const navItems: NavItem[] = [
 		name: 'Dashboard',
 		href: '/dashboard',
 		icon: Home,
+	},
+	{
+		name: 'My Classes',
+		href: '/dashboard/classes',
+		icon: Users,
 	},
 	{
 		name: 'Content Library',

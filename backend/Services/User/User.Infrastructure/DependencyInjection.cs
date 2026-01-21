@@ -43,6 +43,7 @@ public static class DependencyInjection
 
         // Register repositories
         services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<IClassRepository, ClassRepository>();
 
         // Register Unit of Work
         services.AddScoped<IUnitOfWork>(sp => sp.GetRequiredService<UserDbContext>());

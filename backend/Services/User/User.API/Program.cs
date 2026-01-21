@@ -59,7 +59,32 @@ builder
         };
     });
 
-builder.Services.AddAuthorization();
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy(
+        "TeacherOnly",
+        policy =>
+            policy.RequireAssertion(context =>
+            {
+                var role =
+                    context.User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value
+                    ?? context.User.FindFirst("custom:role")?.Value;
+                return role?.Equals("Teacher", StringComparison.OrdinalIgnoreCase) == true;
+            })
+    );
+
+    options.AddPolicy(
+        "StudentOnly",
+        policy =>
+            policy.RequireAssertion(context =>
+            {
+                var role =
+                    context.User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value
+                    ?? context.User.FindFirst("custom:role")?.Value;
+                return role?.Equals("Student", StringComparison.OrdinalIgnoreCase) == true;
+            })
+    );
+});
 
 // Add CORS
 builder.Services.AddCors(options =>
@@ -102,6 +127,7 @@ app.UseAuthorization();
 // Map endpoints
 app.MapUserEndpoints();
 app.MapAuthEndpoints();
+app.MapClassEndpoints();
 
 // Health check endpoint
 app.MapGet(

@@ -1,4 +1,5 @@
 using FrogEdu.User.Domain.Entities;
+using FrogEdu.User.Domain.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -13,12 +14,35 @@ public class ClassConfiguration : IEntityTypeConfiguration<Class>
         builder.HasKey(c => c.Id);
         builder.Property(c => c.Id).ValueGeneratedNever();
 
-        builder.Property(c => c.Name).IsRequired().HasMaxLength(256);
+        builder.Property(c => c.Name).IsRequired().HasMaxLength(100);
+        builder.Property(c => c.Subject).HasMaxLength(50);
         builder.Property(c => c.Grade).IsRequired();
         builder.Property(c => c.HomeroomTeacherId).IsRequired();
-        builder.Property(c => c.School).HasMaxLength(500);
-        builder.Property(c => c.Description).HasMaxLength(2000);
+        builder.Property(c => c.School).HasMaxLength(100);
+        builder.Property(c => c.Description).HasMaxLength(500);
         builder.Property(c => c.MaxStudents);
+        builder.Property(c => c.IsArchived).IsRequired().HasDefaultValue(false);
+
+        // Configure InviteCode as owned entity
+        builder.OwnsOne(
+            c => c.InviteCode,
+            inviteCode =>
+            {
+                inviteCode
+                    .Property(i => i.Value)
+                    .HasColumnName("InviteCode")
+                    .HasMaxLength(6)
+                    .IsFixedLength();
+
+                inviteCode.Property(i => i.ExpiresAt).HasColumnName("InviteCodeExpiresAt");
+
+                // Unique index on invite code
+                inviteCode
+                    .HasIndex(i => i.Value)
+                    .IsUnique()
+                    .HasDatabaseName("IX_Classes_InviteCode");
+            }
+        );
 
         builder.Property(c => c.CreatedAt).IsRequired();
         builder.Property(c => c.UpdatedAt).IsRequired();
@@ -31,6 +55,7 @@ public class ClassConfiguration : IEntityTypeConfiguration<Class>
         builder.HasIndex(c => c.HomeroomTeacherId).HasDatabaseName("IX_Classes_HomeroomTeacherId");
         builder.HasIndex(c => c.Grade).HasDatabaseName("IX_Classes_Grade");
         builder.HasIndex(c => c.IsDeleted).HasDatabaseName("IX_Classes_IsDeleted");
+        builder.HasIndex(c => c.IsArchived).HasDatabaseName("IX_Classes_IsArchived");
 
         // Note: Enrollment relationship managed via EnrollmentConfiguration
 

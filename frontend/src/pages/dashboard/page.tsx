@@ -1,5 +1,6 @@
 import React from 'react'
 import { useAuthStore } from '@/stores/authStore'
+import { useDashboardStats, useClasses } from '@/hooks/useClasses'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import {
@@ -12,6 +13,7 @@ import {
 } from 'lucide-react'
 import { Link } from 'react-router'
 import { Skeleton } from '@/components/ui/skeleton'
+import { ClassCard } from '@/components/classes'
 
 interface StatCardProps {
 	title: string
@@ -48,15 +50,14 @@ const StatCard = ({ title, value, icon: Icon, trend }: StatCardProps) => (
 )
 
 const DashboardPage = (): React.ReactElement => {
-	const { user, isLoading } = useAuthStore()
+	const { user, isLoading: authLoading, userProfile } = useAuthStore()
+	const isTeacher = userProfile?.['custom:role'] === 'Teacher'
 
-	// Mock data - replace with actual API calls using TanStack Query
-	const stats = {
-		classes: 5,
-		exams: 12,
-		students: 124,
-		contentItems: 48,
-	}
+	// Fetch real data using TanStack Query
+	const { data: stats, isLoading: statsLoading } = useDashboardStats()
+	const { data: classes, isLoading: classesLoading } = useClasses(false)
+
+	const recentClasses = classes?.slice(0, 3) || []
 
 	const recentActivities = [
 		{ id: 1, action: 'Created exam "Math Quiz 1"', time: '2 hours ago' },
@@ -66,16 +67,17 @@ const DashboardPage = (): React.ReactElement => {
 	]
 
 	const getUserDisplayName = () => {
-		const userProfile = useAuthStore.getState().userProfile
-		if (!userProfile && !user) return 'Teacher'
+		if (!userProfile && !user) return 'User'
 		return (
 			userProfile?.name ||
 			userProfile?.given_name ||
 			userProfile?.email?.split('@')[0] ||
 			user?.username ||
-			'Teacher'
+			'User'
 		)
 	}
+
+	const isLoading = authLoading || statsLoading
 
 	if (isLoading) {
 		return (
@@ -107,29 +109,50 @@ const DashboardPage = (): React.ReactElement => {
 			<div className='grid gap-4 md:grid-cols-2 lg:grid-cols-4'>
 				<StatCard
 					title='Active Classes'
-					value={stats.classes}
+					value={stats?.classCount ?? 0}
 					icon={Users}
-					trend={{ value: 12, isPositive: true }}
 				/>
 				<StatCard
 					title='Exams Created'
-					value={stats.exams}
+					value={stats?.examCount ?? 0}
 					icon={FileText}
-					trend={{ value: 8, isPositive: true }}
 				/>
 				<StatCard
 					title='Students Enrolled'
-					value={stats.students}
+					value={stats?.studentCount ?? 0}
 					icon={Users}
-					trend={{ value: 15, isPositive: true }}
 				/>
 				<StatCard
 					title='Content Items'
-					value={stats.contentItems}
+					value={stats?.contentItemCount ?? 0}
 					icon={BookOpen}
-					trend={{ value: 5, isPositive: true }}
 				/>
 			</div>
+
+			{/* Recent Classes */}
+			{recentClasses.length > 0 && (
+				<Card>
+					<CardHeader className='flex flex-row items-center justify-between'>
+						<CardTitle>Recent Classes</CardTitle>
+						<Link to='/dashboard/classes'>
+							<Button variant='ghost' size='sm'>
+								View All
+							</Button>
+						</Link>
+					</CardHeader>
+					<CardContent>
+						<div className='grid gap-4 md:grid-cols-2 lg:grid-cols-3'>
+							{recentClasses.map(classData => (
+								<ClassCard
+									key={classData.id}
+									classData={classData}
+									isTeacher={isTeacher}
+								/>
+							))}
+						</div>
+					</CardContent>
+				</Card>
+			)}
 
 			{/* Quick Actions */}
 			<Card>
@@ -149,10 +172,10 @@ const DashboardPage = (): React.ReactElement => {
 							<span>Browse Content Library</span>
 						</Button>
 					</Link>
-					<Link to='/classes/create'>
+					<Link to='/dashboard/classes'>
 						<Button variant='outline' className='space-x-2'>
 							<Users className='h-4 w-4' />
-							<span>Create New Class</span>
+							<span>Manage Classes</span>
 						</Button>
 					</Link>
 				</CardContent>

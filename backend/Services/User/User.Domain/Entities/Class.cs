@@ -1,18 +1,22 @@
 using FrogEdu.Shared.Kernel;
+using FrogEdu.User.Domain.ValueObjects;
 
 namespace FrogEdu.User.Domain.Entities;
 
 /// <summary>
-/// Represents a classroom
+/// Represents a classroom - Aggregate Root
 /// </summary>
 public class Class : Entity
 {
     public string Name { get; private set; } = default!;
+    public string? Subject { get; private set; }
     public short Grade { get; private set; }
     public Guid HomeroomTeacherId { get; private set; }
     public string? School { get; private set; }
     public string? Description { get; private set; }
     public int? MaxStudents { get; private set; }
+    public InviteCode? InviteCode { get; private set; }
+    public bool IsArchived { get; private set; }
 
     private readonly List<Enrollment> _enrollments = new();
     public IReadOnlyCollection<Enrollment> Enrollments => _enrollments.AsReadOnly();
@@ -23,39 +27,94 @@ public class Class : Entity
         string name,
         short grade,
         Guid homeroomTeacherId,
+        string? subject = null,
         string? school = null,
         string? description = null,
         int? maxStudents = null
     )
     {
+        if (string.IsNullOrWhiteSpace(name))
+            throw new ArgumentException("Class name cannot be empty", nameof(name));
+
         if (grade < 1 || grade > 12)
             throw new ArgumentException("Grade must be between 1 and 12", nameof(grade));
 
         Name = name;
+        Subject = subject;
         Grade = grade;
         HomeroomTeacherId = homeroomTeacherId;
         School = school;
         Description = description;
         MaxStudents = maxStudents;
+        IsArchived = false;
+
+        // Generate invite code on creation
+        GenerateNewInviteCode();
+    }
+
+    /// <summary>
+    /// Generate a new invite code for the class
+    /// </summary>
+    public void GenerateNewInviteCode(int expiresInDays = 7)
+    {
+        InviteCode = ValueObjects.InviteCode.Generate(expiresInDays);
+        MarkAsUpdated();
     }
 
     public void UpdateDetails(
         string name,
         short grade,
+        string? subject,
         string? school,
         string? description,
         int? maxStudents
     )
     {
+        if (string.IsNullOrWhiteSpace(name))
+            throw new ArgumentException("Class name cannot be empty", nameof(name));
+
         if (grade < 1 || grade > 12)
             throw new ArgumentException("Grade must be between 1 and 12", nameof(grade));
 
         Name = name;
+        Subject = subject;
         Grade = grade;
         School = school;
         Description = description;
         MaxStudents = maxStudents;
         MarkAsUpdated();
+    }
+
+    /// <summary>
+    /// Archive the class (soft archive)
+    /// </summary>
+    public void Archive()
+    {
+        IsArchived = true;
+        MarkAsUpdated();
+    }
+
+    /// <summary>
+    /// Restore an archived class
+    /// </summary>
+    public void Restore()
+    {
+        IsArchived = false;
+        MarkAsUpdated();
+    }
+
+    /// <summary>
+    /// Validate invite code for joining
+    /// </summary>
+    public bool ValidateInviteCode(string code)
+    {
+        if (InviteCode == null)
+            return false;
+
+        if (InviteCode.IsExpired)
+            return false;
+
+        return InviteCode.Value.Equals(code.ToUpperInvariant(), StringComparison.OrdinalIgnoreCase);
     }
 
     public Enrollment AddStudent(Guid userId)

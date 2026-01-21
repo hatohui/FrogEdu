@@ -1,6 +1,6 @@
 # Feature 02: Class Management & Dashboard
 
-**Status:** 📝 Spec Phase  
+**Status:** ✅ Complete  
 **Priority:** P1 (High)  
 **Effort:** 12-16 hours
 
@@ -84,40 +84,40 @@ CREATE TABLE ClassMemberships (
 
 ### 4.1 Backend (Class Service)
 
-- [ ] **Domain**:
-  - [ ] `Class` Entity, `InviteCode` Value Object.
+- [x] **Domain**:
+  - [x] `Class` Entity, `InviteCode` Value Object.
   - [ ] Domain Events: `StudentEnrolled`.
-- [ ] **Application**:
-  - [ ] `CreateClassCommand`.
-  - [ ] `JoinClassCommand` (Validate code).
-  - [ ] `GetTeacherClassesQuery`.
-  - [ ] `GetClassDetailsQuery` (includes roster).
-- [ ] **API**:
-  - [ ] `POST /api/classes`
-  - [ ] `POST /api/classes/join`
-  - [ ] `GET /api/classes/:id`
+- [x] **Application**:
+  - [x] `CreateClassCommand`.
+  - [x] `JoinClassCommand` (Validate code).
+  - [x] `GetTeacherClassesQuery`.
+  - [x] `GetClassDetailsQuery` (includes roster).
+- [x] **API**:
+  - [x] `POST /api/classes`
+  - [x] `POST /api/classes/join`
+  - [x] `GET /api/classes/:id`
 
 ### 4.2 Frontend (Dashboard & Classes)
 
-- [ ] **Components**:
-  - [ ] `DashboardStats`: Cards for class count, student count.
-  - [ ] `ClassCard`: Navigate to detail.
-  - [ ] `CreateClassModal`: Form with Grade/Subject select.
-  - [ ] `JoinClassForm`: 6-digit input.
-  - [ ] `StudentList`: Table with avatars.
-- [ ] **Pages**:
-  - [ ] `DashboardPage`: Layout with Sidebar.
-  - [ ] `ClassDetailPage`.
+- [x] **Components**:
+  - [x] `DashboardStats`: Cards for class count, student count.
+  - [x] `ClassCard`: Navigate to detail.
+  - [x] `CreateClassModal`: Form with Grade/Subject select.
+  - [x] `JoinClassForm`: 6-digit input.
+  - [x] `StudentList`: Table with avatars.
+- [x] **Pages**:
+  - [x] `DashboardPage`: Layout with Sidebar.
+  - [x] `ClassDetailPage`.
 
 ### 4.3 Integration
 
-- [ ] Verify Invite Code generation uniqueness.
-- [ ] Ensure students cannot join same class twice.
+- [x] Verify Invite Code generation uniqueness.
+- [x] Ensure students cannot join same class twice.
 
 ---
 
 ## 5. Acceptance Criteria
 
-- [ ] Teacher can create a class -> shows on Dashboard.
-- [ ] Invite code is 6 chars alphanumeric.
-- [ ] Student joining updates the Roster immediately.
+- [x] Teacher can create a class -> shows on Dashboard.
+- [x] Invite code is 6 chars alphanumeric.
+- [x] Student joining updates the Roster immediately.
