@@ -71,10 +71,28 @@ resource "aws_api_gateway_gateway_response" "unauthorized" {
   }
 }
 
-# Note: Deployment is managed in main.tf to ensure proper dependency on Lambda routes
-# This module only creates the API Gateway REST API and its base configuration
+# =============================================================================
+# CORS Configuration - Shared across all resources
+# =============================================================================
+locals {
+  cors_headers = {
+    "method.response.header.Access-Control-Allow-Headers"     = true
+    "method.response.header.Access-Control-Allow-Methods"     = true
+    "method.response.header.Access-Control-Allow-Origin"      = true
+    "method.response.header.Access-Control-Allow-Credentials" = true
+  }
 
-# CORS OPTIONS method
+  cors_header_values = {
+    "method.response.header.Access-Control-Allow-Headers"     = "'Content-Type,Authorization,X-Amz-Date,X-Api-Key,X-Amz-Security-Token'"
+    "method.response.header.Access-Control-Allow-Methods"     = "'GET,POST,PUT,DELETE,PATCH,OPTIONS'"
+    "method.response.header.Access-Control-Allow-Origin"      = "'https://frogedu.org'"
+    "method.response.header.Access-Control-Allow-Credentials" = "'true'"
+  }
+}
+
+# =============================================================================
+# CORS OPTIONS method for root resource
+# =============================================================================
 resource "aws_api_gateway_method" "options" {
   rest_api_id   = aws_api_gateway_rest_api.main.id
   resource_id   = aws_api_gateway_rest_api.main.root_resource_id
@@ -91,6 +109,50 @@ resource "aws_api_gateway_resource" "api" {
   path_part   = "api"
 }
 
+# =============================================================================
+# CORS OPTIONS method for /api resource
+# =============================================================================
+resource "aws_api_gateway_method" "options_api" {
+  rest_api_id   = aws_api_gateway_rest_api.main.id
+  resource_id   = aws_api_gateway_resource.api.id
+  http_method   = "OPTIONS"
+  authorization = "NONE"
+}
+
+resource "aws_api_gateway_integration" "options_api" {
+  rest_api_id = aws_api_gateway_rest_api.main.id
+  resource_id = aws_api_gateway_resource.api.id
+  http_method = aws_api_gateway_method.options_api.http_method
+  type        = "MOCK"
+
+  request_templates = {
+    "application/json" = "{\"statusCode\": 200}"
+  }
+}
+
+resource "aws_api_gateway_method_response" "options_api" {
+  rest_api_id = aws_api_gateway_rest_api.main.id
+  resource_id = aws_api_gateway_resource.api.id
+  http_method = aws_api_gateway_method.options_api.http_method
+  status_code = "200"
+
+  response_parameters = local.cors_headers
+}
+
+resource "aws_api_gateway_integration_response" "options_api" {
+  rest_api_id = aws_api_gateway_rest_api.main.id
+  resource_id = aws_api_gateway_resource.api.id
+  http_method = aws_api_gateway_method.options_api.http_method
+  status_code = "200"
+
+  response_parameters = local.cors_header_values
+
+  depends_on = [aws_api_gateway_integration.options_api]
+}
+
+# =============================================================================
+# Root OPTIONS Integration
+# =============================================================================
 resource "aws_api_gateway_integration" "options" {
   rest_api_id = aws_api_gateway_rest_api.main.id
   resource_id = aws_api_gateway_rest_api.main.root_resource_id
@@ -108,11 +170,7 @@ resource "aws_api_gateway_method_response" "options" {
   http_method = aws_api_gateway_method.options.http_method
   status_code = "200"
 
-  response_parameters = {
-    "method.response.header.Access-Control-Allow-Headers" = true
-    "method.response.header.Access-Control-Allow-Methods" = true
-    "method.response.header.Access-Control-Allow-Origin"  = true
-  }
+  response_parameters = local.cors_headers
 }
 
 # =============================================================================
@@ -154,11 +212,7 @@ resource "aws_api_gateway_integration_response" "options" {
   http_method = aws_api_gateway_method.options.http_method
   status_code = "200"
 
-  response_parameters = {
-    "method.response.header.Access-Control-Allow-Headers" = "'Content-Type,Authorization,X-Amz-Date'"
-    "method.response.header.Access-Control-Allow-Methods" = "'GET,POST,PUT,DELETE,OPTIONS'"
-    "method.response.header.Access-Control-Allow-Origin"  = "'*'"
-  }
+  response_parameters = local.cors_header_values
 
   depends_on = [aws_api_gateway_integration.options]
 }

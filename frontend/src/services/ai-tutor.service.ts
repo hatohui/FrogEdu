@@ -58,7 +58,7 @@ export interface AskQuestionResponse {
  * Handles student questions, Socratic dialogue, and reference retrieval
  */
 class AiTutorService {
-	private readonly baseUrl = '/api/ai-tutor'
+	private readonly baseUrl = '/ai'
 
 	/**
 	 * Get user's conversations (chat history)

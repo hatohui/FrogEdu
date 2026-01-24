@@ -61,7 +61,7 @@ export interface GenerateExamRequest {
  * Handles exam creation, generation, and management
  */
 class AssessmentService {
-	private readonly baseUrl = '/api/assessment'
+	private readonly baseUrl = '/assessments'
 
 	/**
 	 * List all exams for the teacher

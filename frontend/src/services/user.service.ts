@@ -68,7 +68,7 @@ export interface ChangePasswordRequest {
  * Handles user profile and account management
  */
 class UserService {
-	private readonly baseUrl = '/api/users'
+	private readonly baseUrl = '/users'
 
 	/**
 	 * Get current user profile from backend

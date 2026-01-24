@@ -1,21 +1,19 @@
 # =============================================================================
 # API Gateway CORS Configuration Helper
 # =============================================================================
-# Note: The Lambda functions handle CORS at the application level
-locals {
-  cors_headers = {
-    "method.response.header.Access-Control-Allow-Origin"      = true
-    "method.response.header.Access-Control-Allow-Headers"     = true
-    "method.response.header.Access-Control-Allow-Methods"     = true
-    "method.response.header.Access-Control-Allow-Credentials" = true
-  }
-
-  # Note: Origin will be set by the Lambda function based on the request
-  # These are defaults if needed at API Gateway level
-  cors_header_values = {
-    "method.response.header.Access-Control-Allow-Origin"      = "'https://frogedu.org'"
-    "method.response.header.Access-Control-Allow-Headers"     = "'Content-Type,Authorization,X-Amz-Date,X-Api-Key,X-Amz-Security-Token'"
-    "method.response.header.Access-Control-Allow-Methods"     = "'GET,POST,PUT,DELETE,OPTIONS'"
-    "method.response.header.Access-Control-Allow-Credentials" = "'true'"
-  }
-}
+# CORS configuration has been moved to main.tf to ensure consistent headers
+# across all resources (root, /api, and service routes).
+#
+# The Lambda functions also handle CORS at the application level for
+# dynamic origin validation based on the incoming request.
+#
+# CORS headers are configured in the following locations:
+# - main.tf: API Gateway MOCK integration for OPTIONS methods
+# - lambda-container/main.tf: OPTIONS methods for service proxy routes
+# - Backend Program.cs: Application-level CORS for actual responses
+#
+# Allowed origins:
+# - https://frogedu.org (production)
+# - https://www.frogedu.org (production with www)
+# - http://localhost:5173 (local development)
+# - http://localhost:5174 (local development alternate port)

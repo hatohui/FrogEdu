@@ -245,12 +245,14 @@ resource "aws_api_gateway_deployment" "main" {
   rest_api_id = module.api_gateway.api_id
 
   triggers = {
-    # Redeploy when Lambda integrations change
+    # Redeploy when Lambda integrations or CORS configuration change
     redeployment = sha1(jsonencode([
       module.user_lambda.function_arn,
       module.content_lambda.function_arn,
       module.assessment_lambda.function_arn,
       module.ai_lambda.function_arn,
+      # Include CORS resource IDs to trigger redeployment when OPTIONS methods change
+      "cors-v3", # Increment this version to force redeployment of CORS changes
     ]))
   }
 

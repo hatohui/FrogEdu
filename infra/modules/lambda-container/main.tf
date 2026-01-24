@@ -124,7 +124,60 @@ resource "aws_api_gateway_integration" "routes" {
   } : {}
 }
 
+# =============================================================================
+# CORS OPTIONS Support for Proxy Routes
+# =============================================================================
+# OPTIONS requests are forwarded to Lambda so the .NET CORS middleware can
+# dynamically return the correct Access-Control-Allow-Origin based on the
+# incoming Origin header. This supports multiple origins (localhost, www, etc.)
+
+# OPTIONS method for parent resources (e.g., /users, /contents)
+# Forwards to Lambda for dynamic CORS handling
+resource "aws_api_gateway_method" "options_parent" {
+  for_each = toset(local.parent_paths)
+
+  rest_api_id   = var.api_gateway_id
+  resource_id   = aws_api_gateway_resource.parents[each.value].id
+  http_method   = "OPTIONS"
+  authorization = "NONE"
+}
+
+resource "aws_api_gateway_integration" "options_parent" {
+  for_each = toset(local.parent_paths)
+
+  rest_api_id             = var.api_gateway_id
+  resource_id             = aws_api_gateway_resource.parents[each.value].id
+  http_method             = aws_api_gateway_method.options_parent[each.value].http_method
+  integration_http_method = "POST"
+  type                    = "AWS_PROXY"
+  uri                     = aws_lambda_function.this.invoke_arn
+}
+
+# OPTIONS method for child resources (e.g., /{proxy+})
+# Forwards to Lambda for dynamic CORS handling
+resource "aws_api_gateway_method" "options_child" {
+  for_each = local.routes_with_children
+
+  rest_api_id   = var.api_gateway_id
+  resource_id   = aws_api_gateway_resource.children[each.key].id
+  http_method   = "OPTIONS"
+  authorization = "NONE"
+}
+
+resource "aws_api_gateway_integration" "options_child" {
+  for_each = local.routes_with_children
+
+  rest_api_id             = var.api_gateway_id
+  resource_id             = aws_api_gateway_resource.children[each.key].id
+  http_method             = aws_api_gateway_method.options_child[each.key].http_method
+  integration_http_method = "POST"
+  type                    = "AWS_PROXY"
+  uri                     = aws_lambda_function.this.invoke_arn
+}
+
+# =============================================================================
 # Lambda Permissions
+# =============================================================================
 resource "aws_lambda_permission" "api_gateway" {
   for_each = { for idx, route in var.routes : route.path => route }
 
