@@ -41,8 +41,9 @@ app.UseRouting();
 app.UseCors("AllowSpecificOrigins");
 
 // Health check endpoint
+// Path is /health because API Gateway strips /api/ai prefix
 app.MapGet(
-        "/api/ai/health",
+        "/health",
         () =>
             Results.Ok(
                 new
@@ -57,8 +58,9 @@ app.MapGet(
     .WithOpenApi();
 
 // Database health endpoint
+// Path is /health/db because API Gateway strips /api/ai prefix
 app.MapGet(
-        "/api/ai/health/db",
+        "/health/db",
         async () =>
         {
             try

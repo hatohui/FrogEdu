@@ -130,8 +130,9 @@ app.MapAuthEndpoints();
 app.MapClassEndpoints();
 
 // Health check endpoint
+// Path is /health because API Gateway strips /api/users prefix
 app.MapGet(
-        "/api/users/health",
+        "/health",
         () =>
             Results.Ok(
                 new
@@ -147,8 +148,9 @@ app.MapGet(
     .WithOpenApi();
 
 // Database health endpoint
+// Path is /health/db because API Gateway strips /api/users prefix
 app.MapGet(
-        "/api/users/health/db",
+        "/health/db",
         async (UserDbContext context) =>
         {
             try

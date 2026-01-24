@@ -85,7 +85,7 @@ locals {
   cors_header_values = {
     "method.response.header.Access-Control-Allow-Headers"     = "'Content-Type,Authorization,X-Amz-Date,X-Api-Key,X-Amz-Security-Token'"
     "method.response.header.Access-Control-Allow-Methods"     = "'GET,POST,PUT,DELETE,PATCH,OPTIONS'"
-    "method.response.header.Access-Control-Allow-Origin"      = "'https://frogedu.org'"
+    "method.response.header.Access-Control-Allow-Origin"      = "'*'"
     "method.response.header.Access-Control-Allow-Credentials" = "'true'"
   }
 }

@@ -18,6 +18,9 @@ import {
 
 const ApiUrl = import.meta.env.VITE_API_URL
 
+// Health endpoints - axios automatically prepends /api to these paths
+// axios baseURL is configured as {VITE_API_URL}/api
+// So /users/health becomes {VITE_API_URL}/api/users/health
 const healthEndpoints = [
 	{
 		name: 'Content Service',
