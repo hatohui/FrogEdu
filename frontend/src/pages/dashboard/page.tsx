@@ -55,7 +55,7 @@ const DashboardPage = (): React.ReactElement => {
 
 	// Fetch real data using TanStack Query
 	const { data: stats, isLoading: statsLoading } = useDashboardStats()
-	const { data: classes, isLoading: classesLoading } = useClasses(false)
+	const { data: classes } = useClasses(false)
 
 	const recentClasses = classes?.slice(0, 3) || []
 

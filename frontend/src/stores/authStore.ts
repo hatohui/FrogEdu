@@ -17,6 +17,7 @@ interface UserProfile {
 	family_name?: string
 	picture?: string
 	username?: string
+	'custom:role'?: string
 }
 
 interface AuthState {

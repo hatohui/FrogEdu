@@ -49,6 +49,7 @@ export interface ClassDetailsDto {
 	description?: string
 	teacherId: string
 	teacherName: string
+	homeroomTeacherId?: string
 	studentCount: number
 	maxStudents?: number
 	inviteCode?: string
@@ -59,6 +60,10 @@ export interface ClassDetailsDto {
 }
 
 export interface DashboardStatsDto {
+	classCount: number
+	examCount: number
+	studentCount: number
+	contentItemCount: number
 	totalClasses: number
 	totalStudents: number
 	activeClasses: number

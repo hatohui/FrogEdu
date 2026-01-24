@@ -20,9 +20,9 @@ export const classKeys = {
 /**
  * Hook to fetch all classes for the current user
  */
-export function useClasses() {
+export function useClasses(includeArchived?: boolean) {
 	return useQuery<ClassDto[], Error>({
-		queryKey: classKeys.list(),
+		queryKey: classKeys.list(includeArchived),
 		queryFn: () => classService.getMyClasses(),
 	})
 }
