@@ -2,61 +2,19 @@
 # CloudFront Module - CDN for API Gateway
 # =============================================================================
 
-terraform {
-  required_providers {
-    aws = {
-      source                = "hashicorp/aws"
-      version               = ">= 5.0"
-      configuration_aliases = [aws.us_east_1]
-    }
-  }
-}
-
-# ACM Certificate for custom domain (must be in us-east-1 for CloudFront)
-resource "aws_acm_certificate" "api" {
-  count = var.custom_domain != "" ? 1 : 0
-
-  provider          = aws.us_east_1
-  domain_name       = var.custom_domain
-  validation_method = "DNS"
-
-  lifecycle {
-    create_before_destroy = true
-  }
-
-  tags = {
-    Name        = "${var.project_name}-${var.environment}-api-cert"
-    Environment = var.environment
-    Project     = var.project_name
-  }
-}
-
-# ACM Certificate Validation (waits for DNS validation to complete)
-resource "aws_acm_certificate_validation" "api" {
-  count = var.custom_domain != "" ? 1 : 0
-
-  provider                = aws.us_east_1
-  certificate_arn         = aws_acm_certificate.api[0].arn
-  validation_record_fqdns = [for dvo in aws_acm_certificate.api[0].domain_validation_options : dvo.resource_record_name]
-
-  timeouts {
-    create = "30m"
-  }
-}
-
 resource "aws_cloudfront_distribution" "api" {
   enabled             = true
   is_ipv6_enabled     = true
-  comment             = "${var.project_name}-${var.environment} API CDN"
+  comment             = "${var.project_name} API CDN"
   price_class         = "PriceClass_All"
   wait_for_deployment = false
   aliases             = var.custom_domain != "" ? [var.custom_domain] : []
   web_acl_id          = var.web_acl_id
 
   origin {
-    domain_name = var.api_gateway_domain # execute-api domain
+    domain_name = var.api_gateway_domain
     origin_id   = "apigateway"
-    origin_path = "/${var.api_gateway_stage}"
+    origin_path = "/api"
 
     custom_origin_config {
       http_port              = 80
@@ -78,12 +36,8 @@ resource "aws_cloudfront_distribution" "api" {
     cached_methods         = ["GET", "HEAD", "OPTIONS"]
     compress               = true
 
-    # Use managed cache policy (CachingDisabled for API)
-    cache_policy_id = "4135ea2d-6df8-44a3-9df3-4b5a84be39ad"
-
-    # Use managed origin request policy (AllViewer)
-    origin_request_policy_id = "59781a5b-3903-41f3-afcb-af62929ccde1"
-
+    cache_policy_id            = "4135ea2d-6df8-44a3-9df3-4b5a84be39ad"
+    origin_request_policy_id   = "59781a5b-3903-41f3-afcb-af62929ccde1"
     response_headers_policy_id = "5cc3b908-e619-4b99-88e5-2cf7f45965bd"
   }
 
@@ -101,8 +55,8 @@ resource "aws_cloudfront_distribution" "api" {
   }
 
   tags = {
-    Name        = "${var.project_name}-${var.environment}-api-cdn"
-    Environment = var.environment
+    Name        = "${var.project_name}-api-cdn"
+    Environment = var.project_name
     Project     = var.project_name
   }
 

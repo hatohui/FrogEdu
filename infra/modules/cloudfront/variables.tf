@@ -7,18 +7,8 @@ variable "project_name" {
   type        = string
 }
 
-variable "environment" {
-  description = "Environment name (e.g., dev, staging, production)"
-  type        = string
-}
-
 variable "api_gateway_domain" {
   description = "Domain name of the API Gateway origin"
-  type        = string
-}
-
-variable "api_gateway_stage" {
-  description = "API Gateway stage name to use as origin path"
   type        = string
 }
 

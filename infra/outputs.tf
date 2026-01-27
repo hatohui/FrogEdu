@@ -16,16 +16,19 @@ output "aws_region" {
 # API Gateway
 # =============================================================================
 
-output "api_gateway_url" {
-  description = "API Gateway invoke URL"
-  value       = "https://${module.api_gateway.api_domain}/${local.environment}"
-}
-
 output "api_gateway_id" {
   description = "API Gateway REST API ID"
-  value       = module.api_gateway.api_id
+  value       = module.api_gateway.api_gateway_id
+}
+output "api_gateway_endpoint" {
+  description = "API Gateway invoke URL (with stage)"
+  value       = aws_api_gateway_stage.root.invoke_url
 }
 
+output "api_gateway_domain" {
+  description = "API Gateway domain name (for CloudFront origin)"
+  value       = replace(aws_api_gateway_stage.root.invoke_url, "https://", "")
+}
 output "custom_api_url" {
   description = "Custom API URL (use this)"
   value       = "https://api.frogedu.org/api"

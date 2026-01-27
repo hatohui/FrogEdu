@@ -2,7 +2,6 @@
 # Core Infrastructure Modules
 # =============================================================================
 
-# Cognito User Pool for authentication
 module "cognito" {
   source = "./modules/cognito"
 
@@ -14,7 +13,6 @@ module "cognito" {
   google_client_secret = try(data.doppler_secrets.this.map.GOOGLE_CLIENT_SECRET, "placeholder-secret")
 }
 
-# IAM roles and policies
 module "iam" {
   source = "./modules/iam"
 
@@ -23,17 +21,14 @@ module "iam" {
   github_repo  = try(data.doppler_secrets.this.map.TF_GITHUB_REPO, "*")
 }
 
-# API Gateway REST API
 module "api_gateway" {
   source = "./modules/api-gateway"
 
-  project_name         = local.project_name
-  environment          = local.environment
-  cognito_user_pool    = module.cognito.user_pool
-  origin_verify_secret = try(data.doppler_secrets.this.map.CLOUDFRONT_ORIGIN_VERIFY_SECRET, "")
+  project_name          = local.project_name
+  cognito_user_pool_arn = module.cognito.user_pool_arn
+  origin_verify_secret  = data.doppler_secrets.this.map.CLOUDFRONT_ORIGIN_VERIFY_SECRET
 }
 
-# CloudFront CDN
 module "cloudfront" {
   source = "./modules/cloudfront"
 
@@ -42,15 +37,12 @@ module "cloudfront" {
   }
 
   project_name         = local.project_name
-  environment          = local.environment
-  api_gateway_domain   = module.api_gateway.api_domain
-  api_gateway_stage    = local.environment
+  api_gateway_domain   = replace(aws_api_gateway_stage.root.invoke_url, "https://", "")
   origin_verify_secret = try(data.doppler_secrets.this.map.CLOUDFRONT_ORIGIN_VERIFY_SECRET, "temp-secret-${local.environment}")
   custom_domain        = local.api_domain                                                                                                       # Custom domain for CloudFront distribution
   web_acl_id           = "arn:aws:wafv2:us-east-1:630633962130:global/webacl/CreatedByCloudFront-3152e2ae/a30508da-915f-4206-91a5-eb034e211fb1" # Required by flat-rate pricing plan
 }
 
-# ECR Repositories for Lambda Container Images
 module "ecr" {
   source = "./modules/ecr"
 
@@ -89,7 +81,6 @@ module "ecr" {
 # Lambda Functions - Containerized Microservices
 # =============================================================================
 
-# Content Service Lambda
 module "content_lambda" {
   source = "./modules/lambda-container"
 
@@ -109,14 +100,13 @@ module "content_lambda" {
   }
 
   # API Gateway integration
-  api_gateway_id            = module.api_gateway.api_id
-  api_gateway_root_id       = module.api_gateway.api_resource_id # Use /api as parent
+  api_gateway_id            = module.api_gateway.api_gateway_id
+  api_gateway_root_id       = module.api_gateway.api_resource_id
   api_gateway_execution_arn = module.api_gateway.execution_arn
   cognito_authorizer_id     = module.api_gateway.cognito_authorizer_id
   request_validator_id      = module.api_gateway.request_validator_id
-  origin_verify_secret      = try(data.doppler_secrets.this.map.CLOUDFRONT_ORIGIN_VERIFY_SECRET, "")
+  origin_verify_secret      = data.doppler_secrets.this.map.CLOUDFRONT_ORIGIN_VERIFY_SECRET
 
-  # Use proxy+ to strip /api/contents prefix - Lambda receives only the sub-path
   routes = [
     {
       path          = "contents/{proxy+}"
@@ -146,12 +136,12 @@ module "user_lambda" {
   }
 
   # API Gateway integration
-  api_gateway_id            = module.api_gateway.api_id
-  api_gateway_root_id       = module.api_gateway.api_resource_id # Use /api as parent
+  api_gateway_id            = module.api_gateway.api_gateway_id
+  api_gateway_root_id       = module.api_gateway.api_resource_id
   api_gateway_execution_arn = module.api_gateway.execution_arn
   cognito_authorizer_id     = module.api_gateway.cognito_authorizer_id
   request_validator_id      = module.api_gateway.request_validator_id
-  origin_verify_secret      = try(data.doppler_secrets.this.map.CLOUDFRONT_ORIGIN_VERIFY_SECRET, "")
+  origin_verify_secret      = data.doppler_secrets.this.map.CLOUDFRONT_ORIGIN_VERIFY_SECRET
 
   # Use proxy+ to strip /api/users prefix - Lambda receives only the sub-path
   routes = [
@@ -182,15 +172,13 @@ module "assessment_lambda" {
     ASPNETCORE_ENVIRONMENT = local.environment
   }
 
-  # API Gateway integration
-  api_gateway_id            = module.api_gateway.api_id
-  api_gateway_root_id       = module.api_gateway.api_resource_id # Use /api as parent
+  api_gateway_id            = module.api_gateway.api_gateway_id
+  api_gateway_root_id       = module.api_gateway.api_resource_id
   api_gateway_execution_arn = module.api_gateway.execution_arn
   cognito_authorizer_id     = module.api_gateway.cognito_authorizer_id
   request_validator_id      = module.api_gateway.request_validator_id
-  origin_verify_secret      = try(data.doppler_secrets.this.map.CLOUDFRONT_ORIGIN_VERIFY_SECRET, "")
+  origin_verify_secret      = data.doppler_secrets.this.map.CLOUDFRONT_ORIGIN_VERIFY_SECRET
 
-  # Use proxy+ to strip /api/assessments prefix - Lambda receives only the sub-path
   routes = [
     {
       path          = "assessments/{proxy+}"
@@ -220,14 +208,13 @@ module "ai_lambda" {
   }
 
   # API Gateway integration
-  api_gateway_id            = module.api_gateway.api_id
-  api_gateway_root_id       = module.api_gateway.api_resource_id # Use /api as parent
+  api_gateway_id            = module.api_gateway.api_gateway_id
+  api_gateway_root_id       = module.api_gateway.api_resource_id
   api_gateway_execution_arn = module.api_gateway.execution_arn
   cognito_authorizer_id     = module.api_gateway.cognito_authorizer_id
   request_validator_id      = module.api_gateway.request_validator_id
-  origin_verify_secret      = try(data.doppler_secrets.this.map.CLOUDFRONT_ORIGIN_VERIFY_SECRET, "")
+  origin_verify_secret      = data.doppler_secrets.this.map.CLOUDFRONT_ORIGIN_VERIFY_SECRET
 
-  # Use proxy+ to strip /api/ai prefix - Lambda receives only the sub-path
   routes = [
     {
       path          = "ai/{proxy+}"
@@ -242,17 +229,15 @@ module "ai_lambda" {
 # =============================================================================
 
 resource "aws_api_gateway_deployment" "main" {
-  rest_api_id = module.api_gateway.api_id
+  rest_api_id = module.api_gateway.api_gateway_id
 
   triggers = {
-    # Redeploy when Lambda integrations or CORS configuration change
     redeployment = sha1(jsonencode([
       module.user_lambda.function_arn,
       module.content_lambda.function_arn,
       module.assessment_lambda.function_arn,
       module.ai_lambda.function_arn,
-      # Include CORS resource IDs to trigger redeployment when OPTIONS methods change
-      "cors-v3", # Increment this version to force redeployment of CORS changes
+      "cors-v3",
     ]))
   }
 
@@ -269,10 +254,38 @@ resource "aws_api_gateway_deployment" "main" {
   ]
 }
 
-resource "aws_api_gateway_stage" "main" {
+# Root stage (empty stage name = "")
+# This allows URLs like: https://api-id.execute-api.region.amazonaws.com/api/users/health
+# CloudFront sits in front with custom domain: api.frogedu.org/api/users/health
+resource "aws_api_gateway_stage" "root" {
   deployment_id = aws_api_gateway_deployment.main.id
-  rest_api_id   = module.api_gateway.api_id
-  stage_name    = local.environment
+  rest_api_id   = module.api_gateway.api_gateway_id
+  stage_name    = ""
 
-  depends_on = [aws_api_gateway_deployment.main]
+  xray_tracing_enabled = false
+
+  tags = {
+    Name        = "${local.project_name}-api-root-stage"
+    Environment = local.environment
+  }
+}
+
+# Method Settings for all routes
+resource "aws_api_gateway_method_settings" "all" {
+  rest_api_id = module.api_gateway.api_gateway_id
+  stage_name  = aws_api_gateway_stage.root.stage_name
+  method_path = "*/*"
+
+  settings {
+    # Throttling settings (within free tier)
+    throttling_burst_limit = 5000
+    throttling_rate_limit  = 10000
+
+    # Disable detailed CloudWatch metrics to stay in free tier
+    metrics_enabled = false
+    logging_level   = "OFF"
+
+    # Caching disabled (not needed with CloudFront in front)
+    caching_enabled = false
+  }
 }
