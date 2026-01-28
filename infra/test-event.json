@@ -1,0 +1,19 @@
+{
+  "resource": "/api/users/health",
+  "path": "/api/users/health",
+  "httpMethod": "GET",
+  "headers": {},
+  "queryStringParameters": null,
+  "pathParameters": null,
+  "stageVariables": null,
+  "requestContext": {
+    "path": "/prod/api/users/health",
+    "stage": "prod",
+    "requestId": "test-request-id",
+    "identity": {
+      "sourceIp": "127.0.0.1"
+    }
+  },
+  "body": null,
+  "isBase64Encoded": false
+}

@@ -8,7 +8,7 @@ WORKDIR /src/Services/AI
 RUN dotnet restore AI.API/FrogEdu.AI.API.csproj
 RUN dotnet publish AI.API/FrogEdu.AI.API.csproj -c Release -o /app/publish
 
-FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS runtime
-WORKDIR /app
+FROM public.ecr.aws/lambda/dotnet:9 AS runtime
+WORKDIR /var/task
 COPY --from=build /app/publish .
-ENTRYPOINT ["dotnet", "FrogEdu.AI.API.dll"]
+CMD ["FrogEdu.AI.API"]

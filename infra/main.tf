@@ -36,9 +36,7 @@ module "cloudfront" {
     aws.us_east_1 = aws.us_east_1
   }
 
-  project_name = local.project_name
-  # Extract domain name from invoke_url: https://abc123.execute-api.region.amazonaws.com/prod
-  # Remove https:// and everything after the domain (including /prod)
+  project_name         = local.project_name
   api_gateway_domain   = regex("^https://([^/]+)", aws_api_gateway_stage.root.invoke_url)[0]
   origin_verify_secret = try(data.doppler_secrets.this.map.CLOUDFRONT_ORIGIN_VERIFY_SECRET, "temp-secret-${local.environment}")
   custom_domain        = local.api_domain                                                                                                       # Custom domain for CloudFront distribution

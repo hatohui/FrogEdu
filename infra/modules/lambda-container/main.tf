@@ -97,64 +97,152 @@ resource "aws_api_gateway_resource" "service" {
 
 # Preserve existing API Gateway resources from previous module layout
 moved {
-  from = aws_api_gateway_resource.resources["api/users"]
+  from = aws_api_gateway_resource.intermediates["users"]
   to   = aws_api_gateway_resource.service["users"]
 }
 
 moved {
-  from = aws_api_gateway_resource.resources["api/users/health"]
-  to   = aws_api_gateway_resource.health["users"]
-}
-
-moved {
-  from = aws_api_gateway_resource.resources["api/users/health/db"]
-  to   = aws_api_gateway_resource.health_db["users"]
-}
-
-moved {
-  from = aws_api_gateway_resource.resources["api/contents"]
+  from = aws_api_gateway_resource.intermediates["contents"]
   to   = aws_api_gateway_resource.service["contents"]
 }
 
 moved {
-  from = aws_api_gateway_resource.resources["api/contents/health"]
-  to   = aws_api_gateway_resource.health["contents"]
-}
-
-moved {
-  from = aws_api_gateway_resource.resources["api/contents/health/db"]
-  to   = aws_api_gateway_resource.health_db["contents"]
-}
-
-moved {
-  from = aws_api_gateway_resource.resources["api/assessments"]
+  from = aws_api_gateway_resource.intermediates["assessments"]
   to   = aws_api_gateway_resource.service["assessments"]
 }
 
 moved {
-  from = aws_api_gateway_resource.resources["api/assessments/health"]
-  to   = aws_api_gateway_resource.health["assessments"]
-}
-
-moved {
-  from = aws_api_gateway_resource.resources["api/assessments/health/db"]
-  to   = aws_api_gateway_resource.health_db["assessments"]
-}
-
-moved {
-  from = aws_api_gateway_resource.resources["api/ai"]
+  from = aws_api_gateway_resource.intermediates["ai"]
   to   = aws_api_gateway_resource.service["ai"]
 }
 
+# Preserve existing API Gateway methods from previous module layout
 moved {
-  from = aws_api_gateway_resource.resources["api/ai/health"]
-  to   = aws_api_gateway_resource.health["ai"]
+  from = aws_api_gateway_method.options_intermediate["users"]
+  to   = aws_api_gateway_method.options_resources["api/users"]
 }
 
 moved {
-  from = aws_api_gateway_resource.resources["api/ai/health/db"]
-  to   = aws_api_gateway_resource.health_db["ai"]
+  from = aws_api_gateway_method.options_intermediate["contents"]
+  to   = aws_api_gateway_method.options_resources["api/contents"]
 }
+
+moved {
+  from = aws_api_gateway_method.options_intermediate["assessments"]
+  to   = aws_api_gateway_method.options_resources["api/assessments"]
+}
+
+moved {
+  from = aws_api_gateway_method.options_intermediate["ai"]
+  to   = aws_api_gateway_method.options_resources["api/ai"]
+}
+
+moved {
+  from = aws_api_gateway_method.routes["api/users/{proxy+}"]
+  to   = aws_api_gateway_method.proxy_routes["api/users/{proxy+}"]
+}
+
+moved {
+  from = aws_api_gateway_method.routes["api/contents/{proxy+}"]
+  to   = aws_api_gateway_method.proxy_routes["api/contents/{proxy+}"]
+}
+
+moved {
+  from = aws_api_gateway_method.routes["api/assessments/{proxy+}"]
+  to   = aws_api_gateway_method.proxy_routes["api/assessments/{proxy+}"]
+}
+
+moved {
+  from = aws_api_gateway_method.routes["api/ai/{proxy+}"]
+  to   = aws_api_gateway_method.proxy_routes["api/ai/{proxy+}"]
+}
+
+# Preserve existing API Gateway integrations from previous module layout
+moved {
+  from = aws_api_gateway_integration.options_intermediate["users"]
+  to   = aws_api_gateway_integration.options_resources["api/users"]
+}
+
+moved {
+  from = aws_api_gateway_integration.options_intermediate["contents"]
+  to   = aws_api_gateway_integration.options_resources["api/contents"]
+}
+
+moved {
+  from = aws_api_gateway_integration.options_intermediate["assessments"]
+  to   = aws_api_gateway_integration.options_resources["api/assessments"]
+}
+
+moved {
+  from = aws_api_gateway_integration.options_intermediate["ai"]
+  to   = aws_api_gateway_integration.options_resources["api/ai"]
+}
+
+moved {
+  from = aws_api_gateway_integration.routes["api/users/{proxy+}"]
+  to   = aws_api_gateway_integration.proxy_routes["api/users/{proxy+}"]
+}
+
+moved {
+  from = aws_api_gateway_integration.routes["api/contents/{proxy+}"]
+  to   = aws_api_gateway_integration.proxy_routes["api/contents/{proxy+}"]
+}
+
+moved {
+  from = aws_api_gateway_integration.routes["api/assessments/{proxy+}"]
+  to   = aws_api_gateway_integration.proxy_routes["api/assessments/{proxy+}"]
+}
+
+moved {
+  from = aws_api_gateway_integration.routes["api/ai/{proxy+}"]
+  to   = aws_api_gateway_integration.proxy_routes["api/ai/{proxy+}"]
+}
+
+# Preserve existing API Gateway method responses from previous module layout
+moved {
+  from = aws_api_gateway_method_response.options_intermediate_200["users"]
+  to   = aws_api_gateway_method_response.options_resources_200["api/users"]
+}
+
+moved {
+  from = aws_api_gateway_method_response.options_intermediate_200["contents"]
+  to   = aws_api_gateway_method_response.options_resources_200["api/contents"]
+}
+
+moved {
+  from = aws_api_gateway_method_response.options_intermediate_200["assessments"]
+  to   = aws_api_gateway_method_response.options_resources_200["api/assessments"]
+}
+
+moved {
+  from = aws_api_gateway_method_response.options_intermediate_200["ai"]
+  to   = aws_api_gateway_method_response.options_resources_200["api/ai"]
+}
+
+
+
+# Preserve existing API Gateway integration responses from previous module layout
+moved {
+  from = aws_api_gateway_integration_response.options_intermediate_200["users"]
+  to   = aws_api_gateway_integration_response.options_resources_200["api/users"]
+}
+
+moved {
+  from = aws_api_gateway_integration_response.options_intermediate_200["contents"]
+  to   = aws_api_gateway_integration_response.options_resources_200["api/contents"]
+}
+
+moved {
+  from = aws_api_gateway_integration_response.options_intermediate_200["assessments"]
+  to   = aws_api_gateway_integration_response.options_resources_200["api/assessments"]
+}
+
+moved {
+  from = aws_api_gateway_integration_response.options_intermediate_200["ai"]
+  to   = aws_api_gateway_integration_response.options_resources_200["api/ai"]
+}
+
+
 
 # Create /api/{service}/health resources
 resource "aws_api_gateway_resource" "health" {
@@ -418,10 +506,10 @@ resource "aws_api_gateway_integration_response" "options_proxy_200" {
 resource "aws_lambda_permission" "api_gateway" {
   for_each = { for idx, route in var.routes : route.path => route }
 
-  statement_id  = "AllowAPIGatewayInvoke-${replace(replace(replace(replace(each.value.path, "/", "-"), "{", ""), "}", ""), "+", "plus")}"
-  action        = "lambda:InvokeFunction"
-  function_name = aws_lambda_function.this.function_name
-  principal     = "apigateway.amazonaws.com"
+  statement_id_prefix = "AllowAPIGatewayInvoke-${replace(replace(replace(replace(each.value.path, "/", "-"), "{", ""), "}", ""), "+", "plus")}-"
+  action              = "lambda:InvokeFunction"
+  function_name       = aws_lambda_function.this.function_name
+  principal           = "apigateway.amazonaws.com"
 
   source_arn = "${var.api_gateway_execution_arn}/*/*"
 }

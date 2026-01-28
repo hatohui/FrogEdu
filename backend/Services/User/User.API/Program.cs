@@ -118,7 +118,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+// HTTPS termination is handled by CloudFront and API Gateway
+// app.UseHttpsRedirection();
 app.UseRouting();
 
 // Use Lambda-specific CORS middleware for API Gateway Lambda proxy integration
@@ -128,6 +129,23 @@ app.UseCors("AllowSpecificOrigins");
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+// Log all incoming requests for debugging
+app.Use(
+    async (context, next) =>
+    {
+        var logger = context.RequestServices.GetRequiredService<ILogger<Program>>();
+        logger.LogWarning(
+            "Incoming request: Method={Method}, Path={Path}, PathBase={PathBase}, RawUrl={RawUrl}",
+            context.Request.Method,
+            context.Request.Path,
+            context.Request.PathBase,
+            context.Request.GetEncodedUrl()
+        );
+        await next();
+        logger.LogWarning("Response status: {StatusCode}", context.Response.StatusCode);
+    }
+);
 
 // Map endpoints
 app.MapUserEndpoints();

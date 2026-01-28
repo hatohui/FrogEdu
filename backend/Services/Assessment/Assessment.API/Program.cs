@@ -40,7 +40,8 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 }
 
-app.UseHttpsRedirection();
+// HTTPS termination is handled by CloudFront and API Gateway
+// app.UseHttpsRedirection();
 app.UseRouting();
 
 // Use Lambda-specific CORS middleware for API Gateway Lambda proxy integration

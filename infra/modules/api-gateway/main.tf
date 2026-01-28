@@ -10,7 +10,7 @@ resource "aws_api_gateway_rest_api" "api_gateway" {
     types = ["REGIONAL"]
   }
 
-  disable_execute_api_endpoint = false # Set to true in production
+  disable_execute_api_endpoint = false
 }
 
 # =============================================================================
