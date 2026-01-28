@@ -104,7 +104,6 @@ module "content_lambda" {
   api_gateway_root_id       = module.api_gateway.api_resource_id
   api_gateway_execution_arn = module.api_gateway.execution_arn
   cognito_authorizer_id     = module.api_gateway.cognito_authorizer_id
-  request_validator_id      = module.api_gateway.request_validator_id
   origin_verify_secret      = data.doppler_secrets.this.map.CLOUDFRONT_ORIGIN_VERIFY_SECRET
 
   shared_parent_resources = {
@@ -161,7 +160,6 @@ module "user_lambda" {
   api_gateway_root_id       = module.api_gateway.api_resource_id
   api_gateway_execution_arn = module.api_gateway.execution_arn
   cognito_authorizer_id     = module.api_gateway.cognito_authorizer_id
-  request_validator_id      = module.api_gateway.request_validator_id
   origin_verify_secret      = data.doppler_secrets.this.map.CLOUDFRONT_ORIGIN_VERIFY_SECRET
 
   shared_parent_resources = {
@@ -218,7 +216,6 @@ module "assessment_lambda" {
   api_gateway_root_id       = module.api_gateway.api_resource_id
   api_gateway_execution_arn = module.api_gateway.execution_arn
   cognito_authorizer_id     = module.api_gateway.cognito_authorizer_id
-  request_validator_id      = module.api_gateway.request_validator_id
   origin_verify_secret      = data.doppler_secrets.this.map.CLOUDFRONT_ORIGIN_VERIFY_SECRET
 
   shared_parent_resources = {
@@ -276,7 +273,6 @@ module "ai_lambda" {
   api_gateway_root_id       = module.api_gateway.api_resource_id
   api_gateway_execution_arn = module.api_gateway.execution_arn
   cognito_authorizer_id     = module.api_gateway.cognito_authorizer_id
-  request_validator_id      = module.api_gateway.request_validator_id
   origin_verify_secret      = data.doppler_secrets.this.map.CLOUDFRONT_ORIGIN_VERIFY_SECRET
 
   shared_parent_resources = {
@@ -313,12 +309,10 @@ module "ai_lambda" {
 # =============================================================================
 # API Gateway Deployment and Stage
 # =============================================================================
-# Must be created after all Lambda integrations are configured
 
 resource "aws_api_gateway_deployment" "root" {
   rest_api_id = module.api_gateway.api_gateway_id
 
-  # Depend on all Lambda modules to ensure routes are created first
   depends_on = [
     module.content_lambda,
     module.user_lambda,
@@ -326,7 +320,6 @@ resource "aws_api_gateway_deployment" "root" {
     module.ai_lambda
   ]
 
-  # Trigger redeployment when any Lambda module changes
   triggers = {
     redeployment = sha1(jsonencode([
       module.content_lambda.function_arn,

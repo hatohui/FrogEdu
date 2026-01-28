@@ -271,7 +271,6 @@ resource "aws_api_gateway_resource" "proxies" {
   path_part   = each.value.proxy_part
 }
 
-# Methods for proxy routes (protected endpoints)
 resource "aws_api_gateway_method" "proxy_routes" {
   for_each = local.proxy_route_map
 
@@ -281,9 +280,6 @@ resource "aws_api_gateway_method" "proxy_routes" {
   authorization = each.value.route.auth_required ? "COGNITO_USER_POOLS" : "NONE"
   authorizer_id = each.value.route.auth_required ? var.cognito_authorizer_id : null
 
-  # Require X-Origin-Verify header only for auth-required routes when validation is enabled
-  # This allows health checks and public endpoints to be accessed directly
-  request_validator_id = var.request_validator_id != "" && each.value.route.auth_required ? var.request_validator_id : null
   request_parameters = var.origin_verify_secret != "" && each.value.route.auth_required ? {
     "method.request.header.X-Origin-Verify" = true
   } : {}
@@ -321,7 +317,6 @@ resource "aws_api_gateway_method" "non_proxy_routes" {
   authorization = each.value.auth_required ? "COGNITO_USER_POOLS" : "NONE"
   authorizer_id = each.value.auth_required ? var.cognito_authorizer_id : null
 
-  request_validator_id = var.request_validator_id != "" && each.value.auth_required ? var.request_validator_id : null
   request_parameters = var.origin_verify_secret != "" && each.value.auth_required ? {
     "method.request.header.X-Origin-Verify" = true
   } : {}
@@ -351,7 +346,6 @@ resource "aws_api_gateway_integration" "non_proxy_routes" {
 # =============================================================================
 # CORS OPTIONS Support - Mock Integration (recommended)
 # =============================================================================
-# OPTIONS method for non-proxy resources (e.g., /api/users, /api/users/health)
 resource "aws_api_gateway_method" "options_resources" {
   for_each = toset(keys(local.non_proxy_route_map))
 

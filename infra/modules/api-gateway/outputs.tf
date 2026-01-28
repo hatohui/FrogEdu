@@ -13,11 +13,6 @@ output "api_gateway_id" {
   value       = aws_api_gateway_rest_api.api_gateway.id
 }
 
-output "request_validator_id" {
-  description = "ID of the request validator for API Gateway"
-  value       = aws_api_gateway_request_validator.request_validator.id
-}
-
 output "cognito_authorizer_id" {
   description = "ID of the Cognito authorizer for API Gateway"
   value       = aws_api_gateway_authorizer.cognito.id
