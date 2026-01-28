@@ -100,3 +100,67 @@ module "content_service" {
     ASPNETCORE_ENVIRONMENT = "Production"
   }
 }
+
+module "user_service" {
+  source = "./modules/microservice"
+
+  service_name              = "users"
+  project_name              = local.project_name
+  lambda_role_arn           = module.iam.lambda_execution_role.arn
+  ecr_repository            = module.ecr.repository_urls["user-api"]
+  api_gateway_id            = module.api_gateway.api_gateway_id
+  api_gateway_execution_arn = module.api_gateway.api_gateway_execution_arn
+  cognito_authorizer_id     = module.api_gateway.cognito_authorizer_id
+
+  no_auth_routes = [
+    "/health",
+    "/swagger/{proxy+}",
+  ]
+
+  environment_variables = {
+    ASPNETCORE_ENVIRONMENT = "Production"
+  }
+}
+
+module "assessment_service" {
+  source = "./modules/microservice"
+
+  service_name              = "assessments"
+  project_name              = local.project_name
+  lambda_role_arn           = module.iam.lambda_execution_role.arn
+  ecr_repository            = module.ecr.repository_urls["assessment-api"]
+  api_gateway_id            = module.api_gateway.api_gateway_id
+  api_gateway_execution_arn = module.api_gateway.api_gateway_execution_arn
+  cognito_authorizer_id     = module.api_gateway.cognito_authorizer_id
+
+  no_auth_routes = [
+    "/health",
+    "/swagger/{proxy+}",
+  ]
+
+  environment_variables = {
+    ASPNETCORE_ENVIRONMENT = "Production"
+  }
+}
+
+
+module "ai_service" {
+  source = "./modules/microservice"
+
+  service_name              = "ai"
+  project_name              = local.project_name
+  lambda_role_arn           = module.iam.lambda_execution_role.arn
+  ecr_repository            = module.ecr.repository_urls["ai-api"]
+  api_gateway_id            = module.api_gateway.api_gateway_id
+  api_gateway_execution_arn = module.api_gateway.api_gateway_execution_arn
+  cognito_authorizer_id     = module.api_gateway.cognito_authorizer_id
+
+  no_auth_routes = [
+    "/health",
+    "/swagger/{proxy+}",
+  ]
+
+  environment_variables = {
+    ASPNETCORE_ENVIRONMENT = "Production"
+  }
+}

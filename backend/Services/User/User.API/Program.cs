@@ -1,5 +1,6 @@
 using FrogEdu.Shared.Kernel;
 using FrogEdu.User.API.Endpoints;
+using FrogEdu.User.API.Middleware;
 using FrogEdu.User.Application;
 using FrogEdu.User.Infrastructure;
 using FrogEdu.User.Infrastructure.Persistence;
@@ -10,7 +11,7 @@ using Microsoft.IdentityModel.Tokens;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container
-builder.Services.AddOpenApi();
+builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
@@ -87,167 +88,56 @@ builder.Services.AddAuthorization(options =>
     );
 });
 
-// Add CORS
-builder.Services.AddCors(options =>
+if (builder.Environment.IsDevelopment())
 {
-    options.AddPolicy(
-        "AllowSpecificOrigins",
-        policy =>
-        {
-            policy
-                .WithOrigins(
-                    "http://localhost:5173",
-                    "http://localhost:5174",
-                    "https://frogedu.org",
-                    "https://www.frogedu.org"
-                )
-                .AllowAnyMethod()
-                .AllowAnyHeader()
-                .AllowCredentials();
-        }
-    );
-});
+    builder.Services.AddCors(options =>
+    {
+        options.AddDefaultPolicy(policy =>
+            policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader()
+        );
+    });
+}
 
 var app = builder.Build();
+
+app.UsePathPrefixRewrite("/api/users");
 
 // Configure the HTTP request pipeline
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
-// HTTPS termination is handled by CloudFront and API Gateway
-// app.UseHttpsRedirection();
 app.UseRouting();
 
-// Use Lambda-specific CORS middleware for API Gateway Lambda proxy integration
-app.UseLambdaCors();
-
-app.UseCors("AllowSpecificOrigins");
+if (app.Environment.IsDevelopment())
+{
+    app.UseCors();
+}
 
 app.UseAuthentication();
 app.UseAuthorization();
-
-// Log all incoming requests for debugging
-app.Use(
-    async (context, next) =>
-    {
-        var logger = context.RequestServices.GetRequiredService<ILogger<Program>>();
-        logger.LogWarning(
-            "Incoming request: Method={Method}, Path={Path}, PathBase={PathBase}, RawUrl={RawUrl}",
-            context.Request.Method,
-            context.Request.Path,
-            context.Request.PathBase,
-            context.Request.GetEncodedUrl()
-        );
-        await next();
-        logger.LogWarning("Response status: {StatusCode}", context.Response.StatusCode);
-    }
-);
 
 // Map endpoints
 app.MapUserEndpoints();
 app.MapAuthEndpoints();
 app.MapClassEndpoints();
 
-// Health check endpoint
-// Path is /health because API Gateway strips /api/users prefix
 app.MapGet(
-        "/health",
-        () =>
-            Results.Ok(
-                new
-                {
-                    status = "healthy",
-                    service = "user-api",
-                    timestamp = DateTime.UtcNow,
-                }
-            )
-    )
-    .WithName("HealthCheck")
-    .WithTags("Health")
-    .WithOpenApi();
-
-// Explicit public health endpoint for API Gateway /api/users/health (no auth)
-app.MapGet(
-        "/api/users/health",
-        () =>
-            Results.Ok(
-                new
-                {
-                    status = "healthy",
-                    service = "user-api",
-                    timestamp = DateTime.UtcNow,
-                }
-            )
-    )
-    .WithName("HealthCheckPublic")
-    .WithTags("Health")
-    .WithOpenApi();
-
-// Database health endpoint
-// Path is /health/db because API Gateway strips /api/users prefix
-app.MapGet(
-        "/health/db",
-        async (UserDbContext context) =>
-        {
-            try
+    "/health",
+    () =>
+        Results.Ok(
+            new
             {
-                var canConnect = await context.Database.CanConnectAsync();
-
-                return canConnect
-                    ? Results.Ok(
-                        new
-                        {
-                            status = "healthy",
-                            service = "user-db",
-                            timestamp = DateTime.UtcNow,
-                        }
-                    )
-                    : Results.Problem(title: "Database not reachable", statusCode: 503);
+                status = "healthy",
+                service = "user-api",
+                timestamp = DateTime.UtcNow,
             }
-            catch (Exception ex)
-            {
-                return Results.Problem(title: ex.Message, statusCode: 500);
-            }
-        }
-    )
-    .WithName("HealthCheckDb")
-    .WithTags("Health")
-    .WithOpenApi();
+        )
+);
 
-// Explicit public DB health endpoint for API Gateway /api/users/health/db (no auth)
-app.MapGet(
-        "/api/users/health/db",
-        async (UserDbContext context) =>
-        {
-            try
-            {
-                var canConnect = await context.Database.CanConnectAsync();
-
-                return canConnect
-                    ? Results.Ok(
-                        new
-                        {
-                            status = "healthy",
-                            service = "user-db",
-                            timestamp = DateTime.UtcNow,
-                        }
-                    )
-                    : Results.Problem(title: "Database not reachable", statusCode: 503);
-            }
-            catch (Exception ex)
-            {
-                return Results.Problem(title: ex.Message, statusCode: 500);
-            }
-        }
-    )
-    .WithName("HealthCheckDbPublic")
-    .WithTags("Health")
-    .WithOpenApi();
-
+app.MapControllers();
 app.Run();
 
 // Make Program class accessible for integration tests
