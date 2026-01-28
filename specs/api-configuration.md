@@ -52,17 +52,17 @@ The API Gateway directs to userService because of `/users` and (for proxy routes
 
 ### Protected Proxy Routes (JWT required)
 
-For all protected endpoints, API Gateway uses `{proxy+}` and strips `/api/{service}` so the Lambda receives the inner path.
+For all protected endpoints, API Gateway uses `{proxy+}`. With **AWS_PROXY** integration, the full path is passed to the Lambda. The backend application must handle the full path `/api/{service}/{...}`.
 
-| Frontend Calls       | API Gateway Routes To | Lambda Receives | Backend Must Define |
-| -------------------- | --------------------- | --------------- | ------------------- |
-| `/api/users/me`      | user-api Lambda       | `/me`           | `/me`               |
-| `/api/contents/list` | content-api Lambda    | `/list`         | `/list`             |
-| `/api/ai/chat`       | ai-api Lambda         | `/chat`         | `/chat`             |
+| Frontend Calls       | API Gateway Routes To | Lambda Receives      | Backend Must Define  |
+| -------------------- | --------------------- | -------------------- | -------------------- |
+| `/api/users/me`      | user-api Lambda       | `/api/users/me`      | `/api/users/me`      |
+| `/api/contents/list` | content-api Lambda    | `/api/contents/list` | `/api/contents/list` |
+| `/api/ai/chat`       | ai-api Lambda         | `/api/ai/chat`       | `/api/ai/chat`       |
 
 ### Public Health Routes (no auth)
 
-Health endpoints are exposed via explicit public routes. These do **not** strip the prefix, so Lambdas receive the full path and must also handle `/api/{service}/health` and `/api/{service}/health/db`.
+Health endpoints are exposed via explicit public routes. These also pass the full path.
 
 | Frontend Calls               | API Gateway Routes To | Lambda Receives              | Backend Must Define          |
 | ---------------------------- | --------------------- | ---------------------------- | ---------------------------- |
@@ -76,8 +76,6 @@ Health endpoints are exposed via explicit public routes. These do **not** strip 
 
 Each service exposes:
 
-- `/health` - Basic service health check (no auth required, proxy routes)
-- `/health/db` - Database connectivity check (no auth required, proxy routes)
 - `/api/{service}/health` - Public health check (no auth required)
 - `/api/{service}/health/db` - Public DB health check (no auth required)
 
@@ -91,8 +89,8 @@ apiClient.get("/users/health");
 // Axios makes request to:
 // https://api.frogedu.org/api/users/health
 
-// API Gateway receives and routes based on /users
-// Lambda receives: /health (prefix stripped)
+// API Gateway routes to user-api Lambda
+// Lambda receives: /api/users/health
 ```
 
 ## Available Services
