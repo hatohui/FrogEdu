@@ -13,7 +13,7 @@ resource "aws_cloudfront_distribution" "api" {
   origin {
     domain_name = replace(var.api_gateway_domain, "https://", "")
     origin_id   = "apigateway"
-    origin_path = "/prod"
+    origin_path = ""
 
     custom_origin_config {
       http_port              = 80

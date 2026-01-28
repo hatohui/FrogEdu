@@ -84,6 +84,18 @@ output "github_oidc_provider_arn" {
   value       = module.iam.github_oidc_provider_arn
 }
 
+# =============================================================================
+# API Gateway
+# =============================================================================
+output "api_gateway_domain" {
+  description = "Domain name of the API Gateway"
+  value       = module.api_gateway.api_gateway_domain
+}
+
+output "api_gateway_id" {
+  description = "ID of the API Gateway"
+  value       = module.api_gateway.api_gateway_id
+}
 
 # =============================================================================
 # Frontend Environment Variables

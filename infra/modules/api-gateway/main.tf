@@ -12,3 +12,8 @@ resource "aws_apigatewayv2_api" "api_gateway" {
   disable_execute_api_endpoint = false
 }
 
+resource "aws_apigatewayv2_stage" "default" {
+  api_id      = aws_apigatewayv2_api.api_gateway.id
+  name        = "$default"
+  auto_deploy = true
+}

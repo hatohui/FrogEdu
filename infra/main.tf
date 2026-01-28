@@ -75,3 +75,18 @@ module "ecr" {
     }
   }
 }
+
+module "content_service" {
+  source = "./modules/microservice"
+
+  service_name              = "contents"
+  project_name              = local.project_name
+  lambda_role_arn           = module.iam.lambda_execution_role.arn
+  ecr_repository            = module.ecr.repository_urls["content-api"]
+  api_gateway_id            = module.api_gateway.api_gateway_id
+  api_gateway_execution_arn = module.api_gateway.api_gateway_execution_arn
+
+  environment_variables = {
+    ASPNETCORE_ENVIRONMENT = "Production"
+  }
+}

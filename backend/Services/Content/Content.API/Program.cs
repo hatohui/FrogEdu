@@ -21,6 +21,26 @@ if (builder.Environment.IsDevelopment())
 
 var app = builder.Build();
 
+// Middleware to strip /api/content prefix from request path
+app.Use(
+    async (context, next) =>
+    {
+        var path = context.Request.Path.Value ?? "";
+        var prefix = "/api/contents";
+
+        if (path.StartsWith(prefix, StringComparison.OrdinalIgnoreCase))
+        {
+            context.Request.Path = path.Substring(prefix.Length);
+            if (string.IsNullOrEmpty(context.Request.Path.Value))
+            {
+                context.Request.Path = "/";
+            }
+        }
+
+        await next();
+    }
+);
+
 app.UseRouting();
 app.UseSwagger();
 app.UseSwaggerUI();
