@@ -21,7 +21,6 @@ if (builder.Environment.IsDevelopment())
 
 var app = builder.Build();
 
-// Middleware to strip /api/content prefix from request path
 app.Use(
     async (context, next) =>
     {

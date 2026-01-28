@@ -50,7 +50,7 @@ jobs:
 
       - name: Update Lambda Function
         env:
-          FUNCTION_NAME: frogedu-dev-ai-api
+          FUNCTION_NAME: frogedu-ai
           REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           REPOSITORY: frogedu-dev-ai-api
         run: |
