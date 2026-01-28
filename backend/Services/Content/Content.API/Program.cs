@@ -6,6 +6,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddOpenApi();
 builder.Services.AddAWSLambdaHosting(LambdaEventSource.RestApi);
+
+//Configure Cors
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(
@@ -27,14 +29,10 @@ builder.Services.AddCors(options =>
 });
 
 var app = builder.Build();
-if (app.Environment.IsDevelopment())
-{
-    app.MapOpenApi();
-}
 
+app.MapOpenApi();
 app.UseRouting();
 app.UseCors("AllowSpecificOrigins");
-
 app.MapGet(
         "/health",
         () =>
