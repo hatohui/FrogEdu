@@ -13,3 +13,8 @@ output "api_gateway_execution_arn" {
   value       = aws_apigatewayv2_api.api_gateway.execution_arn
 }
 
+output "cognito_authorizer_id" {
+  description = "ID of the Cognito authorizer"
+  value       = try(aws_apigatewayv2_authorizer.cognito[0].id, "")
+}
+

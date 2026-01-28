@@ -50,3 +50,11 @@ variable "no_auth_routes" {
   type        = list(string)
   default     = []
 }
+
+### Cognito Authorizer
+
+variable "cognito_authorizer_id" {
+  description = "ID of the Cognito authorizer to use for authenticated routes"
+  type        = string
+  default     = ""
+}

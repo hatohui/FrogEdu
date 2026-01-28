@@ -24,8 +24,12 @@ module "iam" {
 module "api_gateway" {
   source = "./modules/api-gateway"
 
-  project_name = local.project_name
-  cors_origins = var.cors_origins
+  project_name          = local.project_name
+  cors_origins          = var.cors_origins
+  cognito_user_pool_id  = module.cognito.user_pool_id
+  cognito_user_pool_arn = module.cognito.user_pool_arn
+  cognito_issuer_url    = module.cognito.issuer_url
+  cognito_web_client_id = module.cognito.web_client_id
 }
 
 module "cloudfront" {
@@ -85,6 +89,12 @@ module "content_service" {
   ecr_repository            = module.ecr.repository_urls["content-api"]
   api_gateway_id            = module.api_gateway.api_gateway_id
   api_gateway_execution_arn = module.api_gateway.api_gateway_execution_arn
+  cognito_authorizer_id     = module.api_gateway.cognito_authorizer_id
+
+  no_auth_routes = [
+    "/health",
+    "/swagger/{proxy+}",
+  ]
 
   environment_variables = {
     ASPNETCORE_ENVIRONMENT = "Production"
