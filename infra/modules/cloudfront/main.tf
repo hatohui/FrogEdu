@@ -36,9 +36,9 @@ resource "aws_cloudfront_distribution" "api" {
     cached_methods         = ["GET", "HEAD", "OPTIONS"]
     compress               = true
 
-    cache_policy_id            = "4135ea2d-6df8-44a3-9df3-4b5a84be39ad"
-    origin_request_policy_id   = "59781a5b-3903-41f3-afcb-af62929ccde1"
-    response_headers_policy_id = "5cc3b908-e619-4b99-88e5-2cf7f45965bd"
+    cache_policy_id = "4135ea2d-6df8-44a3-9df3-4b5a84be39ad"
+    # Managed-AllViewerExceptHostHeader (for API Gateway/Lambda origins)
+    origin_request_policy_id = "b689b0a8-53d0-40ab-baf2-68738e2966ac"
   }
 
   restrictions {

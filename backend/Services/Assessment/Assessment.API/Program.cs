@@ -65,6 +65,22 @@ app.MapGet(
     .WithName("HealthCheck")
     .WithOpenApi();
 
+// Explicit public health endpoint for API Gateway /api/assessments/health (no auth)
+app.MapGet(
+        "/api/assessments/health",
+        () =>
+            Results.Ok(
+                new
+                {
+                    status = "healthy",
+                    service = "assessment-api",
+                    timestamp = DateTime.UtcNow,
+                }
+            )
+    )
+    .WithName("HealthCheckPublic")
+    .WithOpenApi();
+
 // Database health endpoint
 // Path is /health/db because API Gateway strips /api/assessments prefix
 app.MapGet(
@@ -102,6 +118,44 @@ app.MapGet(
         }
     )
     .WithName("HealthCheckDb")
+    .WithOpenApi();
+
+// Explicit public DB health endpoint for API Gateway /api/assessments/health/db (no auth)
+app.MapGet(
+        "/api/assessments/health/db",
+        async () =>
+        {
+            try
+            {
+                var connectionString =
+                    Environment.GetEnvironmentVariable("ASSESSMENT_DB_CONNECTION_STRING")
+                    ?? "postgresql://root:root@frog-assessment-db:5434/assessment?sslmode=disable";
+
+                var options = new DbContextOptionsBuilder<AssessmentDbContext>()
+                    .UseNpgsql(connectionString)
+                    .Options;
+
+                await using var ctx = new AssessmentDbContext(options);
+                var canConnect = await ctx.Database.CanConnectAsync();
+
+                return canConnect
+                    ? Results.Ok(
+                        new
+                        {
+                            status = "healthy",
+                            service = "assessment-db",
+                            timestamp = DateTime.UtcNow,
+                        }
+                    )
+                    : Results.Problem(title: "Database not reachable", statusCode: 503);
+            }
+            catch (Exception ex)
+            {
+                return Results.Problem(title: ex.Message, statusCode: 500);
+            }
+        }
+    )
+    .WithName("HealthCheckDbPublic")
     .WithOpenApi();
 
 var summaries = new[]

@@ -115,9 +115,27 @@ module "content_lambda" {
 
   routes = [
     {
-      path          = "api/contents/{proxy+}"
+      path          = "api/contents"
       http_method   = "ANY"
       auth_required = false
+    }
+    ,
+    {
+      path          = "api/contents/health"
+      http_method   = "ANY"
+      auth_required = false
+    }
+    ,
+    {
+      path          = "api/contents/health/db"
+      http_method   = "ANY"
+      auth_required = false
+    }
+    ,
+    {
+      path          = "api/contents/{proxy+}"
+      http_method   = "ANY"
+      auth_required = true
     }
   ]
 }
@@ -154,9 +172,27 @@ module "user_lambda" {
 
   routes = [
     {
-      path          = "api/users/{proxy+}"
+      path          = "api/users"
       http_method   = "ANY"
       auth_required = false
+    }
+    ,
+    {
+      path          = "api/users/health"
+      http_method   = "ANY"
+      auth_required = false
+    }
+    ,
+    {
+      path          = "api/users/health/db"
+      http_method   = "ANY"
+      auth_required = false
+    }
+    ,
+    {
+      path          = "api/users/{proxy+}"
+      http_method   = "ANY"
+      auth_required = true
     }
   ]
 }
@@ -193,9 +229,27 @@ module "assessment_lambda" {
 
   routes = [
     {
-      path          = "api/assessments/{proxy+}"
+      path          = "api/assessments"
       http_method   = "ANY"
       auth_required = false
+    }
+    ,
+    {
+      path          = "api/assessments/health"
+      http_method   = "ANY"
+      auth_required = false
+    }
+    ,
+    {
+      path          = "api/assessments/health/db"
+      http_method   = "ANY"
+      auth_required = false
+    }
+    ,
+    {
+      path          = "api/assessments/{proxy+}"
+      http_method   = "ANY"
+      auth_required = true
     }
   ]
 }
@@ -233,9 +287,27 @@ module "ai_lambda" {
 
   routes = [
     {
-      path          = "api/ai/{proxy+}"
+      path          = "api/ai"
       http_method   = "ANY"
       auth_required = false
+    }
+    ,
+    {
+      path          = "api/ai/health"
+      http_method   = "ANY"
+      auth_required = false
+    }
+    ,
+    {
+      path          = "api/ai/health/db"
+      http_method   = "ANY"
+      auth_required = false
+    }
+    ,
+    {
+      path          = "api/ai/{proxy+}"
+      http_method   = "ANY"
+      auth_required = true
     }
   ]
 }

@@ -36,98 +36,225 @@ resource "aws_lambda_function" "this" {
 }
 
 # API Gateway Resources and Methods
-# Handle both regular paths and proxy+ paths
+# Support both proxy routes and explicit public routes (e.g., /health)
 locals {
-  # Parse all routes - handle {proxy+} pattern
-  parsed_routes = {
-    for route in var.routes : route.path => {
-      segments   = split("/", route.path)
-      parent     = split("/", route.path)[0]
-      has_child  = length(split("/", route.path)) > 1
-      child_part = length(split("/", route.path)) > 1 ? split("/", route.path)[1] : null
-      is_proxy   = length(split("/", route.path)) > 1 && can(regex("\\{proxy\\+\\}", split("/", route.path)[1]))
-      route_data = route
+  routes_by_path = { for route in var.routes : route.path => route }
+
+  route_parts = {
+    for path, route in local.routes_by_path : path => {
+      parts    = split("/", path)
+      is_proxy = contains(split("/", path), "{proxy+}")
+      route    = route
     }
   }
 
-  # Get unique parent paths
-  parent_paths = distinct([
-    for route_key, route_data in local.parsed_routes : route_data.parent
+  proxy_routes = {
+    for path, data in local.route_parts : path => data
+    if data.is_proxy
+  }
+
+  non_proxy_routes = {
+    for path, data in local.route_parts : path => data
+    if !data.is_proxy
+  }
+
+  services = distinct([
+    for path, data in local.route_parts : data.parts[1]
+    if length(data.parts) >= 2 && data.parts[0] == "api"
   ])
 
-  # Routes that have children (for creating child resources)
-  routes_with_children = {
-    for route_key, route_data in local.parsed_routes : route_key => route_data
-    if route_data.has_child
+  health_services = distinct([
+    for path, data in local.non_proxy_routes : data.parts[1]
+    if length(data.parts) >= 3 && data.parts[0] == "api" && data.parts[2] == "health"
+  ])
+
+  health_db_services = distinct([
+    for path, data in local.non_proxy_routes : data.parts[1]
+    if length(data.parts) >= 4 && data.parts[0] == "api" && data.parts[2] == "health" && data.parts[3] == "db"
+  ])
+
+  proxy_route_map = {
+    for path, data in local.proxy_routes : path => {
+      route      = data.route
+      service    = data.parts[1]
+      proxy_part = data.parts[length(data.parts) - 1]
+    }
+  }
+
+  non_proxy_route_map = {
+    for path, data in local.non_proxy_routes : path => data.route
   }
 }
 
-# Handle resource migration from old structure to new structure
-moved {
-  from = aws_api_gateway_resource.parent_routes
-  to   = aws_api_gateway_resource.parents
-}
-
-moved {
-  from = aws_api_gateway_resource.child_routes
-  to   = aws_api_gateway_resource.children
-}
-
-# Create parent resources (e.g., /contents, /users)
-# Only create if not provided via shared_parent_resources
-resource "aws_api_gateway_resource" "parents" {
-  for_each = toset([for path in local.parent_paths : path if !contains(keys(var.shared_parent_resources), path)])
+# Create /api/{service} resources
+resource "aws_api_gateway_resource" "service" {
+  for_each = toset(local.services)
 
   rest_api_id = var.api_gateway_id
-  parent_id   = var.api_gateway_root_id
+  parent_id   = var.shared_parent_resources["api"]
   path_part   = each.value
 }
 
-# Combine created and shared parent resources
-locals {
-  all_parent_resources = merge(
-    { for k, v in aws_api_gateway_resource.parents : k => v.id },
-    var.shared_parent_resources
-  )
+# Preserve existing API Gateway resources from previous module layout
+moved {
+  from = aws_api_gateway_resource.resources["api/users"]
+  to   = aws_api_gateway_resource.service["users"]
 }
 
-# Create child resources (e.g., /{proxy+})
-resource "aws_api_gateway_resource" "children" {
-  for_each = local.routes_with_children
+moved {
+  from = aws_api_gateway_resource.resources["api/users/health"]
+  to   = aws_api_gateway_resource.health["users"]
+}
+
+moved {
+  from = aws_api_gateway_resource.resources["api/users/health/db"]
+  to   = aws_api_gateway_resource.health_db["users"]
+}
+
+moved {
+  from = aws_api_gateway_resource.resources["api/contents"]
+  to   = aws_api_gateway_resource.service["contents"]
+}
+
+moved {
+  from = aws_api_gateway_resource.resources["api/contents/health"]
+  to   = aws_api_gateway_resource.health["contents"]
+}
+
+moved {
+  from = aws_api_gateway_resource.resources["api/contents/health/db"]
+  to   = aws_api_gateway_resource.health_db["contents"]
+}
+
+moved {
+  from = aws_api_gateway_resource.resources["api/assessments"]
+  to   = aws_api_gateway_resource.service["assessments"]
+}
+
+moved {
+  from = aws_api_gateway_resource.resources["api/assessments/health"]
+  to   = aws_api_gateway_resource.health["assessments"]
+}
+
+moved {
+  from = aws_api_gateway_resource.resources["api/assessments/health/db"]
+  to   = aws_api_gateway_resource.health_db["assessments"]
+}
+
+moved {
+  from = aws_api_gateway_resource.resources["api/ai"]
+  to   = aws_api_gateway_resource.service["ai"]
+}
+
+moved {
+  from = aws_api_gateway_resource.resources["api/ai/health"]
+  to   = aws_api_gateway_resource.health["ai"]
+}
+
+moved {
+  from = aws_api_gateway_resource.resources["api/ai/health/db"]
+  to   = aws_api_gateway_resource.health_db["ai"]
+}
+
+# Create /api/{service}/health resources
+resource "aws_api_gateway_resource" "health" {
+  for_each = toset(local.health_services)
 
   rest_api_id = var.api_gateway_id
-  parent_id   = local.all_parent_resources[each.value.parent]
-  path_part   = each.value.child_part
+  parent_id   = aws_api_gateway_resource.service[each.value].id
+  path_part   = "health"
 }
 
-resource "aws_api_gateway_method" "routes" {
-  for_each = { for idx, route in var.routes : route.path => route }
+# Create /api/{service}/health/db resources
+resource "aws_api_gateway_resource" "health_db" {
+  for_each = toset(local.health_db_services)
+
+  rest_api_id = var.api_gateway_id
+  parent_id   = aws_api_gateway_resource.health[each.value].id
+  path_part   = "db"
+}
+
+# Create proxy resources (e.g., /api/users/{proxy+})
+resource "aws_api_gateway_resource" "proxies" {
+  for_each = local.proxy_route_map
+
+  rest_api_id = var.api_gateway_id
+  parent_id   = aws_api_gateway_resource.service[each.value.service].id
+  path_part   = each.value.proxy_part
+}
+
+# Methods for proxy routes (protected endpoints)
+resource "aws_api_gateway_method" "proxy_routes" {
+  for_each = local.proxy_route_map
 
   rest_api_id   = var.api_gateway_id
-  resource_id   = local.parsed_routes[each.key].has_child ? aws_api_gateway_resource.children[each.key].id : local.all_parent_resources[local.parsed_routes[each.key].parent]
+  resource_id   = aws_api_gateway_resource.proxies[each.key].id
+  http_method   = each.value.route.http_method
+  authorization = each.value.route.auth_required ? "COGNITO_USER_POOLS" : "NONE"
+  authorizer_id = each.value.route.auth_required ? var.cognito_authorizer_id : null
+
+  # Require X-Origin-Verify header only for auth-required routes when validation is enabled
+  # This allows health checks and public endpoints to be accessed directly
+  request_validator_id = var.request_validator_id != "" && each.value.route.auth_required ? var.request_validator_id : null
+  request_parameters = var.origin_verify_secret != "" && each.value.route.auth_required ? {
+    "method.request.header.X-Origin-Verify" = true
+  } : {}
+}
+
+resource "aws_api_gateway_integration" "proxy_routes" {
+  for_each = local.proxy_route_map
+
+  rest_api_id             = var.api_gateway_id
+  resource_id             = aws_api_gateway_resource.proxies[each.key].id
+  http_method             = aws_api_gateway_method.proxy_routes[each.key].http_method
+  integration_http_method = "POST"
+  type                    = "AWS_PROXY"
+  uri                     = aws_lambda_function.this.invoke_arn
+
+  # Pass header validation only for auth-required routes
+  request_parameters = var.origin_verify_secret != "" && each.value.route.auth_required ? {
+    "integration.request.header.X-Origin-Verify" = "method.request.header.X-Origin-Verify"
+  } : {}
+}
+
+# Methods for non-proxy routes (public endpoints like /health)
+resource "aws_api_gateway_method" "non_proxy_routes" {
+  for_each = local.non_proxy_route_map
+
+  rest_api_id = var.api_gateway_id
+  resource_id = (
+    length(local.route_parts[each.key].parts) == 2
+    ? aws_api_gateway_resource.service[local.route_parts[each.key].parts[1]].id
+    : length(local.route_parts[each.key].parts) == 3
+    ? aws_api_gateway_resource.health[local.route_parts[each.key].parts[1]].id
+    : aws_api_gateway_resource.health_db[local.route_parts[each.key].parts[1]].id
+  )
   http_method   = each.value.http_method
   authorization = each.value.auth_required ? "COGNITO_USER_POOLS" : "NONE"
   authorizer_id = each.value.auth_required ? var.cognito_authorizer_id : null
 
-  # Require X-Origin-Verify header only for auth-required routes when validation is enabled
-  # This allows health checks and public endpoints to be accessed directly
   request_validator_id = var.request_validator_id != "" && each.value.auth_required ? var.request_validator_id : null
   request_parameters = var.origin_verify_secret != "" && each.value.auth_required ? {
     "method.request.header.X-Origin-Verify" = true
   } : {}
 }
 
-resource "aws_api_gateway_integration" "routes" {
-  for_each = { for idx, route in var.routes : route.path => route }
+resource "aws_api_gateway_integration" "non_proxy_routes" {
+  for_each = local.non_proxy_route_map
 
-  rest_api_id             = var.api_gateway_id
-  resource_id             = local.parsed_routes[each.key].has_child ? aws_api_gateway_resource.children[each.key].id : local.all_parent_resources[local.parsed_routes[each.key].parent]
-  http_method             = aws_api_gateway_method.routes[each.key].http_method
+  rest_api_id = var.api_gateway_id
+  resource_id = (
+    length(local.route_parts[each.key].parts) == 2
+    ? aws_api_gateway_resource.service[local.route_parts[each.key].parts[1]].id
+    : length(local.route_parts[each.key].parts) == 3
+    ? aws_api_gateway_resource.health[local.route_parts[each.key].parts[1]].id
+    : aws_api_gateway_resource.health_db[local.route_parts[each.key].parts[1]].id
+  )
+  http_method             = aws_api_gateway_method.non_proxy_routes[each.key].http_method
   integration_http_method = "POST"
   type                    = "AWS_PROXY"
   uri                     = aws_lambda_function.this.invoke_arn
 
-  # Pass header validation only for auth-required routes
   request_parameters = var.origin_verify_secret != "" && each.value.auth_required ? {
     "integration.request.header.X-Origin-Verify" = "method.request.header.X-Origin-Verify"
   } : {}
@@ -136,26 +263,35 @@ resource "aws_api_gateway_integration" "routes" {
 # =============================================================================
 # CORS OPTIONS Support - Mock Integration (recommended)
 # =============================================================================
-# Using MOCK integration instead of Lambda for OPTIONS preflight requests
-# Benefits: Faster response, no Lambda invocation cost, no cold starts
+# OPTIONS method for non-proxy resources (e.g., /api/users, /api/users/health)
+resource "aws_api_gateway_method" "options_resources" {
+  for_each = toset(keys(local.non_proxy_route_map))
 
-# OPTIONS method for parent resources (e.g., /contents, /users)
-resource "aws_api_gateway_method" "options_parent" {
-  for_each = toset([for path in local.parent_paths : path if !contains(keys(var.shared_parent_resources), path)])
-
-  rest_api_id   = var.api_gateway_id
-  resource_id   = local.all_parent_resources[each.value]
+  rest_api_id = var.api_gateway_id
+  resource_id = (
+    length(local.route_parts[each.value].parts) == 2
+    ? aws_api_gateway_resource.service[local.route_parts[each.value].parts[1]].id
+    : length(local.route_parts[each.value].parts) == 3
+    ? aws_api_gateway_resource.health[local.route_parts[each.value].parts[1]].id
+    : aws_api_gateway_resource.health_db[local.route_parts[each.value].parts[1]].id
+  )
   http_method   = "OPTIONS"
   authorization = "NONE"
 }
 
-# Mock integration for parent OPTIONS - returns 200 immediately
-resource "aws_api_gateway_integration" "options_parent" {
-  for_each = toset([for path in local.parent_paths : path if !contains(keys(var.shared_parent_resources), path)])
+# Mock integration for resource OPTIONS - returns 200 immediately
+resource "aws_api_gateway_integration" "options_resources" {
+  for_each = toset(keys(local.non_proxy_route_map))
 
   rest_api_id = var.api_gateway_id
-  resource_id = local.all_parent_resources[each.value]
-  http_method = aws_api_gateway_method.options_parent[each.value].http_method
+  resource_id = (
+    length(local.route_parts[each.value].parts) == 2
+    ? aws_api_gateway_resource.service[local.route_parts[each.value].parts[1]].id
+    : length(local.route_parts[each.value].parts) == 3
+    ? aws_api_gateway_resource.health[local.route_parts[each.value].parts[1]].id
+    : aws_api_gateway_resource.health_db[local.route_parts[each.value].parts[1]].id
+  )
+  http_method = aws_api_gateway_method.options_resources[each.value].http_method
   type        = "MOCK"
 
   request_templates = {
@@ -163,13 +299,19 @@ resource "aws_api_gateway_integration" "options_parent" {
   }
 }
 
-# Method response for parent OPTIONS
-resource "aws_api_gateway_method_response" "options_parent_200" {
-  for_each = toset([for path in local.parent_paths : path if !contains(keys(var.shared_parent_resources), path)])
+# Method response for resource OPTIONS
+resource "aws_api_gateway_method_response" "options_resources_200" {
+  for_each = toset(keys(local.non_proxy_route_map))
 
   rest_api_id = var.api_gateway_id
-  resource_id = local.all_parent_resources[each.value]
-  http_method = aws_api_gateway_method.options_parent[each.value].http_method
+  resource_id = (
+    length(local.route_parts[each.value].parts) == 2
+    ? aws_api_gateway_resource.service[local.route_parts[each.value].parts[1]].id
+    : length(local.route_parts[each.value].parts) == 3
+    ? aws_api_gateway_resource.health[local.route_parts[each.value].parts[1]].id
+    : aws_api_gateway_resource.health_db[local.route_parts[each.value].parts[1]].id
+  )
+  http_method = aws_api_gateway_method.options_resources[each.value].http_method
   status_code = "200"
 
   response_parameters = {
@@ -183,14 +325,20 @@ resource "aws_api_gateway_method_response" "options_parent_200" {
   }
 }
 
-# Integration response for parent OPTIONS - returns CORS headers
-resource "aws_api_gateway_integration_response" "options_parent_200" {
-  for_each = toset([for path in local.parent_paths : path if !contains(keys(var.shared_parent_resources), path)])
+# Integration response for resource OPTIONS - returns CORS headers
+resource "aws_api_gateway_integration_response" "options_resources_200" {
+  for_each = toset(keys(local.non_proxy_route_map))
 
   rest_api_id = var.api_gateway_id
-  resource_id = local.all_parent_resources[each.value]
-  http_method = aws_api_gateway_method.options_parent[each.value].http_method
-  status_code = aws_api_gateway_method_response.options_parent_200[each.value].status_code
+  resource_id = (
+    length(local.route_parts[each.value].parts) == 2
+    ? aws_api_gateway_resource.service[local.route_parts[each.value].parts[1]].id
+    : length(local.route_parts[each.value].parts) == 3
+    ? aws_api_gateway_resource.health[local.route_parts[each.value].parts[1]].id
+    : aws_api_gateway_resource.health_db[local.route_parts[each.value].parts[1]].id
+  )
+  http_method = aws_api_gateway_method.options_resources[each.value].http_method
+  status_code = aws_api_gateway_method_response.options_resources_200[each.value].status_code
 
   response_parameters = {
     "method.response.header.Access-Control-Allow-Headers" = "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
@@ -198,26 +346,26 @@ resource "aws_api_gateway_integration_response" "options_parent_200" {
     "method.response.header.Access-Control-Allow-Origin"  = "'*'"
   }
 
-  depends_on = [aws_api_gateway_integration.options_parent]
+  depends_on = [aws_api_gateway_integration.options_resources]
 }
 
-# OPTIONS method for child resources (e.g., /{proxy+})
-resource "aws_api_gateway_method" "options_child" {
-  for_each = local.routes_with_children
+# OPTIONS method for proxy resources (e.g., /api/users/{proxy+})
+resource "aws_api_gateway_method" "options_proxy" {
+  for_each = local.proxy_route_map
 
   rest_api_id   = var.api_gateway_id
-  resource_id   = aws_api_gateway_resource.children[each.key].id
+  resource_id   = aws_api_gateway_resource.proxies[each.key].id
   http_method   = "OPTIONS"
   authorization = "NONE"
 }
 
-# Mock integration for child OPTIONS
-resource "aws_api_gateway_integration" "options_child" {
-  for_each = local.routes_with_children
+# Mock integration for proxy OPTIONS
+resource "aws_api_gateway_integration" "options_proxy" {
+  for_each = local.proxy_route_map
 
   rest_api_id = var.api_gateway_id
-  resource_id = aws_api_gateway_resource.children[each.key].id
-  http_method = aws_api_gateway_method.options_child[each.key].http_method
+  resource_id = aws_api_gateway_resource.proxies[each.key].id
+  http_method = aws_api_gateway_method.options_proxy[each.key].http_method
   type        = "MOCK"
 
   request_templates = {
@@ -225,13 +373,13 @@ resource "aws_api_gateway_integration" "options_child" {
   }
 }
 
-# Method response for child OPTIONS
-resource "aws_api_gateway_method_response" "options_child_200" {
-  for_each = local.routes_with_children
+# Method response for proxy OPTIONS
+resource "aws_api_gateway_method_response" "options_proxy_200" {
+  for_each = local.proxy_route_map
 
   rest_api_id = var.api_gateway_id
-  resource_id = aws_api_gateway_resource.children[each.key].id
-  http_method = aws_api_gateway_method.options_child[each.key].http_method
+  resource_id = aws_api_gateway_resource.proxies[each.key].id
+  http_method = aws_api_gateway_method.options_proxy[each.key].http_method
   status_code = "200"
 
   response_parameters = {
@@ -245,14 +393,14 @@ resource "aws_api_gateway_method_response" "options_child_200" {
   }
 }
 
-# Integration response for child OPTIONS - returns CORS headers
-resource "aws_api_gateway_integration_response" "options_child_200" {
-  for_each = local.routes_with_children
+# Integration response for proxy OPTIONS - returns CORS headers
+resource "aws_api_gateway_integration_response" "options_proxy_200" {
+  for_each = local.proxy_route_map
 
   rest_api_id = var.api_gateway_id
-  resource_id = aws_api_gateway_resource.children[each.key].id
-  http_method = aws_api_gateway_method.options_child[each.key].http_method
-  status_code = aws_api_gateway_method_response.options_child_200[each.key].status_code
+  resource_id = aws_api_gateway_resource.proxies[each.key].id
+  http_method = aws_api_gateway_method.options_proxy[each.key].http_method
+  status_code = aws_api_gateway_method_response.options_proxy_200[each.key].status_code
 
   response_parameters = {
     "method.response.header.Access-Control-Allow-Headers" = "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
@@ -260,7 +408,7 @@ resource "aws_api_gateway_integration_response" "options_child_200" {
     "method.response.header.Access-Control-Allow-Origin"  = "'*'"
   }
 
-  depends_on = [aws_api_gateway_integration.options_child]
+  depends_on = [aws_api_gateway_integration.options_proxy]
 }
 
 # =============================================================================

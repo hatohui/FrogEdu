@@ -65,6 +65,22 @@ app.MapGet(
     .WithName("HealthCheck")
     .WithOpenApi();
 
+// Explicit public health endpoint for API Gateway /api/contents/health (no auth)
+app.MapGet(
+        "/api/contents/health",
+        () =>
+            Results.Ok(
+                new
+                {
+                    status = "healthy",
+                    service = "content-api",
+                    timestamp = DateTime.UtcNow,
+                }
+            )
+    )
+    .WithName("HealthCheckPublic")
+    .WithOpenApi();
+
 // Database health endpoint
 // Path is /health/db because API Gateway strips /api/contents prefix
 app.MapGet(
@@ -102,6 +118,44 @@ app.MapGet(
         }
     )
     .WithName("HealthCheckDb")
+    .WithOpenApi();
+
+// Explicit public DB health endpoint for API Gateway /api/contents/health/db (no auth)
+app.MapGet(
+        "/api/contents/health/db",
+        async () =>
+        {
+            try
+            {
+                var connectionString =
+                    Environment.GetEnvironmentVariable("CONTENT_DB_CONNECTION_STRING")
+                    ?? "postgresql://root:root@frog-content-db:5433/content?sslmode=disable";
+
+                var options = new DbContextOptionsBuilder<ContentDbContext>()
+                    .UseNpgsql(connectionString)
+                    .Options;
+
+                await using var ctx = new ContentDbContext(options);
+                var canConnect = await ctx.Database.CanConnectAsync();
+
+                return canConnect
+                    ? Results.Ok(
+                        new
+                        {
+                            status = "healthy",
+                            service = "content-db",
+                            timestamp = DateTime.UtcNow,
+                        }
+                    )
+                    : Results.Problem(title: "Database not reachable", statusCode: 503);
+            }
+            catch (Exception ex)
+            {
+                return Results.Problem(title: ex.Message, statusCode: 500);
+            }
+        }
+    )
+    .WithName("HealthCheckDbPublic")
     .WithOpenApi();
 
 var summaries = new[]

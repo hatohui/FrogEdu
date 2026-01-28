@@ -62,6 +62,22 @@ app.MapGet(
     .WithName("HealthCheck")
     .WithOpenApi();
 
+// Explicit public health endpoint for API Gateway /api/ai/health (no auth)
+app.MapGet(
+        "/api/ai/health",
+        () =>
+            Results.Ok(
+                new
+                {
+                    status = "healthy",
+                    service = "ai-api",
+                    timestamp = DateTime.UtcNow,
+                }
+            )
+    )
+    .WithName("HealthCheckPublic")
+    .WithOpenApi();
+
 // Database health endpoint
 // Path is /health/db because API Gateway strips /api/ai prefix
 app.MapGet(
@@ -122,6 +138,65 @@ app.MapGet(
         }
     )
     .WithName("HealthCheckDb")
+    .WithOpenApi();
+
+// Explicit public DB health endpoint for API Gateway /api/ai/health/db (no auth)
+app.MapGet(
+        "/api/ai/health/db",
+        async () =>
+        {
+            try
+            {
+                var connectionString =
+                    Environment.GetEnvironmentVariable("AI_DB_CONNECTION_STRING")
+                    ?? "postgresql://root:root@frog-ai-db:5435/ai?sslmode=disable";
+
+                var options = new DbContextOptionsBuilder<AiDbContext>()
+                    .UseNpgsql(connectionString)
+                    .Options;
+
+                await using var ctx = new AiDbContext(options);
+                var canConnect = await ctx.Database.CanConnectAsync();
+
+                if (canConnect)
+                {
+                    return Results.Ok(
+                        new
+                        {
+                            status = "healthy",
+                            service = "ai-db",
+                            timestamp = DateTime.UtcNow,
+                        }
+                    );
+                }
+
+                return Results.Json(
+                    new
+                    {
+                        status = "unhealthy",
+                        service = "ai-db",
+                        timestamp = DateTime.UtcNow,
+                        error = "Database not reachable",
+                    },
+                    statusCode: 503
+                );
+            }
+            catch (Exception ex)
+            {
+                return Results.Json(
+                    new
+                    {
+                        status = "unhealthy",
+                        service = "ai-db",
+                        timestamp = DateTime.UtcNow,
+                        error = ex.Message,
+                    },
+                    statusCode: 500
+                );
+            }
+        }
+    )
+    .WithName("HealthCheckDbPublic")
     .WithOpenApi();
 
 await app.RunAsync();

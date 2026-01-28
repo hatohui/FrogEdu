@@ -15,6 +15,12 @@ resource "aws_api_gateway_gateway_response" "missing_authentication_token" {
   response_type = "MISSING_AUTHENTICATION_TOKEN"
   status_code   = "403"
 
+  response_parameters = {
+    "gatewayresponse.header.Access-Control-Allow-Origin"  = "'*'"
+    "gatewayresponse.header.Access-Control-Allow-Headers" = "'Content-Type,Authorization,X-Api-Key,X-Amz-Date,X-Amz-Security-Token'"
+    "gatewayresponse.header.Access-Control-Allow-Methods" = "'DELETE,GET,HEAD,OPTIONS,PATCH,POST,PUT'"
+  }
+
   response_templates = {
     "application/json" = jsonencode({
       message = "Access Denied: Invalid request origin"
@@ -28,6 +34,12 @@ resource "aws_api_gateway_gateway_response" "unauthorized" {
   response_type = "UNAUTHORIZED"
   status_code   = "401"
 
+  response_parameters = {
+    "gatewayresponse.header.Access-Control-Allow-Origin"  = "'*'"
+    "gatewayresponse.header.Access-Control-Allow-Headers" = "'Content-Type,Authorization,X-Api-Key,X-Amz-Date,X-Amz-Security-Token'"
+    "gatewayresponse.header.Access-Control-Allow-Methods" = "'DELETE,GET,HEAD,OPTIONS,PATCH,POST,PUT'"
+  }
+
   response_templates = {
     "application/json" = jsonencode({
       message = "Unauthorized: Authentication required"
@@ -40,6 +52,12 @@ resource "aws_api_gateway_gateway_response" "access_denied" {
   rest_api_id   = aws_api_gateway_rest_api.api_gateway.id
   response_type = "ACCESS_DENIED"
   status_code   = "403"
+
+  response_parameters = {
+    "gatewayresponse.header.Access-Control-Allow-Origin"  = "'*'"
+    "gatewayresponse.header.Access-Control-Allow-Headers" = "'Content-Type,Authorization,X-Api-Key,X-Amz-Date,X-Amz-Security-Token'"
+    "gatewayresponse.header.Access-Control-Allow-Methods" = "'DELETE,GET,HEAD,OPTIONS,PATCH,POST,PUT'"
+  }
 
   response_templates = {
     "application/json" = jsonencode({

@@ -152,6 +152,23 @@ app.MapGet(
     .WithTags("Health")
     .WithOpenApi();
 
+// Explicit public health endpoint for API Gateway /api/users/health (no auth)
+app.MapGet(
+        "/api/users/health",
+        () =>
+            Results.Ok(
+                new
+                {
+                    status = "healthy",
+                    service = "user-api",
+                    timestamp = DateTime.UtcNow,
+                }
+            )
+    )
+    .WithName("HealthCheckPublic")
+    .WithTags("Health")
+    .WithOpenApi();
+
 // Database health endpoint
 // Path is /health/db because API Gateway strips /api/users prefix
 app.MapGet(
@@ -180,6 +197,36 @@ app.MapGet(
         }
     )
     .WithName("HealthCheckDb")
+    .WithTags("Health")
+    .WithOpenApi();
+
+// Explicit public DB health endpoint for API Gateway /api/users/health/db (no auth)
+app.MapGet(
+        "/api/users/health/db",
+        async (UserDbContext context) =>
+        {
+            try
+            {
+                var canConnect = await context.Database.CanConnectAsync();
+
+                return canConnect
+                    ? Results.Ok(
+                        new
+                        {
+                            status = "healthy",
+                            service = "user-db",
+                            timestamp = DateTime.UtcNow,
+                        }
+                    )
+                    : Results.Problem(title: "Database not reachable", statusCode: 503);
+            }
+            catch (Exception ex)
+            {
+                return Results.Problem(title: ex.Message, statusCode: 500);
+            }
+        }
+    )
+    .WithName("HealthCheckDbPublic")
     .WithTags("Health")
     .WithOpenApi();
 

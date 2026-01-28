@@ -127,7 +127,8 @@ output "lambda_functions" {
 output "frontend_env_vars" {
   description = "Environment variables for frontend .env file"
   value = {
-    VITE_API_URL              = nonsensitive("https://api.frogedu.org/api")
+    # Frontend axios baseURL appends "/api", so keep root domain only
+    VITE_API_URL              = nonsensitive("https://api.frogedu.org")
     VITE_COGNITO_USER_POOL_ID = module.cognito.user_pool_id
     VITE_COGNITO_CLIENT_ID    = module.cognito.web_client_id
     VITE_AWS_REGION           = local.aws_region
