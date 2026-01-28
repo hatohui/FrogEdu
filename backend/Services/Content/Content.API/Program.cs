@@ -1,3 +1,4 @@
+using FrogEdu.Content.API.Middleware;
 using FrogEdu.Content.Infrastructure.Persistence;
 using FrogEdu.Shared.Kernel;
 using Microsoft.EntityFrameworkCore;
@@ -21,24 +22,7 @@ if (builder.Environment.IsDevelopment())
 
 var app = builder.Build();
 
-app.Use(
-    async (context, next) =>
-    {
-        var path = context.Request.Path.Value ?? "";
-        var prefix = "/api/contents";
-
-        if (path.StartsWith(prefix, StringComparison.OrdinalIgnoreCase))
-        {
-            context.Request.Path = path.Substring(prefix.Length);
-            if (string.IsNullOrEmpty(context.Request.Path.Value))
-            {
-                context.Request.Path = "/";
-            }
-        }
-
-        await next();
-    }
-);
+app.UsePathPrefixRewrite("/api/contents");
 
 app.UseRouting();
 app.UseSwagger();

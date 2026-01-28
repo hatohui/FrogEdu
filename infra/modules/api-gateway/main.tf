@@ -9,7 +9,7 @@ resource "aws_apigatewayv2_api" "api_gateway" {
     allow_headers = ["Authorization", "Content-Type"]
   }
 
-  disable_execute_api_endpoint = false
+  disable_execute_api_endpoint = true
 }
 
 resource "aws_apigatewayv2_stage" "default" {

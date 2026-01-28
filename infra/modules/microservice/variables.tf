@@ -37,21 +37,16 @@ variable "api_gateway_execution_arn" {
 }
 
 ### Lambda Configuration
-
-variable "memory_size" {
-  description = "Amount of memory in MB for Lambda function"
-  type        = number
-  default     = 1024
-}
-
-variable "timeout" {
-  description = "Timeout in seconds for Lambda function"
-  type        = number
-  default     = 60
-}
-
 variable "environment_variables" {
   description = "Environment variables for Lambda function"
   type        = map(string)
   default     = {}
+}
+
+### Route Bypass
+
+variable "no_auth_routes" {
+  description = "List of routes that bypass authentication"
+  type        = list(string)
+  default     = []
 }
