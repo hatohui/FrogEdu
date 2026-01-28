@@ -21,6 +21,17 @@ module "iam" {
   github_repo  = try(data.doppler_secrets.this.map.TF_GITHUB_REPO, "*")
 }
 
+module "api_gateway" {
+  source = "./modules/api_gateway"
+
+  project_name         = local.project_name
+  environment          = local.environment
+  cors_origins         = var.cors_origins
+  lambda_timeout       = local.lambda_timeout
+  lambda_memory        = local.lambda_memory_size
+  lambda_architectures = local.lambda_architectures
+}
+
 module "cloudfront" {
   source = "./modules/cloudfront"
 
