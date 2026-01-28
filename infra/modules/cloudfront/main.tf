@@ -11,7 +11,7 @@ resource "aws_cloudfront_distribution" "api" {
   web_acl_id  = var.web_acl_id
 
   origin {
-    domain_name = var.api_gateway_domain
+    domain_name = replace(var.api_gateway_domain, "https://", "")
     origin_id   = "apigateway"
     origin_path = "/prod"
 

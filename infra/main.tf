@@ -22,14 +22,10 @@ module "iam" {
 }
 
 module "api_gateway" {
-  source = "./modules/api_gateway"
+  source = "./modules/api-gateway"
 
-  project_name         = local.project_name
-  environment          = local.environment
-  cors_origins         = var.cors_origins
-  lambda_timeout       = local.lambda_timeout
-  lambda_memory        = local.lambda_memory_size
-  lambda_architectures = local.lambda_architectures
+  project_name = local.project_name
+  cors_origins = var.cors_origins
 }
 
 module "cloudfront" {
