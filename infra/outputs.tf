@@ -13,28 +13,6 @@ output "aws_region" {
 }
 
 # =============================================================================
-# API Gateway
-# =============================================================================
-
-output "api_gateway_id" {
-  description = "API Gateway REST API ID"
-  value       = module.api_gateway.api_gateway_id
-}
-output "api_gateway_endpoint" {
-  description = "API Gateway invoke URL (with stage)"
-  value       = aws_api_gateway_stage.root.invoke_url
-}
-
-output "api_gateway_domain" {
-  description = "API Gateway domain name (for CloudFront origin)"
-  value       = regex("^https://([^/]+)", aws_api_gateway_stage.root.invoke_url)[0]
-}
-output "custom_api_url" {
-  description = "Custom API URL (use this)"
-  value       = "https://api.frogedu.org/api"
-}
-
-# =============================================================================
 # Cognito
 # =============================================================================
 
@@ -106,19 +84,6 @@ output "github_oidc_provider_arn" {
   value       = module.iam.github_oidc_provider_arn
 }
 
-# =============================================================================
-# Lambda Functions
-# =============================================================================
-
-output "lambda_functions" {
-  description = "Lambda function ARNs"
-  value = {
-    content    = module.content_lambda.function_arn
-    user       = module.user_lambda.function_arn
-    assessment = module.assessment_lambda.function_arn
-    ai         = module.ai_lambda.function_arn
-  }
-}
 
 # =============================================================================
 # Frontend Environment Variables
@@ -127,7 +92,6 @@ output "lambda_functions" {
 output "frontend_env_vars" {
   description = "Environment variables for frontend .env file"
   value = {
-    # Frontend axios baseURL appends "/api", so keep root domain only
     VITE_API_URL              = nonsensitive("https://api.frogedu.org")
     VITE_COGNITO_USER_POOL_ID = module.cognito.user_pool_id
     VITE_COGNITO_CLIENT_ID    = module.cognito.web_client_id

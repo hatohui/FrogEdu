@@ -1,25 +1,4 @@
-output "execution_arn" {
-  description = "Execution ARN of the API Gateway"
-  value       = aws_api_gateway_rest_api.api_gateway.execution_arn
+output "api_gateway_domain" {
+  description = "Domain name of the API Gateway"
+  value       = module.api_gateway.api_gateway_domain
 }
-
-output "api_resource_id" {
-  description = "Root resource ID of the API Gateway"
-  value       = aws_api_gateway_rest_api.api_gateway.root_resource_id
-}
-
-output "api_gateway_id" {
-  description = "ID of the API Gateway REST API"
-  value       = aws_api_gateway_rest_api.api_gateway.id
-}
-
-output "cognito_authorizer_id" {
-  description = "ID of the Cognito authorizer for API Gateway"
-  value       = aws_api_gateway_authorizer.cognito.id
-}
-
-output "api_path_resource_id" {
-  description = "Resource ID of the /api path for Lambda integrations"
-  value       = aws_api_gateway_resource.api.id
-}
-

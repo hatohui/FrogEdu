@@ -1,15 +1,14 @@
-# =============================================================================
-# CloudFront Module - CDN for API Gateway
-# =============================================================================
-
 resource "aws_cloudfront_distribution" "api" {
-  enabled             = true
-  is_ipv6_enabled     = true
-  comment             = "${var.project_name} API CDN"
-  price_class         = "PriceClass_All"
+  enabled         = true
+  is_ipv6_enabled = true
+
+  retain_on_delete    = true
   wait_for_deployment = false
-  aliases             = var.custom_domain != "" ? [var.custom_domain] : []
-  web_acl_id          = var.web_acl_id
+
+  comment     = "${var.project_name} API CDN"
+  price_class = "PriceClass_All"
+  aliases     = var.custom_domain != "" ? [var.custom_domain] : []
+  web_acl_id  = var.web_acl_id
 
   origin {
     domain_name = var.api_gateway_domain

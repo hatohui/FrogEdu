@@ -43,7 +43,6 @@ launchSettings.json
 # Terraform
 *.tfstate
 *.tfstate.*
-*.tfvars
 !*.tfvars.example
 .terraform/
 .terraform.lock.hcl
@@ -84,7 +83,6 @@ crash.log
 crash.*.log
 
 # Terraform variable files (deprecated - we use Doppler now)
-*.tfvars
 *.tfvars.json
 !terraform.tfvars.example
 
