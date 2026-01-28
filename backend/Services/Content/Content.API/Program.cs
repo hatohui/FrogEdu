@@ -1,4 +1,5 @@
 using FrogEdu.Content.Infrastructure.Persistence;
+using FrogEdu.Shared.Kernel;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -41,6 +42,10 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseRouting();
+
+// Use Lambda-specific CORS middleware for API Gateway Lambda proxy integration
+app.UseLambdaCors();
+
 app.UseCors("AllowSpecificOrigins");
 
 // Health check endpoint

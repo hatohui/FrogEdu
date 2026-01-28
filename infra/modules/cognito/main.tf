@@ -143,3 +143,4 @@ resource "aws_cognito_identity_provider" "google" {
     ignore_changes = [provider_details]
   }
 }
+

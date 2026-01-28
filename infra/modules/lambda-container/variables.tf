@@ -96,3 +96,9 @@ variable "routes" {
   }))
   default = []
 }
+
+variable "shared_parent_resources" {
+  description = "Map of existing parent resource IDs to use instead of creating new ones. Keys are path parts, values are resource IDs."
+  type        = map(string)
+  default     = {}
+}

@@ -1,3 +1,4 @@
+using FrogEdu.Shared.Kernel;
 using FrogEdu.User.API.Endpoints;
 using FrogEdu.User.Application;
 using FrogEdu.User.Infrastructure;
@@ -119,6 +120,10 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseRouting();
+
+// Use Lambda-specific CORS middleware for API Gateway Lambda proxy integration
+app.UseLambdaCors();
+
 app.UseCors("AllowSpecificOrigins");
 
 app.UseAuthentication();

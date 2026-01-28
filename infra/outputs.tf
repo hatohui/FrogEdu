@@ -27,7 +27,7 @@ output "api_gateway_endpoint" {
 
 output "api_gateway_domain" {
   description = "API Gateway domain name (for CloudFront origin)"
-  value       = replace(aws_api_gateway_stage.root.invoke_url, "https://", "")
+  value       = regex("^https://([^/]+)", aws_api_gateway_stage.root.invoke_url)[0]
 }
 output "custom_api_url" {
   description = "Custom API URL (use this)"
