@@ -24,7 +24,7 @@ public sealed class UserRepository : IUserRepository
     {
         return await _context
             .Users.AsNoTracking()
-            .FirstOrDefaultAsync(u => u.Id == id && !u.IsDeleted, cancellationToken);
+            .FirstOrDefaultAsync(u => u.Id == id, cancellationToken);
     }
 
     public async Task<UserEntity?> GetByCognitoIdAsync(
@@ -32,8 +32,9 @@ public sealed class UserRepository : IUserRepository
         CancellationToken cancellationToken = default
     )
     {
+        // Use EF.Property to access the converted value directly for better query translation
         return await _context.Users.FirstOrDefaultAsync(
-            u => u.CognitoId.Value == cognitoId && !u.IsDeleted,
+            u => EF.Property<string>(u.CognitoId, "Value") == cognitoId,
             cancellationToken
         );
     }
@@ -45,14 +46,17 @@ public sealed class UserRepository : IUserRepository
     {
         return await _context
             .Users.AsNoTracking()
-            .FirstOrDefaultAsync(u => u.Email.Value == email && !u.IsDeleted, cancellationToken);
+            .FirstOrDefaultAsync(
+                u => EF.Property<string>(u.Email, "Value") == email,
+                cancellationToken
+            );
     }
 
     public async Task<bool> ExistsAsync(string email, CancellationToken cancellationToken = default)
     {
         return await _context
             .Users.AsNoTracking()
-            .AnyAsync(u => u.Email.Value == email && !u.IsDeleted, cancellationToken);
+            .AnyAsync(u => EF.Property<string>(u.Email, "Value") == email, cancellationToken);
     }
 
     public async Task AddAsync(UserEntity user, CancellationToken cancellationToken = default)
