@@ -2,6 +2,7 @@ using System.Diagnostics;
 using FrogEdu.User.Application.Interfaces;
 using FrogEdu.User.Application.Queries.CheckDatabaseHealth;
 using FrogEdu.User.Infrastructure.Persistence;
+using Microsoft.EntityFrameworkCore;
 
 namespace FrogEdu.User.Infrastructure.Services;
 

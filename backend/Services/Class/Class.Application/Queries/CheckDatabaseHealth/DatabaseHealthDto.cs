@@ -7,15 +7,8 @@ public sealed record DatabaseHealthDto(
     bool IsHealthy,
     string Status,
     long ResponseTimeMs,
-    string? Error = null,
-    DateTime Timestamp = default
+    string? Error = null
 )
 {
-    public DatabaseHealthDto(
-        bool IsHealthy,
-        string Status,
-        long ResponseTimeMs,
-        string? Error = null
-    )
-        : this(IsHealthy, Status, ResponseTimeMs, Error, DateTime.UtcNow) { }
+    public DateTime Timestamp { get; init; } = DateTime.UtcNow;
 }
