@@ -72,7 +72,7 @@ export const useAuthStore = create<AuthState>()((set, get) => ({
 	) => {
 		set({ isLoading: true, error: null })
 		try {
-			const result = await amplifySignUp({
+			await amplifySignUp({
 				username: email,
 				password,
 				options: {
@@ -84,22 +84,6 @@ export const useAuthStore = create<AuthState>()((set, get) => ({
 					},
 				},
 			})
-
-			// After successful signup, create user in backend database
-			if (result.userId) {
-				try {
-					await userService.createUserFromCognito({
-						sub: result.userId,
-						email: email,
-						givenName: firstName,
-						familyName: lastName,
-						customRole: role,
-					})
-				} catch (dbError) {
-					console.error('Error creating user in database:', dbError)
-					// Don't throw - Cognito user was created successfully
-				}
-			}
 
 			set({ isLoading: false })
 		} catch (error) {

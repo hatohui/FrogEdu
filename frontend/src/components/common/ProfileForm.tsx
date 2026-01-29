@@ -121,9 +121,20 @@ const ProfileForm = ({
 	)
 
 	const getUserInitials = () => {
-		const first = user.firstName?.charAt(0) || ''
-		const last = user.lastName?.charAt(0) || ''
-		return (first + last).toUpperCase() || user.email.charAt(0).toUpperCase()
+		if (!user) return ''
+		const first =
+			user.firstName && typeof user.firstName === 'string'
+				? user.firstName.charAt(0)
+				: ''
+		const last =
+			user.lastName && typeof user.lastName === 'string'
+				? user.lastName.charAt(0)
+				: ''
+		const initials = (first + last).toUpperCase()
+		if (initials) return initials
+		if (user.email && typeof user.email === 'string' && user.email.length > 0)
+			return user.email.charAt(0).toUpperCase()
+		return ''
 	}
 
 	return (

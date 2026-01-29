@@ -2,7 +2,7 @@ import React from 'react'
 import { useForm, type SubmitHandler } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
-import { useNavigate } from 'react-router'
+import { useRegister } from '@/hooks/useRegister'
 import { useAuthStore } from '@/stores/authStore'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -31,6 +31,7 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from '@/components/ui/select'
+import { useNavigate } from 'react-router'
 
 const registerSchema = z
 	.object({
@@ -64,11 +65,8 @@ type RegisterFormValues = z.infer<typeof registerSchema>
 
 const RegisterPage = (): React.JSX.Element => {
 	const navigate = useNavigate()
-	const signUp = useAuthStore(state => state.signUp)
+	const { register, isLoading, error, clearError } = useRegister()
 	const signInWithGoogle = useAuthStore(state => state.signInWithGoogle)
-	const isLoading = useAuthStore(state => state.isLoading)
-	const error = useAuthStore(state => state.error)
-	const clearError = useAuthStore(state => state.clearError)
 	const [showPassword, setShowPassword] = React.useState(false)
 	const [showConfirmPassword, setShowConfirmPassword] = React.useState(false)
 
@@ -89,18 +87,13 @@ const RegisterPage = (): React.JSX.Element => {
 	}, [clearError])
 
 	const onSubmit: SubmitHandler<RegisterFormValues> = async data => {
-		try {
-			await signUp(
-				data.email,
-				data.password,
-				data.firstName,
-				data.lastName,
-				data.role
-			)
-			navigate('/login')
-		} catch {
-			// Error is handled in the store
-		}
+		await register({
+			email: data.email,
+			password: data.password,
+			firstName: data.firstName,
+			lastName: data.lastName,
+			role: data.role,
+		})
 	}
 
 	return (
@@ -310,7 +303,6 @@ const RegisterPage = (): React.JSX.Element => {
 									className='w-full h-10 transition-all duration-200'
 									disabled={isLoading}
 									onClick={() => {
-										// Store intent to register via Google in localStorage
 										localStorage.setItem('authIntent', 'register')
 										signInWithGoogle()
 									}}

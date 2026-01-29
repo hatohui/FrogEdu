@@ -2,8 +2,7 @@ import React from 'react'
 import { useForm, type SubmitHandler } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
-import { useNavigate } from 'react-router'
-import { useAuthStore } from '@/stores/authStore'
+import { useLogin } from '@/hooks/useLogin'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Eye, EyeOff, Loader2, ArrowLeft } from 'lucide-react'
@@ -24,9 +23,10 @@ import {
 	FormMessage,
 } from '@/components/ui/form'
 import ProtectedRoute from '@/components/common/ProtectedRoute'
+import { useNavigate } from 'react-router'
 
 const loginSchema = z.object({
-	email: z.string().email({ message: 'Please enter a valid email address' }),
+	email: z.email({ message: 'Please enter a valid email address' }),
 	password: z
 		.string()
 		.min(8, { message: 'Password must be at least 8 characters' }),
@@ -36,11 +36,8 @@ type LoginFormValues = z.infer<typeof loginSchema>
 
 const LoginPage = (): React.JSX.Element => {
 	const navigate = useNavigate()
-	const signIn = useAuthStore(state => state.signIn)
-	const signInWithGoogle = useAuthStore(state => state.signInWithGoogle)
-	const isLoading = useAuthStore(state => state.isLoading)
-	const error = useAuthStore(state => state.error)
-	const clearError = useAuthStore(state => state.clearError)
+	const signInWithGoogle = useLogin().signInWithGoogle
+	const { login, isLoading, error, clearError } = useLogin()
 	const [showPassword, setShowPassword] = React.useState(false)
 
 	const form = useForm<LoginFormValues>({
@@ -56,12 +53,7 @@ const LoginPage = (): React.JSX.Element => {
 	}, [clearError])
 
 	const onSubmit: SubmitHandler<LoginFormValues> = async data => {
-		try {
-			await signIn(data.email, data.password)
-			navigate('/dashboard')
-		} catch {
-			// Error is handled in the store
-		}
+		await login(data.email, data.password)
 	}
 
 	return (
