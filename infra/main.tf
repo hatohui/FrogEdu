@@ -156,11 +156,11 @@ module "user_service" {
     AWS_COGNITO_REGION   = local.aws_region
 
     // R2 Storage settings
-    R2_ACCOUNT_ID        = local.r2_account_id
-    R2_ACCESS_KEY_ID     = local.r2_access_key_id
-    R2_SECRET_ACCESS_KEY = local.r2_secret_access_key
-    R2_BUCKET_NAME       = local.r2_bucket_name
-    R2_PUBLIC_ENDPOINT   = local.r2_public_endpoint
+    R2_ACCOUNT_ID      = local.r2_account_id
+    R2_ACCESS_KEY      = local.r2_access_key_id
+    R2_SECRET_KEY      = local.r2_secret_access_key
+    R2_BUCKET_NAME     = local.r2_bucket_name
+    R2_PUBLIC_ENDPOINT = local.r2_public_endpoint
   }
 }
 

@@ -108,7 +108,6 @@ public static class DependencyInjection
             return;
         }
 
-        // Configure S3 client for R2
         services.AddSingleton<IAmazonS3>(sp =>
         {
             var credentials = new BasicAWSCredentials(accessKeyId, secretAccessKey);
@@ -117,14 +116,12 @@ public static class DependencyInjection
             {
                 ServiceURL = $"https://{accountId}.r2.cloudflarestorage.com",
                 ForcePathStyle = true,
-                SignatureVersion = "4",
-                UseAccelerateEndpoint = false,
+                AuthenticationRegion = "auto",
             };
 
             return new AmazonS3Client(credentials, config);
         });
 
-        // Register R2 asset storage service
         services.AddScoped<IAssetStorageService, R2AssetStorageService>();
 
         Console.WriteLine($"R2 Storage configured for account: {accountId}");
