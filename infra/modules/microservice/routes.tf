@@ -1,9 +1,19 @@
 resource "aws_apigatewayv2_route" "default_route" {
+  for_each = toset(["GET", "POST", "PUT", "DELETE", "PATCH", "HEAD"])
+
   api_id             = var.api_gateway_id
-  route_key          = "ANY /api/${var.service_name}/{proxy+}"
+  route_key          = "${each.value} /api/${var.service_name}/{proxy+}"
   target             = "integrations/${aws_apigatewayv2_integration.default_integration.id}"
   authorization_type = var.cognito_authorizer_id != "" ? "JWT" : "NONE"
   authorizer_id      = var.cognito_authorizer_id != "" ? var.cognito_authorizer_id : null
+}
+
+resource "aws_apigatewayv2_route" "options_bypass" {
+  api_id             = var.api_gateway_id
+  route_key          = "OPTIONS /api/${var.service_name}/{proxy+}"
+  authorization_type = "NONE"
+
+  target = "integrations/${aws_apigatewayv2_integration.default_integration.id}"
 }
 
 resource "aws_apigatewayv2_route" "no_auth_routes" {
@@ -15,13 +25,4 @@ resource "aws_apigatewayv2_route" "no_auth_routes" {
   authorization_type = "NONE"
 }
 
-resource "aws_apigatewayv2_integration" "default_integration" {
-  api_id             = var.api_gateway_id
-  integration_uri    = aws_lambda_function.this.invoke_arn
-  integration_type   = "AWS_PROXY"
-  integration_method = "POST"
 
-  request_parameters = {
-    "overwrite:path" = "$request.path.proxy"
-  }
-}

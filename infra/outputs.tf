@@ -7,6 +7,11 @@ output "environment" {
   value       = local.environment
 }
 
+output "cors_origins" {
+  description = "CORS allowed origins for API Gateway"
+  value       = var.cors_origins
+}
+
 output "aws_region" {
   description = "AWS region"
   value       = local.aws_region

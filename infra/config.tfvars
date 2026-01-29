@@ -1,1 +1,0 @@
-cors_origins=["http://localhost:5173", "http://localhost:5174", "https://frogedu.org", "https://www.frogedu.org"]
