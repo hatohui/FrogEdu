@@ -36,7 +36,7 @@ resource "aws_cloudfront_distribution" "api" {
     compress               = true
 
     cache_policy_id          = "4135ea2d-6df8-44a3-9df3-4b5a84be39ad"
-    origin_request_policy_id = "59781a5b-3903-41f3-afcb-af62929ccde1"
+    origin_request_policy_id = "b689b0a8-53d0-40ab-baf2-68738e2966ac"
   }
 
   restrictions {

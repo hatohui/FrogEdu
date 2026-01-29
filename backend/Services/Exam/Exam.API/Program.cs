@@ -30,11 +30,8 @@ builder.Services.AddInfrastructureServices(builder.Configuration);
 builder.Services.AddCognitoAuthentication(builder.Configuration);
 builder.Services.AddRoleBasedAuthorization();
 
-// CORS (Development)
-if (builder.Environment.IsDevelopment())
-{
-    builder.Services.AddDevelopmentCors();
-}
+// CORS - Required for API Gateway
+builder.Services.AddDevelopmentCors();
 
 // ============================================================================
 // Middleware & Routing Configuration
@@ -51,10 +48,7 @@ app.UseSwaggerUI();
 
 // Routing & CORS
 app.UseRouting();
-if (app.Environment.IsDevelopment())
-{
-    app.UseDevelopmentCors();
-}
+app.UseDevelopmentCors();
 
 // Authentication & Authorization
 app.UseAuthentication();

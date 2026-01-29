@@ -8,7 +8,7 @@ resource "aws_apigatewayv2_api" "api_gateway" {
     allow_methods     = ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"]
     allow_headers     = ["Authorization", "Content-Type", "X-Amz-Date", "X-Api-Key", "X-Amz-Security-Token"]
     allow_credentials = true
-    max_age           = 300
+    max_age           = 3600
   }
 
   disable_execute_api_endpoint = false
