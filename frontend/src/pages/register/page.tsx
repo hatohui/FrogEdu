@@ -50,7 +50,7 @@ const registerSchema = z
 			}),
 		confirmPassword: z.string(),
 		role: z.enum(['Teacher', 'Student'], {
-			required_error: 'Please select your role',
+			message: 'Please select your role',
 		}),
 		firstName: z.string().min(1, { message: 'First name is required' }),
 		lastName: z.string().min(1, { message: 'Last name is required' }),

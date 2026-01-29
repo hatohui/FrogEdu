@@ -80,7 +80,7 @@ const JoinClassForm: React.FC<JoinClassFormProps> = ({ onSuccess }) => {
 										<InputOTP
 											maxLength={6}
 											value={field.value}
-											onChange={value => {
+											onChange={(value: string) => {
 												field.onChange(value.toUpperCase())
 												setIsComplete(value.length === 6)
 											}}

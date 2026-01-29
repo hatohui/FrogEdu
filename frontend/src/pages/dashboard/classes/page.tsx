@@ -1,7 +1,11 @@
 import React, { useState } from 'react'
 import { useAuthStore } from '@/stores/authStore'
 import { useClasses } from '@/hooks/useClasses'
-import { ClassCard, CreateClassModal, JoinClassForm } from '@/components/classes'
+import {
+	ClassCard,
+	CreateClassModal,
+	JoinClassForm,
+} from '@/components/classes'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
@@ -70,7 +74,9 @@ const ClassesPage: React.FC = () => {
 				/* Teacher view with tabs for active/archived */
 				<Tabs
 					defaultValue='active'
-					onValueChange={value => setIncludeArchived(value === 'archived')}
+					onValueChange={(value: string) =>
+						setIncludeArchived(value === 'archived')
+					}
 				>
 					<TabsList>
 						<TabsTrigger value='active' className='gap-2'>
