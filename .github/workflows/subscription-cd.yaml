@@ -1,4 +1,4 @@
-name: ai-cd
+name: subscription-cd
 
 permissions:
   id-token: write
@@ -9,15 +9,15 @@ on:
     branches:
       - main
     paths:
-      - "backend/Services/AI/**.cs"
+      - "backend/Services/Subscription/**.cs"
       - "backend/Shared/**.cs"
-      - ".github/workflows/ai-cd.yaml"
-      - "backend/Services/AI/**.csproj"
+      - ".github/workflows/subscription-cd.yaml"
+      - "backend/Services/Subscription/**.csproj"
       - "backend/Shared/**.csproj"
   workflow_dispatch:
 
 jobs:
-  ai-cd:
+  subscription-cd:
     runs-on: ubuntu-latest
 
     steps:
@@ -27,7 +27,7 @@ jobs:
           sparse-checkout-cone-mode: false
           sparse-checkout: |
             backend/Shared
-            backend/Services/AI
+            backend/Services/Subscription
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v5.1.1
@@ -43,16 +43,16 @@ jobs:
         working-directory: backend/
         env:
           REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          REPOSITORY: frogedu-dev-ai-api
+          REPOSITORY: frogedu-dev-subscription-api
         run: |
-          docker build --provenance=false -f Services/AI/Dockerfile -t $REGISTRY/$REPOSITORY:latest .
+          docker build --provenance=false -f Services/Subscription/Dockerfile -t $REGISTRY/$REPOSITORY:latest .
           docker push $REGISTRY/$REPOSITORY:latest
 
       - name: Update Lambda Function
         env:
-          FUNCTION_NAME: frogedu-ai
+          FUNCTION_NAME: frogedu-subscription-api
           REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          REPOSITORY: frogedu-dev-ai-api
+          REPOSITORY: frogedu-dev-subscription-api
         run: |
           aws lambda update-function-code \
             --function-name $FUNCTION_NAME \
