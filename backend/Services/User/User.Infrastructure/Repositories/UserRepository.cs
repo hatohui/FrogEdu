@@ -1,4 +1,5 @@
 using FrogEdu.User.Domain.Repositories;
+using FrogEdu.User.Domain.ValueObjects;
 using FrogEdu.User.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using UserEntity = FrogEdu.User.Domain.Entities.User;
@@ -32,9 +33,10 @@ public sealed class UserRepository : IUserRepository
         CancellationToken cancellationToken = default
     )
     {
-        // Use EF.Property to access the converted value directly for better query translation
+        // Compare with value object directly - EF Core handles the conversion automatically
+        var cognitoIdVO = CognitoUserId.Create(cognitoId);
         return await _context.Users.FirstOrDefaultAsync(
-            u => EF.Property<string>(u.CognitoId, "Value") == cognitoId,
+            u => u.CognitoId == cognitoIdVO,
             cancellationToken
         );
     }
@@ -44,19 +46,19 @@ public sealed class UserRepository : IUserRepository
         CancellationToken cancellationToken = default
     )
     {
+        // Compare with value object directly - EF Core handles the conversion automatically
+        var emailVO = Email.Create(email);
         return await _context
             .Users.AsNoTracking()
-            .FirstOrDefaultAsync(
-                u => EF.Property<string>(u.Email, "Value") == email,
-                cancellationToken
-            );
+            .FirstOrDefaultAsync(u => u.Email == emailVO, cancellationToken);
     }
 
     public async Task<bool> ExistsAsync(string email, CancellationToken cancellationToken = default)
     {
+        var emailVO = Email.Create(email);
         return await _context
             .Users.AsNoTracking()
-            .AnyAsync(u => EF.Property<string>(u.Email, "Value") == email, cancellationToken);
+            .AnyAsync(u => u.Email == emailVO, cancellationToken);
     }
 
     public async Task AddAsync(UserEntity user, CancellationToken cancellationToken = default)
