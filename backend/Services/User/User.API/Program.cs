@@ -21,6 +21,37 @@ builder.Services.AddSwaggerGen(options =>
     options.AddServer(
         new Microsoft.OpenApi.Models.OpenApiServer { Url = "/api/users", Description = "User API" }
     );
+
+    // Add JWT Bearer authentication to Swagger
+    options.AddSecurityDefinition(
+        "Bearer",
+        new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+        {
+            Description =
+                "JWT Authorization header using the Bearer scheme. Enter 'Bearer' [space] and then your token in the text input below.",
+            Name = "Authorization",
+            In = Microsoft.OpenApi.Models.ParameterLocation.Header,
+            Type = Microsoft.OpenApi.Models.SecuritySchemeType.ApiKey,
+            Scheme = "Bearer",
+        }
+    );
+
+    options.AddSecurityRequirement(
+        new Microsoft.OpenApi.Models.OpenApiSecurityRequirement
+        {
+            {
+                new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+                {
+                    Reference = new Microsoft.OpenApi.Models.OpenApiReference
+                    {
+                        Type = Microsoft.OpenApi.Models.ReferenceType.SecurityScheme,
+                        Id = "Bearer",
+                    },
+                },
+                Array.Empty<string>()
+            },
+        }
+    );
 });
 
 // AWS Lambda
@@ -42,21 +73,6 @@ builder.Services.AddDevelopmentCors();
 // ============================================================================
 
 var app = builder.Build();
-
-// ============================================================================
-// Database Seeding (Development Only)
-// ============================================================================
-
-if (app.Environment.IsDevelopment())
-{
-    await app.Services.SeedDatabaseAsync(
-        cognitoId: "YOUR_COGNITO_SUB_ID_HERE",
-        email: "your.email@example.com",
-        firstName: "Your",
-        lastName: "Name",
-        role: UserRole.Teacher
-    );
-}
 
 // Path rewriting
 app.UsePathPrefixRewrite("/api/users");

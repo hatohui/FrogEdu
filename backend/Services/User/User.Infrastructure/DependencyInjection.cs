@@ -1,9 +1,12 @@
+using Amazon.Runtime;
 using Amazon.S3;
 using FrogEdu.User.Application.Interfaces;
 using FrogEdu.User.Domain.Repositories;
+using FrogEdu.User.Domain.Services;
 using FrogEdu.User.Infrastructure.Persistence;
 using FrogEdu.User.Infrastructure.Repositories;
 using FrogEdu.User.Infrastructure.Services;
+using FrogEdu.User.Infrastructure.Storage;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -55,17 +58,76 @@ public static class DependencyInjection
         // Register database health service
         services.AddScoped<IDatabaseHealthService, DatabaseHealthService>();
 
-        // Configure AWS S3
-        services.AddDefaultAWSOptions(configuration.GetAWSOptions());
-        services.AddAWSService<IAmazonS3>();
-
-        // Register storage service
+        // Register legacy storage service (for existing avatar upload)
         services.AddScoped<IStorageService, S3StorageService>();
+
+        // Configure R2 (Cloudflare S3-compatible storage)
+        ConfigureR2Storage(services, configuration);
 
         // Register database seeder
         services.AddScoped<DatabaseSeeder>();
 
         return services;
+    }
+
+    /// <summary>
+    /// Configure Cloudflare R2 storage (S3-compatible)
+    /// </summary>
+    private static void ConfigureR2Storage(
+        IServiceCollection services,
+        IConfiguration configuration
+    )
+    {
+        var accountId =
+            configuration["R2:AccountId"]
+            ?? Environment.GetEnvironmentVariable("R2__AccountId")
+            ?? Environment.GetEnvironmentVariable("R2_ACCOUNT_ID");
+        var accessKeyId =
+            configuration["R2:AccessKeyId"]
+            ?? Environment.GetEnvironmentVariable("R2__AccessKeyId")
+            ?? Environment.GetEnvironmentVariable("R2_ACCESS_KEY");
+        var secretAccessKey =
+            configuration["R2:SecretAccessKey"]
+            ?? Environment.GetEnvironmentVariable("R2__SecretAccessKey")
+            ?? Environment.GetEnvironmentVariable("R2_SECRET_KEY");
+        var region =
+            configuration["R2:Region"]
+            ?? Environment.GetEnvironmentVariable("R2__Region")
+            ?? Environment.GetEnvironmentVariable("R2_REGION")
+            ?? "auto";
+
+        if (
+            string.IsNullOrWhiteSpace(accountId)
+            || string.IsNullOrWhiteSpace(accessKeyId)
+            || string.IsNullOrWhiteSpace(secretAccessKey)
+        )
+        {
+            Console.WriteLine(
+                "Warning: R2 configuration is incomplete. Asset upload will not work."
+            );
+            return;
+        }
+
+        // Configure S3 client for R2
+        services.AddSingleton<IAmazonS3>(sp =>
+        {
+            var credentials = new BasicAWSCredentials(accessKeyId, secretAccessKey);
+
+            var config = new AmazonS3Config
+            {
+                ServiceURL = $"https://{accountId}.r2.cloudflarestorage.com",
+                ForcePathStyle = true,
+                SignatureVersion = "4",
+                UseAccelerateEndpoint = false,
+            };
+
+            return new AmazonS3Client(credentials, config);
+        });
+
+        // Register R2 asset storage service
+        services.AddScoped<IAssetStorageService, R2AssetStorageService>();
+
+        Console.WriteLine($"R2 Storage configured for account: {accountId}");
     }
 
     /// <summary>
