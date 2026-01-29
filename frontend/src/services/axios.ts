@@ -44,4 +44,12 @@ axiosInstance.interceptors.response.use(
 	}
 )
 
+export const publicAxios = axios.create({
+	baseURL: `${ApiUrl}/api`,
+	timeout: 10000,
+	headers: {
+		'Content-Type': 'application/json',
+	},
+})
+
 export default axiosInstance

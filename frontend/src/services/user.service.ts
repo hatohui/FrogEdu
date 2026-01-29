@@ -4,9 +4,8 @@ import type {
 	UpdateProfileDto,
 } from '@/types/dtos/users/user'
 import apiService, { type ApiResponse } from './api.service'
-import axiosInstance from './axios'
+import axiosInstance, { publicAxios } from './axios'
 import type { GetPresignedImageUrlResponse } from '@/types/dtos/users/sign-image'
-import axios from 'axios'
 import { AVATAR_BUCKET } from '@/common/constants'
 
 /**
@@ -51,7 +50,7 @@ class UserService {
 	async uploadAvatar(file: File): Promise<string> {
 		const { uploadUrl, publicUrl } = await this.getAvatarUploadUrl(file.type)
 
-		await axios.put(uploadUrl, file, {
+		await publicAxios.put(uploadUrl, file, {
 			headers: {
 				'Content-Type': file.type,
 			},
@@ -72,7 +71,7 @@ class UserService {
 		familyName: string
 		customRole: string
 	}): Promise<void> {
-		await axios.post('/users/auth/webhook', {
+		await publicAxios.post('/users/auth/webhook', {
 			Request: {
 				UserAttributes: {
 					Sub: userData.sub,
