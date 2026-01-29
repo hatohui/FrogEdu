@@ -123,6 +123,7 @@ module "user_service" {
     "/health",
     "/swagger/{proxy+}",
     "/swagger",
+    "/auth/webhook",
   ]
 
   environment_variables = {

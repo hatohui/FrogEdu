@@ -62,6 +62,32 @@ public static class DependencyInjection
         // Register storage service
         services.AddScoped<IStorageService, S3StorageService>();
 
+        // Register database seeder
+        services.AddScoped<DatabaseSeeder>();
+
         return services;
+    }
+
+    /// <summary>
+    /// Seed the database with initial data
+    /// Call this after app.Build() in Program.cs during development
+    /// </summary>
+    public static async Task SeedDatabaseAsync(
+        this IServiceProvider services,
+        string cognitoId,
+        string email,
+        string firstName,
+        string lastName,
+        FrogEdu.User.Domain.Enums.UserRole role = FrogEdu.User.Domain.Enums.UserRole.Student
+    )
+    {
+        using var scope = services.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<UserDbContext>();
+
+        // Ensure database is created and migrations are applied
+        await context.Database.MigrateAsync();
+
+        var seeder = scope.ServiceProvider.GetRequiredService<DatabaseSeeder>();
+        await seeder.SeedUserFromCognitoAsync(cognitoId, email, firstName, lastName, role);
     }
 }

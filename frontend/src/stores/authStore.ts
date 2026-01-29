@@ -8,6 +8,7 @@ import {
 	signInWithRedirect,
 } from 'aws-amplify/auth'
 import type { AuthUser } from 'aws-amplify/auth'
+import userService from '@/services/user.service'
 
 interface UserProfile {
 	sub: string
@@ -27,7 +28,13 @@ interface AuthState {
 	isLoading: boolean
 	error: string | null
 	signIn: (email: string, password: string) => Promise<void>
-	signUp: (email: string, password: string) => Promise<void>
+	signUp: (
+		email: string,
+		password: string,
+		firstName: string,
+		lastName: string,
+		role: string
+	) => Promise<void>
 	signInWithGoogle: () => Promise<void>
 	signOut: () => Promise<void>
 	refreshAuth: () => Promise<void>
@@ -56,18 +63,44 @@ export const useAuthStore = create<AuthState>()((set, get) => ({
 		}
 	},
 
-	signUp: async (email: string, password: string) => {
+	signUp: async (
+		email: string,
+		password: string,
+		firstName: string,
+		lastName: string,
+		role: string
+	) => {
 		set({ isLoading: true, error: null })
 		try {
-			await amplifySignUp({
+			const result = await amplifySignUp({
 				username: email,
 				password,
 				options: {
 					userAttributes: {
 						email,
+						given_name: firstName,
+						family_name: lastName,
+						'custom:role': role,
 					},
 				},
 			})
+
+			// After successful signup, create user in backend database
+			if (result.userId) {
+				try {
+					await userService.createUserFromCognito({
+						sub: result.userId,
+						email: email,
+						givenName: firstName,
+						familyName: lastName,
+						customRole: role,
+					})
+				} catch (dbError) {
+					console.error('Error creating user in database:', dbError)
+					// Don't throw - Cognito user was created successfully
+				}
+			}
+
 			set({ isLoading: false })
 		} catch (error) {
 			const message =
@@ -145,6 +178,7 @@ export const useAuthStore = create<AuthState>()((set, get) => ({
 					family_name: idToken?.payload.family_name as string | undefined,
 					picture: idToken?.payload.picture as string | undefined,
 					username: currentUser.username,
+					'custom:role': idToken?.payload['custom:role'] as string | undefined,
 				}
 
 				set({

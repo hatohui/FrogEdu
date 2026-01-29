@@ -24,6 +24,13 @@ import {
 	FormMessage,
 } from '@/components/ui/form'
 import ProtectedRoute from '@/components/common/ProtectedRoute'
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from '@/components/ui/select'
 
 const registerSchema = z
 	.object({
@@ -42,6 +49,11 @@ const registerSchema = z
 				message: 'Password must contain at least one special character',
 			}),
 		confirmPassword: z.string(),
+		role: z.enum(['Teacher', 'Student'], {
+			required_error: 'Please select your role',
+		}),
+		firstName: z.string().min(1, { message: 'First name is required' }),
+		lastName: z.string().min(1, { message: 'Last name is required' }),
 	})
 	.refine(data => data.password === data.confirmPassword, {
 		message: 'Passwords do not match',
@@ -66,6 +78,9 @@ const RegisterPage = (): React.JSX.Element => {
 			email: '',
 			password: '',
 			confirmPassword: '',
+			role: 'Student',
+			firstName: '',
+			lastName: '',
 		},
 	})
 
@@ -75,7 +90,13 @@ const RegisterPage = (): React.JSX.Element => {
 
 	const onSubmit: SubmitHandler<RegisterFormValues> = async data => {
 		try {
-			await signUp(data.email, data.password)
+			await signUp(
+				data.email,
+				data.password,
+				data.firstName,
+				data.lastName,
+				data.role
+			)
 			navigate('/login')
 		} catch {
 			// Error is handled in the store
@@ -109,6 +130,35 @@ const RegisterPage = (): React.JSX.Element => {
 								onSubmit={form.handleSubmit(onSubmit)}
 								className='space-y-4'
 							>
+								<div className='grid grid-cols-2 gap-4'>
+									<FormField
+										control={form.control}
+										name='firstName'
+										render={({ field }) => (
+											<FormItem>
+												<FormLabel>First Name</FormLabel>
+												<FormControl>
+													<Input placeholder='John' {...field} />
+												</FormControl>
+												<FormMessage />
+											</FormItem>
+										)}
+									/>
+									<FormField
+										control={form.control}
+										name='lastName'
+										render={({ field }) => (
+											<FormItem>
+												<FormLabel>Last Name</FormLabel>
+												<FormControl>
+													<Input placeholder='Doe' {...field} />
+												</FormControl>
+												<FormMessage />
+											</FormItem>
+										)}
+									/>
+								</div>
+
 								<FormField
 									control={form.control}
 									name='email'
@@ -122,6 +172,31 @@ const RegisterPage = (): React.JSX.Element => {
 													{...field}
 												/>
 											</FormControl>
+											<FormMessage />
+										</FormItem>
+									)}
+								/>
+
+								<FormField
+									control={form.control}
+									name='role'
+									render={({ field }) => (
+										<FormItem>
+											<FormLabel>I am a</FormLabel>
+											<Select
+												onValueChange={field.onChange}
+												defaultValue={field.value}
+											>
+												<FormControl>
+													<SelectTrigger>
+														<SelectValue placeholder='Select your role' />
+													</SelectTrigger>
+												</FormControl>
+												<SelectContent>
+													<SelectItem value='Teacher'>Teacher</SelectItem>
+													<SelectItem value='Student'>Student</SelectItem>
+												</SelectContent>
+											</Select>
 											<FormMessage />
 										</FormItem>
 									)}
@@ -234,7 +309,11 @@ const RegisterPage = (): React.JSX.Element => {
 									variant='outline'
 									className='w-full h-10 transition-all duration-200'
 									disabled={isLoading}
-									onClick={() => signInWithGoogle()}
+									onClick={() => {
+										// Store intent to register via Google in localStorage
+										localStorage.setItem('authIntent', 'register')
+										signInWithGoogle()
+									}}
 								>
 									{!isLoading && (
 										<svg

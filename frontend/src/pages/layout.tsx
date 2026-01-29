@@ -14,6 +14,7 @@ const MainLayout = ({
 		location.pathname.startsWith('/login') ||
 		location.pathname.startsWith('/register') ||
 		location.pathname.startsWith('/forgot-password') ||
+		location.pathname.startsWith('/select-role') ||
 		location.pathname.startsWith('/auth/')
 
 	const isDashboardPage = location.pathname.startsWith('/dashboard')

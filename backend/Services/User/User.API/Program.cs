@@ -2,6 +2,7 @@ using DotNetEnv;
 using FrogEdu.Shared.Kernel;
 using FrogEdu.User.API.Middleware;
 using FrogEdu.User.Application;
+using FrogEdu.User.Domain.Enums;
 using FrogEdu.User.Infrastructure;
 
 Env.Load();
@@ -41,6 +42,21 @@ builder.Services.AddDevelopmentCors();
 // ============================================================================
 
 var app = builder.Build();
+
+// ============================================================================
+// Database Seeding (Development Only)
+// ============================================================================
+
+if (app.Environment.IsDevelopment())
+{
+    await app.Services.SeedDatabaseAsync(
+        cognitoId: "YOUR_COGNITO_SUB_ID_HERE",
+        email: "your.email@example.com",
+        firstName: "Your",
+        lastName: "Name",
+        role: UserRole.Teacher
+    );
+}
 
 // Path rewriting
 app.UsePathPrefixRewrite("/api/users");

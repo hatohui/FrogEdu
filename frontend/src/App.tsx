@@ -11,6 +11,7 @@ import tanstackConfig from './config/tanstack'
 import { useTranslation } from 'react-i18next'
 import { ReactQueryDevtoolsPanel } from '@tanstack/react-query-devtools'
 import { GlobalLoading } from './components/common/GlobalLoading'
+import { RoleGuard } from './components/common/RoleGuard'
 import './config/amplify'
 
 registerGSAPPlugins()
@@ -23,7 +24,9 @@ const AppContent = (): React.ReactNode => {
 	return (
 		<QueryClientProvider client={client}>
 			<ThemeProvider>
-				<RouterProvider router={router} />
+				<RoleGuard>
+					<RouterProvider router={router} />
+				</RoleGuard>
 				<Toaster richColors position='top-center' />
 			</ThemeProvider>
 			{import.meta.env.DEV && (

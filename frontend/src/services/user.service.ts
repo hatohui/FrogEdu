@@ -135,6 +135,32 @@ class UserService {
 	}
 
 	/**
+	 * Create user in database after Cognito signup
+	 * Used for webhook-like functionality from frontend
+	 */
+	async createUserFromCognito(userData: {
+		sub: string
+		email: string
+		givenName: string
+		familyName: string
+		customRole: string
+	}): Promise<void> {
+		// Note: This endpoint doesn't require auth token (AllowAnonymous)
+		// So we use axiosInstance directly but the interceptor won't add auth
+		await axiosInstance.post('/users/auth/webhook', {
+			Request: {
+				UserAttributes: {
+					Sub: userData.sub,
+					Email: userData.email,
+					GivenName: userData.givenName,
+					FamilyName: userData.familyName,
+					CustomRole: userData.customRole,
+				},
+			},
+		})
+	}
+
+	/**
 	 * Upload profile picture (legacy)
 	 * Returns presigned S3 URL for upload
 	 */
