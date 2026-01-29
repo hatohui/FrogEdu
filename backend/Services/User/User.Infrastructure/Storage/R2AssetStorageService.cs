@@ -57,7 +57,7 @@ public class R2AssetStorageService : IAssetStorageService
                 BucketName = _bucketName,
                 Key = objectKey,
                 Verb = HttpVerb.PUT,
-                Expires = DateTime.UtcNow.AddMinutes(15), // URL valid for 15 minutes
+                Expires = DateTime.UtcNow.AddMinutes(15),
                 ContentType = request.ContentType,
             };
 
