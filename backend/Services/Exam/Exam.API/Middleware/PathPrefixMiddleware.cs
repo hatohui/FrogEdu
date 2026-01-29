@@ -15,17 +15,24 @@ public class PathPrefixMiddleware
     {
         var path = context.Request.Path.Value ?? "";
 
-        if (path.StartsWith(_prefix, StringComparison.OrdinalIgnoreCase))
+        // Skip rewriting for Swagger/OpenAPI paths
+        if (
+            !path.StartsWith("/swagger", StringComparison.OrdinalIgnoreCase)
+            && !path.StartsWith("/swagger-ui", StringComparison.OrdinalIgnoreCase)
+            && !path.Equals("/swagger-ui.html", StringComparison.OrdinalIgnoreCase)
+            && !path.StartsWith("/openapi", StringComparison.OrdinalIgnoreCase)
+        )
         {
-            context.Request.Path = path.Substring(_prefix.Length);
-            if (string.IsNullOrEmpty(context.Request.Path.Value))
+            if (path.StartsWith(_prefix, StringComparison.OrdinalIgnoreCase))
             {
-                context.Request.Path = "/";
+                context.Request.Path = path.Substring(_prefix.Length);
+                if (string.IsNullOrEmpty(context.Request.Path.Value))
+                {
+                    context.Request.Path = "/";
+                }
             }
         }
 
         await _next(context);
     }
 }
-
-
