@@ -53,40 +53,40 @@ module "ecr" {
   environment  = local.environment
 
   repositories = {
-    ai-api = {
+    exam-api = {
       image_tag_mutability  = "MUTABLE"
       scan_on_push          = true
-      lifecycle_policy_keep = 10
-      lifecycle_expire_days = 7
-    }
-    assessment-api = {
-      image_tag_mutability  = "MUTABLE"
-      scan_on_push          = true
-      lifecycle_policy_keep = 10
-      lifecycle_expire_days = 7
-    }
-    content-api = {
-      image_tag_mutability  = "MUTABLE"
-      scan_on_push          = true
-      lifecycle_policy_keep = 10
+      lifecycle_policy_keep = 3
       lifecycle_expire_days = 7
     }
     user-api = {
       image_tag_mutability  = "MUTABLE"
       scan_on_push          = true
-      lifecycle_policy_keep = 10
+      lifecycle_policy_keep = 3
+      lifecycle_expire_days = 7
+    }
+    class-api = {
+      image_tag_mutability  = "MUTABLE"
+      scan_on_push          = true
+      lifecycle_policy_keep = 3
+      lifecycle_expire_days = 7
+    }
+    subscription-api = {
+      image_tag_mutability  = "MUTABLE"
+      scan_on_push          = true
+      lifecycle_policy_keep = 3
       lifecycle_expire_days = 7
     }
   }
 }
 
-module "content_service" {
+module "exam_service" {
   source = "./modules/microservice"
 
-  service_name              = "contents"
+  service_name              = "exams"
   project_name              = local.project_name
   lambda_role_arn           = module.iam.lambda_execution_role.arn
-  ecr_repository            = module.ecr.repository_urls["content-api"]
+  ecr_repository            = module.ecr.repository_urls["exam-api"]
   api_gateway_id            = module.api_gateway.api_gateway_id
   api_gateway_execution_arn = module.api_gateway.api_gateway_execution_arn
   cognito_authorizer_id     = module.api_gateway.cognito_authorizer_id
@@ -122,13 +122,13 @@ module "user_service" {
   }
 }
 
-module "assessment_service" {
+module "class_service" {
   source = "./modules/microservice"
 
-  service_name              = "assessments"
+  service_name              = "classes"
   project_name              = local.project_name
   lambda_role_arn           = module.iam.lambda_execution_role.arn
-  ecr_repository            = module.ecr.repository_urls["assessment-api"]
+  ecr_repository            = module.ecr.repository_urls["class-api"]
   api_gateway_id            = module.api_gateway.api_gateway_id
   api_gateway_execution_arn = module.api_gateway.api_gateway_execution_arn
   cognito_authorizer_id     = module.api_gateway.cognito_authorizer_id
@@ -143,14 +143,13 @@ module "assessment_service" {
   }
 }
 
-
-module "ai_service" {
+module "subscription_service" {
   source = "./modules/microservice"
 
-  service_name              = "ai"
+  service_name              = "subscriptions"
   project_name              = local.project_name
   lambda_role_arn           = module.iam.lambda_execution_role.arn
-  ecr_repository            = module.ecr.repository_urls["ai-api"]
+  ecr_repository            = module.ecr.repository_urls["subscription-api"]
   api_gateway_id            = module.api_gateway.api_gateway_id
   api_gateway_execution_arn = module.api_gateway.api_gateway_execution_arn
   cognito_authorizer_id     = module.api_gateway.cognito_authorizer_id

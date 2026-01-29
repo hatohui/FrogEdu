@@ -20,59 +20,59 @@ services:
       timeout: 5s
       retries: 5
 
-  frog-content-db:
+  frog-exam-db:
     image: postgres:17-alpine
-    container_name: frog-content-db
+    container_name: frog-exam-db
     environment:
       POSTGRES_USER: root
       POSTGRES_PASSWORD: root
-      POSTGRES_DB: content
+      POSTGRES_DB: exam
     ports:
       - "5433:5432"
     volumes:
-      - frog_content_db_data:/var/lib/postgresql/data
+      - frog_exam_db_data:/var/lib/postgresql/data
     networks:
       - frogedu-network
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U root -d content"]
+      test: ["CMD-SHELL", "pg_isready -U root -d exam"]
       interval: 10s
       timeout: 5s
       retries: 5
 
-  frog-assessment-db:
+  frog-class-db:
     image: postgres:17-alpine
-    container_name: frog-assessment-db
+    container_name: frog-class-db
     environment:
       POSTGRES_USER: root
       POSTGRES_PASSWORD: root
-      POSTGRES_DB: assessment
+      POSTGRES_DB: class
     ports:
       - "5434:5432"
     volumes:
-      - frog_assessment_db_data:/var/lib/postgresql/data
+      - frog_class_db_data:/var/lib/postgresql/data
     networks:
       - frogedu-network
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U root -d assessment"]
+      test: ["CMD-SHELL", "pg_isready -U root -d class"]
       interval: 10s
       timeout: 5s
       retries: 5
 
-  frog-ai-db:
+  frog-subscription-db:
     image: postgres:17-alpine
-    container_name: frog-ai-db
+    container_name: frog-subscription-db
     environment:
       POSTGRES_USER: root
       POSTGRES_PASSWORD: root
-      POSTGRES_DB: ai
+      POSTGRES_DB: subscription
     ports:
       - "5435:5432"
     volumes:
-      - frog_ai_db_data:/var/lib/postgresql/data
+      - frog_subscription_db_data:/var/lib/postgresql/data
     networks:
       - frogedu-network
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U root -d ai"]
+      test: ["CMD-SHELL", "pg_isready -U root -d subscription"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -110,9 +110,9 @@ services:
       - frog-storage
     environment:
       - USER_SERVICE_URL=http://user-service:8080
-      - CONTENT_SERVICE_URL=http://content-service:8080
-      - ASSESSMENT_SERVICE_URL=http://assessment-service:8080
-      - AI_SERVICE_URL=http://ai-service:8080
+      - EXAM_SERVICE_URL=http://exam-service:8080
+      - CLASS_SERVICE_URL=http://class-service:8080
+      - SUBSCRIPTION_SERVICE_URL=http://subscription-service:8080
       - STORAGE_SERVICE_URL=http://frog-storage:9000
     healthcheck:
       test:
@@ -133,7 +133,7 @@ networks:
 
 volumes:
   frog_user_db_data:
-  frog_content_db_data:
-  frog_assessment_db_data:
-  frog_ai_db_data:
+  frog_exam_db_data:
+  frog_class_db_data:
+  frog_subscription_db_data:
   frog_storage_data:

@@ -56,7 +56,7 @@ export interface TextbookAsset {
  * Handles textbook browsing, chapter navigation, and assets
  */
 class ContentService {
-	private readonly baseUrl = '/contents'
+	private readonly baseUrl = '/exams'
 
 	/**
 	 * List all textbooks with filtering and pagination

@@ -7,6 +7,7 @@ resource "aws_ecr_repository" "this" {
 
   name                 = "${var.project_name}-${var.environment}-${each.key}"
   image_tag_mutability = each.value.image_tag_mutability
+  force_delete         = true
 
   image_scanning_configuration {
     scan_on_push = each.value.scan_on_push

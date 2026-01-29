@@ -17,9 +17,6 @@ public class UserDbContext : DbContext, IUnitOfWork
         : base(options) { }
 
     public DbSet<UserEntity> Users => Set<UserEntity>();
-    public DbSet<Class> Classes => Set<Class>();
-    public DbSet<Enrollment> Enrollments => Set<Enrollment>();
-    public DbSet<Notification> Notifications => Set<Notification>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -30,9 +27,6 @@ public class UserDbContext : DbContext, IUnitOfWork
 
         // Apply configurations
         modelBuilder.ApplyConfiguration(new UserConfiguration());
-        modelBuilder.ApplyConfiguration(new ClassConfiguration());
-        modelBuilder.ApplyConfiguration(new EnrollmentConfiguration());
-        modelBuilder.ApplyConfiguration(new NotificationConfiguration());
 
         // Set default values for timestamp columns
         foreach (var entityType in modelBuilder.Model.GetEntityTypes())
