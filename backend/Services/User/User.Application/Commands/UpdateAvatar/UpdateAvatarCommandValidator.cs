@@ -15,14 +15,6 @@ public sealed class UpdateAvatarCommandValidator : AbstractValidator<UpdateAvata
             .NotEmpty()
             .WithMessage("Avatar URL is required")
             .MaximumLength(500)
-            .WithMessage("Avatar URL must not exceed 500 characters")
-            .Must(BeAValidUrl)
-            .WithMessage("Avatar URL must be a valid URL");
-    }
-
-    private static bool BeAValidUrl(string url)
-    {
-        return Uri.TryCreate(url, UriKind.Absolute, out var result)
-            && (result.Scheme == Uri.UriSchemeHttp || result.Scheme == Uri.UriSchemeHttps);
+            .WithMessage("Avatar URL must not exceed 500 characters");
     }
 }
