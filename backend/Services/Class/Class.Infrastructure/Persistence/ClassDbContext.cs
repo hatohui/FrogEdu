@@ -1,85 +1,19 @@
-using FrogEdu.Class.Domain.Entities;
-using FrogEdu.Class.Infrastructure.Persistence.Configurations;
 using Microsoft.EntityFrameworkCore;
 
 namespace FrogEdu.Class.Infrastructure.Persistence;
 
 /// <summary>
-/// DbContext for Class Service
+/// Database context for Class service
 /// </summary>
 public class ClassDbContext : DbContext
 {
     public ClassDbContext(DbContextOptions<ClassDbContext> options)
         : base(options) { }
 
-    public DbSet<Entities.Class> Classes => Set<Entities.Class>();
-    public DbSet<ClassMembership> ClassMemberships => Set<ClassMembership>();
-
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
 
-        // Configure PostgreSQL specific settings
-        modelBuilder.HasDefaultSchema("public");
-
-        // Apply configurations
-        modelBuilder.ApplyConfiguration(new ClassConfiguration());
-        modelBuilder.ApplyConfiguration(new ClassMembershipConfiguration());
-        modelBuilder.HasDefaultSchema("public");
-
-        // Apply configurations
-        modelBuilder.ApplyConfiguration(new QuestionConfiguration());
-        modelBuilder.ApplyConfiguration(new QuestionOptionConfiguration());
-        modelBuilder.ApplyConfiguration(new ExamPaperConfiguration());
-        modelBuilder.ApplyConfiguration(new ExamQuestionConfiguration());
-        modelBuilder.ApplyConfiguration(new QuestionBankConfiguration());
-        modelBuilder.ApplyConfiguration(new ExamSectionConfiguration());
-        modelBuilder.ApplyConfiguration(new SubmissionConfiguration());
-        modelBuilder.ApplyConfiguration(new AnswerConfiguration());
-        modelBuilder.ApplyConfiguration(new RubricConfiguration());
-        modelBuilder.ApplyConfiguration(new ExamGenerationConfiguration());
-
-        // Set default values for timestamp columns
-        foreach (var entityType in modelBuilder.Model.GetEntityTypes())
-        {
-            var createdAtProp = entityType.FindProperty("CreatedAt");
-            if (createdAtProp?.ClrType == typeof(DateTime))
-            {
-                createdAtProp.SetDefaultValueSql("CURRENT_TIMESTAMP");
-            }
-
-            var updatedAtProp = entityType.FindProperty("UpdatedAt");
-            if (updatedAtProp?.ClrType == typeof(DateTime))
-            {
-                updatedAtProp.SetDefaultValueSql("CURRENT_TIMESTAMP");
-            }
-        }
-    }
-
-    public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
-    {
-        // Update timestamps before saving
-        var entries = ChangeTracker
-            .Entries()
-            .Where(e =>
-                e.Entity is FrogEdu.Shared.Kernel.Entity
-                && (e.State == EntityState.Added || e.State == EntityState.Modified)
-            );
-
-        foreach (var entry in entries)
-        {
-            var entity = (FrogEdu.Shared.Kernel.Entity)entry.Entity;
-
-            if (entry.State == EntityState.Added)
-            {
-                entity.UpdateTimestamp();
-            }
-            else if (entry.State == EntityState.Modified)
-            {
-                entity.UpdateTimestamp();
-            }
-        }
-
-        return await base.SaveChangesAsync(cancellationToken);
+        // Entity configurations will be added here
     }
 }

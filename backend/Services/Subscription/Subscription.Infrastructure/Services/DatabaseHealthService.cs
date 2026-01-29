@@ -27,7 +27,7 @@ public sealed class DatabaseHealthService : IDatabaseHealthService
         try
         {
             // Attempt a simple query to verify connection
-            await _dbContext.Subscriptions.AsNoTracking().FirstOrDefaultAsync(cancellationToken);
+            await _dbContext.Database.CanConnectAsync(cancellationToken);
 
             stopwatch.Stop();
 
