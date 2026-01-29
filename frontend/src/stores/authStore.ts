@@ -167,9 +167,18 @@ export const useAuthStore = create<AuthState>()((set, get) => ({
 			const session = await fetchAuthSession()
 
 			if (currentUser && session.tokens) {
-				// Get user profile from ID token payload instead of fetchUserAttributes
-				// fetchUserAttributes requires aws.cognito.signin.user.admin scope which OAuth doesn't provide
 				const idToken = session.tokens.idToken
+				let customRole = idToken?.payload['custom:role'] as string | undefined
+
+				if (!customRole) {
+					try {
+						const backendUser = await userService.getCurrentUser()
+						customRole = backendUser.role
+					} catch (error) {
+						console.log('Could not fetch user from backend:', error)
+					}
+				}
+
 				const userProfile: UserProfile = {
 					sub: currentUser.userId,
 					email: idToken?.payload.email as string | undefined,
@@ -178,7 +187,7 @@ export const useAuthStore = create<AuthState>()((set, get) => ({
 					family_name: idToken?.payload.family_name as string | undefined,
 					picture: idToken?.payload.picture as string | undefined,
 					username: currentUser.username,
-					'custom:role': idToken?.payload['custom:role'] as string | undefined,
+					'custom:role': customRole,
 				}
 
 				set({
