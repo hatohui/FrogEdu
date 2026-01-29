@@ -5,10 +5,10 @@ WORKDIR /src
 RUN dotnet tool install --global dotnet-watch
 
 # Copy source files
-COPY Services/AI/ Services/AI/
+COPY Services/Subscription/ Services/Subscription/
 COPY Shared/ Shared/
 
-WORKDIR /src/Services/AI
+WORKDIR /src/Services/Subscription
 
 # Restore dependencies
 RUN dotnet restore Subscription.API/FrogEdu.Subscription.API.csproj
@@ -19,4 +19,4 @@ ENV ASPNETCORE_ENVIRONMENT=Development
 ENV DOTNET_USE_POLLING_FILE_WATCHER=1
 
 # Run with dotnet watch for hot reload on file changes
-ENTRYPOINT ["dotnet", "watch", "run", "--project", "Subscription.API/FrogEdu.Subscription.API.csproj", "--urls", "http://0.0.0.0:8080"]
+ENTRYPOINT ["dotnet", "watch", "run", "--project", "Subscription.API/FrogEdu.Subscription.Subscription.csproj", "--urls", "http://0.0.0.0:8080"]
