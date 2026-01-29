@@ -14,7 +14,7 @@ namespace FrogEdu.User.API.Controllers;
 /// User profile and authentication management endpoints
 /// </summary>
 [ApiController]
-[Route("api/users")]
+[Route("")]
 [Tags("Users")]
 public class UserController : ControllerBase
 {
