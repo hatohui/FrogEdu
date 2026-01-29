@@ -26,6 +26,13 @@ public static class DependencyInjection
             ?? Environment.GetEnvironmentVariable("EXAM_DB_CONNECTION_STRING")
             ?? "postgresql://root:root@localhost:5432/exam?sslmode=disable";
 
+        // Log connection string info (mask password)
+        var maskedConnectionString = connectionString.Contains("Password=")
+            ? System.Text.RegularExpressions.Regex.Replace(connectionString, @"Password=([^;]+)", "Password=***")
+            : connectionString;
+        Console.WriteLine($"[DB Config] Connection String: {maskedConnectionString}");
+        Console.WriteLine($"[DB Config] Connection String Length: {connectionString.Length} chars");
+
         services.AddDbContext<ExamDbContext>(options =>
         {
             options.UseNpgsql(

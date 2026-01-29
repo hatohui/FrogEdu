@@ -102,6 +102,8 @@ module "exam_service" {
     ASPNETCORE_ENVIRONMENT    = "Production"
     EXAM_DB_CONNECTION_STRING = local.exam_db_connection_string
     MEDIAK_LICENSE_KEY        = local.mediak_license_key
+    COGNITO_USER_POOL_ID      = module.cognito.user_pool_id
+    "AWS__Cognito__Region"    = local.aws_region
   }
 }
 
@@ -127,6 +129,8 @@ module "user_service" {
     ASPNETCORE_ENVIRONMENT    = "Production"
     USER_DB_CONNECTION_STRING = local.user_db_connection_string
     MEDIAK_LICENSE_KEY        = local.mediak_license_key
+    COGNITO_USER_POOL_ID      = module.cognito.user_pool_id
+    "AWS__Cognito__Region"    = local.aws_region
   }
 }
 
@@ -152,6 +156,8 @@ module "class_service" {
     ASPNETCORE_ENVIRONMENT     = "Production"
     CLASS_DB_CONNECTION_STRING = local.class_db_connection_string
     MEDIAK_LICENSE_KEY         = local.mediak_license_key
+    COGNITO_USER_POOL_ID       = module.cognito.user_pool_id
+    "AWS__Cognito__Region"     = local.aws_region
   }
 }
 
@@ -177,5 +183,7 @@ module "subscription_service" {
     ASPNETCORE_ENVIRONMENT            = "Production"
     SUBSCRIPTION_DB_CONNECTION_STRING = local.subscription_db_connection_string
     MEDIAK_LICENSE_KEY                = local.mediak_license_key
+    COGNITO_USER_POOL_ID              = module.cognito.user_pool_id
+    "AWS__Cognito__Region"            = local.aws_region
   }
 }

@@ -16,13 +16,29 @@ public static class AuthenticationExtensions
         IConfiguration configuration
     )
     {
-        var cognitoRegion = configuration["AWS:Cognito:Region"] ?? "ap-southeast-1";
+        // Try multiple sources for configuration values
+        var cognitoRegion = 
+            configuration["AWS:Cognito:Region"] 
+            ?? Environment.GetEnvironmentVariable("AWS__Cognito__Region")
+            ?? Environment.GetEnvironmentVariable("AWS_COGNITO_REGION")
+            ?? "ap-southeast-1";
+            
         var cognitoUserPoolId =
             configuration["AWS:Cognito:UserPoolId"]
+            ?? Environment.GetEnvironmentVariable("AWS__Cognito__UserPoolId")
             ?? Environment.GetEnvironmentVariable("COGNITO_USER_POOL_ID")
             ?? "";
 
+        // Log the configuration for debugging
+        Console.WriteLine($"[Cognito Config] Region: {cognitoRegion}, UserPoolId: {cognitoUserPoolId}");
+        
+        if (string.IsNullOrEmpty(cognitoUserPoolId))
+        {
+            Console.WriteLine("[Cognito Config] WARNING: User Pool ID is not configured!");
+        }
+
         var authority = $"https://cognito-idp.{cognitoRegion}.amazonaws.com/{cognitoUserPoolId}";
+        Console.WriteLine($"[Cognito Config] Authority: {authority}");
 
         services
             .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

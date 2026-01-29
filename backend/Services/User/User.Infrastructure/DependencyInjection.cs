@@ -29,6 +29,13 @@ public static class DependencyInjection
             ?? Environment.GetEnvironmentVariable("USER_DB_CONNECTION_STRING")
             ?? "postgresql://root:root@localhost:5432/user?sslmode=disable";
 
+        // Log connection string info (mask password)
+        var maskedConnectionString = connectionString.Contains("Password=")
+            ? System.Text.RegularExpressions.Regex.Replace(connectionString, @"Password=([^;]+)", "Password=***")
+            : connectionString;
+        Console.WriteLine($"[DB Config] Connection String: {maskedConnectionString}");
+        Console.WriteLine($"[DB Config] Connection String Length: {connectionString.Length} chars");
+
         services.AddDbContext<UserDbContext>(options =>
         {
             options.UseNpgsql(
