@@ -114,7 +114,7 @@ public static class DependencyInjection
 
             var config = new AmazonS3Config
             {
-                ServiceURL = $"https://{accountId}.r2.cloudflarestorage.com",
+                ServiceURL = "https://assets.frogedu.org",
                 ForcePathStyle = true,
                 AuthenticationRegion = "auto",
             };
