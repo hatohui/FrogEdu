@@ -1,5 +1,6 @@
 using System.Reflection;
 using FluentValidation;
+using FrogEdu.Subscription.Application.Behaviors;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -24,6 +25,7 @@ public static class DependencyInjection
         {
             cfg.LicenseKey = Environment.GetEnvironmentVariable("MEDIAK_LICENSE_KEY");
             cfg.RegisterServicesFromAssembly(assembly);
+            cfg.AddBehavior(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
         });
 
         services.AddValidatorsFromAssembly(assembly);

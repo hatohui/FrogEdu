@@ -1,7 +1,10 @@
+using DotNetEnv;
 using FrogEdu.Exam.API.Middleware;
 using FrogEdu.Exam.Application;
 using FrogEdu.Exam.Infrastructure;
 using FrogEdu.Shared.Kernel;
+
+Env.Load();
 
 var builder = WebApplication.CreateBuilder(args);
 

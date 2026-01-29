@@ -8,6 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 // ============================================================================
 // Service Configuration
 // ============================================================================
+Env.Load();
 
 // API & OpenAPI
 builder.Services.AddControllers();
