@@ -12,22 +12,19 @@ public class ClassDbContext : DbContext
     public ClassDbContext(DbContextOptions<ClassDbContext> options)
         : base(options) { }
 
-    public DbSet<Question> Questions => Set<Question>();
-    public DbSet<QuestionOption> QuestionOptions => Set<QuestionOption>();
-    public DbSet<ExamPaper> ExamPapers => Set<ExamPaper>();
-    public DbSet<ExamQuestion> ExamQuestions => Set<ExamQuestion>();
-    public DbSet<QuestionBank> QuestionBanks => Set<QuestionBank>();
-    public DbSet<ExamSection> ExamSections => Set<ExamSection>();
-    public DbSet<Submission> Submissions => Set<Submission>();
-    public DbSet<Answer> Answers => Set<Answer>();
-    public DbSet<Rubric> Rubrics => Set<Rubric>();
-    public DbSet<ExamGeneration> ExamGenerations => Set<ExamGeneration>();
+    public DbSet<Class> Classes => Set<Class>();
+    public DbSet<ClassMembership> ClassMemberships => Set<ClassMembership>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
 
         // Configure PostgreSQL specific settings
+        modelBuilder.HasDefaultSchema("public");
+
+        // Apply configurations
+        modelBuilder.ApplyConfiguration(new ClassConfiguration());
+        modelBuilder.ApplyConfiguration(new ClassMembershipConfiguration());
         modelBuilder.HasDefaultSchema("public");
 
         // Apply configurations

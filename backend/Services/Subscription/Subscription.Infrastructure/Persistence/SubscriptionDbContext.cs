@@ -5,18 +5,15 @@ using Microsoft.EntityFrameworkCore;
 namespace FrogEdu.Subscription.Infrastructure.Persistence;
 
 /// <summary>
-/// DbContext for AI Orchestrator Service
+/// DbContext for Subscription Service
 /// </summary>
 public class SubscriptionDbContext : DbContext
 {
     public SubscriptionDbContext(DbContextOptions<SubscriptionDbContext> options)
         : base(options) { }
 
-    public DbSet<TutorSession> TutorSessions => Set<TutorSession>();
-    public DbSet<ConversationMessage> ConversationMessages => Set<ConversationMessage>();
-    public DbSet<PromptTemplate> PromptTemplates => Set<PromptTemplate>();
-    public DbSet<SessionArtifact> SessionArtifacts => Set<SessionArtifact>();
-    public DbSet<SessionEvent> SessionEvents => Set<SessionEvent>();
+    public DbSet<Subscription> Subscriptions => Set<Subscription>();
+    public DbSet<Transaction> Transactions => Set<Transaction>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -26,11 +23,8 @@ public class SubscriptionDbContext : DbContext
         modelBuilder.HasDefaultSchema("public");
 
         // Apply configurations
-        modelBuilder.ApplyConfiguration(new TutorSessionConfiguration());
-        modelBuilder.ApplyConfiguration(new ConversationMessageConfiguration());
-        modelBuilder.ApplyConfiguration(new PromptTemplateConfiguration());
-        modelBuilder.ApplyConfiguration(new SessionArtifactConfiguration());
-        modelBuilder.ApplyConfiguration(new SessionEventConfiguration());
+        modelBuilder.ApplyConfiguration(new SubscriptionConfiguration());
+        modelBuilder.ApplyConfiguration(new TransactionConfiguration());
 
         // Set default values for timestamp columns
         foreach (var entityType in modelBuilder.Model.GetEntityTypes())
@@ -76,4 +70,3 @@ public class SubscriptionDbContext : DbContext
         return await base.SaveChangesAsync(cancellationToken);
     }
 }
-

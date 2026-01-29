@@ -5,27 +5,28 @@ using Microsoft.EntityFrameworkCore;
 namespace FrogEdu.Exam.Infrastructure.Persistence;
 
 /// <summary>
-/// DbContext for Content Service
+/// DbContext for Exam Service
 /// </summary>
 public class ExamDbContext : DbContext
 {
     public ExamDbContext(DbContextOptions<ExamDbContext> options)
         : base(options) { }
 
-    public DbSet<Textbook> Textbooks => Set<Textbook>();
-    public DbSet<Chapter> Chapters => Set<Chapter>();
-    public DbSet<Page> Pages => Set<Page>();
-
-    // Note: Subject is a value object owned by Textbook, not a separate entity
-    public DbSet<Lesson> Lessons => Set<Lesson>();
-    public DbSet<Tag> Tags => Set<Tag>();
-    public DbSet<Asset> Assets => Set<Asset>();
+    public DbSet<Question> Questions => Set<Question>();
+    public DbSet<Exam> Exams => Set<Exam>();
+    public DbSet<ExamQuestion> ExamQuestions => Set<ExamQuestion>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
 
         // Configure PostgreSQL specific settings
+        modelBuilder.HasDefaultSchema("public");
+
+        // Apply configurations
+        modelBuilder.ApplyConfiguration(new QuestionConfiguration());
+        modelBuilder.ApplyConfiguration(new ExamConfiguration());
+        modelBuilder.ApplyConfiguration(new ExamQuestionConfiguration());
         modelBuilder.HasDefaultSchema("public");
 
         // Apply configurations
@@ -83,5 +84,3 @@ public class ExamDbContext : DbContext
         return await base.SaveChangesAsync(cancellationToken);
     }
 }
-
-
