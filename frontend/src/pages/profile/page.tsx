@@ -3,36 +3,18 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { User, Shield, Clock, Mail } from 'lucide-react'
 import { useAuthStore } from '@/stores/authStore'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
-import { useQuery } from '@tanstack/react-query'
 import { Skeleton } from '@/components/ui/skeleton'
 import ProfileForm from '@/components/common/ProfileForm'
-import userService from '@/services/user.service'
 import { Badge } from '@/components/ui/badge'
+import { useMe } from '@/hooks/auth/useMe'
 
 const ProfilePage = (): React.ReactElement => {
 	const { user: authUser } = useAuthStore()
-
-	// Fetch user profile from backend
-	const {
-		data: userProfile,
-		isLoading,
-		error,
-	} = useQuery({
-		queryKey: ['currentUser'],
-		queryFn: () => userService.getCurrentUser(),
-		staleTime: 5 * 60 * 1000, // 5 minutes
-		retry: 1,
-	})
+	const { data: userProfile, isLoading, error } = useMe()
 
 	const formatDate = (dateString?: string) => {
 		if (!dateString) return 'Never'
-		return new Date(dateString).toLocaleDateString('en-US', {
-			year: 'numeric',
-			month: 'long',
-			day: 'numeric',
-			hour: '2-digit',
-			minute: '2-digit',
-		})
+		return new Date(dateString).toLocaleDateString('vi-VN')
 	}
 
 	if (isLoading) {
@@ -44,7 +26,6 @@ const ProfilePage = (): React.ReactElement => {
 		)
 	}
 
-	// Show basic profile from auth store if backend fetch fails
 	if (error || !userProfile) {
 		return (
 			<div className='p-6 space-y-6 max-w-4xl mx-auto'>
@@ -92,9 +73,6 @@ const ProfilePage = (): React.ReactElement => {
 					<User className='h-8 w-8' />
 					<span>My Profile</span>
 				</h1>
-				<p className='text-muted-foreground'>
-					Manage your account settings and preferences.
-				</p>
 			</div>
 
 			{/* Profile Form Card */}

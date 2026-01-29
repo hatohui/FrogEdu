@@ -4,7 +4,8 @@ import { cn } from '@/utils/shadcn'
 import { Home, BookOpen, FileText, User, LogOut, X, Users } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
-import { useAuthStore } from '@/stores/authStore'
+import useAuth from '@/hooks/auth/useAuth'
+import { useMe } from '@/hooks/auth/useMe'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 
 interface NavItem {
@@ -48,7 +49,8 @@ interface SidebarProps {
 
 const Sidebar = ({ className, onClose }: SidebarProps): React.ReactElement => {
 	const location = useLocation()
-	const { user, userProfile, signOut } = useAuthStore()
+	const { signOut } = useAuth()
+	const { data: me } = useMe()
 
 	const handleSignOut = async () => {
 		await signOut()
@@ -56,9 +58,11 @@ const Sidebar = ({ className, onClose }: SidebarProps): React.ReactElement => {
 	}
 
 	const getUserInitials = () => {
-		if (!userProfile && !user) return 'U'
-		// Try to get initials from name, email, or username
-		const name = userProfile?.name || userProfile?.email || user?.username || ''
+		if (!me) return 'U'
+		const name =
+			me.firstName && me.lastName
+				? `${me.firstName} ${me.lastName}`
+				: me.email || ''
 		const parts = name.split(' ')
 		if (parts.length >= 2) {
 			return `${parts[0][0]}${parts[1][0]}`.toUpperCase()
@@ -149,8 +153,8 @@ const Sidebar = ({ className, onClose }: SidebarProps): React.ReactElement => {
 				<div className='flex items-center space-x-3 px-4 py-3 rounded-lg bg-sidebar-accent/50'>
 					<Avatar className='h-10 w-10'>
 						<AvatarImage
-							src={userProfile?.picture}
-							alt={userProfile?.name || userProfile?.email || 'User'}
+							src={me?.avatarUrl || undefined}
+							alt={me ? `${me.firstName} ${me.lastName}` : 'User'}
 						/>
 						<AvatarFallback className='bg-primary text-primary-foreground'>
 							{getUserInitials()}
@@ -158,13 +162,10 @@ const Sidebar = ({ className, onClose }: SidebarProps): React.ReactElement => {
 					</Avatar>
 					<div className='flex-1 min-w-0'>
 						<p className='text-sm font-medium text-sidebar-foreground truncate'>
-							{userProfile?.name ||
-								userProfile?.email ||
-								user?.username ||
-								'User'}
+							{me ? `${me.firstName} ${me.lastName}` : 'User'}
 						</p>
 						<p className='text-xs text-sidebar-foreground/60 truncate'>
-							Teacher
+							{me?.role}
 						</p>
 					</div>
 				</div>
