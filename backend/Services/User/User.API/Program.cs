@@ -37,11 +37,12 @@ if (builder.Environment.IsDevelopment())
 
 var app = builder.Build();
 
+app.UseSwagger();
+
 // Path rewriting
 app.UsePathPrefixRewrite("/api/users");
 
 // Swagger UI
-app.UseSwagger();
 app.UseSwaggerUI();
 
 // Routing & CORS
