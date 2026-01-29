@@ -23,13 +23,22 @@ public static class DependencyInjection
         IConfiguration configuration
     )
     {
-        // Configure DbContext
+        // Configure DbContext - handle both null and empty strings
+        var configConnectionString = configuration.GetConnectionString("UserDb");
+        var envConnectionString = Environment.GetEnvironmentVariable("USER_DB_CONNECTION_STRING");
+
         var connectionString =
-            configuration.GetConnectionString("UserDb")
-            ?? Environment.GetEnvironmentVariable("USER_DB_CONNECTION_STRING")
+            (!string.IsNullOrWhiteSpace(configConnectionString) ? configConnectionString : null)
+            ?? (!string.IsNullOrWhiteSpace(envConnectionString) ? envConnectionString : null)
             ?? "postgresql://root:root@localhost:5432/user?sslmode=disable";
 
         // Log connection string info (mask password)
+        Console.WriteLine(
+            $"[DB Config] Config value: {(string.IsNullOrWhiteSpace(configConnectionString) ? "null/empty" : "has value")}"
+        );
+        Console.WriteLine(
+            $"[DB Config] Env value: {(string.IsNullOrWhiteSpace(envConnectionString) ? "null/empty" : "has value")}"
+        );
         var maskedConnectionString = connectionString.Contains("Password=")
             ? System.Text.RegularExpressions.Regex.Replace(
                 connectionString,
