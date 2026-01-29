@@ -130,7 +130,11 @@ const ProfilePage = (): React.ReactElement => {
 							<Clock className='h-5 w-5 text-muted-foreground' />
 							<div>
 								<p className='text-sm text-muted-foreground'>Last Login</p>
-								<p>{formatDate(userProfile.lastLoginAt)}</p>
+								<p>
+									{userProfile.lastLoginAt
+										? formatDate(userProfile.lastLoginAt)
+										: 'Never'}
+								</p>
 							</div>
 						</div>
 					</div>

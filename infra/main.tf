@@ -46,6 +46,13 @@ module "cloudfront" {
   web_acl_id           = "arn:aws:wafv2:us-east-1:630633962130:global/webacl/CreatedByCloudFront-3152e2ae/a30508da-915f-4206-91a5-eb034e211fb1"
 }
 
+
+# =============================================================================
+# Repo Modules
+# =============================================================================
+
+
+
 module "ecr" {
   source = "./modules/ecr"
 
@@ -80,6 +87,11 @@ module "ecr" {
   }
 }
 
+# =============================================================================
+# Microservice Modules
+# =============================================================================
+
+
 module "exam_service" {
   source = "./modules/microservice"
 
@@ -99,11 +111,16 @@ module "exam_service" {
   ]
 
   environment_variables = {
-    ASPNETCORE_ENVIRONMENT    = "Production"
-    EXAM_DB_CONNECTION_STRING = local.exam_db_connection_string
-    MEDIAK_LICENSE_KEY        = local.mediak_license_key
-    COGNITO_USER_POOL_ID      = module.cognito.user_pool_id
-    AWS_COGNITO_REGION        = local.aws_region
+    // General settings
+    ASPNETCORE_ENVIRONMENT     = "Production"
+    CLASS_DB_CONNECTION_STRING = local.class_db_connection_string
+
+    // MediaK license key
+    MEDIAK_LICENSE_KEY = local.mediak_license_key
+
+    // AWS Cognito settings
+    COGNITO_USER_POOL_ID = module.cognito.user_pool_id
+    AWS_COGNITO_REGION   = local.aws_region
   }
 }
 
@@ -127,11 +144,23 @@ module "user_service" {
   ]
 
   environment_variables = {
+    // General settings
     ASPNETCORE_ENVIRONMENT    = "Production"
     USER_DB_CONNECTION_STRING = local.user_db_connection_string
-    MEDIAK_LICENSE_KEY        = local.mediak_license_key
-    COGNITO_USER_POOL_ID      = module.cognito.user_pool_id
-    AWS_COGNITO_REGION        = local.aws_region
+
+    // MediaK license key
+    MEDIAK_LICENSE_KEY = local.mediak_license_key
+
+    // AWS Cognito settings
+    COGNITO_USER_POOL_ID = module.cognito.user_pool_id
+    AWS_COGNITO_REGION   = local.aws_region
+
+    // R2 Storage settings
+    R2_ACCOUNT_ID        = local.r2_account_id
+    R2_ACCESS_KEY_ID     = local.r2_access_key_id
+    R2_SECRET_ACCESS_KEY = local.r2_secret_access_key
+    R2_BUCKET_NAME       = local.r2_bucket_name
+    R2_PUBLIC_ENDPOINT   = local.r2_public_endpoint
   }
 }
 
@@ -154,11 +183,16 @@ module "class_service" {
   ]
 
   environment_variables = {
+    // General settings
     ASPNETCORE_ENVIRONMENT     = "Production"
     CLASS_DB_CONNECTION_STRING = local.class_db_connection_string
-    MEDIAK_LICENSE_KEY         = local.mediak_license_key
-    COGNITO_USER_POOL_ID       = module.cognito.user_pool_id
-    AWS_COGNITO_REGION         = local.aws_region
+
+    // MediaK license key
+    MEDIAK_LICENSE_KEY = local.mediak_license_key
+
+    // AWS Cognito settings
+    COGNITO_USER_POOL_ID = module.cognito.user_pool_id
+    AWS_COGNITO_REGION   = local.aws_region
   }
 }
 
@@ -181,10 +215,15 @@ module "subscription_service" {
   ]
 
   environment_variables = {
-    ASPNETCORE_ENVIRONMENT            = "Production"
-    SUBSCRIPTION_DB_CONNECTION_STRING = local.subscription_db_connection_string
-    MEDIAK_LICENSE_KEY                = local.mediak_license_key
-    COGNITO_USER_POOL_ID              = module.cognito.user_pool_id
-    AWS_COGNITO_REGION                = local.aws_region
+    // General settings
+    ASPNETCORE_ENVIRONMENT     = "Production"
+    CLASS_DB_CONNECTION_STRING = local.class_db_connection_string
+
+    // MediaK license key
+    MEDIAK_LICENSE_KEY = local.mediak_license_key
+
+    // AWS Cognito settings
+    COGNITO_USER_POOL_ID = module.cognito.user_pool_id
+    AWS_COGNITO_REGION   = local.aws_region
   }
 }

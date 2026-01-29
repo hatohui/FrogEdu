@@ -25,4 +25,11 @@ locals {
 
   #license key
   mediak_license_key = data.doppler_secrets.this.map.MEDIAK_LICENSE_KEY
+
+  #r2 configuration
+  r2_access_key_id     = data.doppler_secrets.this.map.R2_ACCESS_KEY
+  r2_secret_access_key = data.doppler_secrets.this.map.R2_SECRET_KEY
+  r2_bucket_name       = data.doppler_secrets.this.map.R2_BUCKET_NAME
+  r2_account_id        = data.doppler_secrets.this.map.R2_ACCOUNT_ID
+  r2_public_endpoint   = data.doppler_secrets.this.map.R2_PUBLIC_ENDPOINT
 }

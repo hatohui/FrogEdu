@@ -1,4 +1,4 @@
-import type { SignImageResponse } from '@/types/dtos/images/sign-image'
+import type { SignImageResponse } from '@/types/dtos/users/sign-image'
 import axios from './axios'
 
 export const ImageService = {

@@ -1,67 +1,11 @@
+import type {
+	ChangePasswordRequest,
+	GetMeResponse,
+	UpdateProfileDto,
+} from '@/types/dtos/users/user'
 import apiService, { type ApiResponse } from './api.service'
 import axiosInstance from './axios'
-
-/**
- * User DTOs - aligned with backend
- */
-export interface UserDto {
-	id: string
-	cognitoId: string
-	email: string
-	firstName: string
-	lastName: string
-	role: 'Teacher' | 'Student'
-	avatarUrl?: string
-	isEmailVerified: boolean
-	lastLoginAt?: string
-	createdAt: string
-	updatedAt: string
-}
-
-export interface UpdateProfileDto {
-	firstName: string
-	lastName: string
-}
-
-export interface AvatarPresignedUrlDto {
-	uploadUrl: string
-	avatarUrl: string
-	expiresAt: string
-}
-
-/**
- * Legacy UserProfile interface for backwards compatibility
- */
-export interface UserProfile {
-	id: string
-	email: string
-	name: string
-	role: 'Teacher' | 'Student' | 'Admin'
-	picture?: string
-	bio?: string
-	phoneNumber?: string
-	school?: string
-	grade?: number
-	subject?: string
-	createdAt: string
-	updatedAt: string
-	lastLoginAt?: string
-}
-
-export interface UpdateProfileRequest {
-	name?: string
-	picture?: string
-	bio?: string
-	phoneNumber?: string
-	school?: string
-	subject?: string
-}
-
-export interface ChangePasswordRequest {
-	currentPassword: string
-	newPassword: string
-	confirmPassword: string
-}
+import type { AvatarPresignedUrlResponse } from '@/types/dtos/users/sign-image'
 
 /**
  * User Service
@@ -73,8 +17,10 @@ class UserService {
 	/**
 	 * Get current user profile from backend
 	 */
-	async getCurrentUser(): Promise<UserDto> {
-		const response = await axiosInstance.get<UserDto>(`${this.baseUrl}/me`)
+	async getCurrentUser(): Promise<GetMeResponse> {
+		const response = await axiosInstance.get<GetMeResponse>(
+			`${this.baseUrl}/me`
+		)
 		return response.data
 	}
 
@@ -90,8 +36,8 @@ class UserService {
 	 */
 	async getAvatarUploadUrl(
 		contentType: string
-	): Promise<AvatarPresignedUrlDto> {
-		const response = await axiosInstance.post<AvatarPresignedUrlDto>(
+	): Promise<AvatarPresignedUrlResponse> {
+		const response = await axiosInstance.post<AvatarPresignedUrlResponse>(
 			`${this.baseUrl}/me/avatar`,
 			{ contentType }
 		)
@@ -130,8 +76,8 @@ class UserService {
 	/**
 	 * Get current user profile (legacy)
 	 */
-	async getProfile(): Promise<ApiResponse<UserProfile>> {
-		return apiService.get<UserProfile>(`${this.baseUrl}/profile`)
+	async getProfile(): Promise<ApiResponse<GetMeResponse>> {
+		return apiService.get<GetMeResponse>(`${this.baseUrl}/profile`)
 	}
 
 	/**

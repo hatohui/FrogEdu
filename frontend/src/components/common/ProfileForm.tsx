@@ -23,10 +23,9 @@ import {
 } from '@/components/ui/card'
 import { Loader2, Camera, Check } from 'lucide-react'
 import { toast } from 'sonner'
-import userService, {
-	type UserDto,
-	type UpdateProfileDto,
-} from '@/services/user.service'
+import userService from '@/services/user.service'
+import { resendVerificationEmail } from '@/services/verify.service'
+import type { GetMeResponse, UpdateProfileDto } from '@/types/dtos/users/user'
 
 const profileSchema = z.object({
 	firstName: z
@@ -42,7 +41,7 @@ const profileSchema = z.object({
 type ProfileFormValues = z.infer<typeof profileSchema>
 
 interface ProfileFormProps {
-	user: UserDto
+	user: GetMeResponse
 	onSuccess?: () => void
 }
 
@@ -53,6 +52,7 @@ const ProfileForm = ({
 	const queryClient = useQueryClient()
 	const [avatarPreview, setAvatarPreview] = useState<string | null>(null)
 	const [isUploadingAvatar, setIsUploadingAvatar] = useState(false)
+	const [isVerifying, setIsVerifying] = useState(false)
 
 	const form = useForm<ProfileFormValues>({
 		resolver: zodResolver(profileSchema),
@@ -120,6 +120,19 @@ const ProfileForm = ({
 		[queryClient]
 	)
 
+	const handleResendVerification = async () => {
+		setIsVerifying(true)
+		try {
+			await resendVerificationEmail(user.email)
+			toast.success('Verification email sent!')
+		} catch (err) {
+			toast.error('Failed to send verification email')
+			console.error(err)
+		} finally {
+			setIsVerifying(false)
+		}
+	}
+
 	const getUserInitials = () => {
 		if (!user) return ''
 		const first =
@@ -150,13 +163,18 @@ const ProfileForm = ({
 				<div className='flex items-center gap-6'>
 					<div className='relative'>
 						<Avatar className='h-24 w-24'>
-							<AvatarImage
-								src={avatarPreview || user.avatarUrl}
-								alt={`${user.firstName} ${user.lastName}`}
-							/>
-							<AvatarFallback className='bg-primary text-primary-foreground text-2xl'>
-								{getUserInitials()}
-							</AvatarFallback>
+							{avatarPreview || user.avatarUrl ? (
+								<AvatarImage
+									src={
+										(avatarPreview ?? undefined) || user.avatarUrl || undefined
+									}
+									alt={`${user.firstName} ${user.lastName}`}
+								/>
+							) : (
+								<AvatarFallback className='bg-primary text-primary-foreground text-2xl'>
+									{getUserInitials()}
+								</AvatarFallback>
+							)}
 						</Avatar>
 						<label
 							htmlFor='avatar-upload'
@@ -225,6 +243,32 @@ const ProfileForm = ({
 							<div className='space-y-2'>
 								<label className='text-sm font-medium'>Email</label>
 								<Input value={user.email} disabled />
+								<div className='flex items-center gap-2'>
+									{!user.isEmailVerified && (
+										<>
+											<span className='text-xs text-destructive font-semibold'>
+												Unverified
+											</span>
+											<Button
+												type='button'
+												size='sm'
+												variant='outline'
+												disabled={isVerifying}
+												onClick={handleResendVerification}
+											>
+												{isVerifying ? (
+													<Loader2 className='h-3 w-3 animate-spin mr-1' />
+												) : null}
+												Verify Email
+											</Button>
+										</>
+									)}
+									{user.isEmailVerified && (
+										<span className='text-xs text-green-600 font-semibold'>
+											Verified
+										</span>
+									)}
+								</div>
 								<p className='text-xs text-muted-foreground'>
 									Email cannot be changed
 								</p>
