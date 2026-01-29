@@ -10,7 +10,16 @@ var builder = WebApplication.CreateBuilder(args);
 // API & OpenAPI
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.AddServer(
+        new Microsoft.OpenApi.Models.OpenApiServer
+        {
+            Url = "/api/classes",
+            Description = "Class API",
+        }
+    );
+});
 
 // AWS Lambda
 builder.Services.AddAWSLambdaHosting(LambdaEventSource.RestApi);
