@@ -14,6 +14,7 @@ on:
       - ".github/workflows/exam-cd.yaml"
       - "backend/Services/Exam/**.csproj"
       - "backend/Shared/**.csproj"
+      - "backend/Services/Exam/Dockerfile"
   workflow_dispatch:
 
 jobs:

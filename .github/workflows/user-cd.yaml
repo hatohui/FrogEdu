@@ -14,6 +14,7 @@ on:
       - ".github/workflows/user-cd.yaml"
       - "backend/Services/User/**.csproj"
       - "backend/Shared/**.csproj"
+      - "backend/Services/User/Dockerfile"
   workflow_dispatch:
 
 jobs:
