@@ -93,7 +93,9 @@ module "exam_service" {
 
   no_auth_routes = [
     "/health/{proxy+}",
+    "/health",
     "/swagger/{proxy+}",
+    "/swagger",
   ]
 
   environment_variables = {
@@ -115,7 +117,9 @@ module "user_service" {
 
   no_auth_routes = [
     "/health/{proxy+}",
+    "/health",
     "/swagger/{proxy+}",
+    "/swagger",
   ]
 
   environment_variables = {
@@ -137,7 +141,9 @@ module "class_service" {
 
   no_auth_routes = [
     "/health/{proxy+}",
+    "/health",
     "/swagger/{proxy+}",
+    "/swagger",
   ]
 
   environment_variables = {
@@ -159,7 +165,9 @@ module "subscription_service" {
 
   no_auth_routes = [
     "/health/{proxy+}",
+    "/health",
     "/swagger/{proxy+}",
+    "/swagger",
   ]
 
   environment_variables = {

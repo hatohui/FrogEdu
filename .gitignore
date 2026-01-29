@@ -36,7 +36,6 @@ obj/
 *.sln.docstates
 appsettings.*.json
 !appsettings.Development.json
-.vscode/
 launchSettings.json
 
 
