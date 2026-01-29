@@ -55,7 +55,6 @@ public class UserConfiguration : IEntityTypeConfiguration<UserEntity>
         builder.Property(u => u.CreatedBy).HasMaxLength(256);
         builder.Property(u => u.UpdatedBy).HasMaxLength(256);
         builder.Property(u => u.IsDeleted).IsRequired().HasDefaultValue(false);
-        builder.Property(u => u.RowVersion).IsRowVersion();
 
         // Indexes
         builder.HasIndex(u => u.CognitoId).IsUnique().HasDatabaseName("IX_Users_CognitoSub");
