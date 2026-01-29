@@ -1,6 +1,7 @@
 import React from 'react'
 import Navigation from '@/components/common/Navigation'
 import { useLocation } from 'react-router'
+import { RoleGuard } from '@/components/common/RoleGuard'
 
 const MainLayout = ({
 	children,
@@ -20,14 +21,16 @@ const MainLayout = ({
 	const isDashboardPage = location.pathname.startsWith('/dashboard')
 
 	if (isAuthPage || isDashboardPage) {
-		return <>{children}</>
+		return <RoleGuard>{children}</RoleGuard>
 	}
 
 	return (
-		<div className='min-h-screen bg-gray-50 dark:bg-gray-900'>
-			<Navigation />
-			<main className='flex-1'>{children}</main>
-		</div>
+		<RoleGuard>
+			<div className='min-h-screen bg-gray-50 dark:bg-gray-900'>
+				<Navigation />
+				<main className='flex-1'>{children}</main>
+			</div>
+		</RoleGuard>
 	)
 }
 

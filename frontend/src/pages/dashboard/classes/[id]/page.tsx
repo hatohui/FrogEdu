@@ -32,11 +32,7 @@ const ClassDetailPage: React.FC = () => {
 	const navigate = useNavigate()
 	const { userProfile } = useAuthStore()
 
-	const {
-		data: classDetails,
-		isLoading,
-		error,
-	} = useClassDetails(id || '')
+	const { data: classDetails, isLoading, error } = useClassDetails(id || '')
 	const regenerateCode = useRegenerateInviteCode()
 
 	const isTeacher =
@@ -256,9 +252,7 @@ const ClassDetailPage: React.FC = () => {
 			<Card>
 				<CardHeader>
 					<CardTitle>Class Roster</CardTitle>
-					<CardDescription>
-						All members enrolled in this class
-					</CardDescription>
+					<CardDescription>All members enrolled in this class</CardDescription>
 				</CardHeader>
 				<CardContent>
 					<StudentList members={classDetails.members} showRole={isTeacher} />
