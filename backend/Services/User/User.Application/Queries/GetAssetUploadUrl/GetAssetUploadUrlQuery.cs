@@ -1,4 +1,5 @@
 using FrogEdu.Shared.Kernel;
+using FrogEdu.User.Domain.Repositories;
 using FrogEdu.User.Domain.Services;
 using FrogEdu.User.Domain.ValueObjects;
 using MediatR;
@@ -9,7 +10,7 @@ namespace FrogEdu.User.Application.Queries.GetAssetUploadUrl;
 /// <summary>
 /// Query to get a presigned URL for asset upload
 /// </summary>
-public record GetAssetUploadUrlQuery(string Folder, string? ContentType = null)
+public record GetAssetUploadUrlQuery(string CognitoId, string Folder, string? ContentType = null)
     : IRequest<Result<AssetUploadUrlResponse>>;
 
 /// <summary>
@@ -29,14 +30,17 @@ public class GetAssetUploadUrlQueryHandler
     : IRequestHandler<GetAssetUploadUrlQuery, Result<AssetUploadUrlResponse>>
 {
     private readonly IAssetStorageService _assetStorageService;
+    private readonly IUserRepository _userRepository;
     private readonly ILogger<GetAssetUploadUrlQueryHandler> _logger;
 
     public GetAssetUploadUrlQueryHandler(
         IAssetStorageService assetStorageService,
+        IUserRepository userRepository,
         ILogger<GetAssetUploadUrlQueryHandler> logger
     )
     {
         _assetStorageService = assetStorageService;
+        _userRepository = userRepository;
         _logger = logger;
     }
 
@@ -56,12 +60,19 @@ public class GetAssetUploadUrlQueryHandler
                 request.ContentType ?? "application/octet-stream"
             );
 
-            // For now, use a placeholder user ID - in production, get from claims
-            var userId = Guid.NewGuid();
+            var user = await _userRepository.GetByCognitoIdAsync(
+                request.CognitoId,
+                cancellationToken
+            );
+            if (user is null)
+            {
+                _logger.LogWarning("User not found for CognitoId: {CognitoId}", request.CognitoId);
+                return Result<AssetUploadUrlResponse>.Failure("User not found");
+            }
 
             var presignedUrl = await _assetStorageService.GenerateUploadUrlAsync(
                 uploadRequest,
-                userId,
+                user.Id,
                 cancellationToken
             );
 

@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using FrogEdu.User.Application.Queries.GetAssetUploadUrl;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -43,7 +44,14 @@ public class AssetsController : ControllerBase
             return BadRequest("Folder parameter is required");
         }
 
-        var query = new GetAssetUploadUrlQuery(folder, contentType);
+        var cognitoId =
+            User.FindFirstValue(ClaimTypes.NameIdentifier) ?? User.FindFirstValue("sub");
+        if (string.IsNullOrEmpty(cognitoId))
+        {
+            return Unauthorized();
+        }
+
+        var query = new GetAssetUploadUrlQuery(cognitoId, folder, contentType);
         var result = await _mediator.Send(query, cancellationToken);
 
         if (result.IsFailure)

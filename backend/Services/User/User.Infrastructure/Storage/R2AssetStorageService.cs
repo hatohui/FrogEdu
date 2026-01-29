@@ -50,8 +50,7 @@ public class R2AssetStorageService : IAssetStorageService
     {
         try
         {
-            // Generate object key: user-uploads/{userId}/{folder}/{fileName}
-            var objectKey = $"user-uploads/{userId}/{request.Folder}/{request.FileName}";
+            var objectKey = $"{request.Folder}/{userId}/{request.FileName}";
 
             var presignedRequest = new GetPreSignedUrlRequest
             {
@@ -74,7 +73,12 @@ public class R2AssetStorageService : IAssetStorageService
             );
 
             return Task.FromResult(
-                PresignedUploadUrl.Create(uploadUrl, publicUrl, presignedRequest.Expires, objectKey)
+                PresignedUploadUrl.Create(
+                    uploadUrl,
+                    publicUrl,
+                    presignedRequest.Expires ?? DateTime.UtcNow.AddMinutes(15),
+                    objectKey
+                )
             );
         }
         catch (Exception ex)
