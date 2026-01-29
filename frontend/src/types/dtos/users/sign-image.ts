@@ -3,8 +3,8 @@ export interface SignImageResponse {
 	key: string
 }
 
-export interface AvatarPresignedUrlResponse {
+export interface GetPresignedImageUrlResponse {
 	uploadUrl: string
-	avatarUrl: string
+	publicUrl: string
 	expiresAt: string
 }
