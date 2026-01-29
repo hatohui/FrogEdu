@@ -61,10 +61,8 @@ public class R2AssetStorageService : IAssetStorageService
                 ContentType = request.ContentType,
             };
 
-            // Generate the presigned URL for upload (synchronous method)
             var uploadUrl = _s3Client.GetPreSignedURL(presignedRequest);
 
-            // Build the public URL (what the file will be accessible at after upload)
             var publicUrl = $"{_publicEndpoint.TrimEnd('/')}/{objectKey}";
 
             _logger.LogInformation(
