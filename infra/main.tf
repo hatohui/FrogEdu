@@ -103,7 +103,7 @@ module "exam_service" {
     EXAM_DB_CONNECTION_STRING = local.exam_db_connection_string
     MEDIAK_LICENSE_KEY        = local.mediak_license_key
     COGNITO_USER_POOL_ID      = module.cognito.user_pool_id
-    "AWS__Cognito__Region"    = local.aws_region
+    AWS_COGNITO_REGION        = local.aws_region
   }
 }
 

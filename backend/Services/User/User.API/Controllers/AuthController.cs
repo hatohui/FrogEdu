@@ -9,7 +9,7 @@ namespace FrogEdu.User.API.Controllers;
 /// Authentication webhook endpoints for Cognito integration
 /// </summary>
 [ApiController]
-[Route("api/auth")]
+[Route("auth")]
 [Tags("Authentication")]
 public class AuthController : ControllerBase
 {
