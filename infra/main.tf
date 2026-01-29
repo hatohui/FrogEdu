@@ -130,7 +130,7 @@ module "user_service" {
     USER_DB_CONNECTION_STRING = local.user_db_connection_string
     MEDIAK_LICENSE_KEY        = local.mediak_license_key
     COGNITO_USER_POOL_ID      = module.cognito.user_pool_id
-    "AWS__Cognito__Region"    = local.aws_region
+    AWS_COGNITO_REGION        = local.aws_region
   }
 }
 
@@ -157,7 +157,7 @@ module "class_service" {
     CLASS_DB_CONNECTION_STRING = local.class_db_connection_string
     MEDIAK_LICENSE_KEY         = local.mediak_license_key
     COGNITO_USER_POOL_ID       = module.cognito.user_pool_id
-    "AWS__Cognito__Region"     = local.aws_region
+    AWS_COGNITO_REGION         = local.aws_region
   }
 }
 
@@ -184,6 +184,6 @@ module "subscription_service" {
     SUBSCRIPTION_DB_CONNECTION_STRING = local.subscription_db_connection_string
     MEDIAK_LICENSE_KEY                = local.mediak_license_key
     COGNITO_USER_POOL_ID              = module.cognito.user_pool_id
-    "AWS__Cognito__Region"            = local.aws_region
+    AWS_COGNITO_REGION                = local.aws_region
   }
 }

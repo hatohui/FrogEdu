@@ -29,18 +29,7 @@ public static class AuthenticationExtensions
             ?? Environment.GetEnvironmentVariable("COGNITO_USER_POOL_ID")
             ?? "";
 
-        // Log the configuration for debugging
-        Console.WriteLine(
-            $"[Cognito Config] Region: {cognitoRegion}, UserPoolId: {cognitoUserPoolId}"
-        );
-
-        if (string.IsNullOrEmpty(cognitoUserPoolId))
-        {
-            Console.WriteLine("[Cognito Config] WARNING: User Pool ID is not configured!");
-        }
-
         var authority = $"https://cognito-idp.{cognitoRegion}.amazonaws.com/{cognitoUserPoolId}";
-        Console.WriteLine($"[Cognito Config] Authority: {authority}");
 
         services
             .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

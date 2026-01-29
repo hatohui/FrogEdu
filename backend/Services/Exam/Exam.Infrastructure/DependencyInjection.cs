@@ -29,22 +29,7 @@ public static class DependencyInjection
             ?? (!string.IsNullOrWhiteSpace(envConnectionString) ? envConnectionString : null)
             ?? "postgresql://root:root@localhost:5432/exam?sslmode=disable";
 
-        // Log connection string info (mask password)
-        Console.WriteLine(
-            $"[DB Config] Config value: {(string.IsNullOrWhiteSpace(configConnectionString) ? "null/empty" : "has value")}"
-        );
-        Console.WriteLine(
-            $"[DB Config] Env value: {(string.IsNullOrWhiteSpace(envConnectionString) ? "null/empty" : "has value")}"
-        );
-        var maskedConnectionString = connectionString.Contains("Password=")
-            ? System.Text.RegularExpressions.Regex.Replace(
-                connectionString,
-                @"Password=([^;]+)",
-                "Password=***"
-            )
-            : connectionString;
-        Console.WriteLine($"[DB Config] Connection String: {maskedConnectionString}");
-        Console.WriteLine($"[DB Config] Connection String Length: {connectionString.Length} chars");
+        Console.WriteLine("Database Connected.");
 
         services.AddDbContext<ExamDbContext>(options =>
         {
