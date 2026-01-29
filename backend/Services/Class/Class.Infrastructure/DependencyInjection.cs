@@ -28,7 +28,11 @@ public static class DependencyInjection
 
         // Log connection string info (mask password)
         var maskedConnectionString = connectionString.Contains("Password=")
-            ? System.Text.RegularExpressions.Regex.Replace(connectionString, @"Password=([^;]+)", "Password=***")
+            ? System.Text.RegularExpressions.Regex.Replace(
+                connectionString,
+                @"Password=([^;]+)",
+                "Password=***"
+            )
             : connectionString;
         Console.WriteLine($"[DB Config] Connection String: {maskedConnectionString}");
         Console.WriteLine($"[DB Config] Connection String Length: {connectionString.Length} chars");

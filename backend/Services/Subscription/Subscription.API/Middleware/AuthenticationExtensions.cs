@@ -17,12 +17,12 @@ public static class AuthenticationExtensions
     )
     {
         // Try multiple sources for configuration values
-        var cognitoRegion = 
-            configuration["AWS:Cognito:Region"] 
+        var cognitoRegion =
+            configuration["AWS:Cognito:Region"]
             ?? Environment.GetEnvironmentVariable("AWS__Cognito__Region")
             ?? Environment.GetEnvironmentVariable("AWS_COGNITO_REGION")
             ?? "ap-southeast-1";
-            
+
         var cognitoUserPoolId =
             configuration["AWS:Cognito:UserPoolId"]
             ?? Environment.GetEnvironmentVariable("AWS__Cognito__UserPoolId")
@@ -30,8 +30,10 @@ public static class AuthenticationExtensions
             ?? "";
 
         // Log the configuration for debugging
-        Console.WriteLine($"[Cognito Config] Region: {cognitoRegion}, UserPoolId: {cognitoUserPoolId}");
-        
+        Console.WriteLine(
+            $"[Cognito Config] Region: {cognitoRegion}, UserPoolId: {cognitoUserPoolId}"
+        );
+
         if (string.IsNullOrEmpty(cognitoUserPoolId))
         {
             Console.WriteLine("[Cognito Config] WARNING: User Pool ID is not configured!");
