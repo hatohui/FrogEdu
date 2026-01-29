@@ -4,17 +4,20 @@ namespace FrogEdu.Class.Domain.Interfaces;
 
 public interface IClassRepository
 {
-    Task<Class?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
-    Task<Class?> GetByInviteCodeAsync(
+    Task<Entities.Class?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
+    Task<Entities.Class?> GetByInviteCodeAsync(
         string inviteCode,
         CancellationToken cancellationToken = default
     );
-    Task<IEnumerable<Class>> GetByTeacherIdAsync(
+    Task<IEnumerable<Entities.Class>> GetByTeacherIdAsync(
         Guid teacherId,
         CancellationToken cancellationToken = default
     );
-    Task<Class?> GetWithMembershipsAsync(Guid id, CancellationToken cancellationToken = default);
-    Task AddAsync(Class classEntity, CancellationToken cancellationToken = default);
-    void Update(Class classEntity);
-    void Remove(Class classEntity);
+    Task<Entities.Class?> GetWithMembershipsAsync(
+        Guid id,
+        CancellationToken cancellationToken = default
+    );
+    Task AddAsync(Entities.Class classEntity, CancellationToken cancellationToken = default);
+    void Update(Entities.Class classEntity);
+    void Remove(Entities.Class classEntity);
 }

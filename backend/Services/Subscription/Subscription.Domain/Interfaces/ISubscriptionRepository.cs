@@ -4,15 +4,21 @@ namespace FrogEdu.Subscription.Domain.Interfaces;
 
 public interface ISubscriptionRepository
 {
-    Task<Subscription?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
-    Task<Subscription?> GetByUserIdAsync(
+    Task<Entities.Subscription?> GetByIdAsync(
+        Guid id,
+        CancellationToken cancellationToken = default
+    );
+    Task<Entities.Subscription?> GetByUserIdAsync(
         Guid userId,
         CancellationToken cancellationToken = default
     );
-    Task<IEnumerable<Subscription>> GetActiveSubscriptionsAsync(
+    Task<IEnumerable<Entities.Subscription>> GetActiveSubscriptionsAsync(
         CancellationToken cancellationToken = default
     );
-    Task AddAsync(Subscription subscription, CancellationToken cancellationToken = default);
-    void Update(Subscription subscription);
-    void Remove(Subscription subscription);
+    Task AddAsync(
+        Entities.Subscription subscription,
+        CancellationToken cancellationToken = default
+    );
+    void Update(Entities.Subscription subscription);
+    void Remove(Entities.Subscription subscription);
 }
