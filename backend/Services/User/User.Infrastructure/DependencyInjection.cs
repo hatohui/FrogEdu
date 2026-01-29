@@ -95,10 +95,6 @@ public static class DependencyInjection
             ?? Environment.GetEnvironmentVariable("R2__Region")
             ?? Environment.GetEnvironmentVariable("R2_REGION")
             ?? "auto";
-        var endpoint =
-            configuration["R2:PublicEndpoint"]
-            ?? Environment.GetEnvironmentVariable("R2__PublicEndpoint")
-            ?? Environment.GetEnvironmentVariable("R2_PUBLIC_ENDPOINT");
 
         if (
             string.IsNullOrWhiteSpace(accountId)
@@ -118,7 +114,7 @@ public static class DependencyInjection
 
             var config = new AmazonS3Config
             {
-                ServiceURL = $"https://{endpoint}",
+                ServiceURL = $"https://{accountId}.r2.cloudflarestorage.com",
                 ForcePathStyle = true,
                 AuthenticationRegion = "auto",
             };
