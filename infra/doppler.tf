@@ -13,14 +13,13 @@ locals {
   environment  = try(data.doppler_secrets.this.map.TF_ENVIRONMENT, "dev")
   project_name = try(data.doppler_secrets.this.map.TF_PROJECT_NAME, "frogedu")
   aws_region   = try(data.doppler_secrets.this.map.TF_AWS_REGION, "ap-southeast-1")
-
-  # Lambda configuration
-  # lambda_package_type  = try(data.doppler_secrets.this.map.TF_LAMBDA_PACKAGE_TYPE, "Image")
-  # lambda_timeout       = try(tonumber(data.doppler_secrets.this.map.TF_LAMBDA_TIMEOUT), 60)
-  # lambda_memory_size   = try(tonumber(data.doppler_secrets.this.map.TF_LAMBDA_MEMORY_SIZE), 1024)
-  # lambda_architectures = try(split(",", data.doppler_secrets.this.map.TF_LAMBDA_ARCHITECTURES), ["x86_64"])
-
   # Domain configuration
   api_domain      = try(data.doppler_secrets.this.map.TF_API_DOMAIN, "")
   frontend_domain = try(data.doppler_secrets.this.map.TF_FRONTEND_DOMAIN, "localhost:5173")
+
+  # Database configuration
+  class_db_connection_string        = data.doppler_secrets.this.map.CLASS_DB_CONNECTION_STRING
+  subscription_db_connection_string = data.doppler_secrets.this.map.SUBSCRIPTION_DB_CONNECTION_STRING
+  user_db_connection_string         = data.doppler_secrets.this.map.USER_DB_CONNECTION_STRING
+  exam_db_connection_string         = data.doppler_secrets.this.map.EXAM_DB_CONNECTION_STRING
 }

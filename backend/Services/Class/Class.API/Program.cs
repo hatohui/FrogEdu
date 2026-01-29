@@ -1,4 +1,6 @@
 using FrogEdu.Class.API.Middleware;
+using FrogEdu.Class.Application;
+using FrogEdu.Class.Infrastructure;
 using FrogEdu.Shared.Kernel;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -23,6 +25,10 @@ builder.Services.AddSwaggerGen(options =>
 
 // AWS Lambda
 builder.Services.AddAWSLambdaHosting(LambdaEventSource.RestApi);
+
+// Application & Infrastructure
+builder.Services.AddApplicationServices();
+builder.Services.AddInfrastructureServices(builder.Configuration);
 
 // Authentication & Authorization
 builder.Services.AddCognitoAuthentication(builder.Configuration);

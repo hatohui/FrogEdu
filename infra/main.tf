@@ -92,12 +92,13 @@ module "exam_service" {
   cognito_authorizer_id     = module.api_gateway.cognito_authorizer_id
 
   no_auth_routes = [
-    "/health",
+    "/health/{proxy+}",
     "/swagger/{proxy+}",
   ]
 
   environment_variables = {
-    ASPNETCORE_ENVIRONMENT = "Production"
+    ASPNETCORE_ENVIRONMENT    = "Production"
+    EXAM_DB_CONNECTION_STRING = local.exam_db_connection_string
   }
 }
 
@@ -113,12 +114,13 @@ module "user_service" {
   cognito_authorizer_id     = module.api_gateway.cognito_authorizer_id
 
   no_auth_routes = [
-    "/health",
+    "/health/{proxy+}",
     "/swagger/{proxy+}",
   ]
 
   environment_variables = {
-    ASPNETCORE_ENVIRONMENT = "Production"
+    ASPNETCORE_ENVIRONMENT    = "Production"
+    USER_DB_CONNECTION_STRING = local.user_db_connection_string
   }
 }
 
@@ -134,12 +136,13 @@ module "class_service" {
   cognito_authorizer_id     = module.api_gateway.cognito_authorizer_id
 
   no_auth_routes = [
-    "/health",
+    "/health/{proxy+}",
     "/swagger/{proxy+}",
   ]
 
   environment_variables = {
-    ASPNETCORE_ENVIRONMENT = "Production"
+    ASPNETCORE_ENVIRONMENT     = "Production"
+    CLASS_DB_CONNECTION_STRING = local.class_db_connection_string
   }
 }
 
@@ -155,11 +158,12 @@ module "subscription_service" {
   cognito_authorizer_id     = module.api_gateway.cognito_authorizer_id
 
   no_auth_routes = [
-    "/health",
+    "/health/{proxy+}",
     "/swagger/{proxy+}",
   ]
 
   environment_variables = {
-    ASPNETCORE_ENVIRONMENT = "Production"
+    ASPNETCORE_ENVIRONMENT            = "Production"
+    SUBSCRIPTION_DB_CONNECTION_STRING = local.subscription_db_connection_string
   }
 }

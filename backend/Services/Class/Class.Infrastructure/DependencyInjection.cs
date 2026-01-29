@@ -1,14 +1,11 @@
-using Amazon.S3;
-using FrogEdu.User.Application.Interfaces;
-using FrogEdu.User.Domain.Repositories;
-using FrogEdu.User.Infrastructure.Persistence;
-using FrogEdu.User.Infrastructure.Repositories;
-using FrogEdu.User.Infrastructure.Services;
+using FrogEdu.Class.Application.Interfaces;
+using FrogEdu.Class.Infrastructure.Persistence;
+using FrogEdu.Class.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace FrogEdu.User.Infrastructure;
+namespace FrogEdu.Class.Infrastructure;
 
 /// <summary>
 /// Extension methods for configuring Infrastructure layer services
@@ -25,11 +22,11 @@ public static class DependencyInjection
     {
         // Configure DbContext
         var connectionString =
-            configuration.GetConnectionString("UserDb")
-            ?? Environment.GetEnvironmentVariable("USER_DB_CONNECTION_STRING")
-            ?? "postgresql://root:root@localhost:5432/user?sslmode=disable";
+            configuration.GetConnectionString("ClassDb")
+            ?? Environment.GetEnvironmentVariable("CLASS_DB_CONNECTION_STRING")
+            ?? "postgresql://root:root@localhost:5432/class?sslmode=disable";
 
-        services.AddDbContext<UserDbContext>(options =>
+        services.AddDbContext<ClassDbContext>(options =>
         {
             options.UseNpgsql(
                 connectionString,
@@ -41,21 +38,8 @@ public static class DependencyInjection
             );
         });
 
-        // Register repositories
-        services.AddScoped<IUserRepository, UserRepository>();
-
-        // Register Unit of Work
-        services.AddScoped<IUnitOfWork>(sp => sp.GetRequiredService<UserDbContext>());
-
         // Register database health service
         services.AddScoped<IDatabaseHealthService, DatabaseHealthService>();
-
-        // Configure AWS S3
-        services.AddDefaultAWSOptions(configuration.GetAWSOptions());
-        services.AddAWSService<IAmazonS3>();
-
-        // Register storage service
-        services.AddScoped<IStorageService, S3StorageService>();
 
         return services;
     }

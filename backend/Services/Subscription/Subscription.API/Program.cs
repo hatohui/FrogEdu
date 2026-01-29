@@ -1,5 +1,7 @@
 using FrogEdu.Shared.Kernel;
 using FrogEdu.Subscription.API.Middleware;
+using FrogEdu.Subscription.Application;
+using FrogEdu.Subscription.Infrastructure;
 using FrogEdu.Subscription.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 
@@ -25,6 +27,10 @@ builder.Services.AddSwaggerGen(options =>
 
 // AWS Lambda
 builder.Services.AddAWSLambdaHosting(LambdaEventSource.RestApi);
+
+// Application & Infrastructure
+builder.Services.AddApplicationServices();
+builder.Services.AddInfrastructureServices(builder.Configuration);
 
 // Authentication & Authorization
 builder.Services.AddCognitoAuthentication(builder.Configuration);

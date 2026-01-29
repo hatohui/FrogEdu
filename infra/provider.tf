@@ -17,7 +17,6 @@ provider "aws" {
   }
 }
 
-# US East 1 provider for ACM certificates (required for CloudFront)
 provider "aws" {
   alias      = "us_east_1"
   region     = "us-east-1"

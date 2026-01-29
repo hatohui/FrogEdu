@@ -23,36 +23,30 @@ const ApiUrl = import.meta.env.VITE_API_URL
 // So /users/health becomes {VITE_API_URL}/api/users/health
 const healthEndpoints = [
 	{
-		name: 'Content Service',
-		path: '/contents/health',
-		description: 'Content management and library service',
-		critical: true,
-	},
-	{
 		name: 'User Service',
 		path: '/users/health',
-		description: 'User authentication and profile service',
+		description: 'User authentication and profile management',
 		critical: true,
 	},
 	{
-		name: 'Assessment Service',
-		path: '/assessments/health',
-		description: 'Quiz and assessment engine',
-		critical: false,
+		name: 'Class Service',
+		path: '/classes/health',
+		description: 'Class management and organization',
+		critical: true,
 	},
 	{
-		name: 'AI Service',
-		path: '/ai/health',
-		description: 'AI tutoring and smart assistance',
+		name: 'Exam Service',
+		path: '/exams/health',
+		description: 'Exam and assessment management',
+		critical: true,
+	},
+	{
+		name: 'Subscription Service',
+		path: '/subscriptions/health',
+		description: 'Subscription and payment management',
 		critical: false,
 	},
 	// Database connectivity checks
-	{
-		name: 'Content DB',
-		path: '/contents/health/db',
-		description: 'Content service database connectivity',
-		critical: true,
-	},
 	{
 		name: 'User DB',
 		path: '/users/health/db',
@@ -60,15 +54,21 @@ const healthEndpoints = [
 		critical: true,
 	},
 	{
-		name: 'Assessment DB',
-		path: '/assessments/health/db',
-		description: 'Assessment service database connectivity',
-		critical: false,
+		name: 'Class DB',
+		path: '/classes/health/db',
+		description: 'Class service database connectivity',
+		critical: true,
 	},
 	{
-		name: 'AI DB',
-		path: '/ai/health/db',
-		description: 'AI service database connectivity',
+		name: 'Exam DB',
+		path: '/exams/health/db',
+		description: 'Exam service database connectivity',
+		critical: true,
+	},
+	{
+		name: 'Subscription DB',
+		path: '/subscriptions/health/db',
+		description: 'Subscription service database connectivity',
 		critical: false,
 	},
 ]
