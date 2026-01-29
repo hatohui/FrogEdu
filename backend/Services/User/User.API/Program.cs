@@ -1,7 +1,10 @@
+using DotNetEnv;
 using FrogEdu.Shared.Kernel;
 using FrogEdu.User.API.Middleware;
 using FrogEdu.User.Application;
 using FrogEdu.User.Infrastructure;
+
+Env.Load();
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -56,7 +59,6 @@ if (app.Environment.IsDevelopment())
     app.UseDevelopmentCors();
 }
 
-// Authentication & Authorization
 app.UseAuthentication();
 app.UseAuthorization();
 
@@ -68,9 +70,3 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
-
-// Make Program class accessible for integration tests
-public partial class Program { }
-
-// Make Program class accessible for integration tests
-public partial class Program { }

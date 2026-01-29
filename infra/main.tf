@@ -101,6 +101,7 @@ module "exam_service" {
   environment_variables = {
     ASPNETCORE_ENVIRONMENT    = "Production"
     EXAM_DB_CONNECTION_STRING = local.exam_db_connection_string
+    MEDIAK_LICENSE_KEY        = local.mediak_license_key
   }
 }
 
@@ -125,6 +126,7 @@ module "user_service" {
   environment_variables = {
     ASPNETCORE_ENVIRONMENT    = "Production"
     USER_DB_CONNECTION_STRING = local.user_db_connection_string
+    MEDIAK_LICENSE_KEY        = local.mediak_license_key
   }
 }
 
@@ -149,6 +151,7 @@ module "class_service" {
   environment_variables = {
     ASPNETCORE_ENVIRONMENT     = "Production"
     CLASS_DB_CONNECTION_STRING = local.class_db_connection_string
+    MEDIAK_LICENSE_KEY         = local.mediak_license_key
   }
 }
 
@@ -173,5 +176,6 @@ module "subscription_service" {
   environment_variables = {
     ASPNETCORE_ENVIRONMENT            = "Production"
     SUBSCRIPTION_DB_CONNECTION_STRING = local.subscription_db_connection_string
+    MEDIAK_LICENSE_KEY                = local.mediak_license_key
   }
 }

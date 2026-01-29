@@ -28,6 +28,8 @@ public class HealthController : ControllerBase
         return Ok(
             new
             {
+                environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")
+                    ?? "Development",
                 status = "healthy",
                 service = "user-api",
                 timestamp = DateTime.UtcNow,

@@ -5,9 +5,6 @@ namespace FrogEdu.User.API.Middleware;
 /// </summary>
 public static class CorsExtensions
 {
-    /// <summary>
-    /// Add CORS policy allowing all origins (development only)
-    /// </summary>
     public static IServiceCollection AddDevelopmentCors(this IServiceCollection services)
     {
         services.AddCors(options =>
@@ -20,9 +17,6 @@ public static class CorsExtensions
         return services;
     }
 
-    /// <summary>
-    /// Use CORS middleware
-    /// </summary>
     public static IApplicationBuilder UseDevelopmentCors(this IApplicationBuilder app)
     {
         app.UseCors();

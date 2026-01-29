@@ -22,4 +22,7 @@ locals {
   subscription_db_connection_string = data.doppler_secrets.this.map.SUBSCRIPTION_DB_CONNECTION_STRING
   user_db_connection_string         = data.doppler_secrets.this.map.USER_DB_CONNECTION_STRING
   exam_db_connection_string         = data.doppler_secrets.this.map.EXAM_DB_CONNECTION_STRING
+
+  #license key
+  mediak_license_key = data.doppler_secrets.this.map.MEDIAK_LICENSE_KEY
 }

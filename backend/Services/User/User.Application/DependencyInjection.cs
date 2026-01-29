@@ -14,18 +14,20 @@ public static class DependencyInjection
     /// <summary>
     /// Add Application layer services to the DI container
     /// </summary>
-    public static IServiceCollection AddApplicationServices(this IServiceCollection services)
+    public static IServiceCollection AddApplicationServices(
+        this IServiceCollection services,
+        string? mediatrLicenseKey = null
+    )
     {
         var assembly = Assembly.GetExecutingAssembly();
 
-        // Register MediatR handlers
         services.AddMediatR(cfg =>
         {
+            cfg.LicenseKey = Environment.GetEnvironmentVariable("MEDIAK_LICENSE_KEY");
             cfg.RegisterServicesFromAssembly(assembly);
             cfg.AddBehavior(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
         });
 
-        // Register FluentValidation validators
         services.AddValidatorsFromAssembly(assembly);
 
         return services;
