@@ -1,9 +1,12 @@
+using DotNetEnv;
 using FrogEdu.Shared.Kernel;
 using FrogEdu.Subscription.API.Middleware;
 using FrogEdu.Subscription.Application;
 using FrogEdu.Subscription.Infrastructure;
 using FrogEdu.Subscription.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
+
+Env.Load();
 
 var builder = WebApplication.CreateBuilder(args);
 

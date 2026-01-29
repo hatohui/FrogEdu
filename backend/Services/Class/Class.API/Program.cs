@@ -1,14 +1,16 @@
+using DotNetEnv;
 using FrogEdu.Class.API.Middleware;
 using FrogEdu.Class.Application;
 using FrogEdu.Class.Infrastructure;
 using FrogEdu.Shared.Kernel;
+
+Env.Load();
 
 var builder = WebApplication.CreateBuilder(args);
 
 // ============================================================================
 // Service Configuration
 // ============================================================================
-Env.Load();
 
 // API & OpenAPI
 builder.Services.AddControllers();
