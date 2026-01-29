@@ -4,9 +4,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace FrogEdu.Exam.Infrastructure.Persistence.Configurations;
 
-public class ExamConfiguration : IEntityTypeConfiguration<Exam>
+public class ExamConfiguration : IEntityTypeConfiguration<Entities.Exam>
 {
-    public void Configure(EntityTypeBuilder<Exam> builder)
+    public void Configure(EntityTypeBuilder<Entities.Exam> builder)
     {
         builder.ToTable("Exams");
 

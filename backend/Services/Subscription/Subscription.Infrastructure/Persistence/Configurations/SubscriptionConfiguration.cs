@@ -4,9 +4,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace FrogEdu.Subscription.Infrastructure.Persistence.Configurations;
 
-public class SubscriptionConfiguration : IEntityTypeConfiguration<Subscription>
+public class SubscriptionConfiguration : IEntityTypeConfiguration<Entities.Subscription>
 {
-    public void Configure(EntityTypeBuilder<Subscription> builder)
+    public void Configure(EntityTypeBuilder<Entities.Subscription> builder)
     {
         builder.ToTable("Subscriptions");
 

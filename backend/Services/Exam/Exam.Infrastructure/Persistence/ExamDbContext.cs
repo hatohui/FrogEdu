@@ -13,7 +13,7 @@ public class ExamDbContext : DbContext
         : base(options) { }
 
     public DbSet<Question> Questions => Set<Question>();
-    public DbSet<Exam> Exams => Set<Exam>();
+    public DbSet<Entities.Exam> Exams => Set<Entities.Exam>();
     public DbSet<ExamQuestion> ExamQuestions => Set<ExamQuestion>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -27,17 +27,15 @@ public class ExamDbContext : DbContext
         modelBuilder.ApplyConfiguration(new QuestionConfiguration());
         modelBuilder.ApplyConfiguration(new ExamConfiguration());
         modelBuilder.ApplyConfiguration(new ExamQuestionConfiguration());
-        modelBuilder.HasDefaultSchema("public");
 
-        // Apply configurations
-        modelBuilder.ApplyConfiguration(new TextbookConfiguration());
-        modelBuilder.ApplyConfiguration(new ChapterConfiguration());
-        modelBuilder.ApplyConfiguration(new PageConfiguration());
-        // SubjectConfiguration removed - Subject is a value object
-        modelBuilder.ApplyConfiguration(new LessonConfiguration());
-        modelBuilder.ApplyConfiguration(new TagConfiguration());
-        modelBuilder.ApplyConfiguration(new LessonTagConfiguration());
-        modelBuilder.ApplyConfiguration(new AssetConfiguration());
+        // TODO: Add Textbook-related configurations once Domain entities are created
+        // modelBuilder.ApplyConfiguration(new TextbookConfiguration());
+        // modelBuilder.ApplyConfiguration(new ChapterConfiguration());
+        // modelBuilder.ApplyConfiguration(new PageConfiguration());
+        // modelBuilder.ApplyConfiguration(new LessonConfiguration());
+        // modelBuilder.ApplyConfiguration(new TagConfiguration());
+        // modelBuilder.ApplyConfiguration(new LessonTagConfiguration());
+        // modelBuilder.ApplyConfiguration(new AssetConfiguration());
 
         // Set default values for timestamp columns
         foreach (var entityType in modelBuilder.Model.GetEntityTypes())

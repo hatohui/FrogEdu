@@ -12,7 +12,7 @@ public class ClassDbContext : DbContext
     public ClassDbContext(DbContextOptions<ClassDbContext> options)
         : base(options) { }
 
-    public DbSet<Class> Classes => Set<Class>();
+    public DbSet<Entities.Class> Classes => Set<Entities.Class>();
     public DbSet<ClassMembership> ClassMemberships => Set<ClassMembership>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

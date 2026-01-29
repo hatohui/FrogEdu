@@ -12,7 +12,7 @@ public class SubscriptionDbContext : DbContext
     public SubscriptionDbContext(DbContextOptions<SubscriptionDbContext> options)
         : base(options) { }
 
-    public DbSet<Subscription> Subscriptions => Set<Subscription>();
+    public DbSet<Entities.Subscription> Subscriptions => Set<Entities.Subscription>();
     public DbSet<Transaction> Transactions => Set<Transaction>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
