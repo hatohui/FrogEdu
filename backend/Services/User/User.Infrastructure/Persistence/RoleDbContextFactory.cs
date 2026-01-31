@@ -8,7 +8,6 @@ public class RoleDbContextFactory : IDesignTimeDbContextFactory<RoleDbContext>
 {
     public RoleDbContext CreateDbContext(string[] args)
     {
-        // Load .env so Environment.GetEnvironmentVariable() picks up local values during design-time commands
         Env.Load();
 
         var connectionString =
