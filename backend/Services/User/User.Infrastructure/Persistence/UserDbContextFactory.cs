@@ -1,18 +1,17 @@
+using DotNetEnv;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.Configuration;
 
 namespace FrogEdu.User.Infrastructure.Persistence;
 
-/// <summary>
-/// DbContextFactory for User Service
-/// Used by EF Core CLI for migrations when the context is in a separate project
-/// This allows migrations to be created/updated without the application running
-/// </summary>
 public class UserDbContextFactory : IDesignTimeDbContextFactory<UserDbContext>
 {
     public UserDbContext CreateDbContext(string[] args)
     {
+        // Load .env so Environment.GetEnvironmentVariable() picks up local values during design-time commands
+        Env.Load();
+
         var connectionString =
             Environment.GetEnvironmentVariable("USER_DB_CONNECTION_STRING")
             ?? "postgresql://root:root@frog-user-db:5432/user?sslmode=disable";

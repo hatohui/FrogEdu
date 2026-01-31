@@ -61,12 +61,23 @@ public static class DependencyInjection
         // Register legacy storage service (for existing avatar upload)
         services.AddScoped<IStorageService, S3StorageService>();
 
+        // Register role DbContext and role services
+        services.AddDbContext<RoleDbContext>(options =>
+        {
+            options.UseNpgsql(
+                connectionString,
+                npgsqlOptions =>
+                {
+                    npgsqlOptions.EnableRetryOnFailure(3);
+                    npgsqlOptions.CommandTimeout(30);
+                }
+            );
+        });
+
+        services.AddScoped<IRoleService, RoleService>();
+
         // Configure R2 (Cloudflare S3-compatible storage)
         ConfigureR2Storage(services, configuration);
-
-        // Register database seeder
-        services.AddScoped<DatabaseSeeder>();
-
         return services;
     }
 
@@ -143,10 +154,6 @@ public static class DependencyInjection
         using var scope = services.CreateScope();
         var context = scope.ServiceProvider.GetRequiredService<UserDbContext>();
 
-        // Ensure database is created and migrations are applied
         await context.Database.MigrateAsync();
-
-        var seeder = scope.ServiceProvider.GetRequiredService<DatabaseSeeder>();
-        await seeder.SeedUserFromCognitoAsync(cognitoId, email, firstName, lastName, role);
     }
 }

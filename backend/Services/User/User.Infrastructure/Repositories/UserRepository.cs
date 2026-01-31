@@ -6,17 +6,9 @@ using UserEntity = FrogEdu.User.Domain.Entities.User;
 
 namespace FrogEdu.User.Infrastructure.Repositories;
 
-/// <summary>
-/// EF Core implementation of IUserRepository
-/// </summary>
-public sealed class UserRepository : IUserRepository
+public sealed class UserRepository(UserDbContext context) : IUserRepository
 {
-    private readonly UserDbContext _context;
-
-    public UserRepository(UserDbContext context)
-    {
-        _context = context;
-    }
+    private readonly UserDbContext _context = context;
 
     public async Task<UserEntity?> GetByIdAsync(
         Guid id,
@@ -33,7 +25,6 @@ public sealed class UserRepository : IUserRepository
         CancellationToken cancellationToken = default
     )
     {
-        // Compare with value object directly - EF Core handles the conversion automatically
         var cognitoIdVO = CognitoUserId.Create(cognitoId);
         return await _context.Users.FirstOrDefaultAsync(
             u => u.CognitoId == cognitoIdVO,
@@ -46,7 +37,6 @@ public sealed class UserRepository : IUserRepository
         CancellationToken cancellationToken = default
     )
     {
-        // Compare with value object directly - EF Core handles the conversion automatically
         var emailVO = Email.Create(email);
         return await _context
             .Users.AsNoTracking()
@@ -73,7 +63,6 @@ public sealed class UserRepository : IUserRepository
 
     public void Delete(UserEntity user)
     {
-        // Soft delete
         user.GetType()
             .GetMethod(
                 "SoftDelete",

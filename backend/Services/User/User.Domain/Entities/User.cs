@@ -1,74 +1,62 @@
-using FrogEdu.Shared.Kernel;
+using FrogEdu.Shared.Kernel.Auditing;
+using FrogEdu.Shared.Kernel.Deletion;
+using FrogEdu.Shared.Kernel.Primitives;
 using FrogEdu.User.Domain.Enums;
 using FrogEdu.User.Domain.Events;
 using FrogEdu.User.Domain.ValueObjects;
 
 namespace FrogEdu.User.Domain.Entities;
 
-/// <summary>
-/// User aggregate root
-/// </summary>
-public sealed class User : Entity
+public sealed class User : AuditableSoftdeletableEntity
 {
     public CognitoUserId CognitoId { get; private set; } = null!;
     public Email Email { get; private set; } = null!;
-    public FullName FullName { get; private set; } = null!;
-    public UserRole Role { get; private set; }
+    public string FirstName { get; private set; } = null!;
+    public string LastName { get; private set; } = null!;
+    public Guid RoleId { get; private set; }
     public string? AvatarUrl { get; private set; }
-    public DateTime? LastLoginAt { get; private set; }
     public bool IsEmailVerified { get; private set; }
 
-    // Private constructor for EF Core
     private User() { }
 
-    private User(CognitoUserId cognitoId, Email email, FullName fullName, UserRole role)
+    private User(
+        CognitoUserId cognitoId,
+        Email email,
+        string firstName,
+        string lastName,
+        Guid roleId
+    )
+        : base()
     {
         CognitoId = cognitoId;
         Email = email;
-        FullName = fullName;
-        Role = role;
+        FirstName = firstName;
+        LastName = lastName;
+        RoleId = roleId;
         IsEmailVerified = false;
     }
 
-    /// <summary>
-    /// Factory method to create a new user
-    /// </summary>
     public static User Create(
         string cognitoId,
         string email,
         string firstName,
         string lastName,
-        UserRole role
+        Guid roleId
     )
     {
         var user = new User(
             CognitoUserId.Create(cognitoId),
             Email.Create(email),
-            FullName.Create(firstName, lastName),
-            role
+            firstName,
+            lastName,
+            roleId
         );
 
-        user.AddDomainEvent(
-            new UserCreatedDomainEvent(user.Id, user.Email.Value, user.Role.ToString())
-        );
+        user.AddDomainEvent(new UserCreatedDomainEvent(user.Id, user.Email.Value, user.RoleId));
 
         return user;
     }
 
-    /// <summary>
-    /// Update user profile information
-    /// </summary>
-    public void UpdateProfile(string firstName, string lastName)
-    {
-        FullName = FullName.Create(firstName, lastName);
-        MarkAsUpdated();
-
-        AddDomainEvent(new UserProfileUpdatedDomainEvent(Id, firstName, lastName));
-    }
-
-    /// <summary>
-    /// Update user avatar
-    /// </summary>
     public void UpdateAvatar(string avatarUrl)
     {
         if (string.IsNullOrWhiteSpace(avatarUrl))
@@ -76,42 +64,36 @@ public sealed class User : Entity
 
         AvatarUrl = avatarUrl;
         MarkAsUpdated();
-
         AddDomainEvent(new UserAvatarUpdatedDomainEvent(Id, avatarUrl));
     }
 
-    /// <summary>
-    /// Record user login
-    /// </summary>
-    public void RecordLogin()
-    {
-        LastLoginAt = DateTime.UtcNow;
-        MarkAsUpdated();
-
-        AddDomainEvent(new UserLoggedInDomainEvent(Id, LastLoginAt.Value));
-    }
-
-    /// <summary>
-    /// Verify user email
-    /// </summary>
     public void VerifyEmail()
     {
         if (IsEmailVerified)
-            return; // Already verified
+            return;
 
         IsEmailVerified = true;
+    }
+
+    public void ChangeRole(Guid newRoleId)
+    {
+        if (RoleId == newRoleId)
+            return;
+
+        RoleId = newRoleId;
         MarkAsUpdated();
     }
 
-    /// <summary>
-    /// Change user role (admin only operation)
-    /// </summary>
-    public void ChangeRole(UserRole newRole)
+    public void UpdateProfile(string firstName, string lastName)
     {
-        if (Role == newRole)
-            return;
+        if (string.IsNullOrWhiteSpace(firstName))
+            throw new ArgumentException("First name cannot be empty", nameof(firstName));
+        if (string.IsNullOrWhiteSpace(lastName))
+            throw new ArgumentException("Last name cannot be empty", nameof(lastName));
 
-        Role = newRole;
+        FirstName = firstName;
+        LastName = lastName;
         MarkAsUpdated();
+        AddDomainEvent(new UserProfileUpdatedDomainEvent(Id, firstName, lastName));
     }
 }

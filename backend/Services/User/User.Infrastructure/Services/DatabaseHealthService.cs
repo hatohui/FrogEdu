@@ -6,17 +6,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FrogEdu.User.Infrastructure.Services;
 
-/// <summary>
-/// Service for checking database health
-/// </summary>
-public sealed class DatabaseHealthService : IDatabaseHealthService
+public sealed class DatabaseHealthService(UserDbContext dbContext) : IDatabaseHealthService
 {
-    private readonly UserDbContext _dbContext;
-
-    public DatabaseHealthService(UserDbContext dbContext)
-    {
-        _dbContext = dbContext;
-    }
+    private readonly UserDbContext _dbContext = dbContext;
 
     public async Task<DatabaseHealthDto> CheckHealthAsync(
         CancellationToken cancellationToken = default
@@ -26,7 +18,6 @@ public sealed class DatabaseHealthService : IDatabaseHealthService
 
         try
         {
-            // Attempt a simple query to verify connection
             await _dbContext.Users.AsNoTracking().FirstOrDefaultAsync(cancellationToken);
 
             stopwatch.Stop();

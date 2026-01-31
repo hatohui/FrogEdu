@@ -4,9 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FrogEdu.Subscription.API.Controllers;
 
-/// <summary>
-/// Health check endpoint for service monitoring
-/// </summary>
 [ApiController]
 [Route("health")]
 public class HealthController : ControllerBase
@@ -18,9 +15,6 @@ public class HealthController : ControllerBase
         _mediator = mediator;
     }
 
-    /// <summary>
-    /// Get service health status
-    /// </summary>
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public IActionResult GetHealth()
@@ -35,9 +29,6 @@ public class HealthController : ControllerBase
         );
     }
 
-    /// <summary>
-    /// Returns database health status
-    /// </summary>
     [HttpGet("db")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> GetDatabaseHealth(CancellationToken cancellationToken)

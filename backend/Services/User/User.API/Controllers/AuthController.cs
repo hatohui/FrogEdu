@@ -5,9 +5,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FrogEdu.User.API.Controllers;
 
-/// <summary>
-/// Authentication webhook endpoints for Cognito integration
-/// </summary>
 [ApiController]
 [Route("auth")]
 [Tags("Authentication")]
@@ -22,11 +19,6 @@ public class AuthController : ControllerBase
         _logger = logger;
     }
 
-    /// <summary>
-    /// Cognito Post-Confirmation webhook trigger
-    /// Creates a user record in our database when a new user confirms their email
-    /// Secured via API Gateway / Lambda trigger (no Bearer token required)
-    /// </summary>
     [HttpPost("webhook")]
     [AllowAnonymous]
     [ProducesResponseType(StatusCodes.Status200OK)]
@@ -45,7 +37,6 @@ public class AuthController : ControllerBase
             return BadRequest("Invalid webhook payload");
 
         var userAttributes = request.Request.UserAttributes;
-        // Default to "Student" role if not provided
         var role = userAttributes.CustomRole ?? "Student";
 
         var command = new CreateUserCommand(
@@ -73,9 +64,6 @@ public class AuthController : ControllerBase
     }
 }
 
-/// <summary>
-/// Cognito Post-Confirmation trigger request structure
-/// </summary>
 public record CognitoTriggerRequest(CognitoTriggerData Request);
 
 public record CognitoTriggerData(CognitoUserAttributes UserAttributes);

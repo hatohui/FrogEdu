@@ -61,6 +61,7 @@ classDiagram
         +string Email
         +string FirstName
         +string LastName
+        +Guid RoleId
         +string AvatarUrl
         +bool IsActive
         +UpdateProfile()

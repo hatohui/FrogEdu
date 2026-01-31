@@ -6,18 +6,21 @@ using MediatR;
 
 namespace FrogEdu.User.Application.Commands.CreateUser;
 
-/// <summary>
-/// Handler for CreateUserCommand
-/// </summary>
 public sealed class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, Result<Guid>>
 {
     private readonly IUserRepository _userRepository;
     private readonly IUnitOfWork _unitOfWork;
+    private readonly IRoleService _roleService;
 
-    public CreateUserCommandHandler(IUserRepository userRepository, IUnitOfWork unitOfWork)
+    public CreateUserCommandHandler(
+        IUserRepository userRepository,
+        IUnitOfWork unitOfWork,
+        IRoleService roleService
+    )
     {
         _userRepository = userRepository;
         _unitOfWork = unitOfWork;
+        _roleService = roleService;
     }
 
     public async Task<Result<Guid>> Handle(
@@ -25,7 +28,6 @@ public sealed class CreateUserCommandHandler : IRequestHandler<CreateUserCommand
         CancellationToken cancellationToken
     )
     {
-        // Check if user already exists
         var existingUser = await _userRepository.GetByCognitoIdAsync(
             request.CognitoId,
             cancellationToken
@@ -35,19 +37,36 @@ public sealed class CreateUserCommandHandler : IRequestHandler<CreateUserCommand
             return Result<Guid>.Failure("User with this Cognito ID already exists");
         }
 
-        // Parse role
-        if (!Enum.TryParse<UserRole>(request.Role, true, out var role))
+        UserRole parsedRole;
+        if (
+            string.IsNullOrWhiteSpace(request.Role)
+            || !Enum.TryParse<UserRole>(request.Role, true, out parsedRole)
+        )
         {
-            role = UserRole.Student; // Default to Student if role is not provided or invalid
+            parsedRole = UserRole.Student;
         }
 
-        // Create user entity
+        // Resolve role from DB by name
+        var roleName = parsedRole.ToString();
+        var roleDto = await _roleService.GetRoleByNameAsync(roleName, cancellationToken);
+
+        // If role not found in DB, try fallback to Student seeded role
+        if (roleDto is null)
+        {
+            roleDto = await _roleService.GetRoleByNameAsync(
+                UserRole.Student.ToString(),
+                cancellationToken
+            );
+            if (roleDto is null)
+                return Result<Guid>.Failure("Role configuration is missing");
+        }
+
         var user = Domain.Entities.User.Create(
             request.CognitoId,
             request.Email,
             request.FirstName,
             request.LastName,
-            role
+            roleDto.Id
         );
 
         await _userRepository.AddAsync(user, cancellationToken);

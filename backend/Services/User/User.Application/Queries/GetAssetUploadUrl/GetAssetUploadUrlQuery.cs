@@ -7,15 +7,9 @@ using Microsoft.Extensions.Logging;
 
 namespace FrogEdu.User.Application.Queries.GetAssetUploadUrl;
 
-/// <summary>
-/// Query to get a presigned URL for asset upload
-/// </summary>
 public record GetAssetUploadUrlQuery(string CognitoId, string Folder, string? ContentType = null)
     : IRequest<Result<AssetUploadUrlResponse>>;
 
-/// <summary>
-/// Response containing presigned upload URL and public URL
-/// </summary>
 public record AssetUploadUrlResponse(
     string UploadUrl,
     string PublicUrl,
@@ -23,9 +17,6 @@ public record AssetUploadUrlResponse(
     string ObjectKey
 );
 
-/// <summary>
-/// Handler for GetAssetUploadUrlQuery
-/// </summary>
 public class GetAssetUploadUrlQueryHandler
     : IRequestHandler<GetAssetUploadUrlQuery, Result<AssetUploadUrlResponse>>
 {
@@ -51,7 +42,6 @@ public class GetAssetUploadUrlQueryHandler
     {
         try
         {
-            // Generate a unique file name
             var fileName = $"{Guid.NewGuid()}{GetFileExtension(request.ContentType)}";
 
             var uploadRequest = AssetUploadRequest.Create(

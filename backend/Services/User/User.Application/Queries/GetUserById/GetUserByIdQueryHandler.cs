@@ -1,19 +1,19 @@
 using FrogEdu.User.Application.DTOs;
+using FrogEdu.User.Application.Interfaces;
 using FrogEdu.User.Domain.Repositories;
 using MediatR;
 
 namespace FrogEdu.User.Application.Queries.GetUserById;
 
-/// <summary>
-/// Handler for GetUserByIdQuery
-/// </summary>
 public sealed class GetUserByIdQueryHandler : IRequestHandler<GetUserByIdQuery, UserDto?>
 {
     private readonly IUserRepository _userRepository;
+    private readonly IRoleService _roleService;
 
-    public GetUserByIdQueryHandler(IUserRepository userRepository)
+    public GetUserByIdQueryHandler(IUserRepository userRepository, IRoleService roleService)
     {
         _userRepository = userRepository;
+        _roleService = roleService;
     }
 
     public async Task<UserDto?> Handle(
@@ -26,16 +26,17 @@ public sealed class GetUserByIdQueryHandler : IRequestHandler<GetUserByIdQuery, 
         if (user is null)
             return null;
 
+        var roleDto = await _roleService.GetRoleByIdAsync(user.RoleId, cancellationToken);
+
         return new UserDto(
             Id: user.Id,
             CognitoId: user.CognitoId.Value,
             Email: user.Email.Value,
-            FirstName: user.FullName.FirstName,
-            LastName: user.FullName.LastName,
-            Role: user.Role.ToString(),
+            FirstName: user.FirstName,
+            LastName: user.LastName,
+            RoleId: user.RoleId,
             AvatarUrl: user.AvatarUrl,
             IsEmailVerified: user.IsEmailVerified,
-            LastLoginAt: user.LastLoginAt,
             CreatedAt: user.CreatedAt,
             UpdatedAt: user.UpdatedAt
         );

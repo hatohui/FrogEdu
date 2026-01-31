@@ -3,18 +3,12 @@ using FrogEdu.Shared.Kernel;
 
 namespace FrogEdu.User.Domain.ValueObjects;
 
-/// <summary>
-/// Email address value object with validation
-/// </summary>
 public sealed partial class Email : ValueObject
 {
     public string Value { get; private set; }
 
     private Email(string value) => Value = value;
 
-    /// <summary>
-    /// Create an email address
-    /// </summary>
     public static Email Create(string value)
     {
         if (string.IsNullOrWhiteSpace(value))

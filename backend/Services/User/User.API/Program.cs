@@ -22,7 +22,6 @@ builder.Services.AddSwaggerGen(options =>
         new Microsoft.OpenApi.Models.OpenApiServer { Url = "/api/users", Description = "User API" }
     );
 
-    // Add JWT Bearer authentication to Swagger
     options.AddSecurityDefinition(
         "Bearer",
         new Microsoft.OpenApi.Models.OpenApiSecurityScheme

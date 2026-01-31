@@ -3,9 +3,6 @@ using MediatR;
 
 namespace FrogEdu.User.Application.Queries.CheckDatabaseHealth;
 
-/// <summary>
-/// Handler for CheckDatabaseHealthQuery
-/// </summary>
 public sealed class CheckDatabaseHealthQueryHandler
     : IRequestHandler<CheckDatabaseHealthQuery, DatabaseHealthDto>
 {

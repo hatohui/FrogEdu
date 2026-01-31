@@ -10,9 +10,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FrogEdu.User.API.Controllers;
 
-/// <summary>
-/// User profile and authentication management endpoints
-/// </summary>
 [ApiController]
 [Route("")]
 [Tags("Users")]
@@ -27,9 +24,6 @@ public class UserController : ControllerBase
         _logger = logger;
     }
 
-    /// <summary>
-    /// Get current authenticated user's profile
-    /// </summary>
     [HttpGet("me")]
     [Authorize]
     [ProducesResponseType(typeof(UserDto), StatusCodes.Status200OK)]
@@ -50,9 +44,6 @@ public class UserController : ControllerBase
         return Ok(result);
     }
 
-    /// <summary>
-    /// Update current user's profile (first name, last name)
-    /// </summary>
     [HttpPut("me")]
     [Authorize]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -77,9 +68,6 @@ public class UserController : ControllerBase
         return NoContent();
     }
 
-    /// <summary>
-    /// Get a presigned URL for uploading a new avatar
-    /// </summary>
     [HttpPost("me/avatar")]
     [Authorize]
     [ProducesResponseType(typeof(AvatarPresignedUrlDto), StatusCodes.Status200OK)]
@@ -104,9 +92,6 @@ public class UserController : ControllerBase
         return Ok(result);
     }
 
-    /// <summary>
-    /// Confirm avatar upload and update user profile
-    /// </summary>
     [HttpPut("me/avatar")]
     [Authorize]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -131,22 +116,12 @@ public class UserController : ControllerBase
         return NoContent();
     }
 
-    /// <summary>
-    /// Extract Cognito user ID from JWT claims
-    /// </summary>
     private string? GetCognitoId()
     {
-        // AWS Cognito uses "sub" claim for user ID
         return User.FindFirstValue(ClaimTypes.NameIdentifier) ?? User.FindFirstValue("sub");
     }
 }
 
-/// <summary>
-/// Request model for avatar upload
-/// </summary>
 public record AvatarUploadRequest(string ContentType);
 
-/// <summary>
-/// Request model for confirming avatar upload
-/// </summary>
 public record ConfirmAvatarRequest(string AvatarUrl);
