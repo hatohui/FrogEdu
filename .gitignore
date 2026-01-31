@@ -13,8 +13,6 @@ dist-ssr
 *.local
 
 # Editor directories and files
-.vscode/*
-!.vscode/extensions.json
 .idea
 .DS_Store
 *.suo
@@ -60,10 +58,10 @@ override.tf.json
 
 # IDE
 .idea/
-.vscode/
 *.swp
 *.swo
 *~
+.vscode/tasks.json
 
 # OS
 .DS_Store
