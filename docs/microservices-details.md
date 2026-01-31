@@ -85,23 +85,12 @@ classDiagram
 
 #### Responsibility
 
-Exams
-
-- Allow `Role:Teacher` to create, save and export exams.
-- Allow `Role:Teacher` to create, save and export questions of an exam.
-- Allow `Role:Teacher` to create, save and export answers of questions of exams.
-
-Exam Matrix
-
-- Allow `Role:Teacher` to create exam matrix, topic.
-
-Subject _ex: Toán_
-
-- Handles seeded Subject Data like Math Grade 1, Math Grade 2...
-
-Curriculum Topic _ex: Toán lớp 1 chương 1, chương 2, ..._
-
-- Allow `Role:Teacher` to create, save custom topics.
+Primary Goal: Manage the creation and structure of educational content.
+Curriculum Management: CRUD for Subjects and Topics. (Initially seeded manually to follow the Vietnamese curriculum).
+Question Bank: Manual CRUD for Questions and Answers. Includes metadata tagging (Cognitive Level, Difficulty, Topic).
+Exam Orchestration: Building the Exam entity by linking multiple questions.
+Matrix Engine: Creating the "Blueprint" (The Matrix) that defines how many questions per topic/difficulty an exam should have.
+Export Engine: Converting the structured Exam data into PDF format for printing or offline use.
 
 #### Class Diagram
 
@@ -126,7 +115,8 @@ classDiagram
         +int        MaxAttempts
         +DateTime   StartTime
         +DateTime   EndTime
-        +bool       IsShuffled
+        +bool       ShouldShuffleQuestions
+        +bool       ShouldShuffleAnswerOptions
         +bool       IsDraft
         +bool       IsActive
         +DateTime   CreatedAt
@@ -153,6 +143,7 @@ classDiagram
         +enum CognitiveLevel
         +Guid MatrixId
         +Guid ExamId
+        +int Quantity
     }
 
     class Matrix {
@@ -171,7 +162,7 @@ classDiagram
         +string MediaUrl
         +enum CognitiveLevel
         +bool IsPublic
-        +bool IsShuffled
+        +enum Source
         +DateTime   CreatedAt
         +Guid       CreatedBy
         +DateTime?  UpdatedAt
@@ -209,16 +200,11 @@ classDiagram
 
 #### Responsibility
 
-Payment and Transactions
-
-- Handle Payment flow and saves all transactions for analysis
-- Subsciption Tier and tracks what each user haves
-
-#### Requirements
-
-- `Role:Student` and `Role:Teacher` have different subscription tier
-
-- Integrate with PayOS, Momo or PayVN
+Primary Goal: Manage monetization and feature-gate access based on payment status.
+Plan Management: Defining SubscriptionTiers (Free vs. Pro) and their specific constraints (e.g., "Max 30 students").
+Payment Integration: Communicating with VNPay, Stripe, or PayOS to process transactions.
+Entitlement Checking: Providing a "Gatekeeper" API that other services call to see if a user is allowed to perform an action (e.g., CanUserCreateMoreExams?).
+Transaction Logging: Maintaining a permanent ledger of all payments and renewal dates for accounting.
 
 #### Class Diagram
 
@@ -264,10 +250,15 @@ classDiagram
 
 #### Responsibility
 
+Primary Goal: Augment the manual workflow with generative capabilities via Gemini + MCP.
+Contextual Generation: Taking a Matrix (from Exam Svc) and generating Questions/Answers that fit the specific Vietnamese curriculum via the MCP tool.
+Validation: Ensuring generated content matches the requested CognitiveLevel (Easy/Medium/Hard).
+Student Tutoring: Providing a chat-based interface for students to ask questions about specific topics (using "Teacher-like" persona).
+Usage Budgeting: Tracking token consumption per user to ensure the platform remains profitable (preventing AI spam).
+Formatting: Ensuring AI output is always converted into the exact JSON structure the Exam Service expects.
 Exam question and answers generation
 
 - Take in an exam matrix, grade, subject and topic -> Query to Gemini AI that have our MCP connected for metadata of each topic in that subject of that grade and generates the questions + answers following that matrix with proper grade and following a json -> api
-
 - Can generate just one question + answers
 
 - Can support query tutoring and guiding students on how to do a specific math, speaking to a student of that grade
@@ -281,4 +272,49 @@ Exam question and answers generation
 
 #### Responsibility
 
-// To do
+Primary Goal: Connect Users (Teachers/Students) to Content (Exams) in a structured environment.
+Classroom Management: CRUD for ClassRoom entities (Name, Grade, Year).
+Membership Logic: Handling the 6-digit Invite Code system for student enrollment.
+Assignment Logic: The "Bridge" – linking an ExamId to a ClassId with a specific DueDate.
+Attendance/Roster: Maintaining the list of active students within a specific teacher's classroom.
+Progress Tracking: (Manual Phase) Storing simple records of which students have completed which assignments.
+
+#### Class Diagram
+
+```mermaid
+classDiagram
+    class ClassRoom {
+      +Guid Id
+      +string Name
+      +string Grade
+      +string InviteCode
+      +int MaxStudents
+      +string BannerUrl
+      +bool IsActive
+      +Guid TeacherId
+      +RegenerateCode()
+    }
+
+    class ClassEnrollment {
+        +Guid Id
+        +Guid ClassId
+        +Guid StudentId
+        +DateTime JoinedAt
+        +enum Status
+        +KickStudent()
+    }
+
+    class Assignment {
+        +Guid Id
+        +Guid ClassId
+        +Guid ExamId
+        +DateTime StartDate
+        +DateTime DueDate
+        +bool IsMandatory
+        +int Weight
+    }
+
+    %% Relationships
+    ClassRoom "1" --> "*" ClassEnrollment : contains
+    ClassRoom "1" --> "*" Assignment : has
+```

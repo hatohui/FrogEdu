@@ -160,24 +160,21 @@ ServiceName/
 - [ ] Avoid N+1 queries with `.Include()` or `AsSplitQuery()`.
 - [ ] Project to DTOs using `.Select()` to avoid loading entire entities.
 
-#### AWS S3 Standards
+#### Cloudflare R2 Standards
 
 **Bucket Structure:**
 
 ```
-edu-classroom-assets/
+frogedu/
 ├── textbooks/
-│   └── {textbookId}/
-│       ├── pages/
-│       └── cover.jpg
 ├── generated-exams/
 │   └── {examId}/
 │       ├── exam.pdf
 │       └── answer-key.pdf
-├── user-uploads/
+├── avatars/
 │   └── {userId}/
 │       └── avatar.jpg
-└── temp/                    # Auto-expire after 24h
+└── temp/
 ```
 
 **MUST Follow:**
@@ -456,29 +453,6 @@ Before marking any task as complete `[x]`, verify:
 ## Project Overview: Edu-AI Classroom
 
 An AI-integrated educational platform for Vietnamese primary schools.
-
-### Core Features:
-
-1. **Teacher Dashboard**
-   - Create and manage classes with invite codes.
-   - AI-assisted lesson planning and content curation.
-   - Access to digital textbook library (Grade 1-5).
-
-2. **Smart Exam Generator**
-   - Define **Exam Matrix** (Ma trận đề thi): Distribution of questions by difficulty and chapter.
-   - Automated question selection from Question Bank (MCQ + Essay).
-   - Manual override: Teachers can replace AI-selected questions.
-   - Export to PDF/Docx (stored in S3, delivered via presigned URL).
-   - Metadata tracking: Textbook, Page, Chapter, Difficulty, Bloom's Taxonomy.
-
-3. **AI Student Tutor**
-   - Socratic-style guidance (never gives direct answers).
-   - Context-aware: Understands student's grade level and current lesson.
-   - RAG (Retrieval-Augmented Generation): References textbook content.
-   - Supports Vietnamese and English languages.
-   - Tracks conversation history for teacher review.
-
----
 
 ## Execution Trigger
 

@@ -6,39 +6,6 @@ Nền tảng lớp học thông minh có hỗ trợ AI: Nền tảng tập trung
 
 ## Functional Requirements
 
-1. Smart Exam Generation
-   Exam Matrix Builder (difficulty, chapters, question types)
-   AI auto-select questions from Question Bank
-   Manual question swap with preview
-   Export to PDF, upload to S3, generate presigned URL
-   Free: 3 exams/month | Pro: unlimited
-2. Authentication & User Management
-   AWS Cognito email/password login
-   Role-based access (Teacher/Student)
-   Profile management with avatar (S3)
-   JWT authentication and role-based routing
-3. Class Management
-   Create class with 6-digit invite code
-   Student enrollment via code
-   Dashboard with stats and activity feed
-   Free: 1 class, 30 students | Pro: unlimited
-4. Content Library
-   Browse textbooks (Grade/Subject/Chapter)
-   Free: Grade 1-3 | Pro: All grades
-   Upload assets (PDF/images, 50MB max to S3)
-   Asset management with presigned URLs
-5. Payment & Subscription
-   Free tier and Teacher Pro (299k VND/month)
-   VNPay (Vietnam) + Stripe (International)
-   Upgrade/downgrade/cancel functionality
-   Usage tracking with auto-reset
-6. Question Bank (Pro)
-   CRUD questions with metadata
-   Bulk import (Excel/CSV)
-   Private/shared banks
-7. Analytics
-   Free: basic stats | Pro: advanced insights + export
-
 ## Infrastructure
 
 Frontend: Browser -> Cloudflare Pages
