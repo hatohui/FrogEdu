@@ -1,11 +1,11 @@
-import React, { useCallback, useState } from 'react'
+import React, { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Avatar, AvatarImage } from '@/components/ui/avatar'
 import {
 	Form,
 	FormControl,
@@ -26,6 +26,8 @@ import { toast } from 'sonner'
 import userService from '@/services/user.service'
 import { resendVerificationEmail } from '@/services/verify.service'
 import type { GetMeResponse, UpdateProfileDto } from '@/types/dtos/users/user'
+import { useUploadImage } from '@/hooks/image/useUploadImage'
+import FallBackUserAvatar from './UserAvatar'
 
 const profileSchema = z.object({
 	firstName: z
@@ -50,9 +52,9 @@ const ProfileForm = ({
 	onSuccess,
 }: ProfileFormProps): React.JSX.Element => {
 	const queryClient = useQueryClient()
-	const [avatarPreview, setAvatarPreview] = useState<string | null>(null)
-	const [isUploadingAvatar, setIsUploadingAvatar] = useState(false)
 	const [isVerifying, setIsVerifying] = useState(false)
+	const { avatarPreview, isUploadingAvatar, handleAvatarChange } =
+		useUploadImage()
 
 	const form = useForm<ProfileFormValues>({
 		resolver: zodResolver(profileSchema),
@@ -79,47 +81,6 @@ const ProfileForm = ({
 		await updateProfileMutation.mutateAsync(data)
 	}
 
-	const handleAvatarChange = useCallback(
-		async (event: React.ChangeEvent<HTMLInputElement>) => {
-			const file = event.target.files?.[0]
-			if (!file) return
-
-			// Validate file type
-			if (!file.type.startsWith('image/')) {
-				toast.error('Please select an image file')
-				return
-			}
-
-			// Validate file size (max 5MB)
-			if (file.size > 5 * 1024 * 1024) {
-				toast.error('Image must be less than 5MB')
-				return
-			}
-
-			// Show preview
-			const reader = new FileReader()
-			reader.onload = e => {
-				setAvatarPreview(e.target?.result as string)
-			}
-			reader.readAsDataURL(file)
-
-			// Upload to S3
-			setIsUploadingAvatar(true)
-			try {
-				await userService.uploadAvatar(file)
-				queryClient.invalidateQueries({ queryKey: ['currentUser'] })
-				toast.success('Avatar updated successfully')
-			} catch (error) {
-				toast.error('Failed to upload avatar')
-				console.error('Avatar upload error:', error)
-				setAvatarPreview(null)
-			} finally {
-				setIsUploadingAvatar(false)
-			}
-		},
-		[queryClient]
-	)
-
 	const handleResendVerification = async () => {
 		setIsVerifying(true)
 		try {
@@ -131,23 +92,6 @@ const ProfileForm = ({
 		} finally {
 			setIsVerifying(false)
 		}
-	}
-
-	const getUserInitials = () => {
-		if (!user) return ''
-		const first =
-			user.firstName && typeof user.firstName === 'string'
-				? user.firstName.charAt(0)
-				: ''
-		const last =
-			user.lastName && typeof user.lastName === 'string'
-				? user.lastName.charAt(0)
-				: ''
-		const initials = (first + last).toUpperCase()
-		if (initials) return initials
-		if (user.email && typeof user.email === 'string' && user.email.length > 0)
-			return user.email.charAt(0).toUpperCase()
-		return ''
 	}
 
 	return (
@@ -163,18 +107,13 @@ const ProfileForm = ({
 				<div className='flex items-center gap-6'>
 					<div className='relative'>
 						<Avatar className='h-24 w-24'>
-							{avatarPreview || user.avatarUrl ? (
-								<AvatarImage
-									src={
-										(avatarPreview ?? undefined) || user.avatarUrl || undefined
-									}
-									alt={`${user.firstName} ${user.lastName}`}
-								/>
-							) : (
-								<AvatarFallback className='bg-primary text-primary-foreground text-2xl'>
-									{getUserInitials()}
-								</AvatarFallback>
-							)}
+							<AvatarImage
+								src={
+									avatarPreview ? avatarPreview : 'https://' + user?.avatarUrl
+								}
+								alt={`${user?.firstName} ${user?.lastName}`}
+							/>
+							<FallBackUserAvatar user={user} />
 						</Avatar>
 						<label
 							htmlFor='avatar-upload'
