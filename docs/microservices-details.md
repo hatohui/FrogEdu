@@ -59,7 +59,8 @@ classDiagram
         +Guid Id
         +string CognitoSub
         +string Email
-        +string FullName
+        +string FirstName
+        +string LastName
         +string AvatarUrl
         +bool IsActive
         +UpdateProfile()
@@ -68,11 +69,13 @@ classDiagram
         +Guid? DeletedBy
         +UndoDelete()
     }
+
     class Role {
         +string Guid
         +string Name
         +string Description
     }
+
     User "1" --> "1" Role : has
 ```
 
@@ -137,6 +140,7 @@ classDiagram
     class Topic {
         +Guid       Id
         +string     Title
+        +string     Description
         +boolean    IsCurriculum
         +DateTime   CreatedAt
         +Guid       CreatedBy
@@ -196,7 +200,7 @@ classDiagram
     Exam "1" --> "*" ExamQuestion
     Question "1" --> "*" ExamQuestion
     Question "1" --> "*" Answer
-    Topic "1" -- "*" Question : categorizes
+    Topic "1" --> "*" Question : categorizes
 ```
 
 ---
