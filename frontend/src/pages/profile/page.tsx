@@ -1,16 +1,13 @@
 import React from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { User, Shield, Clock, Mail } from 'lucide-react'
-import { useAuthStore } from '@/stores/authStore'
-import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Skeleton } from '@/components/ui/skeleton'
 import ProfileForm from '@/components/common/ProfileForm'
 import { Badge } from '@/components/ui/badge'
 import { useMe } from '@/hooks/auth/useMe'
 
 const ProfilePage = (): React.ReactElement => {
-	const { user: authUser } = useAuthStore()
-	const { data: userProfile, isLoading, error } = useMe()
+	const { user, isLoading, error } = useMe()
 
 	const formatDate = (dateString?: string) => {
 		if (!dateString) return 'Never'
@@ -26,7 +23,7 @@ const ProfilePage = (): React.ReactElement => {
 		)
 	}
 
-	if (error || !userProfile) {
+	if (!user || error) {
 		return (
 			<div className='p-6 space-y-6 max-w-4xl mx-auto'>
 				<div className='space-y-2'>
@@ -45,15 +42,8 @@ const ProfilePage = (): React.ReactElement => {
 					</CardHeader>
 					<CardContent className='space-y-4'>
 						<div className='flex items-center space-x-4'>
-							<Avatar className='h-20 w-20'>
-								<AvatarFallback className='bg-primary text-primary-foreground text-2xl'>
-									{authUser?.username?.charAt(0).toUpperCase() || 'U'}
-								</AvatarFallback>
-							</Avatar>
 							<div>
-								<h3 className='text-xl font-semibold'>
-									{authUser?.username || 'User'}
-								</h3>
+								<h3 className='text-xl font-semibold'>User</h3>
 								<p className='text-sm text-muted-foreground'>
 									Unable to load profile from server
 								</p>
@@ -76,7 +66,7 @@ const ProfilePage = (): React.ReactElement => {
 			</div>
 
 			{/* Profile Form Card */}
-			<ProfileForm user={userProfile} />
+			<ProfileForm user={user} />
 
 			{/* Account Info Card */}
 			<Card>
@@ -93,8 +83,8 @@ const ProfilePage = (): React.ReactElement => {
 							<div>
 								<p className='text-sm text-muted-foreground'>Email Status</p>
 								<div className='flex items-center gap-2'>
-									<span>{userProfile.email}</span>
-									{userProfile.isEmailVerified ? (
+									<span>{user.email}</span>
+									{user.isEmailVerified ? (
 										<Badge variant='default' className='bg-green-600'>
 											Verified
 										</Badge>
@@ -109,9 +99,7 @@ const ProfilePage = (): React.ReactElement => {
 							<div>
 								<p className='text-sm text-muted-foreground'>Last Login</p>
 								<p>
-									{userProfile.lastLoginAt
-										? formatDate(userProfile.lastLoginAt)
-										: 'Never'}
+									{user.lastLoginAt ? formatDate(user.lastLoginAt) : 'Never'}
 								</p>
 							</div>
 						</div>
@@ -119,11 +107,11 @@ const ProfilePage = (): React.ReactElement => {
 					<div className='grid gap-4 sm:grid-cols-2'>
 						<div>
 							<p className='text-sm text-muted-foreground'>Account Created</p>
-							<p>{formatDate(userProfile.createdAt)}</p>
+							<p>{formatDate(user.createdAt)}</p>
 						</div>
 						<div>
 							<p className='text-sm text-muted-foreground'>Last Updated</p>
-							<p>{formatDate(userProfile.updatedAt)}</p>
+							<p>{formatDate(user.updatedAt)}</p>
 						</div>
 					</div>
 				</CardContent>

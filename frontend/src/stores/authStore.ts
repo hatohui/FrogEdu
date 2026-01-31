@@ -7,24 +7,10 @@ import {
 	fetchAuthSession,
 	signInWithRedirect,
 } from 'aws-amplify/auth'
-import type { AuthUser } from 'aws-amplify/auth'
 import userService from '@/services/user.service'
-
-interface UserProfile {
-	sub: string
-	email?: string
-	name?: string
-	given_name?: string
-	family_name?: string
-	picture?: string
-	username?: string
-	'custom:role'?: string
-}
 
 interface AuthState {
 	isAuthenticated: boolean
-	user: AuthUser | null
-	userProfile: UserProfile | null
 	isLoading: boolean
 	error: string | null
 	signIn: (email: string, password: string) => Promise<void>
@@ -43,8 +29,6 @@ interface AuthState {
 
 export const useAuthStore = create<AuthState>()((set, get) => ({
 	isAuthenticated: false,
-	user: null,
-	userProfile: null,
 	isLoading: true,
 	error: null,
 
@@ -131,8 +115,6 @@ export const useAuthStore = create<AuthState>()((set, get) => ({
 		try {
 			await amplifySignOut()
 			set({
-				user: null,
-				userProfile: null,
 				isAuthenticated: false,
 				error: null,
 			})
@@ -163,27 +145,12 @@ export const useAuthStore = create<AuthState>()((set, get) => ({
 					}
 				}
 
-				const userProfile: UserProfile = {
-					sub: currentUser.userId,
-					email: idToken?.payload.email as string | undefined,
-					name: idToken?.payload.name as string | undefined,
-					given_name: idToken?.payload.given_name as string | undefined,
-					family_name: idToken?.payload.family_name as string | undefined,
-					picture: idToken?.payload.picture as string | undefined,
-					username: currentUser.username,
-					'custom:role': customRole,
-				}
-
 				set({
-					user: currentUser,
-					userProfile,
 					isAuthenticated: true,
 					isLoading: false,
 				})
 			} else {
 				set({
-					user: null,
-					userProfile: null,
 					isAuthenticated: false,
 					isLoading: false,
 				})
@@ -191,8 +158,6 @@ export const useAuthStore = create<AuthState>()((set, get) => ({
 		} catch (error) {
 			console.log('Not authenticated:', error)
 			set({
-				user: null,
-				userProfile: null,
 				isAuthenticated: false,
 				isLoading: false,
 			})

@@ -10,29 +10,20 @@ import {
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { useAuthStore } from '@/stores/authStore'
 import { useTheme } from '@/config/theme'
+import UserAvatar from './UserAvatar'
+import { useMe } from '@/hooks/auth/useMe'
+import { toast } from 'sonner'
 
 const Navigation = (): React.JSX.Element => {
 	const location = useLocation()
 	const navigate = useNavigate()
-	const { user, userProfile, signOut } = useAuthStore()
 	const [theme, toggleTheme] = useTheme()
+	const { user, signOutThenNavigate } = useMe()
 
-	const handleSignOut = async () => {
-		await signOut()
-		navigate('/')
-	}
-
-	const getUserInitials = () => {
-		if (!userProfile && !user) return 'U'
-		const name = userProfile?.name || userProfile?.email || user?.username || ''
-		const parts = name.split(' ')
-		if (parts.length >= 2) {
-			return `${parts[0][0]}${parts[1][0]}`.toUpperCase()
-		}
-		return name.substring(0, 2).toUpperCase()
+	const handleSignOut = () => {
+		signOutThenNavigate('/login')
+		toast.success('Successfully signed out')
 	}
 
 	const staticNavItems = [
@@ -44,7 +35,6 @@ const Navigation = (): React.JSX.Element => {
 		<nav className='bg-card border-b border-border'>
 			<div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'>
 				<div className='flex justify-between items-center h-16'>
-					{/* Left - Logo */}
 					<Link
 						to='/'
 						className='flex items-center space-x-2 hover:opacity-80 transition-opacity flex-shrink-0'
@@ -116,30 +106,17 @@ const Navigation = (): React.JSX.Element => {
 											variant='ghost'
 											className='relative h-10 w-10 rounded-full'
 										>
-											<Avatar className='h-10 w-10'>
-												<AvatarImage
-													src={userProfile?.picture}
-													alt={
-														userProfile?.name || userProfile?.email || 'User'
-													}
-												/>
-												<AvatarFallback className='bg-primary text-primary-foreground'>
-													{getUserInitials()}
-												</AvatarFallback>
-											</Avatar>
+											<UserAvatar user={user} />
 										</Button>
 									</DropdownMenuTrigger>
 
 									<DropdownMenuContent align='end' className='w-56'>
 										<DropdownMenuLabel className='flex flex-col space-y-1'>
 											<span className='text-sm font-medium'>
-												{userProfile?.name ||
-													userProfile?.email ||
-													user?.username ||
-													'User'}
+												{user?.firstName || user?.lastName || 'User'}
 											</span>
 											<span className='text-xs text-muted-foreground'>
-												{userProfile?.email || user?.username || ''}
+												{user?.email || ''}
 											</span>
 										</DropdownMenuLabel>
 

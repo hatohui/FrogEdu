@@ -4,9 +4,8 @@ import { cn } from '@/utils/shadcn'
 import { Home, BookOpen, FileText, User, LogOut, X, Users } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
-import useAuth from '@/hooks/auth/useAuth'
 import { useMe } from '@/hooks/auth/useMe'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import UserAvatar from '../common/UserAvatar'
 
 interface NavItem {
 	name: string
@@ -49,25 +48,11 @@ interface SidebarProps {
 
 const Sidebar = ({ className, onClose }: SidebarProps): React.ReactElement => {
 	const location = useLocation()
-	const { signOut } = useAuth()
-	const { data: me } = useMe()
+	const { user: me, signOut } = useMe()
 
 	const handleSignOut = async () => {
 		await signOut()
 		if (onClose) onClose()
-	}
-
-	const getUserInitials = () => {
-		if (!me) return 'U'
-		const name =
-			me.firstName && me.lastName
-				? `${me.firstName} ${me.lastName}`
-				: me.email || ''
-		const parts = name.split(' ')
-		if (parts.length >= 2) {
-			return `${parts[0][0]}${parts[1][0]}`.toUpperCase()
-		}
-		return name.substring(0, 2).toUpperCase()
 	}
 
 	return (
@@ -94,7 +79,7 @@ const Sidebar = ({ className, onClose }: SidebarProps): React.ReactElement => {
 			{/* Logo and Brand */}
 			<div className='p-6 space-y-2'>
 				<Link
-					to='/dashboard'
+					to='/'
 					className='flex items-center space-x-3 group'
 					onClick={onClose}
 				>
@@ -151,15 +136,7 @@ const Sidebar = ({ className, onClose }: SidebarProps): React.ReactElement => {
 			{/* User Profile Section */}
 			<div className='p-4 space-y-3'>
 				<div className='flex items-center space-x-3 px-4 py-3 rounded-lg bg-sidebar-accent/50'>
-					<Avatar className='h-10 w-10'>
-						<AvatarImage
-							src={me?.avatarUrl || undefined}
-							alt={me ? `${me.firstName} ${me.lastName}` : 'User'}
-						/>
-						<AvatarFallback className='bg-primary text-primary-foreground'>
-							{getUserInitials()}
-						</AvatarFallback>
-					</Avatar>
+					<UserAvatar user={me} />
 					<div className='flex-1 min-w-0'>
 						<p className='text-sm font-medium text-sidebar-foreground truncate'>
 							{me ? `${me.firstName} ${me.lastName}` : 'User'}

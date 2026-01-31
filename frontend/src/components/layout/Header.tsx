@@ -9,10 +9,10 @@ import {
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Link, useNavigate } from 'react-router'
-import { useAuthStore } from '@/stores/authStore'
 import { useTheme } from '@/config/theme'
+import { useMe } from '@/hooks/auth/useMe'
+import UserAvatar from '../common/UserAvatar'
 
 interface HeaderProps {
 	onMenuClick?: () => void
@@ -23,22 +23,12 @@ const Header = ({
 	onMenuClick,
 	className = '',
 }: HeaderProps): React.ReactElement => {
-	const { user, userProfile, signOut } = useAuthStore()
+	const { user, signOut } = useMe()
 	const [theme, toggleTheme] = useTheme()
 	const navigate = useNavigate()
 
 	const handleSignOut = async () => {
 		await signOut()
-	}
-
-	const getUserInitials = () => {
-		if (!userProfile && !user) return 'U'
-		const name = userProfile?.name || userProfile?.email || user?.username || ''
-		const parts = name.split(' ')
-		if (parts.length >= 2) {
-			return `${parts[0][0]}${parts[1][0]}`.toUpperCase()
-		}
-		return name.substring(0, 2).toUpperCase()
 	}
 
 	return (
@@ -111,28 +101,17 @@ const Header = ({
 				<DropdownMenu>
 					<DropdownMenuTrigger asChild>
 						<Button variant='ghost' className='relative h-10 w-10 rounded-full'>
-							<Avatar className='h-10 w-10'>
-								<AvatarImage
-									src={userProfile?.picture}
-									alt={userProfile?.name || userProfile?.email || 'User'}
-								/>
-								<AvatarFallback className='bg-primary text-primary-foreground'>
-									{getUserInitials()}
-								</AvatarFallback>
-							</Avatar>
+							<UserAvatar user={user} />
 						</Button>
 					</DropdownMenuTrigger>
 
 					<DropdownMenuContent align='end' className='w-56'>
 						<DropdownMenuLabel className='flex flex-col space-y-1'>
 							<span className='text-sm font-medium'>
-								{userProfile?.name ||
-									userProfile?.email ||
-									user?.username ||
-									'User'}
+								{user?.firstName || user?.email || 'User'}
 							</span>
 							<span className='text-xs text-muted-foreground'>
-								{userProfile?.email || user?.username || ''}
+								{user?.email || ''}
 							</span>
 						</DropdownMenuLabel>
 
