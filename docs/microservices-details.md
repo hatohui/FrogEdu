@@ -205,20 +205,60 @@ classDiagram
 
 ---
 
-## III. Subscription Service
+### III. Subscription Service
 
-### Responsibility
+#### Responsibility
 
 Payment and Transactions
 
 - Handle Payment flow and saves all transactions for analysis
 - Subsciption Tier and tracks what each user haves
 
-### Requirements
+#### Requirements
 
 - `Role:Student` and `Role:Teacher` have different subscription tier
 
 - Integrate with PayOS, Momo or PayVN
+
+#### Class Diagram
+
+```mermaid
+classDiagram
+    class SubscriptionTier {
+        +Guid     Id
+        +string   Name
+        +string   ImageUrl
+        +string   Description
+        +decimal  Price
+        +int      DurationInDays
+        +string   TargetRole
+        +bool     IsActive
+    }
+
+    class UserSubscription {
+        +Guid Id
+        +Guid UserId
+        +DateTime StartDate
+        +DateTime EndDate
+        +enum Status
+        +IsExpired() bool
+    }
+
+    class Transaction {
+        +Guid Id
+        +string TransactionCode
+        +decimal Amount
+        +string Currency
+        +enum PaymentProvider
+        +enum PaymentStatus
+        +string ProviderTransactionId
+        +DateTime CreatedAt
+        +UpdateStatus()
+    }
+
+    SubscriptionTier "1" -- "*" UserSubscription : defines
+    UserSubscription "1" -- "*" Transaction : paid via
+```
 
 ### IV. AI Service
 
