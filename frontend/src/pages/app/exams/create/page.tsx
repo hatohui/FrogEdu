@@ -32,7 +32,7 @@ const examSchema = z.object({
 	maxAttempts: z.number().min(1).max(10),
 	startTime: z.string().min(1, 'Start time is required'),
 	endTime: z.string().min(1, 'End time is required'),
-	grade: z.number().min(1).max(12),
+	grade: z.number().min(1).max(5),
 	subjectId: z.string().min(1, 'Subject is required'),
 	topicId: z.string().min(1, 'Topic is required'),
 	shouldShuffleQuestions: z.boolean(),
@@ -83,7 +83,9 @@ const CreateExamPage = (): React.ReactElement => {
 			})
 
 			if (result.data?.id) {
-				navigate(`/dashboard/exams/${result.data.id}/matrix`)
+				navigate(
+					`/app/exams/create/matrix?examId=${result.data.id}&topicId=${data.topicId}`
+				)
 			}
 		} catch (error) {
 			console.error('Failed to create exam:', error)
@@ -91,7 +93,15 @@ const CreateExamPage = (): React.ReactElement => {
 	}
 
 	const nextStep = async () => {
-		const isValid = await form.trigger()
+		let fieldsToValidate: (keyof ExamFormData)[] = []
+
+		if (step === 1) {
+			fieldsToValidate = ['title', 'duration', 'passScore', 'maxAttempts']
+		} else if (step === 2) {
+			fieldsToValidate = ['grade', 'subjectId', 'topicId']
+		}
+
+		const isValid = await form.trigger(fieldsToValidate)
 		if (isValid && step < 3) {
 			setStep(step + 1)
 		}
@@ -110,7 +120,7 @@ const CreateExamPage = (): React.ReactElement => {
 				<Button
 					variant='ghost'
 					size='icon'
-					onClick={() => navigate('/dashboard/exams')}
+					onClick={() => navigate('/app/exams')}
 				>
 					<ArrowLeft className='h-5 w-5' />
 				</Button>
@@ -176,7 +186,13 @@ const CreateExamPage = (): React.ReactElement => {
 											<FormItem>
 												<FormLabel>Duration (minutes) *</FormLabel>
 												<FormControl>
-													<Input type='number' {...field} />
+													<Input
+														type='number'
+														{...field}
+														onChange={e =>
+															field.onChange(Number(e.target.value))
+														}
+													/>
 												</FormControl>
 												<FormMessage />
 											</FormItem>
@@ -190,7 +206,13 @@ const CreateExamPage = (): React.ReactElement => {
 											<FormItem>
 												<FormLabel>Max Attempts *</FormLabel>
 												<FormControl>
-													<Input type='number' {...field} />
+													<Input
+														type='number'
+														{...field}
+														onChange={e =>
+															field.onChange(Number(e.target.value))
+														}
+													/>
 												</FormControl>
 												<FormMessage />
 											</FormItem>
@@ -205,7 +227,11 @@ const CreateExamPage = (): React.ReactElement => {
 										<FormItem>
 											<FormLabel>Pass Score (%) *</FormLabel>
 											<FormControl>
-												<Input type='number' {...field} />
+												<Input
+													type='number'
+													{...field}
+													onChange={e => field.onChange(Number(e.target.value))}
+												/>
 											</FormControl>
 											<FormDescription>
 												Minimum score to pass (0-100)
@@ -241,10 +267,10 @@ const CreateExamPage = (): React.ReactElement => {
 													</SelectTrigger>
 												</FormControl>
 												<SelectContent>
-													{Array.from({ length: 12 }, (_, i) => i + 1).map(
+													{Array.from({ length: 5 }, (_, i) => i + 1).map(
 														grade => (
 															<SelectItem key={grade} value={String(grade)}>
-																Grade {grade}
+																{grade}
 															</SelectItem>
 														)
 													)}

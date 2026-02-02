@@ -1,9 +1,12 @@
 import React, { useState } from 'react'
-import { Outlet } from 'react-router'
 import Sidebar from './Sidebar'
 import Header from './Header'
 
-const AppLayout = (): React.ReactElement => {
+interface AppLayoutProps {
+	children?: React.ReactNode
+}
+
+const AppLayout = ({ children }: AppLayoutProps): React.ReactElement => {
 	const [sidebarOpen, setSidebarOpen] = useState(false)
 
 	return (
@@ -26,9 +29,7 @@ const AppLayout = (): React.ReactElement => {
 			<div className='flex-1 flex flex-col overflow-hidden'>
 				<Header onMenuClick={() => setSidebarOpen(!sidebarOpen)} />
 
-				<main className='flex-1 overflow-y-auto bg-background'>
-					<Outlet />
-				</main>
+				<main className='flex-1 overflow-y-auto bg-background'>{children}</main>
 			</div>
 		</div>
 	)

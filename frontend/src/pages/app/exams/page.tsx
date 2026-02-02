@@ -23,7 +23,7 @@ const ExamsPage = (): React.ReactElement => {
 	const { data: exams, isLoading } = useExams(isDraft)
 
 	const handleCreateExam = () => {
-		navigate('/dashboard/exams/create')
+		navigate('/app/exams/create')
 	}
 
 	return (

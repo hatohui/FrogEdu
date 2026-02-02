@@ -1,7 +1,13 @@
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
 import type { GetMeResponse } from '@/types/dtos/users/user'
 
-const UserAvatar = ({ user }: { user?: GetMeResponse }) => {
+const UserAvatar = ({
+	user,
+	avatarPreview,
+}: {
+	user?: GetMeResponse
+	avatarPreview?: string | null
+}) => {
 	const getUserInitials = () => {
 		if (!user) return ''
 		const first = user.firstName ? user.firstName.charAt(0) : ''
@@ -16,10 +22,12 @@ const UserAvatar = ({ user }: { user?: GetMeResponse }) => {
 	return (
 		<Avatar className='h-10 w-10'>
 			<AvatarImage
-				src={user?.avatarUrl || undefined}
+				src={
+					avatarPreview !== null ? avatarPreview : user?.avatarUrl || undefined
+				}
 				alt={user?.firstName || user?.lastName || 'User'}
 			/>
-			<AvatarFallback className='bg-primary text-primary-foreground'>
+			<AvatarFallback className='bg-primary text-primary-foreground h-10 w-10'>
 				{getUserInitials()}
 			</AvatarFallback>
 		</Avatar>

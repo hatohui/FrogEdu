@@ -2,10 +2,16 @@ import React from 'react'
 import DashboardLayout from '@/components/layout/DashboardLayout'
 import ProtectedRoute from '@/components/common/ProtectedRoute'
 
-const DashboardLayoutWrapper = (): React.ReactElement => {
+interface DashboardLayoutWrapperProps {
+	children?: React.ReactNode
+}
+
+const DashboardLayoutWrapper = ({
+	children,
+}: DashboardLayoutWrapperProps): React.ReactElement => {
 	return (
 		<ProtectedRoute>
-			<DashboardLayout />
+			<DashboardLayout>{children}</DashboardLayout>
 		</ProtectedRoute>
 	)
 }

@@ -16,14 +16,21 @@ public static class DependencyInjection
         IConfiguration configuration
     )
     {
-        // Configure DbContext - handle both null and empty strings
         var configConnectionString = configuration.GetConnectionString("ExamDb");
         var envConnectionString = Environment.GetEnvironmentVariable("EXAM_DB_CONNECTION_STRING");
 
         var connectionString =
             (!string.IsNullOrWhiteSpace(configConnectionString) ? configConnectionString : null)
             ?? (!string.IsNullOrWhiteSpace(envConnectionString) ? envConnectionString : null)
-            ?? "postgresql://root:root@localhost:5432/exam?sslmode=disable";
+            ?? "Host=localhost;Port=5432;Database=exam;Username=root;Password=root;SSL Mode=Disable";
+
+        if (
+            connectionString.StartsWith("postgresql://")
+            || connectionString.StartsWith("postgres://")
+        )
+        {
+            connectionString = ConvertPostgresUriToConnectionString(connectionString);
+        }
 
         Console.WriteLine("Database Connected.");
 
@@ -51,5 +58,30 @@ public static class DependencyInjection
         services.AddScoped<IDatabaseHealthService, DatabaseHealthService>();
 
         return services;
+    }
+
+    private static string ConvertPostgresUriToConnectionString(string uri)
+    {
+        try
+        {
+            var postgresUri = new Uri(uri);
+            var userInfo = postgresUri.UserInfo.Split(':');
+            var username = userInfo.Length > 0 ? userInfo[0] : "postgres";
+            var password = userInfo.Length > 1 ? userInfo[1] : "";
+            var host = postgresUri.Host;
+            var port = postgresUri.Port > 0 ? postgresUri.Port : 5432;
+            var database = postgresUri.AbsolutePath.TrimStart('/');
+
+            var query = postgresUri.Query;
+            var sslMode = query.Contains("sslmode=disable", StringComparison.OrdinalIgnoreCase)
+                ? "Disable"
+                : "Prefer";
+
+            return $"Host={host};Port={port};Database={database};Username={username};Password={password};SSL Mode={sslMode}";
+        }
+        catch
+        {
+            return uri;
+        }
     }
 }

@@ -124,16 +124,11 @@ module "exam_service" {
   ]
 
   environment_variables = {
-    // General settings
-    ASPNETCORE_ENVIRONMENT     = "Production"
-    CLASS_DB_CONNECTION_STRING = local.class_db_connection_string
-
-    // MediaK license key
-    MEDIAK_LICENSE_KEY = local.mediak_license_key
-
-    // AWS Cognito settings
-    COGNITO_USER_POOL_ID = module.cognito.user_pool_id
-    AWS_COGNITO_REGION   = local.aws_region
+    ASPNETCORE_ENVIRONMENT    = "Production"
+    EXAM_DB_CONNECTION_STRING = local.exam_db_connection_string
+    MEDIAK_LICENSE_KEY        = local.mediak_license_key
+    COGNITO_USER_POOL_ID      = module.cognito.user_pool_id
+    AWS_COGNITO_REGION        = local.aws_region
   }
 }
 
@@ -159,31 +154,22 @@ module "user_service" {
   ]
 
   environment_variables = {
-    // General settings
     ASPNETCORE_ENVIRONMENT    = "Production"
     USER_DB_CONNECTION_STRING = local.user_db_connection_string
-
-    // MediaK license key
-    MEDIAK_LICENSE_KEY = local.mediak_license_key
-
-    // AWS Cognito settings
-    COGNITO_USER_POOL_ID = module.cognito.user_pool_id
-    AWS_COGNITO_REGION   = local.aws_region
-
-    // AWS SES settings for email sending
-    SES_ACCESS_KEY_ID     = module.ses.access_key_id
-    SES_SECRET_ACCESS_KEY = module.ses.secret_access_key
-    SES_REGION            = local.aws_region
-    AWS__SES__FromEmail   = "noreply@${local.ses_domain}"
-    AWS__SES__FromName    = "FrogEdu"
-    Frontend__BaseUrl     = "https://${local.frontend_domain}"
-
-    // R2 Storage settings
-    R2_ACCOUNT_ID      = local.r2_account_id
-    R2_ACCESS_KEY      = local.r2_access_key_id
-    R2_SECRET_KEY      = local.r2_secret_access_key
-    R2_BUCKET_NAME     = local.r2_bucket_name
-    R2_PUBLIC_ENDPOINT = local.r2_public_endpoint
+    MEDIAK_LICENSE_KEY        = local.mediak_license_key
+    COGNITO_USER_POOL_ID      = module.cognito.user_pool_id
+    AWS_COGNITO_REGION        = local.aws_region
+    SES_ACCESS_KEY_ID         = module.ses.access_key_id
+    SES_SECRET_ACCESS_KEY     = module.ses.secret_access_key
+    SES_REGION                = local.aws_region
+    AWS__SES__FromEmail       = "noreply@${local.ses_domain}"
+    AWS__SES__FromName        = "FrogEdu"
+    Frontend__BaseUrl         = "https://${local.frontend_domain}"
+    R2_ACCOUNT_ID             = local.r2_account_id
+    R2_ACCESS_KEY             = local.r2_access_key_id
+    R2_SECRET_KEY             = local.r2_secret_access_key
+    R2_BUCKET_NAME            = local.r2_bucket_name
+    R2_PUBLIC_ENDPOINT        = local.r2_public_endpoint
   }
 }
 
@@ -203,20 +189,14 @@ module "class_service" {
     "/health",
     "/swagger/{proxy+}",
     "/swagger",
-
   ]
 
   environment_variables = {
-    // General settings
     ASPNETCORE_ENVIRONMENT     = "Production"
     CLASS_DB_CONNECTION_STRING = local.class_db_connection_string
-
-    // MediaK license key
-    MEDIAK_LICENSE_KEY = local.mediak_license_key
-
-    // AWS Cognito settings
-    COGNITO_USER_POOL_ID = module.cognito.user_pool_id
-    AWS_COGNITO_REGION   = local.aws_region
+    MEDIAK_LICENSE_KEY         = local.mediak_license_key
+    COGNITO_USER_POOL_ID       = module.cognito.user_pool_id
+    AWS_COGNITO_REGION         = local.aws_region
   }
 }
 
@@ -239,15 +219,10 @@ module "subscription_service" {
   ]
 
   environment_variables = {
-    // General settings
-    ASPNETCORE_ENVIRONMENT     = "Production"
-    CLASS_DB_CONNECTION_STRING = local.class_db_connection_string
-
-    // MediaK license key
-    MEDIAK_LICENSE_KEY = local.mediak_license_key
-
-    // AWS Cognito settings
-    COGNITO_USER_POOL_ID = module.cognito.user_pool_id
-    AWS_COGNITO_REGION   = local.aws_region
+    ASPNETCORE_ENVIRONMENT            = "Production"
+    SUBSCRIPTION_DB_CONNECTION_STRING = local.subscription_db_connection_string
+    MEDIAK_LICENSE_KEY                = local.mediak_license_key
+    COGNITO_USER_POOL_ID              = module.cognito.user_pool_id
+    AWS_COGNITO_REGION                = local.aws_region
   }
 }

@@ -1,4 +1,4 @@
-import apiService, { type ApiResponse } from './api.service'
+import apiService, { type ApiResponse } from '../api.service'
 import type {
 	CognitiveLevel,
 	Subject,
@@ -13,9 +13,8 @@ import type {
 } from '@/types/dtos/exams'
 
 class AssessmentService {
-	private readonly baseUrl = '/api/exams'
+	private readonly baseUrl = '/exams'
 
-	// ========== Subjects ==========
 	async getSubjects(
 		grade?: number
 	): Promise<ApiResponse<{ subjects: Subject[] }>> {
@@ -32,11 +31,14 @@ class AssessmentService {
 		)
 	}
 
-	// ========== Exams ==========
 	async getExams(isDraft?: boolean): Promise<ApiResponse<{ exams: Exam[] }>> {
 		return apiService.get<{ exams: Exam[] }>(`${this.baseUrl}/exams`, {
 			...(isDraft !== undefined && { isDraft }),
 		})
+	}
+
+	async getExamById(examId: string): Promise<ApiResponse<Exam>> {
+		return apiService.get<Exam>(`${this.baseUrl}/exams/${examId}`)
 	}
 
 	async createExam(request: CreateExamRequest): Promise<ApiResponse<Exam>> {
@@ -44,6 +46,24 @@ class AssessmentService {
 			`${this.baseUrl}/exams`,
 			request
 		)
+	}
+
+	async updateExam(
+		examId: string,
+		request: Partial<CreateExamRequest>
+	): Promise<ApiResponse<Exam>> {
+		return apiService.put<Exam, Partial<CreateExamRequest>>(
+			`${this.baseUrl}/exams/${examId}`,
+			request
+		)
+	}
+
+	async publishExam(examId: string): Promise<ApiResponse<Exam>> {
+		return apiService.post<Exam>(`${this.baseUrl}/exams/${examId}/publish`)
+	}
+
+	async deleteExam(examId: string): Promise<ApiResponse<void>> {
+		return apiService.delete(`${this.baseUrl}/exams/${examId}`)
 	}
 
 	// ========== Matrices ==========
@@ -70,12 +90,57 @@ class AssessmentService {
 		)
 	}
 
+	async getQuestionById(questionId: string): Promise<ApiResponse<Question>> {
+		return apiService.get<Question>(`${this.baseUrl}/questions/${questionId}`)
+	}
+
 	async createQuestion(
 		request: CreateQuestionRequest
 	): Promise<ApiResponse<Question>> {
 		return apiService.post<Question, CreateQuestionRequest>(
 			`${this.baseUrl}/questions`,
 			request
+		)
+	}
+
+	async updateQuestion(
+		questionId: string,
+		request: Partial<CreateQuestionRequest>
+	): Promise<ApiResponse<Question>> {
+		return apiService.put<Question, Partial<CreateQuestionRequest>>(
+			`${this.baseUrl}/questions/${questionId}`,
+			request
+		)
+	}
+
+	async deleteQuestion(questionId: string): Promise<ApiResponse<void>> {
+		return apiService.delete(`${this.baseUrl}/questions/${questionId}`)
+	}
+
+	// ========== Exam Questions ==========
+	async getExamQuestions(
+		examId: string
+	): Promise<ApiResponse<{ questions: Question[] }>> {
+		return apiService.get<{ questions: Question[] }>(
+			`${this.baseUrl}/exams/${examId}/questions`
+		)
+	}
+
+	async addQuestionsToExam(
+		examId: string,
+		questionIds: string[]
+	): Promise<ApiResponse<void>> {
+		return apiService.post(`${this.baseUrl}/exams/${examId}/questions`, {
+			questionIds,
+		})
+	}
+
+	async removeQuestionFromExam(
+		examId: string,
+		questionId: string
+	): Promise<ApiResponse<void>> {
+		return apiService.delete(
+			`${this.baseUrl}/exams/${examId}/questions/${questionId}`
 		)
 	}
 }

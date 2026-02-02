@@ -30,8 +30,8 @@ const navItems: NavItem[] = [
 		icon: BookOpen,
 	},
 	{
-		name: 'Exam Generator',
-		href: '/app/assessment',
+		name: 'Exams',
+		href: '/app/exams',
 		icon: FileText,
 	},
 	{

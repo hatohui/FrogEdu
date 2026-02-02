@@ -5,7 +5,6 @@ import * as z from 'zod'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Avatar, AvatarImage } from '@/components/ui/avatar'
 import {
 	Form,
 	FormControl,
@@ -26,8 +25,8 @@ import { toast } from 'sonner'
 import userService from '@/services/user-microservice/user.service'
 import type { UpdateProfileDto } from '@/types/dtos/users/user'
 import { useUploadImage } from '@/hooks/image/useUploadImage'
-import FallBackUserAvatar from './UserAvatar'
 import type { UserWithRole } from '@/hooks/auth/useMe'
+import UserAvatar from './UserAvatar'
 
 const profileSchema = z.object({
 	firstName: z
@@ -106,15 +105,7 @@ const ProfileForm = ({
 				{/* Avatar Section */}
 				<div className='flex items-center gap-6'>
 					<div className='relative'>
-						<Avatar className='h-24 w-24'>
-							<AvatarImage
-								src={
-									avatarPreview ? avatarPreview : user?.avatarUrl || undefined
-								}
-								alt={`${user?.firstName} ${user?.lastName}`}
-							/>
-							<FallBackUserAvatar user={user} />
-						</Avatar>
+						<UserAvatar user={user} avatarPreview={avatarPreview} />
 						<label
 							htmlFor='avatar-upload'
 							className='absolute bottom-0 right-0 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-primary text-primary-foreground shadow-md hover:bg-primary/90 transition-colors'
