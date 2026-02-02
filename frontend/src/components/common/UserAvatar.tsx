@@ -24,9 +24,7 @@ const UserAvatar = ({
 	return (
 		<Avatar className={size}>
 			<AvatarImage
-				src={
-					avatarPreview !== null ? avatarPreview : user?.avatarUrl || undefined
-				}
+				src={avatarPreview ? avatarPreview : user?.avatarUrl || undefined}
 				alt={user?.firstName || user?.lastName || 'User'}
 			/>
 			<AvatarFallback

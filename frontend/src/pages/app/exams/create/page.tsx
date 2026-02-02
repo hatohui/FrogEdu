@@ -37,10 +37,10 @@ const examSchema = z.object({
 		.min(10, 'Description must be at least 10 characters')
 		.max(1000, 'Description cannot exceed 1000 characters'),
 	grade: z
-		.number({ required_error: 'Grade is required' })
+		.number()
 		.int()
-		.min(1, 'Grade must be between 1 and 12')
-		.max(12, 'Grade must be between 1 and 12'),
+		.min(1, 'Grade must be between 1 and 5')
+		.max(5, 'Grade must be between 1 and 5'),
 	subjectId: z.string().min(1, 'Subject is required'),
 	topicId: z.string().min(1, 'Topic is required'),
 })
@@ -78,7 +78,6 @@ const CreateExamPage = (): React.ReactElement => {
 			})
 
 			if (result.data?.id) {
-				// Navigate to matrix builder or questions page
 				navigate(
 					`/app/exams/create/matrix?examId=${result.data.id}&topicId=${data.topicId}`
 				)
@@ -172,10 +171,10 @@ const CreateExamPage = (): React.ReactElement => {
 												</SelectTrigger>
 											</FormControl>
 											<SelectContent>
-												{Array.from({ length: 12 }, (_, i) => i + 1).map(
+												{Array.from({ length: 5 }, (_, i) => i + 1).map(
 													grade => (
 														<SelectItem key={grade} value={String(grade)}>
-															Grade {grade}
+															{grade}
 														</SelectItem>
 													)
 												)}
@@ -196,7 +195,6 @@ const CreateExamPage = (): React.ReactElement => {
 											onValueChange={value => {
 												field.onChange(value)
 												setSelectedSubjectId(value)
-												// Reset topic when subject changes
 												form.setValue('topicId', '')
 											}}
 											value={field.value}

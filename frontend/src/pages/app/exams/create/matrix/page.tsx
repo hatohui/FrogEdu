@@ -4,24 +4,13 @@ import { ArrowLeft, Plus, Trash2, Save } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { TopicSelector } from '@/components/exams/topic-selector'
+import { useCreateMatrix, useExam, useTopics } from '@/hooks/useExams'
 import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
-} from '@/components/ui/select'
-import { useCreateMatrix } from '@/hooks/useExams'
-import { CognitiveLevel } from '@/types/model/exams'
-import type { MatrixTopicDto } from '@/types/model/exams'
-
-interface MatrixRow {
-	id: string
-	topicId: string
-	easy: number
-	medium: number
-	hard: number
-}
+	type MatrixTopicDto,
+	type MatrixRow,
+	CognitiveLevel,
+} from '@/types/model/exam-service'
 
 const CreateMatrixPage = (): React.ReactElement => {
 	const navigate = useNavigate()
@@ -29,13 +18,16 @@ const CreateMatrixPage = (): React.ReactElement => {
 	const examId = searchParams.get('examId')
 	const topicId = searchParams.get('topicId')
 
+	const { data: exam, isLoading: isLoadingExam } = useExam(examId ?? '')
+	const { data: topics = [] } = useTopics(exam?.subjectId ?? '')
 	const [matrixRows, setMatrixRows] = useState<MatrixRow[]>([
 		{
 			id: crypto.randomUUID(),
 			topicId: topicId || '',
-			easy: 0,
-			medium: 0,
-			hard: 0,
+			remember: 0,
+			understand: 0,
+			apply: 0,
+			analyze: 0,
 		},
 	])
 
@@ -47,9 +39,10 @@ const CreateMatrixPage = (): React.ReactElement => {
 			{
 				id: crypto.randomUUID(),
 				topicId: '',
-				easy: 0,
-				medium: 0,
-				hard: 0,
+				remember: 0,
+				understand: 0,
+				apply: 0,
+				analyze: 0,
 			},
 		])
 	}
@@ -72,7 +65,8 @@ const CreateMatrixPage = (): React.ReactElement => {
 
 	const calculateTotal = () => {
 		return matrixRows.reduce(
-			(sum, row) => sum + row.easy + row.medium + row.hard,
+			(sum, row) =>
+				sum + row.remember + row.understand + row.apply + row.analyze,
 			0
 		)
 	}
@@ -87,25 +81,32 @@ const CreateMatrixPage = (): React.ReactElement => {
 		const matrixTopics: MatrixTopicDto[] = []
 
 		matrixRows.forEach(row => {
-			if (row.easy > 0) {
+			if (row.remember > 0) {
 				matrixTopics.push({
 					topicId: row.topicId,
-					cognitiveLevel: CognitiveLevel.Easy,
-					quantity: row.easy,
+					cognitiveLevel: CognitiveLevel.Remember,
+					quantity: row.remember,
 				})
 			}
-			if (row.medium > 0) {
+			if (row.understand > 0) {
 				matrixTopics.push({
 					topicId: row.topicId,
-					cognitiveLevel: CognitiveLevel.Medium,
-					quantity: row.medium,
+					cognitiveLevel: CognitiveLevel.Understand,
+					quantity: row.understand,
 				})
 			}
-			if (row.hard > 0) {
+			if (row.apply > 0) {
 				matrixTopics.push({
 					topicId: row.topicId,
-					cognitiveLevel: CognitiveLevel.Hard,
-					quantity: row.hard,
+					cognitiveLevel: CognitiveLevel.Apply,
+					quantity: row.apply,
+				})
+			}
+			if (row.analyze > 0) {
+				matrixTopics.push({
+					topicId: row.topicId,
+					cognitiveLevel: CognitiveLevel.Analyze,
+					quantity: row.analyze,
 				})
 			}
 		})
@@ -126,6 +127,37 @@ const CreateMatrixPage = (): React.ReactElement => {
 	const handleSkip = () => {
 		if (!examId) return
 		navigate(`/app/exams/${examId}/questions`)
+	}
+
+	// Show loading state
+	if (isLoadingExam) {
+		return (
+			<div className='p-6 flex items-center justify-center min-h-[400px]'>
+				<div className='text-center'>
+					<div className='text-lg font-medium'>Loading exam details...</div>
+				</div>
+			</div>
+		)
+	}
+
+	// Show error if exam not found
+	if (!exam && !isLoadingExam) {
+		return (
+			<div className='p-6 flex items-center justify-center min-h-[400px]'>
+				<div className='text-center'>
+					<div className='text-lg font-medium text-destructive'>
+						Exam not found
+					</div>
+					<Button
+						onClick={() => navigate('/app/exams')}
+						variant='outline'
+						className='mt-4'
+					>
+						Back to Exams
+					</Button>
+				</div>
+			</div>
+		)
 	}
 
 	return (
@@ -161,25 +193,26 @@ const CreateMatrixPage = (): React.ReactElement => {
 				</div>
 			</div>
 
-			{/* Matrix Info Card */}
+			{/* Info Card */}
 			<Card>
 				<CardHeader>
-					<CardTitle>Exam Matrix Blueprint</CardTitle>
+					<CardTitle>About the Matrix</CardTitle>
 				</CardHeader>
-				<CardContent>
+				<CardContent className='space-y-4'>
 					<p className='text-sm text-muted-foreground mb-4'>
-						The matrix defines how many questions of each difficulty level
-						should be included in your exam. This follows the Vietnamese
-						curriculum standards for balanced assessment.
+						The matrix defines how many questions of each cognitive level should
+						be included in your exam. This follows Bloom&apos;s Taxonomy for
+						balanced assessment.
 					</p>
 					<div className='bg-muted p-4 rounded-lg'>
 						<div className='text-sm font-medium mb-2'>
-							Standard Distribution Guide:
+							Bloom&apos;s Taxonomy Cognitive Levels:
 						</div>
 						<ul className='text-sm text-muted-foreground space-y-1'>
-							<li>• Easy (Knowledge/Comprehension): 40-50%</li>
-							<li>• Medium (Application/Analysis): 30-40%</li>
-							<li>• Hard (Synthesis/Evaluation): 10-20%</li>
+							<li>• Remember: Recall facts and basic concepts</li>
+							<li>• Understand: Explain ideas or concepts</li>
+							<li>• Apply: Use information in new situations</li>
+							<li>• Analyze: Draw connections among ideas</li>
 						</ul>
 					</div>
 				</CardContent>
@@ -188,8 +221,8 @@ const CreateMatrixPage = (): React.ReactElement => {
 			{/* Matrix Table */}
 			<Card>
 				<CardHeader className='flex flex-row items-center justify-between'>
-					<CardTitle>Question Distribution</CardTitle>
-					<Button onClick={addRow} variant='outline' size='sm'>
+					<CardTitle>Question Distribution Matrix</CardTitle>
+					<Button onClick={addRow} size='sm' variant='outline'>
 						<Plus className='h-4 w-4 mr-2' />
 						Add Row
 					</Button>
@@ -197,86 +230,95 @@ const CreateMatrixPage = (): React.ReactElement => {
 				<CardContent>
 					<div className='space-y-4'>
 						{/* Header */}
-						<div className='grid grid-cols-12 gap-4 font-semibold text-sm pb-2 border-b'>
-							<div className='col-span-6'>Topic</div>
-							<div className='col-span-2 text-center'>Easy</div>
-							<div className='col-span-2 text-center'>Medium</div>
-							<div className='col-span-1 text-center'>Hard</div>
+						<div className='grid grid-cols-10 gap-2 font-semibold text-xs pb-2 border-b'>
+							<div className='col-span-4'>Topic</div>
+							<div className='col-span-1 text-center'>Remember</div>
+							<div className='col-span-1 text-center'>Understand</div>
+							<div className='col-span-1 text-center'>Apply</div>
+							<div className='col-span-1 text-center'>Analyze</div>
+							<div className='col-span-1 text-center'>Total</div>
 							<div className='col-span-1'></div>
 						</div>
 
 						{/* Rows */}
-						{matrixRows.map(row => (
-							<div
-								key={row.id}
-								className='grid grid-cols-12 gap-4 items-center'
-							>
-								<div className='col-span-6'>
-									<Select
-										value={row.topicId}
-										onValueChange={value => updateRow(row.id, 'topicId', value)}
-									>
-										<SelectTrigger>
-											<SelectValue placeholder='Select topic' />
-										</SelectTrigger>
-										<SelectContent>
-											<SelectItem value='topic-1'>
-												Algebra - Linear Equations
-											</SelectItem>
-											<SelectItem value='topic-2'>
-												Geometry - Triangles
-											</SelectItem>
-											<SelectItem value='topic-3'>
-												Calculus - Derivatives
-											</SelectItem>
-										</SelectContent>
-									</Select>
+						{matrixRows.map(row => {
+							const rowTotal =
+								row.remember + row.understand + row.apply + row.analyze
+							return (
+								<div
+									key={row.id}
+									className='grid grid-cols-10 gap-2 items-center'
+								>
+									<div className='col-span-4'>
+										<TopicSelector
+											topics={topics}
+											value={row.topicId}
+											onValueChange={value =>
+												updateRow(row.id, 'topicId', value)
+											}
+											placeholder='Select topic'
+										/>
+									</div>
+									<div className='col-span-1'>
+										<Input
+											type='number'
+											min='0'
+											value={row.remember}
+											onChange={e =>
+												updateRow(row.id, 'remember', Number(e.target.value))
+											}
+											className='text-center'
+										/>
+									</div>
+									<div className='col-span-1'>
+										<Input
+											type='number'
+											min='0'
+											value={row.understand}
+											onChange={e =>
+												updateRow(row.id, 'understand', Number(e.target.value))
+											}
+											className='text-center'
+										/>
+									</div>
+									<div className='col-span-1'>
+										<Input
+											type='number'
+											min='0'
+											value={row.apply}
+											onChange={e =>
+												updateRow(row.id, 'apply', Number(e.target.value))
+											}
+											className='text-center'
+										/>
+									</div>
+									<div className='col-span-1'>
+										<Input
+											type='number'
+											min='0'
+											value={row.analyze}
+											onChange={e =>
+												updateRow(row.id, 'analyze', Number(e.target.value))
+											}
+											className='text-center'
+										/>
+									</div>
+									<div className='col-span-1 text-center font-semibold'>
+										{rowTotal}
+									</div>
+									<div className='col-span-1 flex justify-end'>
+										<Button
+											variant='ghost'
+											size='icon'
+											onClick={() => removeRow(row.id)}
+											disabled={matrixRows.length === 1}
+										>
+											<Trash2 className='h-4 w-4 text-destructive' />
+										</Button>
+									</div>
 								</div>
-								<div className='col-span-2'>
-									<Input
-										type='number'
-										min='0'
-										value={row.easy}
-										onChange={e =>
-											updateRow(row.id, 'easy', Number(e.target.value))
-										}
-										className='text-center'
-									/>
-								</div>
-								<div className='col-span-2'>
-									<Input
-										type='number'
-										min='0'
-										value={row.medium}
-										onChange={e =>
-											updateRow(row.id, 'medium', Number(e.target.value))
-										}
-										className='text-center'
-									/>
-								</div>
-								<div className='col-span-1'>
-									<Input
-										type='number'
-										min='0'
-										value={row.hard}
-										onChange={e =>
-											updateRow(row.id, 'hard', Number(e.target.value))
-										}
-										className='text-center'
-									/>
-								</div>
-								<div className='col-span-1 flex justify-end'>
-									<Button
-										variant='ghost'
-										size='icon'
-										onClick={() => removeRow(row.id)}
-										disabled={matrixRows.length === 1}
-									>
-										<Trash2 className='h-4 w-4 text-destructive' />
-									</Button>
-								</div>
-							</div>
-						))}
+							)
+						})}
 
 						{/* Total */}
 						<div className='pt-4 border-t flex justify-between items-center'>

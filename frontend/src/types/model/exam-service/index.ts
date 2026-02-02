@@ -12,3 +12,4 @@ export type { Exam } from './exam'
 
 // Matrix
 export type { MatrixTopicDto } from './matrix'
+export type { MatrixRow } from './matrixRow'
