@@ -10,7 +10,6 @@ const MainLayout = ({
 }): React.ReactElement => {
 	const location = useLocation()
 
-	// Exclude navigation from auth pages and dashboard pages (they have their own Header)
 	const isAuthPage =
 		location.pathname.startsWith('/login') ||
 		location.pathname.startsWith('/register') ||
@@ -18,9 +17,9 @@ const MainLayout = ({
 		location.pathname.startsWith('/select-role') ||
 		location.pathname.startsWith('/auth/')
 
-	const isDashboardPage = location.pathname.startsWith('/dashboard')
+	const isAppPage = location.pathname.startsWith('/app')
 
-	if (isAuthPage || isDashboardPage) {
+	if (isAuthPage || isAppPage) {
 		return <RoleGuard>{children}</RoleGuard>
 	}
 

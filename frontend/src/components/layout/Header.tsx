@@ -63,7 +63,7 @@ const Header = ({
 				<h1 className='text-lg font-semibold text-foreground hidden sm:block'>
 					{typeof document !== 'undefined'
 						? document.title.split(' | ')[0]
-						: 'Dashboard'}
+						: 'App'}
 				</h1>
 			</div>
 
@@ -84,16 +84,15 @@ const Header = ({
 					)}
 				</Button>
 
-				{/* Dashboard Button (when logged in) */}
 				{user && (
 					<Button
 						variant='outline'
 						size='sm'
-						onClick={() => navigate('/dashboard')}
+						onClick={() => navigate('/app')}
 						className='hidden sm:flex items-center gap-2'
 					>
 						<Home className='h-4 w-4' />
-						<span>Dashboard</span>
+						<span>App</span>
 					</Button>
 				)}
 

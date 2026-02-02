@@ -324,7 +324,7 @@ src/
 │       └── LoadingSpinner.tsx
 ├── layouts/                   # Application shells
 │   ├── RootLayout.tsx
-│   ├── DashboardLayout.tsx
+│   ├── AppLayout.tsx
 │   └── AuthLayout.tsx
 ├── lib/                       # Utilities
 │   ├── api.ts                 # Axios instance with interceptors

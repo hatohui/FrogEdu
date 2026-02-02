@@ -3,7 +3,7 @@ import { Outlet } from 'react-router'
 import Sidebar from './Sidebar'
 import Header from './Header'
 
-const DashboardLayout = (): React.ReactElement => {
+const AppLayout = (): React.ReactElement => {
 	const [sidebarOpen, setSidebarOpen] = useState(false)
 
 	return (
@@ -34,4 +34,4 @@ const DashboardLayout = (): React.ReactElement => {
 	)
 }
 
-export default DashboardLayout
+export default AppLayout

@@ -36,7 +36,7 @@ const ClassCard: React.FC<ClassCardProps> = ({
 		new Date(classData.inviteCodeExpiresAt) < new Date()
 
 	return (
-		<Link to={`/dashboard/classes/${classData.id}`}>
+		<Link to={`/app/classes/${classData.id}`}>
 			<Card className='hover:shadow-md transition-all duration-200 cursor-pointer group'>
 				<CardHeader className='pb-3'>
 					<div className='flex items-start justify-between'>

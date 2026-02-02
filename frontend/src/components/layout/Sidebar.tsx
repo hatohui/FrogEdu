@@ -15,23 +15,23 @@ interface NavItem {
 
 const navItems: NavItem[] = [
 	{
-		name: 'Dashboard',
-		href: '/dashboard',
+		name: 'App',
+		href: '/app',
 		icon: Home,
 	},
 	{
 		name: 'My Classes',
-		href: '/dashboard/classes',
+		href: '/app/classes',
 		icon: Users,
 	},
 	{
 		name: 'Content Library',
-		href: '/content',
+		href: '/app/content',
 		icon: BookOpen,
 	},
 	{
 		name: 'Exam Generator',
-		href: '/assessment',
+		href: '/app/assessment',
 		icon: FileText,
 	},
 	{
@@ -108,8 +108,7 @@ const Sidebar = ({ className, onClose }: SidebarProps): React.ReactElement => {
 				{navItems.map(item => {
 					const isActive =
 						location.pathname === item.href ||
-						(item.href !== '/dashboard' &&
-							location.pathname.startsWith(item.href))
+						(item.href !== '/app' && location.pathname.startsWith(item.href))
 					const Icon = item.icon
 
 					return (

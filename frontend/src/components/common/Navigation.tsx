@@ -49,7 +49,6 @@ const Navigation = (): React.JSX.Element => {
 						<span className='text-xl font-bold'>FrogEdu</span>
 					</Link>
 
-					{/* Center - Navigation Items */}
 					<div className='hidden md:flex items-center space-x-4 absolute left-1/2 transform -translate-x-1/2'>
 						{staticNavItems.map(item => {
 							const isActive = location.pathname === item.path
@@ -69,9 +68,7 @@ const Navigation = (): React.JSX.Element => {
 						})}
 					</div>
 
-					{/* Right side - Actions & User Menu */}
 					<div className='flex items-center space-x-2 flex-shrink-0'>
-						{/* Dark Mode Toggle */}
 						<Button
 							variant='ghost'
 							size='icon'
@@ -86,18 +83,16 @@ const Navigation = (): React.JSX.Element => {
 							)}
 						</Button>
 
-						{/* Authenticated User Menu */}
 						{user ? (
 							<>
-								{/* Dashboard Button (when logged in) */}
 								<Button
 									variant='outline'
 									size='sm'
-									onClick={() => navigate('/dashboard')}
+									onClick={() => navigate('/app')}
 									className='hidden sm:flex items-center gap-2'
 								>
 									<Home className='h-4 w-4' />
-									<span>Dashboard</span>
+									<span>App</span>
 								</Button>
 
 								<DropdownMenu>
@@ -146,7 +141,6 @@ const Navigation = (): React.JSX.Element => {
 								</DropdownMenu>
 							</>
 						) : (
-							/* Guest Login Button */
 							<Button variant='outline' size='sm' asChild>
 								<Link to='/login'>Login</Link>
 							</Button>
@@ -154,7 +148,6 @@ const Navigation = (): React.JSX.Element => {
 					</div>
 				</div>
 
-				{/* Mobile Navigation */}
 				<div className='md:hidden pb-3'>
 					<div className='flex flex-wrap gap-2'>
 						{staticNavItems.map(item => {

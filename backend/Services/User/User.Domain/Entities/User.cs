@@ -113,15 +113,12 @@ public sealed class User : AuditableSoftdeletableEntity
 
     public void GeneratePasswordResetToken()
     {
-        // Generate a cryptographically secure random token
         var bytes = System.Security.Cryptography.RandomNumberGenerator.GetBytes(32);
-        // Use URL-safe Base64 encoding (replace + with -, / with _, and remove padding =)
         PasswordResetToken = Convert
             .ToBase64String(bytes)
             .Replace('+', '-')
             .Replace('/', '_')
             .Replace("=", "");
-        // Token expires in 1 hour
         PasswordResetTokenExpiry = DateTime.UtcNow.AddHours(1);
         MarkAsUpdated();
     }

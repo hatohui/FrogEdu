@@ -9,13 +9,6 @@ interface ProtectedRouteProps {
 	redirectTo?: string
 }
 
-/**
- * ProtectedRoute component to guard routes that require authentication
- *
- * @param children - The component to render if authenticated
- * @param requireAuth - Whether authentication is required (default: true)
- * @param redirectTo - Where to redirect if not authenticated (default: /login)
- */
 const ProtectedRoute = ({
 	children,
 	requireAuth = true,
@@ -24,7 +17,6 @@ const ProtectedRoute = ({
 	const location = useLocation()
 	const { isAuthenticated, isLoading } = useAuthStore()
 
-	// Show loading state while checking authentication
 	if (isLoading) {
 		return (
 			<div className='flex min-h-screen items-center justify-center bg-gradient-to-br from-green-50 to-green-100 dark:from-green-950 dark:to-gray-900 p-4'>
@@ -91,14 +83,12 @@ const ProtectedRoute = ({
 		)
 	}
 
-	// If authentication is required but user is not authenticated, redirect to login
 	if (requireAuth && !isAuthenticated) {
 		return <Navigate to={redirectTo} state={{ from: location }} replace />
 	}
 
-	// If route is public only (like login page) and user is authenticated, redirect to dashboard
 	if (!requireAuth && isAuthenticated) {
-		return <Navigate to='/dashboard' replace />
+		return <Navigate to='/app' replace />
 	}
 
 	return <>{children}</>

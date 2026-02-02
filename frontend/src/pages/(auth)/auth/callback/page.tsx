@@ -23,7 +23,7 @@ const AuthCallbackPage = (): React.JSX.Element => {
 						return
 					}
 
-					navigate('/dashboard', { replace: true })
+					navigate('/app', { replace: true })
 				} catch (error) {
 					console.log(error)
 					navigate('/select-role', { replace: true })

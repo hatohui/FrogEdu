@@ -56,7 +56,7 @@ const SelectRolePage = (): React.JSX.Element => {
 		if (!isAuthenticated) {
 			navigate('/login')
 		} else if (user?.roleId) {
-			navigate('/dashboard')
+			navigate('/app')
 		}
 	}, [user, isAuthenticated, navigate])
 
@@ -86,8 +86,7 @@ const SelectRolePage = (): React.JSX.Element => {
 							: undefined,
 			})
 
-			// Refresh auth to update user session with new role
-			window.location.href = '/dashboard'
+			window.location.href = '/app'
 		} catch (err) {
 			console.error('Error creating user profile:', err)
 			setError('Failed to set up your profile. Please try again.')

@@ -130,13 +130,13 @@ public class SesEmailService : IEmailService
     {
         try
         {
-            var dashboardLink = $"{_frontendBaseUrl}/dashboard";
+            var appLink = $"{_frontendBaseUrl}/app";
             var helpLink = $"{_frontendBaseUrl}/help";
             var htmlBody = await LoadTemplateAsync("Welcome.html");
 
             htmlBody = htmlBody
                 .Replace("{{UserName}}", toName)
-                .Replace("{{DashboardLink}}", dashboardLink)
+                .Replace("{{AppLink}}", appLink)
                 .Replace("{{HelpLink}}", helpLink);
 
             var request = new SendEmailRequest

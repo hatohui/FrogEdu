@@ -8,6 +8,7 @@ import {
 	signInWithRedirect,
 } from 'aws-amplify/auth'
 import userService from '@/services/user-microservice/user.service'
+import { toast } from 'sonner'
 
 interface AuthState {
 	isAuthenticated: boolean
@@ -83,24 +84,20 @@ export const useAuthStore = create<AuthState>()((set, get) => ({
 	signInWithGoogle: async () => {
 		set({ isLoading: true, error: null })
 		try {
-			// Check if user is already signed in
 			try {
 				const currentUser = await getCurrentUser()
 				if (currentUser) {
-					// User is already signed in, redirect to dashboard
-					window.location.href = '/dashboard'
+					window.location.href = '/app'
 					return
 				}
 			} catch {
-				// User is not signed in, proceed with Google sign-in
+				toast.error('Failed to initiate Google sign-in. Please try again.')
 			}
 
 			await signInWithRedirect({
 				provider: 'Google',
 				customState: 'oauth-login',
 			})
-			// Note: The user will be redirected to Google,
-			// so this function won't complete here
 		} catch (error) {
 			const message =
 				error instanceof Error
