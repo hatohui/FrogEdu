@@ -12,23 +12,17 @@ public class SubjectConfiguration : IEntityTypeConfiguration<Subject>
 
         builder.HasKey(s => s.Id);
         builder.Property(s => s.Id).ValueGeneratedNever();
-
         builder.Property(s => s.SubjectCode).IsRequired().HasMaxLength(50);
-
         builder.Property(s => s.Name).IsRequired().HasMaxLength(256);
-
         builder.Property(s => s.Description).IsRequired().HasMaxLength(1000);
-
         builder.Property(s => s.ImageUrl).HasMaxLength(1000);
-
         builder.Property(s => s.Grade).IsRequired();
-
-        // Indexes
-        builder.HasIndex(s => s.SubjectCode).IsUnique().HasDatabaseName("IX_Subjects_SubjectCode");
-
+        builder
+            .HasIndex(s => new { s.SubjectCode, s.Grade })
+            .IsUnique()
+            .HasDatabaseName("IX_Subjects_SubjectCode_Grade");
         builder.HasIndex(s => s.Grade).HasDatabaseName("IX_Subjects_Grade");
 
-        // Relationships
         builder
             .HasMany(s => s.Topics)
             .WithOne()

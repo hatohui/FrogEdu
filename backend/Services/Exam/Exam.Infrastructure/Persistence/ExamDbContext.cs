@@ -24,6 +24,7 @@ public class ExamDbContext : DbContext
         modelBuilder.HasDefaultSchema("public");
 
         modelBuilder.ApplyConfiguration(new SubjectConfiguration());
+        modelBuilder.ApplyConfiguration(new SubjectSeedConfiguration());
         modelBuilder.ApplyConfiguration(new TopicConfiguration());
         modelBuilder.ApplyConfiguration(new QuestionConfiguration());
         modelBuilder.ApplyConfiguration(new AnswerConfiguration());
@@ -32,7 +33,6 @@ public class ExamDbContext : DbContext
         modelBuilder.ApplyConfiguration(new MatrixConfiguration());
         modelBuilder.ApplyConfiguration(new MatrixTopicConfiguration());
 
-        // Auto-set timestamps for auditable entities
         foreach (var entityType in modelBuilder.Model.GetEntityTypes())
         {
             var createdAtProp = entityType.FindProperty("CreatedAt");

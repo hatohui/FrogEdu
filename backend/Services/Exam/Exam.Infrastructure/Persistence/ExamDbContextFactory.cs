@@ -8,7 +8,6 @@ public class ExamDbContextFactory : IDesignTimeDbContextFactory<ExamDbContext>
 {
     public ExamDbContext CreateDbContext(string[] args)
     {
-        // Load .env file from the API project directory
         var apiProjectPath = Path.Combine(Directory.GetCurrentDirectory(), "..", "Exam.API");
         var envFilePath = Path.Combine(apiProjectPath, ".env");
 
@@ -17,7 +16,6 @@ public class ExamDbContextFactory : IDesignTimeDbContextFactory<ExamDbContext>
             Env.Load(envFilePath);
         }
 
-        // Get connection string from environment variable
         var connectionString =
             Environment.GetEnvironmentVariable("EXAM_DB_CONNECTION_STRING")
             ?? "Host=localhost;Port=5432;Database=exam;Username=root;Password=root;SSL Mode=Disable";
