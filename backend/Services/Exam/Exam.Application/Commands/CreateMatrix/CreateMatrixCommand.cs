@@ -1,9 +1,7 @@
-using FrogEdu.Exam.Domain.Enums;
+using FrogEdu.Exam.Application.DTOs;
 using MediatR;
 
 namespace FrogEdu.Exam.Application.Commands.CreateMatrix;
-
-public sealed record MatrixTopicDto(Guid TopicId, CognitiveLevel CognitiveLevel, int Quantity);
 
 public sealed record CreateMatrixCommand(
     Guid ExamId,

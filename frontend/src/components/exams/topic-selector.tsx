@@ -17,13 +17,7 @@ import {
 } from '@/components/ui/popover'
 import { cn } from '@/utils/cn'
 import { Badge } from '@/components/ui/badge'
-
-export interface Topic {
-	id: string
-	title: string
-	description: string
-	isCurriculum: boolean
-}
+import type { Topic } from '@/types/model/exam-service'
 
 interface TopicSelectorProps {
 	topics: Topic[]

@@ -1,3 +1,4 @@
+using FrogEdu.Exam.Application.DTOs;
 using FrogEdu.Exam.Domain.Entities;
 using FrogEdu.Exam.Domain.Repositories;
 using MediatR;

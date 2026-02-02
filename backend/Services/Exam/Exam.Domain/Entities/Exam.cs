@@ -5,86 +5,54 @@ namespace FrogEdu.Exam.Domain.Entities;
 
 public sealed class Exam : AuditableEntity
 {
-    public string Title { get; private set; } = null!;
-    public int Duration { get; private set; } // in minutes
-    public string? AccessCode { get; private set; }
-    public int PassScore { get; private set; }
-    public int MaxAttempts { get; private set; }
-    public DateTime StartTime { get; private set; }
-    public DateTime EndTime { get; private set; }
-    public bool ShouldShuffleQuestions { get; private set; }
-    public bool ShouldShuffleAnswerOptions { get; private set; }
+    public string Name { get; private set; } = null!;
+    public string Description { get; private set; } = null!;
+    public Guid TopicId { get; private set; }
+    public Guid SubjectId { get; private set; }
+    public int Grade { get; private set; }
     public bool IsDraft { get; private set; }
     public bool IsActive { get; private set; }
-    public Guid TopicId { get; private set; }
 
     private readonly List<ExamQuestion> _examQuestions = new();
     public IReadOnlyCollection<ExamQuestion> ExamQuestions => _examQuestions.AsReadOnly();
 
     private Exam() { }
 
-    private Exam(
-        string title,
-        int duration,
-        int passScore,
-        int maxAttempts,
-        DateTime startTime,
-        DateTime endTime,
-        Guid topicId,
-        bool shouldShuffleQuestions = false,
-        bool shouldShuffleAnswerOptions = false
-    )
+    private Exam(string name, string description, Guid topicId, Guid subjectId, int grade)
     {
-        Title = title;
-        Duration = duration;
-        PassScore = passScore;
-        MaxAttempts = maxAttempts;
-        StartTime = startTime;
-        EndTime = endTime;
+        Name = name;
+        Description = description;
         TopicId = topicId;
-        ShouldShuffleQuestions = shouldShuffleQuestions;
-        ShouldShuffleAnswerOptions = shouldShuffleAnswerOptions;
+        SubjectId = subjectId;
+        Grade = grade;
         IsDraft = true;
         IsActive = false;
     }
 
     public static Exam Create(
-        string title,
-        int duration,
-        int passScore,
-        int maxAttempts,
-        DateTime startTime,
-        DateTime endTime,
+        string name,
+        string description,
         Guid topicId,
-        string userId,
-        bool shouldShuffleQuestions = false,
-        bool shouldShuffleAnswerOptions = false
+        Guid subjectId,
+        int grade,
+        string userId
     )
     {
-        if (string.IsNullOrWhiteSpace(title))
-            throw new ArgumentException("Title cannot be empty", nameof(title));
-        if (duration <= 0)
-            throw new ArgumentException("Duration must be greater than 0", nameof(duration));
-        if (passScore < 0 || passScore > 100)
-            throw new ArgumentException("Pass score must be between 0 and 100", nameof(passScore));
-        if (maxAttempts <= 0)
-            throw new ArgumentException("Max attempts must be greater than 0", nameof(maxAttempts));
-        if (startTime >= endTime)
-            throw new ArgumentException("Start time must be before end time", nameof(startTime));
+        if (string.IsNullOrWhiteSpace(name))
+            throw new ArgumentException("Name cannot be empty", nameof(name));
+        if (string.IsNullOrWhiteSpace(description))
+            throw new ArgumentException("Description cannot be empty", nameof(description));
         if (topicId == Guid.Empty)
             throw new ArgumentException("Topic ID cannot be empty", nameof(topicId));
+        if (subjectId == Guid.Empty)
+            throw new ArgumentException("Subject ID cannot be empty", nameof(subjectId));
+        if (grade < 1 || grade > 5)
+            throw new ArgumentException(
+                "Grade must be between 1 and 5 (primary school)",
+                nameof(grade)
+            );
 
-        var exam = new Exam(
-            title,
-            duration,
-            passScore,
-            maxAttempts,
-            startTime,
-            endTime,
-            topicId,
-            shouldShuffleQuestions,
-            shouldShuffleAnswerOptions
-        );
+        var exam = new Exam(name, description, topicId, subjectId, grade);
 
         // Pass userId to ensure CreatedBy is set
         if (Guid.TryParse(userId, out var createdByGuid))
@@ -96,41 +64,23 @@ public sealed class Exam : AuditableEntity
             exam.MarkAsCreated();
         }
 
-        exam.AddDomainEvent(new ExamCreatedDomainEvent(exam.Id, exam.Title));
+        exam.AddDomainEvent(new ExamCreatedDomainEvent(exam.Id, exam.Name, exam.TopicId));
         return exam;
     }
 
-    public void Update(
-        string title,
-        int duration,
-        int passScore,
-        int maxAttempts,
-        DateTime startTime,
-        DateTime endTime,
-        string userId
-    )
+    public void Update(string name, string description, string userId)
     {
-        if (string.IsNullOrWhiteSpace(title))
-            throw new ArgumentException("Title cannot be empty", nameof(title));
-        if (duration <= 0)
-            throw new ArgumentException("Duration must be greater than 0", nameof(duration));
-        if (passScore < 0 || passScore > 100)
-            throw new ArgumentException("Pass score must be between 0 and 100", nameof(passScore));
-        if (maxAttempts <= 0)
-            throw new ArgumentException("Max attempts must be greater than 0", nameof(maxAttempts));
-        if (startTime >= endTime)
-            throw new ArgumentException("Start time must be before end time", nameof(startTime));
+        if (string.IsNullOrWhiteSpace(name))
+            throw new ArgumentException("Name cannot be empty", nameof(name));
+        if (string.IsNullOrWhiteSpace(description))
+            throw new ArgumentException("Description cannot be empty", nameof(description));
 
-        Title = title;
-        Duration = duration;
-        PassScore = passScore;
-        MaxAttempts = maxAttempts;
-        StartTime = startTime;
-        EndTime = endTime;
+        Name = name;
+        Description = description;
         MarkAsUpdated();
     }
 
-    public void Publish(string accessCode, string userId)
+    public void Publish(string userId)
     {
         if (!IsDraft)
             throw new InvalidOperationException("Exam is already published");
@@ -139,9 +89,8 @@ public sealed class Exam : AuditableEntity
 
         IsDraft = false;
         IsActive = true;
-        AccessCode = accessCode;
         MarkAsUpdated();
-        AddDomainEvent(new ExamPublishedDomainEvent(Id, Title, accessCode));
+        AddDomainEvent(new ExamPublishedDomainEvent(Id, Name));
     }
 
     public void Archive(string userId)
@@ -151,7 +100,7 @@ public sealed class Exam : AuditableEntity
 
         IsActive = false;
         MarkAsUpdated();
-        AddDomainEvent(new ExamArchivedDomainEvent(Id, Title));
+        AddDomainEvent(new ExamArchivedDomainEvent(Id, Name));
     }
 
     public void AddQuestion(Guid questionId)
@@ -169,12 +118,5 @@ public sealed class Exam : AuditableEntity
             throw new InvalidOperationException("Question not found in exam");
 
         _examQuestions.Remove(examQuestion);
-    }
-
-    public void SetShuffleSettings(bool shuffleQuestions, bool shuffleAnswers, string userId)
-    {
-        ShouldShuffleQuestions = shuffleQuestions;
-        ShouldShuffleAnswerOptions = shuffleAnswers;
-        MarkAsUpdated();
     }
 }

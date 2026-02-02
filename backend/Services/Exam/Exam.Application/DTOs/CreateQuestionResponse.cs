@@ -1,8 +1,6 @@
 using FrogEdu.Exam.Domain.Enums;
 
-namespace FrogEdu.Exam.Application.Commands.CreateQuestion;
-
-public sealed record AnswerResponse(Guid Id, string Content, bool IsCorrect, string? Explanation);
+namespace FrogEdu.Exam.Application.DTOs;
 
 public sealed record CreateQuestionResponse(
     Guid Id,

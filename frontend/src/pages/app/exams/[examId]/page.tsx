@@ -6,11 +6,10 @@ import {
 	Eye,
 	Trash2,
 	CheckCircle,
-	Clock,
-	Calendar,
 	BookOpen,
 	Settings,
 	Send,
+	Plus,
 } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -32,100 +31,65 @@ import {
 	DialogTitle,
 	DialogTrigger,
 } from '@/components/ui/dialog'
-import { CognitiveLevel, QuestionType } from '@/types/model/exams'
-
-// Mock data - replace with actual API call
-const mockExam = {
-	id: '1',
-	title: 'Mid-term Math Exam',
-	duration: 90,
-	passScore: 60,
-	maxAttempts: 2,
-	startTime: '2024-03-15T08:00:00Z',
-	endTime: '2024-03-15T09:30:00Z',
-	isDraft: true,
-	isActive: false,
-	questionCount: 5,
-	totalPoints: 10,
-	topicId: 'topic-1',
-	topicName: 'Algebra - Linear Equations',
-	createdAt: '2024-03-01T10:00:00Z',
-	updatedAt: null,
-}
-
-const mockQuestions = [
-	{
-		id: '1',
-		content: 'What is the solution to the equation 2x + 5 = 13?',
-		point: 2,
-		type: QuestionType.MultipleChoice,
-		cognitiveLevel: CognitiveLevel.Easy,
-		answerCount: 4,
-	},
-	{
-		id: '2',
-		content: 'Solve for x: 3x - 7 = 2x + 5',
-		point: 2,
-		type: QuestionType.MultipleChoice,
-		cognitiveLevel: CognitiveLevel.Medium,
-		answerCount: 4,
-	},
-	{
-		id: '3',
-		content: 'Graph the linear equation y = 2x + 3',
-		point: 3,
-		type: QuestionType.Essay,
-		cognitiveLevel: CognitiveLevel.Hard,
-		answerCount: 0,
-	},
-	{
-		id: '4',
-		content: 'Is 2x + 3 = 2(x + 1) + 1 an identity?',
-		point: 1,
-		type: QuestionType.TrueFalse,
-		cognitiveLevel: CognitiveLevel.Easy,
-		answerCount: 2,
-	},
-	{
-		id: '5',
-		content:
-			'Complete: The slope-intercept form of a linear equation is y = ___ + b',
-		point: 2,
-		type: QuestionType.FillInBlank,
-		cognitiveLevel: CognitiveLevel.Medium,
-		answerCount: 1,
-	},
-]
+import { CognitiveLevel, QuestionType } from '@/types/model/exam-service'
+import {
+	useExam,
+	useExamQuestions,
+	usePublishExam,
+	useRemoveQuestionFromExam,
+} from '@/hooks/useExams'
 
 const ExamDetailPage = (): React.ReactElement => {
 	const navigate = useNavigate()
 	const { examId } = useParams<{ examId: string }>()
 	const [isPublishDialogOpen, setIsPublishDialogOpen] = useState(false)
 
-	// TODO: Replace with actual API calls
-	const exam = mockExam
-	const questions = mockQuestions
+	const { data: exam, isLoading: isLoadingExam } = useExam(examId || '')
+	const { data: questions = [], isLoading: isLoadingQuestions } =
+		useExamQuestions(examId || '')
+	const publishExamMutation = usePublishExam()
+	const removeQuestionMutation = useRemoveQuestionFromExam()
 
 	const handlePublish = async () => {
-		// TODO: Implement publish logic
-		console.log('Publishing exam:', examId)
-		setIsPublishDialogOpen(false)
-		// Navigate or show success message
+		if (!examId) return
+
+		if (questions.length === 0) {
+			alert('Cannot publish an exam with no questions')
+			return
+		}
+
+		try {
+			await publishExamMutation.mutateAsync(examId)
+			setIsPublishDialogOpen(false)
+		} catch (error) {
+			console.error('Failed to publish exam:', error)
+		}
 	}
 
 	const handleDelete = async (questionId: string) => {
-		// TODO: Implement delete logic
-		console.log('Deleting question:', questionId)
+		if (!examId) return
+
+		if (
+			confirm('Are you sure you want to remove this question from the exam?')
+		) {
+			try {
+				await removeQuestionMutation.mutateAsync({ examId, questionId })
+			} catch (error) {
+				console.error('Failed to delete question:', error)
+			}
+		}
 	}
 
 	const getCognitiveLevelLabel = (level: CognitiveLevel) => {
 		switch (level) {
-			case CognitiveLevel.Easy:
-				return 'Easy'
-			case CognitiveLevel.Medium:
-				return 'Medium'
-			case CognitiveLevel.Hard:
-				return 'Hard'
+			case CognitiveLevel.Remember:
+				return 'Remember'
+			case CognitiveLevel.Understand:
+				return 'Understand'
+			case CognitiveLevel.Apply:
+				return 'Apply'
+			case CognitiveLevel.Analyze:
+				return 'Analyze'
 			default:
 				return 'Unknown'
 		}
@@ -133,12 +97,14 @@ const ExamDetailPage = (): React.ReactElement => {
 
 	const getCognitiveLevelColor = (level: CognitiveLevel) => {
 		switch (level) {
-			case CognitiveLevel.Easy:
+			case CognitiveLevel.Remember:
+				return 'bg-blue-500/10 text-blue-700 dark:text-blue-400'
+			case CognitiveLevel.Understand:
+				return 'bg-cyan-500/10 text-cyan-700 dark:text-cyan-400'
+			case CognitiveLevel.Apply:
 				return 'bg-green-500/10 text-green-700 dark:text-green-400'
-			case CognitiveLevel.Medium:
+			case CognitiveLevel.Analyze:
 				return 'bg-yellow-500/10 text-yellow-700 dark:text-yellow-400'
-			case CognitiveLevel.Hard:
-				return 'bg-red-500/10 text-red-700 dark:text-red-400'
 			default:
 				return ''
 		}
@@ -152,12 +118,36 @@ const ExamDetailPage = (): React.ReactElement => {
 				return 'True/False'
 			case QuestionType.Essay:
 				return 'Essay'
-			case QuestionType.FillInBlank:
-				return 'Fill in Blank'
+			case QuestionType.ShortAnswer:
+				return 'Short Answer'
 			default:
 				return 'Unknown'
 		}
 	}
+
+	if (isLoadingExam || isLoadingQuestions) {
+		return (
+			<div className='p-6 space-y-6 max-w-7xl mx-auto'>
+				<div className='text-center py-12'>Loading...</div>
+			</div>
+		)
+	}
+
+	if (!exam) {
+		return (
+			<div className='p-6 space-y-6 max-w-7xl mx-auto'>
+				<div className='text-center py-12'>
+					<p className='text-muted-foreground mb-4'>Exam not found</p>
+					<Button onClick={() => navigate('/app/exams')}>
+						<ArrowLeft className='h-4 w-4 mr-2' />
+						Back to Exams
+					</Button>
+				</div>
+			</div>
+		)
+	}
+
+	const totalPoints = questions.reduce((sum, q) => sum + (q.point || 0), 0)
 
 	return (
 		<div className='p-6 space-y-6 max-w-7xl mx-auto'>
@@ -173,7 +163,7 @@ const ExamDetailPage = (): React.ReactElement => {
 					</Button>
 					<div>
 						<div className='flex items-center gap-3'>
-							<h1 className='text-3xl font-bold'>{exam.title}</h1>
+							<h1 className='text-3xl font-bold'>{exam.name}</h1>
 							{exam.isDraft ? (
 								<Badge variant='secondary'>
 									<BookOpen className='h-3 w-3 mr-1' />
@@ -182,12 +172,12 @@ const ExamDetailPage = (): React.ReactElement => {
 							) : (
 								<Badge variant='default'>
 									<CheckCircle className='h-3 w-3 mr-1' />
-									Published
+									Active
 								</Badge>
 							)}
 						</div>
 						<p className='text-muted-foreground'>
-							{exam.questionCount} questions • {exam.totalPoints} points total
+							{questions.length} questions • {totalPoints} points total
 						</p>
 					</div>
 				</div>
@@ -197,7 +187,7 @@ const ExamDetailPage = (): React.ReactElement => {
 						onClick={() => navigate(`/app/exams/${examId}/edit`)}
 					>
 						<Settings className='h-4 w-4 mr-2' />
-						Settings
+						Edit
 					</Button>
 					{exam.isDraft && (
 						<Dialog
@@ -205,7 +195,7 @@ const ExamDetailPage = (): React.ReactElement => {
 							onOpenChange={setIsPublishDialogOpen}
 						>
 							<DialogTrigger asChild>
-								<Button>
+								<Button disabled={questions.length === 0}>
 									<Send className='h-4 w-4 mr-2' />
 									Publish Exam
 								</Button>
@@ -225,7 +215,14 @@ const ExamDetailPage = (): React.ReactElement => {
 									>
 										Cancel
 									</Button>
-									<Button onClick={handlePublish}>Publish</Button>
+									<Button
+										onClick={handlePublish}
+										disabled={publishExamMutation.isPending}
+									>
+										{publishExamMutation.isPending
+											? 'Publishing...'
+											: 'Publish'}
+									</Button>
 								</DialogFooter>
 							</DialogContent>
 						</Dialog>
@@ -233,73 +230,20 @@ const ExamDetailPage = (): React.ReactElement => {
 				</div>
 			</div>
 
-			{/* Exam Info Cards */}
-			<div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
-				<Card>
-					<CardContent className='pt-6'>
-						<div className='flex items-center space-x-3'>
-							<div className='p-2 bg-primary/10 rounded-lg'>
-								<Clock className='h-5 w-5 text-primary' />
-							</div>
-							<div>
-								<p className='text-sm text-muted-foreground'>Duration</p>
-								<p className='text-2xl font-bold'>{exam.duration} min</p>
-							</div>
-						</div>
-					</CardContent>
-				</Card>
-
-				<Card>
-					<CardContent className='pt-6'>
-						<div className='flex items-center space-x-3'>
-							<div className='p-2 bg-primary/10 rounded-lg'>
-								<CheckCircle className='h-5 w-5 text-primary' />
-							</div>
-							<div>
-								<p className='text-sm text-muted-foreground'>Pass Score</p>
-								<p className='text-2xl font-bold'>{exam.passScore}%</p>
-							</div>
-						</div>
-					</CardContent>
-				</Card>
-
-				<Card>
-					<CardContent className='pt-6'>
-						<div className='flex items-center space-x-3'>
-							<div className='p-2 bg-primary/10 rounded-lg'>
-								<Calendar className='h-5 w-5 text-primary' />
-							</div>
-							<div>
-								<p className='text-sm text-muted-foreground'>Max Attempts</p>
-								<p className='text-2xl font-bold'>{exam.maxAttempts}</p>
-							</div>
-						</div>
-					</CardContent>
-				</Card>
-			</div>
-
 			{/* Exam Details */}
 			<Card>
 				<CardHeader>
-					<CardTitle>Exam Details</CardTitle>
+					<CardTitle>Exam Information</CardTitle>
 				</CardHeader>
 				<CardContent className='space-y-4'>
+					<div>
+						<p className='text-sm text-muted-foreground mb-1'>Description</p>
+						<p className='font-medium'>{exam.description}</p>
+					</div>
 					<div className='grid grid-cols-2 gap-4'>
 						<div>
-							<p className='text-sm text-muted-foreground'>Start Time</p>
-							<p className='font-medium'>
-								{new Date(exam.startTime).toLocaleString()}
-							</p>
-						</div>
-						<div>
-							<p className='text-sm text-muted-foreground'>End Time</p>
-							<p className='font-medium'>
-								{new Date(exam.endTime).toLocaleString()}
-							</p>
-						</div>
-						<div>
-							<p className='text-sm text-muted-foreground'>Topic</p>
-							<p className='font-medium'>{exam.topicName}</p>
+							<p className='text-sm text-muted-foreground'>Grade</p>
+							<p className='font-medium'>Grade {exam.grade}</p>
 						</div>
 						<div>
 							<p className='text-sm text-muted-foreground'>Created</p>
@@ -319,7 +263,8 @@ const ExamDetailPage = (): React.ReactElement => {
 						variant='outline'
 						onClick={() => navigate(`/app/exams/${examId}/questions`)}
 					>
-						Manage Questions
+						<Plus className='h-4 w-4 mr-2' />
+						Add Questions
 					</Button>
 				</CardHeader>
 				<CardContent>
@@ -384,6 +329,7 @@ const ExamDetailPage = (): React.ReactElement => {
 												variant='ghost'
 												size='icon'
 												onClick={() => handleDelete(question.id)}
+												disabled={removeQuestionMutation.isPending}
 											>
 												<Trash2 className='h-4 w-4 text-destructive' />
 											</Button>
@@ -401,6 +347,7 @@ const ExamDetailPage = (): React.ReactElement => {
 							<Button
 								onClick={() => navigate(`/app/exams/${examId}/questions`)}
 							>
+								<Plus className='h-4 w-4 mr-2' />
 								Add Questions
 							</Button>
 						</div>

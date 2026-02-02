@@ -3,10 +3,6 @@ namespace FrogEdu.Exam.Domain.Repositories;
 public interface IExamRepository
 {
     Task<Entities.Exam?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
-    Task<Entities.Exam?> GetByAccessCodeAsync(
-        string accessCode,
-        CancellationToken cancellationToken = default
-    );
     Task<IReadOnlyList<Entities.Exam>> GetByTopicIdAsync(
         Guid topicId,
         CancellationToken cancellationToken = default

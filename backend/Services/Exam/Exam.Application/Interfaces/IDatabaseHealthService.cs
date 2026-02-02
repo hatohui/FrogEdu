@@ -1,4 +1,4 @@
-using FrogEdu.Exam.Application.Queries.CheckDatabaseHealth;
+using FrogEdu.Exam.Application.DTOs;
 
 namespace FrogEdu.Exam.Application.Interfaces;
 

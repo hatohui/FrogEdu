@@ -1,4 +1,4 @@
-namespace FrogEdu.Exam.Application.Queries.GetSubjects;
+namespace FrogEdu.Exam.Application.DTOs;
 
 public sealed record SubjectDto(
     Guid Id,
@@ -8,5 +8,3 @@ public sealed record SubjectDto(
     string ImageUrl,
     int Grade
 );
-
-public sealed record GetSubjectsResponse(List<SubjectDto> Subjects);

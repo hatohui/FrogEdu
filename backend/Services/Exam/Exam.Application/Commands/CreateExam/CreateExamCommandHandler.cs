@@ -1,3 +1,4 @@
+using FrogEdu.Exam.Application.DTOs;
 using FrogEdu.Exam.Domain.Repositories;
 using MediatR;
 
@@ -8,14 +9,17 @@ public sealed class CreateExamCommandHandler
 {
     private readonly IExamRepository _examRepository;
     private readonly ITopicRepository _topicRepository;
+    private readonly ISubjectRepository _subjectRepository;
 
     public CreateExamCommandHandler(
         IExamRepository examRepository,
-        ITopicRepository topicRepository
+        ITopicRepository topicRepository,
+        ISubjectRepository subjectRepository
     )
     {
         _examRepository = examRepository;
         _topicRepository = topicRepository;
+        _subjectRepository = subjectRepository;
     }
 
     public async Task<CreateExamResponse> Handle(
@@ -28,17 +32,18 @@ public sealed class CreateExamCommandHandler
         if (topic is null)
             throw new InvalidOperationException($"Topic with ID {request.TopicId} not found");
 
+        // Verify subject exists
+        var subject = await _subjectRepository.GetByIdAsync(request.SubjectId, cancellationToken);
+        if (subject is null)
+            throw new InvalidOperationException($"Subject with ID {request.SubjectId} not found");
+
         var exam = Domain.Entities.Exam.Create(
-            request.Title,
-            request.Duration,
-            request.PassScore,
-            request.MaxAttempts,
-            request.StartTime,
-            request.EndTime,
+            request.Name,
+            request.Description,
             request.TopicId,
-            request.UserId,
-            request.ShouldShuffleQuestions,
-            request.ShouldShuffleAnswerOptions
+            request.SubjectId,
+            request.Grade,
+            request.UserId
         );
 
         await _examRepository.AddAsync(exam, cancellationToken);
@@ -46,13 +51,11 @@ public sealed class CreateExamCommandHandler
 
         return new CreateExamResponse(
             exam.Id,
-            exam.Title,
-            exam.Duration,
-            exam.PassScore,
-            exam.MaxAttempts,
-            exam.StartTime,
-            exam.EndTime,
+            exam.Name,
+            exam.Description,
             exam.TopicId,
+            exam.SubjectId,
+            exam.Grade,
             exam.IsDraft,
             exam.IsActive,
             exam.CreatedAt

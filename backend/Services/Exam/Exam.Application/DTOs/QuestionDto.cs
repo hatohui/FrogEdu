@@ -1,6 +1,6 @@
 using FrogEdu.Exam.Domain.Enums;
 
-namespace FrogEdu.Exam.Application.Queries.GetQuestions;
+namespace FrogEdu.Exam.Application.DTOs;
 
 public sealed record QuestionDto(
     Guid Id,
@@ -15,5 +15,3 @@ public sealed record QuestionDto(
     int AnswerCount,
     DateTime CreatedAt
 );
-
-public sealed record GetQuestionsResponse(List<QuestionDto> Questions);

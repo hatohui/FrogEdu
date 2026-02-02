@@ -1,8 +1,5 @@
-namespace FrogEdu.Exam.Application.Queries.CheckDatabaseHealth;
+namespace FrogEdu.Exam.Application.DTOs;
 
-/// <summary>
-/// DTO representing database health status
-/// </summary>
 public sealed record DatabaseHealthDto(
     bool IsHealthy,
     string Status,

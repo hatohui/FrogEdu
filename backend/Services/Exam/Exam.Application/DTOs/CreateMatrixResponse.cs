@@ -1,4 +1,4 @@
-namespace FrogEdu.Exam.Application.Commands.CreateMatrix;
+namespace FrogEdu.Exam.Application.DTOs;
 
 public sealed record CreateMatrixResponse(
     Guid Id,

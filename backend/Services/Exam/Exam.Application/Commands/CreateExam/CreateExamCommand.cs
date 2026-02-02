@@ -1,16 +1,13 @@
+using FrogEdu.Exam.Application.DTOs;
 using MediatR;
 
 namespace FrogEdu.Exam.Application.Commands.CreateExam;
 
 public sealed record CreateExamCommand(
-    string Title,
-    int Duration,
-    int PassScore,
-    int MaxAttempts,
-    DateTime StartTime,
-    DateTime EndTime,
+    string Name,
+    string Description,
     Guid TopicId,
-    bool ShouldShuffleQuestions,
-    bool ShouldShuffleAnswerOptions,
+    Guid SubjectId,
+    int Grade,
     string UserId
 ) : IRequest<CreateExamResponse>;

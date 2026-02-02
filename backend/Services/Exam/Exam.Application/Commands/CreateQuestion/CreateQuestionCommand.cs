@@ -1,9 +1,8 @@
+using FrogEdu.Exam.Application.DTOs;
 using FrogEdu.Exam.Domain.Enums;
 using MediatR;
 
 namespace FrogEdu.Exam.Application.Commands.CreateQuestion;
-
-public sealed record AnswerDto(string Content, bool IsCorrect, string? Explanation);
 
 public sealed record CreateQuestionCommand(
     string Content,

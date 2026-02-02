@@ -1,4 +1,4 @@
-namespace FrogEdu.Exam.Application.Queries.GetTopics;
+namespace FrogEdu.Exam.Application.DTOs;
 
 public sealed record TopicDto(
     Guid Id,
@@ -7,5 +7,3 @@ public sealed record TopicDto(
     bool IsCurriculum,
     Guid SubjectId
 );
-
-public sealed record GetTopicsResponse(List<TopicDto> Topics);

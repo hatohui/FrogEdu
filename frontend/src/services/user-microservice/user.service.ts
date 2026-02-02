@@ -3,7 +3,7 @@ import type {
 	GetMeResponse,
 	UpdateProfileDto,
 } from '@/types/dtos/users/user'
-import type { Role } from '@/types/dtos/users/role'
+import type { Role } from '@/types/model/user-service/role'
 import apiService, { type ApiResponse } from '../api.service'
 import axiosInstance, { publicAxios } from '../axios'
 import type { GetPresignedImageUrlResponse } from '@/types/dtos/users/sign-image'

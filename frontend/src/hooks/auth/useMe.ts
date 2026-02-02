@@ -3,7 +3,7 @@ import { useAuthStore } from '@/stores/authStore'
 import { useQuery } from '@tanstack/react-query'
 import { useNavigate, useLocation } from 'react-router'
 import type { GetMeResponse } from '@/types/dtos/users/user'
-import type { Role } from '@/types/dtos/users/role'
+import type { Role } from '@/types/model/user-service/role'
 
 export interface UserWithRole extends GetMeResponse {
 	role?: Role

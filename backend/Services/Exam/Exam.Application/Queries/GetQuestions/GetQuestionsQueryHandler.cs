@@ -1,3 +1,4 @@
+using FrogEdu.Exam.Application.DTOs;
 using FrogEdu.Exam.Domain.Repositories;
 using MediatR;
 
@@ -36,8 +37,7 @@ public sealed class GetQuestionsQueryHandler
         }
         else
         {
-            // TODO: Get user ID from authentication context
-            var userId = Guid.Parse("00000000-0000-0000-0000-000000000000");
+            var userId = Guid.Parse(request.UserId);
             questions = await _questionRepository.GetByCreatorAsync(userId, cancellationToken);
         }
 

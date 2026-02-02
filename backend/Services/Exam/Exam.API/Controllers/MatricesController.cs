@@ -1,4 +1,5 @@
 using FrogEdu.Exam.Application.Commands.CreateMatrix;
+using FrogEdu.Exam.Application.DTOs;
 using FrogEdu.Exam.Domain.Enums;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;

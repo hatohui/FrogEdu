@@ -1,11 +1,12 @@
-import apiService, { type ApiResponse } from '../api.service'
 import type {
-	CognitiveLevel,
 	Subject,
-	Topic,
-	Question,
 	Exam,
-} from '@/types/model/exams'
+	CognitiveLevel,
+	Question,
+	Topic,
+} from '@/types/model/exam-service'
+import apiService, { type ApiResponse } from '../api.service'
+
 import type {
 	CreateExamRequest,
 	CreateMatrixRequest,

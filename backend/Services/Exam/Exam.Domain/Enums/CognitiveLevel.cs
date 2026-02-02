@@ -1,9 +1,5 @@
 namespace FrogEdu.Exam.Domain.Enums;
 
-/// <summary>
-/// Cognitive levels based on Bloom's Taxonomy (Vietnamese curriculum)
-/// Nhận biết, Thông hiểu, Vận dụng, Vận dụng cao
-/// </summary>
 public enum CognitiveLevel
 {
     Remember = 1, // Nhận biết

@@ -81,9 +81,9 @@ const ExamsPage = (): React.ReactElement => {
 						<Table>
 							<TableHeader>
 								<TableRow>
-									<TableHead>Title</TableHead>
-									<TableHead>Duration</TableHead>
-									<TableHead>Questions</TableHead>
+									<TableHead>Name</TableHead>
+									<TableHead>Subject</TableHead>
+									<TableHead>Grade</TableHead>
 									<TableHead>Status</TableHead>
 									<TableHead>Created</TableHead>
 									<TableHead className='text-right'>Actions</TableHead>
@@ -92,9 +92,9 @@ const ExamsPage = (): React.ReactElement => {
 							<TableBody>
 								{exams.map(exam => (
 									<TableRow key={exam.id}>
-										<TableCell className='font-medium'>{exam.title}</TableCell>
-										<TableCell>{exam.duration} min</TableCell>
-										<TableCell>{exam.questionCount}</TableCell>
+										<TableCell className='font-medium'>{exam.name}</TableCell>
+										<TableCell>-</TableCell>
+										<TableCell>{exam.grade}</TableCell>
 										<TableCell>
 											{exam.isDraft ? (
 												<Badge variant='secondary'>
@@ -104,7 +104,7 @@ const ExamsPage = (): React.ReactElement => {
 											) : (
 												<Badge variant='default'>
 													<CheckCircle2 className='h-3 w-3 mr-1' />
-													Published
+													Active
 												</Badge>
 											)}
 										</TableCell>
@@ -115,7 +115,7 @@ const ExamsPage = (): React.ReactElement => {
 											<Button
 												variant='ghost'
 												size='sm'
-												onClick={() => navigate(`/dashboard/exams/${exam.id}`)}
+												onClick={() => navigate(`/app/exams/${exam.id}`)}
 											>
 												View
 											</Button>

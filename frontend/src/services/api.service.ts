@@ -1,10 +1,6 @@
 import { AxiosError } from 'axios'
 import axiosInstance from './axios'
 
-/**
- * API Error Response Type
- * Follows RFC 7807 Problem Details standard
- */
 export interface ApiErrorResponse {
 	type?: string
 	title?: string
@@ -14,9 +10,6 @@ export interface ApiErrorResponse {
 	errors?: Record<string, string[]>
 }
 
-/**
- * Generic API Response Wrapper
- */
 export interface ApiResponse<T> {
 	success: boolean
 	data?: T
@@ -24,9 +17,6 @@ export interface ApiResponse<T> {
 	statusCode: number
 }
 
-/**
- * Pagination Metadata
- */
 export interface PaginationMeta {
 	total: number
 	page: number
@@ -36,28 +26,16 @@ export interface PaginationMeta {
 	hasPreviousPage: boolean
 }
 
-/**
- * Paginated Response
- */
 export interface PaginatedResponse<T> {
 	items: T[]
 	meta: PaginationMeta
 }
 
-/**
- * API Error with response metadata
- */
 interface ApiError extends Error {
 	response?: ApiErrorResponse
 }
 
-/**
- * Base API service class with common operations
- */
 export class ApiService {
-	/**
-	 * GET request
-	 */
 	async get<T>(
 		url: string,
 		params?: Record<string, unknown>
@@ -74,9 +52,6 @@ export class ApiService {
 		}
 	}
 
-	/**
-	 * POST request
-	 */
 	async post<T, D = unknown>(
 		url: string,
 		data?: D,
@@ -94,9 +69,6 @@ export class ApiService {
 		}
 	}
 
-	/**
-	 * PUT request
-	 */
 	async put<T, D = unknown>(url: string, data?: D): Promise<ApiResponse<T>> {
 		try {
 			const response = await axiosInstance.put<T>(url, data)
@@ -110,9 +82,6 @@ export class ApiService {
 		}
 	}
 
-	/**
-	 * PATCH request
-	 */
 	async patch<T, D = unknown>(url: string, data?: D): Promise<ApiResponse<T>> {
 		try {
 			const response = await axiosInstance.patch<T>(url, data)
@@ -126,9 +95,6 @@ export class ApiService {
 		}
 	}
 
-	/**
-	 * DELETE request
-	 */
 	async delete<T>(url: string): Promise<ApiResponse<T>> {
 		try {
 			const response = await axiosInstance.delete<T>(url)
@@ -142,9 +108,6 @@ export class ApiService {
 		}
 	}
 
-	/**
-	 * Handle errors consistently
-	 */
 	private handleError(error: unknown): ApiResponse<never> {
 		if (error instanceof AxiosError) {
 			const status = error.response?.status || 500
@@ -175,9 +138,6 @@ export class ApiService {
 		}
 	}
 
-	/**
-	 * Helper to throw on error (for use with try-catch)
-	 */
 	throwIfError<T>(response: ApiResponse<T>): T {
 		if (!response.success) {
 			const error = new Error(
