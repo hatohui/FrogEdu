@@ -13,26 +13,16 @@ variable "environment" {
   type        = string
 }
 
-variable "zone_id" {
-  description = "Route53 zone ID for DNS verification records (optional)"
+
+
+variable "mail_from_subdomain" {
+  description = "Subdomain to use for MAIL FROM (e.g., 'mail' or 'bounce'). Leave empty to disable custom MAIL FROM."
   type        = string
   default     = ""
 }
 
-variable "verify_domain" {
-  description = "Whether to verify the domain (requires zone_id)"
-  type        = bool
-  default     = false
-}
-
-variable "verify_dkim" {
-  description = "Whether to verify DKIM (requires zone_id)"
-  type        = bool
-  default     = false
-}
-
-variable "create_spf_record" {
-  description = "Whether to create SPF record"
-  type        = bool
-  default     = false
+variable "iam_allowed_resources" {
+  description = "List of ARNs that the SES user is allowed to send email from"
+  type        = list(string)
+  default     = ["*"]
 }

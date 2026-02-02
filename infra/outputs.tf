@@ -162,3 +162,8 @@ output "ses_spf_record" {
   description = "SPF record for domain - Add as TXT record to DNS"
   value       = module.ses.spf_record
 }
+
+output "ses_cloudflare_dns_records" {
+  description = "All DNS records to add in Cloudflare for SES verification"
+  value       = module.ses.dns_records_for_cloudflare
+}
