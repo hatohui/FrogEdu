@@ -18,6 +18,7 @@ FrogEdu is a modern educational platform built with microservices architecture, 
 ![shadcn/ui](https://img.shields.io/badge/shadcn/ui-000000?style=for-the-badge)
 ![Radix UI](https://img.shields.io/badge/Radix_UI-000000?style=for-the-badge)
 ![TanStack Query](https://img.shields.io/badge/TanStack_Query-5-FF4154?style=for-the-badge&logo=reactquery&logoColor=white)
+![Zustand](https://img.shields.io/badge/Zustand-443E38?style=for-the-badge)
 ![React Router](https://img.shields.io/badge/React_Router-7-CA4245?style=for-the-badge&logo=reactrouter&logoColor=white)
 ![React Hook Form](https://img.shields.io/badge/React_Hook_Form-7-EC5990?style=for-the-badge)
 ![Zod](https://img.shields.io/badge/Zod-3-3E67B1?style=for-the-badge)
@@ -384,7 +385,8 @@ doppler run -- terraform apply
 - **Vite** for fast development and optimized builds
 - **TailwindCSS 4** for utility-first styling
 - **shadcn/ui** for beautifully designed components built on Radix UI primitives
-- **TanStack Query** for server state management
+- **TanStack Query** for server state management and data fetching
+- **Zustand** for lightweight client state management
 - **React Router 7** for client-side routing
 - **i18next** for internationalization (English & Vietnamese)
 - **GSAP** for smooth animations
