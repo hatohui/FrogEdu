@@ -34,7 +34,6 @@ import {
 import { useNavigate } from 'react-router'
 import { useMe } from '@/hooks/auth/useMe'
 
-// Mock data - Replace with real API calls
 const stats = [
 	{
 		title: 'Total Users',

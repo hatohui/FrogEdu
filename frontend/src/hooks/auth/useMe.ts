@@ -45,6 +45,7 @@ export const useMe = () => {
 	const user: UserWithRole | undefined = userData
 		? { ...userData, role }
 		: undefined
+
 	const isLoading = isLoadingUser || isLoadingRole
 
 	const navigate = useNavigate()
