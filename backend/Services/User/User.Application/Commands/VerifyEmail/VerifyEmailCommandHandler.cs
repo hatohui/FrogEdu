@@ -34,7 +34,6 @@ public sealed class VerifyEmailCommandHandler : IRequestHandler<VerifyEmailComma
             return Result.Failure("Invalid verification token");
         }
 
-        // Find user by verification token
         var user = await _userRepository.GetByVerificationTokenAsync(
             request.Token,
             cancellationToken
@@ -46,19 +45,16 @@ public sealed class VerifyEmailCommandHandler : IRequestHandler<VerifyEmailComma
             return Result.Failure("Invalid or expired verification token");
         }
 
-        // Validate token
         if (!user.IsEmailVerificationTokenValid(request.Token))
         {
             _logger.LogWarning("Invalid or expired token for user {UserId}", user.Id);
             return Result.Failure("Verification token has expired");
         }
 
-        // Mark email as verified
         user.VerifyEmail();
 
         await _userRepository.UpdateAsync(user, cancellationToken);
 
-        // Send welcome email
         var emailResult = await _emailService.SendWelcomeEmailAsync(
             user.Email.Value,
             $"{user.FirstName} {user.LastName}",
@@ -72,7 +68,6 @@ public sealed class VerifyEmailCommandHandler : IRequestHandler<VerifyEmailComma
                 user.Id,
                 emailResult.Error
             );
-            // Don't fail the verification if welcome email fails
         }
 
         _logger.LogInformation("Email verified successfully for user {UserId}", user.Id);

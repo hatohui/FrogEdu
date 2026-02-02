@@ -27,7 +27,7 @@ public class SesEmailService : IEmailService
         _logger = logger;
         _fromEmail = configuration["AWS:SES:FromEmail"] ?? "notifications@frogedu.org";
         _fromName = configuration["AWS:SES:FromName"] ?? "FrogEdu";
-        _frontendBaseUrl = configuration["Frontend:BaseUrl"] ?? "https://frogedu.org";
+        _frontendBaseUrl = configuration["Frontend:BaseUrl"] ?? "https://www.frogedu.org";
     }
 
     public async Task<Result> SendVerificationEmailAsync(
@@ -49,7 +49,7 @@ public class SesEmailService : IEmailService
             var request = new SendEmailRequest
             {
                 Source = $"{_fromName} <{_fromEmail}>",
-                Destination = new Destination { ToAddresses = new List<string> { toEmail } },
+                Destination = new Destination { ToAddresses = [toEmail] },
                 Message = new Message
                 {
                     Subject = new Content("Verify Your Email - FrogEdu"),

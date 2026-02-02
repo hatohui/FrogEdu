@@ -15,14 +15,8 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace FrogEdu.User.Infrastructure;
 
-/// <summary>
-/// Extension methods for configuring Infrastructure layer services
-/// </summary>
 public static class DependencyInjection
 {
-    /// <summary>
-    /// Add Infrastructure layer services to the DI container
-    /// </summary>
     public static IServiceCollection AddInfrastructureServices(
         this IServiceCollection services,
         IConfiguration configuration
@@ -172,7 +166,6 @@ public static class DependencyInjection
             Console.WriteLine(
                 "Warning: SES configuration is incomplete. Email sending will not work."
             );
-            // Register a dummy service for development
             services.AddScoped<IEmailService, SesEmailService>();
             return;
         }
@@ -180,7 +173,7 @@ public static class DependencyInjection
         services.AddScoped<IAmazonSimpleEmailService>(sp =>
         {
             var credentials = new BasicAWSCredentials(accessKeyId, secretAccessKey);
-            var config = new Amazon.SimpleEmail.AmazonSimpleEmailServiceConfig
+            var config = new AmazonSimpleEmailServiceConfig
             {
                 RegionEndpoint = Amazon.RegionEndpoint.GetBySystemName(region),
             };
@@ -227,7 +220,7 @@ public static class DependencyInjection
         services.AddScoped<IAmazonCognitoIdentityProvider>(sp =>
         {
             var credentials = new BasicAWSCredentials(accessKeyId, secretAccessKey);
-            var config = new Amazon.CognitoIdentityProvider.AmazonCognitoIdentityProviderConfig
+            var config = new AmazonCognitoIdentityProviderConfig
             {
                 RegionEndpoint = Amazon.RegionEndpoint.GetBySystemName(region),
             };
@@ -236,24 +229,5 @@ public static class DependencyInjection
         });
 
         Console.WriteLine($"AWS Cognito configured for region: {region}");
-    }
-
-    /// <summary>
-    /// Seed the database with initial data
-    /// Call this after app.Build() in Program.cs during development
-    /// </summary>
-    public static async Task SeedDatabaseAsync(
-        this IServiceProvider services,
-        string cognitoId,
-        string email,
-        string firstName,
-        string lastName,
-        FrogEdu.User.Domain.Enums.UserRole role = FrogEdu.User.Domain.Enums.UserRole.Student
-    )
-    {
-        using var scope = services.CreateScope();
-        var context = scope.ServiceProvider.GetRequiredService<UserDbContext>();
-
-        await context.Database.MigrateAsync();
     }
 }
