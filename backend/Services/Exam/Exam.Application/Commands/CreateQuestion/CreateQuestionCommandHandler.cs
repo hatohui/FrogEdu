@@ -45,9 +45,9 @@ public sealed class CreateQuestionCommandHandler
         foreach (var answerDto in request.Answers)
         {
             var answer = Answer.Create(
-                question.Id,
                 answerDto.Content,
                 answerDto.IsCorrect,
+                question.Id,
                 answerDto.Explanation
             );
             question.AddAnswer(answer);

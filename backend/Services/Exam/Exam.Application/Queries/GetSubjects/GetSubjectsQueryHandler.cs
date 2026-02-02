@@ -37,7 +37,7 @@ public sealed class GetSubjectsQueryHandler : IRequestHandler<GetSubjectsQuery, 
                 s.SubjectCode,
                 s.Name,
                 s.Description,
-                s.ImageUrl,
+                s.ImageUrl ?? string.Empty,
                 s.Grade
             ))
             .ToList();
