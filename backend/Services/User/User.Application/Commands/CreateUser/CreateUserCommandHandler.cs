@@ -66,7 +66,8 @@ public sealed class CreateUserCommandHandler : IRequestHandler<CreateUserCommand
             request.Email,
             request.FirstName,
             request.LastName,
-            roleDto.Id
+            roleDto.Id,
+            request.AvatarUrl
         );
 
         await _userRepository.AddAsync(user, cancellationToken);

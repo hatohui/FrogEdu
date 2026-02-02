@@ -34,7 +34,7 @@ public class UserConfiguration : IEntityTypeConfiguration<UserEntity>
         builder.Property(u => u.IsEmailVerified).IsRequired().HasDefaultValue(false);
 
         builder.Property(u => u.CreatedAt).IsRequired();
-        builder.Property(u => u.UpdatedAt).IsRequired();
+        builder.Property(u => u.UpdatedAt).IsRequired(false);
         builder.Property(u => u.CreatedBy).HasMaxLength(256);
         builder.Property(u => u.UpdatedBy).HasMaxLength(256);
         builder.Property(u => u.IsDeleted).IsRequired().HasDefaultValue(false);

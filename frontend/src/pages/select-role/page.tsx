@@ -10,12 +10,47 @@ import {
 	CardTitle,
 } from '@/components/ui/card'
 import { GraduationCap, Users } from 'lucide-react'
+import { getCurrentUser, fetchAuthSession } from 'aws-amplify/auth'
 
 const SelectRolePage = (): React.JSX.Element => {
 	const navigate = useNavigate()
 	const { user, isAuthenticated } = useMe()
 	const [isSubmitting, setIsSubmitting] = React.useState(false)
 	const [error, setError] = React.useState<string | null>(null)
+	const [cognitoUser, setCognitoUser] = React.useState<{
+		sub: string
+		email: string
+		givenName?: string
+		familyName?: string
+		picture?: string
+	} | null>(null)
+
+	// Fetch Cognito user data if backend user doesn't exist
+	React.useEffect(() => {
+		const fetchCognitoUser = async () => {
+			try {
+				const currentUser = await getCurrentUser()
+				const session = await fetchAuthSession()
+				const idToken = session.tokens?.idToken
+
+				if (idToken) {
+					setCognitoUser({
+						sub: currentUser.userId,
+						email: (idToken.payload.email as string) || '',
+						givenName: (idToken.payload.given_name as string) || undefined,
+						familyName: (idToken.payload.family_name as string) || undefined,
+						picture: (idToken.payload.picture as string) || undefined,
+					})
+				}
+			} catch (err) {
+				console.error('Failed to fetch Cognito user:', err)
+			}
+		}
+
+		if (isAuthenticated && !user) {
+			fetchCognitoUser()
+		}
+	}, [isAuthenticated, user])
 
 	React.useEffect(() => {
 		if (!isAuthenticated) {
@@ -26,22 +61,33 @@ const SelectRolePage = (): React.JSX.Element => {
 	}, [user, isAuthenticated, navigate])
 
 	const handleRoleSelect = async (role: 'Teacher' | 'Student') => {
-		if (!user) return
+		const userData = user || cognitoUser
+		if (!userData) return
 
 		setIsSubmitting(true)
 		setError(null)
 
 		try {
 			await userService.createUserFromCognito({
-				sub: user.cognitoId,
-				email: user.email || '',
-				givenName: user.firstName || 'User',
-				familyName: user.lastName || '',
+				sub: 'cognitoId' in userData ? userData.cognitoId : userData.sub,
+				email: userData.email || '',
+				givenName:
+					('firstName' in userData ? userData.firstName : userData.givenName) ||
+					'User',
+				familyName:
+					('lastName' in userData ? userData.lastName : userData.familyName) ||
+					'',
 				customRole: role,
+				picture:
+					'avatarUrl' in userData
+						? userData.avatarUrl || undefined
+						: 'picture' in userData
+							? userData.picture
+							: undefined,
 			})
 
-			// Navigate to dashboard
-			navigate('/dashboard')
+			// Refresh auth to update user session with new role
+			window.location.href = '/dashboard'
 		} catch (err) {
 			console.error('Error creating user profile:', err)
 			setError('Failed to set up your profile. Please try again.')

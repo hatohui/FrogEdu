@@ -23,6 +23,8 @@ export const RoleGuard = ({
 			location.pathname.startsWith('/register') ||
 			location.pathname.startsWith('/select-role') ||
 			location.pathname.startsWith('/forgot-password') ||
+			location.pathname.startsWith('/confirm-email') ||
+			location.pathname.startsWith('/auth/callback') ||
 			location.pathname === '/'
 		) {
 			return
@@ -30,6 +32,7 @@ export const RoleGuard = ({
 
 		// If authenticated but no role, redirect to role selection
 		if (isAuthenticated && user && !user.roleId) {
+			console.log('RoleGuard: User has no role, redirecting to select-role')
 			navigate('/select-role', { replace: true })
 		}
 	}, [isAuthenticated, user, isLoading, location.pathname, navigate])

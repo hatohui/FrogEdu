@@ -2,6 +2,8 @@ import React from 'react'
 import { useNavigate } from 'react-router'
 import { useAuthStore } from '@/stores/authStore'
 import { Loader2 } from 'lucide-react'
+import userService from '@/services/user.service'
+import { getCurrentUser } from 'aws-amplify/auth'
 
 const AuthCallbackPage = (): React.JSX.Element => {
 	const navigate = useNavigate()
@@ -14,8 +16,26 @@ const AuthCallbackPage = (): React.JSX.Element => {
 			try {
 				// Refresh auth state to get the new user session
 				await refreshAuth()
-				// Redirect to dashboard
-				navigate('/dashboard', { replace: true })
+
+				// Check if user exists in backend with a role
+				try {
+					const backendUser = await userService.getCurrentUser()
+
+					// If user has no role, redirect to role selection
+					if (!backendUser.roleId) {
+						navigate('/select-role', { replace: true })
+						return
+					}
+
+					// User has role, go to dashboard
+					navigate('/dashboard', { replace: true })
+				} catch (backendError) {
+					// User doesn't exist in backend, need to select role
+					console.log(
+						'User not found in backend, redirecting to role selection'
+					)
+					navigate('/select-role', { replace: true })
+				}
 			} catch (error) {
 				console.error('OAuth callback error:', error)
 				// Redirect to login with error

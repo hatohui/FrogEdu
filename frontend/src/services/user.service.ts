@@ -71,6 +71,7 @@ class UserService {
 		givenName: string
 		familyName: string
 		customRole: string
+		picture?: string
 	}): Promise<void> {
 		await publicAxios.post('/users/auth/webhook', {
 			Request: {
@@ -80,6 +81,7 @@ class UserService {
 					GivenName: userData.givenName,
 					FamilyName: userData.familyName,
 					CustomRole: userData.customRole,
+					Picture: userData.picture,
 				},
 			},
 		})

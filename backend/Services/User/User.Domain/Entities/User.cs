@@ -24,7 +24,8 @@ public sealed class User : AuditableSoftdeletableEntity
         Email email,
         string firstName,
         string lastName,
-        Guid roleId
+        Guid roleId,
+        string? avatarUrl = null
     )
         : base()
     {
@@ -33,6 +34,7 @@ public sealed class User : AuditableSoftdeletableEntity
         FirstName = firstName;
         LastName = lastName;
         RoleId = roleId;
+        AvatarUrl = avatarUrl;
         IsEmailVerified = false;
     }
 
@@ -41,7 +43,8 @@ public sealed class User : AuditableSoftdeletableEntity
         string email,
         string firstName,
         string lastName,
-        Guid roleId
+        Guid roleId,
+        string? avatarUrl = null
     )
     {
         var user = new User(
@@ -49,8 +52,12 @@ public sealed class User : AuditableSoftdeletableEntity
             Email.Create(email),
             firstName,
             lastName,
-            roleId
+            roleId,
+            avatarUrl
         );
+
+        // Initialize the Id property from base Entity class
+        user.Id = Guid.NewGuid();
 
         user.AddDomainEvent(new UserCreatedDomainEvent(user.Id, user.Email.Value, user.RoleId));
 

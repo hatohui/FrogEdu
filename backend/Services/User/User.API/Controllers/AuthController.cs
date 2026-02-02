@@ -44,7 +44,8 @@ public class AuthController : ControllerBase
             userAttributes.Email,
             userAttributes.GivenName ?? "Unknown",
             userAttributes.FamilyName ?? "Unknown",
-            role
+            role,
+            userAttributes.Picture
         );
 
         var result = await _mediator.Send(command, cancellationToken);
@@ -73,5 +74,6 @@ public record CognitoUserAttributes(
     string Email,
     string? GivenName = null,
     string? FamilyName = null,
-    string? CustomRole = null
+    string? CustomRole = null,
+    string? Picture = null
 );

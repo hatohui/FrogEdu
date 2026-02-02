@@ -59,12 +59,12 @@ const ConfirmEmailPage = (): React.JSX.Element => {
 		setError(null)
 
 		try {
-			await confirmSignUp({
+			const result = await confirmSignUp({
 				username: email,
 				confirmationCode: data.code,
 			})
 
-			toast.success('Email confirmed successfully!')
+			toast.success('Email confirmed successfully! Please sign in.')
 			navigate('/login')
 		} catch (err) {
 			const message =

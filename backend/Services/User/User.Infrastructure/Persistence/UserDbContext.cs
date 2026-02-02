@@ -26,12 +26,6 @@ public class UserDbContext : DbContext, IUnitOfWork
             {
                 createdAtProp.SetDefaultValueSql("CURRENT_TIMESTAMP");
             }
-
-            var updatedAtProp = entityType.FindProperty("UpdatedAt");
-            if (updatedAtProp?.ClrType == typeof(DateTime))
-            {
-                updatedAtProp.SetDefaultValueSql("CURRENT_TIMESTAMP");
-            }
         }
     }
 }
