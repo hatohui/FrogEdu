@@ -30,7 +30,7 @@ import {
 } from '@/components/ui/table'
 import { Checkbox } from '@/components/ui/checkbox'
 import { useQuestions } from '@/hooks/useExams'
-import { CognitiveLevel, QuestionType } from '@/types/model/exams'
+import type { CognitiveLevel, QuestionType } from '@/types/model/exam-service'
 
 const QuestionBankPage = (): React.ReactElement => {
 	const navigate = useNavigate()

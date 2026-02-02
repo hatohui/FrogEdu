@@ -1,5 +1,8 @@
 using FrogEdu.Exam.Application.Commands.CreateQuestion;
+using FrogEdu.Exam.Application.Commands.DeleteQuestion;
+using FrogEdu.Exam.Application.Commands.UpdateQuestion;
 using FrogEdu.Exam.Application.DTOs;
+using FrogEdu.Exam.Application.Queries.GetQuestionById;
 using FrogEdu.Exam.Application.Queries.GetQuestions;
 using FrogEdu.Exam.Domain.Enums;
 using MediatR;
@@ -16,6 +19,8 @@ public class QuestionsController(IMediator mediator) : BaseController
     private readonly IMediator _mediator = mediator;
 
     [HttpGet]
+    [ProducesResponseType(typeof(GetQuestionsResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<ActionResult<GetQuestionsResponse>> GetQuestions(
         [FromQuery] Guid? topicId,
         [FromQuery] CognitiveLevel? cognitiveLevel,
@@ -29,7 +34,29 @@ public class QuestionsController(IMediator mediator) : BaseController
         return Ok(response);
     }
 
+    [HttpGet("{questionId:guid}")]
+    [ProducesResponseType(typeof(QuestionDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<QuestionDto>> GetQuestionById(
+        [FromRoute] Guid questionId,
+        CancellationToken cancellationToken
+    )
+    {
+        var userId = GetAuthenticatedUserId();
+        var query = new GetQuestionByIdQuery(questionId, userId);
+        var result = await _mediator.Send(query, cancellationToken);
+
+        if (result is null)
+            return NotFound();
+
+        return Ok(result);
+    }
+
     [HttpPost]
+    [ProducesResponseType(typeof(CreateQuestionResponse), StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<ActionResult<CreateQuestionResponse>> CreateQuestion(
         [FromBody] CreateQuestionRequest request,
         CancellationToken cancellationToken
@@ -49,18 +76,48 @@ public class QuestionsController(IMediator mediator) : BaseController
             userId
         );
         var response = await _mediator.Send(command, cancellationToken);
-        return CreatedAtAction(nameof(GetQuestions), new { id = response.Id }, response);
+        return CreatedAtAction(nameof(GetQuestionById), new { questionId = response.Id }, response);
+    }
+
+    [HttpPut("{questionId:guid}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> UpdateQuestion(
+        [FromRoute] Guid questionId,
+        [FromBody] UpdateQuestionRequest request,
+        CancellationToken cancellationToken
+    )
+    {
+        var userId = GetAuthenticatedUserId();
+        var command = new UpdateQuestionCommand(
+            questionId,
+            request.Content,
+            request.Point,
+            request.Type,
+            request.CognitiveLevel,
+            request.MediaUrl,
+            userId
+        );
+        await _mediator.Send(command, cancellationToken);
+        return NoContent();
+    }
+
+    [HttpDelete("{questionId:guid}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> DeleteQuestion(
+        [FromRoute] Guid questionId,
+        CancellationToken cancellationToken
+    )
+    {
+        var userId = GetAuthenticatedUserId();
+        var command = new DeleteQuestionCommand(questionId, userId);
+        await _mediator.Send(command, cancellationToken);
+        return NoContent();
     }
 }
-
-public record CreateQuestionRequest(
-    string Content,
-    double Point,
-    QuestionType Type,
-    CognitiveLevel CognitiveLevel,
-    QuestionSource Source,
-    Guid TopicId,
-    string? MediaUrl,
-    bool IsPublic,
-    List<AnswerDto> Answers
-);

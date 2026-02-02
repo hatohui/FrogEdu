@@ -1,10 +1,9 @@
 namespace FrogEdu.Exam.Application.DTOs;
 
-public sealed record SubjectDto(
-    Guid Id,
+public sealed record CreateSubjectRequest(
     string SubjectCode,
     string Name,
     string Description,
-    string? ImageUrl,
-    int Grade
+    int Grade,
+    string? ImageUrl
 );
