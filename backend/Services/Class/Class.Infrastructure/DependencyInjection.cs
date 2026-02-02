@@ -1,5 +1,7 @@
 using FrogEdu.Class.Application.Interfaces;
+using FrogEdu.Class.Domain.Repositories;
 using FrogEdu.Class.Infrastructure.Persistence;
+using FrogEdu.Class.Infrastructure.Repositories;
 using FrogEdu.Class.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -7,14 +9,8 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace FrogEdu.Class.Infrastructure;
 
-/// <summary>
-/// Extension methods for configuring Infrastructure layer services
-/// </summary>
 public static class DependencyInjection
 {
-    /// <summary>
-    /// Add Infrastructure layer services to the DI container
-    /// </summary>
     public static IServiceCollection AddInfrastructureServices(
         this IServiceCollection services,
         IConfiguration configuration
@@ -37,11 +33,17 @@ public static class DependencyInjection
                 connectionString,
                 npgsqlOptions =>
                 {
+                    npgsqlOptions.MigrationsAssembly(typeof(ClassDbContext).Assembly.FullName);
                     npgsqlOptions.EnableRetryOnFailure(3);
                     npgsqlOptions.CommandTimeout(30);
                 }
             );
         });
+
+        // Register repositories
+        services.AddScoped<IClassRoomRepository, ClassRoomRepository>();
+        services.AddScoped<IClassEnrollmentRepository, ClassEnrollmentRepository>();
+        services.AddScoped<IAssignmentRepository, AssignmentRepository>();
 
         // Register database health service
         services.AddScoped<IDatabaseHealthService, DatabaseHealthService>();
