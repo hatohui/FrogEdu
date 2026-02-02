@@ -1,4 +1,4 @@
-import userService from '@/services/user.service'
+import userService from '@/services/user-microservice/user.service'
 import { useQueryClient } from '@tanstack/react-query'
 import { useState, useCallback } from 'react'
 import { toast } from 'sonner'

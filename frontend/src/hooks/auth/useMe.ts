@@ -1,4 +1,4 @@
-import userService from '@/services/user.service'
+import userService from '@/services/user-microservice/user.service'
 import { useAuthStore } from '@/stores/authStore'
 import { useQuery } from '@tanstack/react-query'
 import { useNavigate, useLocation } from 'react-router'

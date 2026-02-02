@@ -7,7 +7,7 @@ import {
 	fetchAuthSession,
 	signInWithRedirect,
 } from 'aws-amplify/auth'
-import userService from '@/services/user.service'
+import userService from '@/services/user-microservice/user.service'
 
 interface AuthState {
 	isAuthenticated: boolean

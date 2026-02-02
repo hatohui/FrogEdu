@@ -60,7 +60,6 @@ public sealed class User : AuditableSoftdeletableEntity
             avatarUrl
         );
 
-        // Initialize the Id property from base Entity class
         user.Id = Guid.NewGuid();
 
         user.AddDomainEvent(new UserCreatedDomainEvent(user.Id, user.Email.Value, user.RoleId));
@@ -91,11 +90,12 @@ public sealed class User : AuditableSoftdeletableEntity
 
     public void GenerateEmailVerificationToken()
     {
-        // Generate a cryptographically secure random token
-        EmailVerificationToken = Convert.ToBase64String(
-            System.Security.Cryptography.RandomNumberGenerator.GetBytes(32)
-        );
-        // Token expires in 24 hours
+        var bytes = System.Security.Cryptography.RandomNumberGenerator.GetBytes(32);
+        EmailVerificationToken = Convert
+            .ToBase64String(bytes)
+            .Replace('+', '-')
+            .Replace('/', '_')
+            .Replace("=", "");
         EmailVerificationTokenExpiry = DateTime.UtcNow.AddHours(24);
         MarkAsUpdated();
     }
@@ -114,9 +114,13 @@ public sealed class User : AuditableSoftdeletableEntity
     public void GeneratePasswordResetToken()
     {
         // Generate a cryptographically secure random token
-        PasswordResetToken = Convert.ToBase64String(
-            System.Security.Cryptography.RandomNumberGenerator.GetBytes(32)
-        );
+        var bytes = System.Security.Cryptography.RandomNumberGenerator.GetBytes(32);
+        // Use URL-safe Base64 encoding (replace + with -, / with _, and remove padding =)
+        PasswordResetToken = Convert
+            .ToBase64String(bytes)
+            .Replace('+', '-')
+            .Replace('/', '_')
+            .Replace("=", "");
         // Token expires in 1 hour
         PasswordResetTokenExpiry = DateTime.UtcNow.AddHours(1);
         MarkAsUpdated();

@@ -2,7 +2,7 @@ import React from 'react'
 import { useNavigate } from 'react-router'
 import { useAuthStore } from '@/stores/authStore'
 import { Loader2 } from 'lucide-react'
-import userService from '@/services/user.service'
+import userService from '@/services/user-microservice/user.service'
 
 const AuthCallbackPage = (): React.JSX.Element => {
 	const navigate = useNavigate()

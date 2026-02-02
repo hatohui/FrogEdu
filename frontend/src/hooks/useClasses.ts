@@ -6,7 +6,7 @@ import {
 	type ClassDto,
 	type CreateClassDto,
 	type DashboardStatsDto,
-} from '@/services/class.service'
+} from '@/services/class-microservice/class.service'
 
 // Query keys
 export const classKeys = {

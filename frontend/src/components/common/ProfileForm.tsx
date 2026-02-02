@@ -23,7 +23,7 @@ import {
 } from '@/components/ui/card'
 import { Loader2, Camera, Check } from 'lucide-react'
 import { toast } from 'sonner'
-import userService from '@/services/user.service'
+import userService from '@/services/user-microservice/user.service'
 import type { UpdateProfileDto } from '@/types/dtos/users/user'
 import { useUploadImage } from '@/hooks/image/useUploadImage'
 import FallBackUserAvatar from './UserAvatar'

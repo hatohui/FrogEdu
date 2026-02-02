@@ -4,15 +4,11 @@ import type {
 	UpdateProfileDto,
 } from '@/types/dtos/users/user'
 import type { Role } from '@/types/dtos/users/role'
-import apiService, { type ApiResponse } from './api.service'
-import axiosInstance, { publicAxios } from './axios'
+import apiService, { type ApiResponse } from '../api.service'
+import axiosInstance, { publicAxios } from '../axios'
 import type { GetPresignedImageUrlResponse } from '@/types/dtos/users/sign-image'
 import { AVATAR_BUCKET } from '@/common/constants'
 
-/**
- * User Service
- * Handles user profile and account management
- */
 class UserService {
 	private readonly baseUrl = '/users'
 

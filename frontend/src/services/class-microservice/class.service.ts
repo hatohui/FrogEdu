@@ -1,4 +1,4 @@
-import axiosInstance from './axios'
+import axiosInstance from '../axios'
 
 // DTOs matching backend
 export interface ClassDto {

@@ -11,7 +11,7 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Users, BookOpen, ChevronRight, Copy, Clock } from 'lucide-react'
 import { toast } from 'sonner'
-import type { ClassDto } from '@/services/class.service'
+import type { ClassDto } from '@/services/class-microservice/class.service'
 
 interface ClassCardProps {
 	classData: ClassDto

@@ -10,7 +10,7 @@ import {
 	CardTitle,
 } from '@/components/ui/card'
 import { toast } from 'sonner'
-import authService from '@/services/auth.service'
+import authService from '@/services/user-microservice/auth.service'
 
 const VerifyEmailPage = (): React.JSX.Element => {
 	const navigate = useNavigate()
@@ -26,6 +26,10 @@ const VerifyEmailPage = (): React.JSX.Element => {
 			setIsVerifying(false)
 			return
 		}
+
+		// Debug: Log the token received from URL
+		console.log('Token from URL:', token)
+		console.log('Token length:', token.length)
 
 		const verifyEmail = async () => {
 			try {

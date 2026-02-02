@@ -1,7 +1,7 @@
 import React from 'react'
 import { useNavigate } from 'react-router'
 import { useMe } from '@/hooks/auth/useMe'
-import userService from '@/services/user.service'
+import userService from '@/services/user-microservice/user.service'
 import {
 	Card,
 	CardContent,
