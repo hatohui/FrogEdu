@@ -14,8 +14,17 @@ public interface IUserRepository
         string email,
         CancellationToken cancellationToken = default
     );
+    Task<Entities.User?> GetByVerificationTokenAsync(
+        string token,
+        CancellationToken cancellationToken = default
+    );
+    Task<Entities.User?> GetByPasswordResetTokenAsync(
+        string token,
+        CancellationToken cancellationToken = default
+    );
     Task<bool> ExistsAsync(string email, CancellationToken cancellationToken = default);
     Task AddAsync(Entities.User user, CancellationToken cancellationToken = default);
+    Task UpdateAsync(Entities.User user, CancellationToken cancellationToken = default);
     void Update(Entities.User user);
     void Delete(Entities.User user);
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);

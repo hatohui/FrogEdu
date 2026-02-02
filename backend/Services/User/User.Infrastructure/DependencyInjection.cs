@@ -1,5 +1,7 @@
+using Amazon.CognitoIdentityProvider;
 using Amazon.Runtime;
 using Amazon.S3;
+using Amazon.SimpleEmail;
 using FrogEdu.User.Application.Interfaces;
 using FrogEdu.User.Domain.Repositories;
 using FrogEdu.User.Domain.Services;
@@ -78,6 +80,17 @@ public static class DependencyInjection
 
         // Configure R2 (Cloudflare S3-compatible storage)
         ConfigureR2Storage(services, configuration);
+
+        // Configure AWS SES for email
+        ConfigureSES(services, configuration);
+
+        // Configure AWS Cognito
+        ConfigureCognito(services, configuration);
+
+        // Register application-layer interfaces
+        services.AddScoped<IPasswordService, CognitoPasswordService>();
+        services.AddSingleton<IApplicationConfiguration, ApplicationConfiguration>();
+
         return services;
     }
 
@@ -136,6 +149,96 @@ public static class DependencyInjection
         services.AddScoped<IAssetStorageService, R2AssetStorageService>();
 
         Console.WriteLine($"R2 Storage configured for account: {accountId}");
+    }
+
+    /// <summary>
+    /// Configure AWS SES for sending emails
+    /// </summary>
+    private static void ConfigureSES(IServiceCollection services, IConfiguration configuration)
+    {
+        var accessKeyId =
+            configuration["AWS:SES:AccessKeyId"]
+            ?? Environment.GetEnvironmentVariable("AWS__SES__AccessKeyId")
+            ?? Environment.GetEnvironmentVariable("SES_ACCESS_KEY_ID");
+        var secretAccessKey =
+            configuration["AWS:SES:SecretAccessKey"]
+            ?? Environment.GetEnvironmentVariable("AWS__SES__SecretAccessKey")
+            ?? Environment.GetEnvironmentVariable("SES_SECRET_ACCESS_KEY");
+        var region =
+            configuration["AWS:SES:Region"]
+            ?? Environment.GetEnvironmentVariable("AWS__SES__Region")
+            ?? Environment.GetEnvironmentVariable("SES_REGION")
+            ?? "ap-southeast-1";
+
+        if (string.IsNullOrWhiteSpace(accessKeyId) || string.IsNullOrWhiteSpace(secretAccessKey))
+        {
+            Console.WriteLine(
+                "Warning: SES configuration is incomplete. Email sending will not work."
+            );
+            // Register a dummy service for development
+            services.AddScoped<IEmailService, SesEmailService>();
+            return;
+        }
+
+        services.AddScoped(sp =>
+        {
+            var credentials = new BasicAWSCredentials(accessKeyId, secretAccessKey);
+            var config = new Amazon.SimpleEmail.AmazonSimpleEmailServiceConfig
+            {
+                RegionEndpoint = Amazon.RegionEndpoint.GetBySystemName(region),
+            };
+
+            return new AmazonSimpleEmailServiceClient(credentials, config);
+        });
+
+        services.AddScoped<IEmailService, SesEmailService>();
+
+        Console.WriteLine($"AWS SES configured for region: {region}");
+    }
+
+    /// <summary>
+    /// Configure AWS Cognito for authentication
+    /// </summary>
+    private static void ConfigureCognito(IServiceCollection services, IConfiguration configuration)
+    {
+        var accessKeyId =
+            configuration["AWS:Cognito:AccessKeyId"]
+            ?? Environment.GetEnvironmentVariable("AWS__Cognito__AccessKeyId")
+            ?? Environment.GetEnvironmentVariable("COGNITO_ACCESS_KEY_ID");
+        var secretAccessKey =
+            configuration["AWS:Cognito:SecretAccessKey"]
+            ?? Environment.GetEnvironmentVariable("AWS__Cognito__SecretAccessKey")
+            ?? Environment.GetEnvironmentVariable("COGNITO_SECRET_ACCESS_KEY");
+        var region =
+            configuration["AWS:Cognito:Region"]
+            ?? Environment.GetEnvironmentVariable("AWS__Cognito__Region")
+            ?? Environment.GetEnvironmentVariable("COGNITO_REGION")
+            ?? "ap-southeast-1";
+
+        if (string.IsNullOrWhiteSpace(accessKeyId) || string.IsNullOrWhiteSpace(secretAccessKey))
+        {
+            Console.WriteLine(
+                "Warning: Cognito configuration is incomplete. Password reset will not work."
+            );
+            // Register a dummy service for development
+            services.AddScoped<IAmazonCognitoIdentityProvider>(_ =>
+                throw new InvalidOperationException("Cognito is not configured")
+            );
+            return;
+        }
+
+        services.AddScoped<IAmazonCognitoIdentityProvider>(sp =>
+        {
+            var credentials = new BasicAWSCredentials(accessKeyId, secretAccessKey);
+            var config = new Amazon.CognitoIdentityProvider.AmazonCognitoIdentityProviderConfig
+            {
+                RegionEndpoint = Amazon.RegionEndpoint.GetBySystemName(region),
+            };
+
+            return new AmazonCognitoIdentityProviderClient(credentials, config);
+        });
+
+        Console.WriteLine($"AWS Cognito configured for region: {region}");
     }
 
     /// <summary>

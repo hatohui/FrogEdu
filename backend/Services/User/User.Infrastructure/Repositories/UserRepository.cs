@@ -43,6 +43,26 @@ public sealed class UserRepository(UserDbContext context) : IUserRepository
             .FirstOrDefaultAsync(u => u.Email == emailVO, cancellationToken);
     }
 
+    public async Task<UserEntity?> GetByVerificationTokenAsync(
+        string token,
+        CancellationToken cancellationToken = default
+    )
+    {
+        return await _context
+            .Users.AsNoTracking()
+            .FirstOrDefaultAsync(u => u.EmailVerificationToken == token, cancellationToken);
+    }
+
+    public async Task<UserEntity?> GetByPasswordResetTokenAsync(
+        string token,
+        CancellationToken cancellationToken = default
+    )
+    {
+        return await _context
+            .Users.AsNoTracking()
+            .FirstOrDefaultAsync(u => u.PasswordResetToken == token, cancellationToken);
+    }
+
     public async Task<bool> ExistsAsync(string email, CancellationToken cancellationToken = default)
     {
         var emailVO = Email.Create(email);
@@ -54,6 +74,12 @@ public sealed class UserRepository(UserDbContext context) : IUserRepository
     public async Task AddAsync(UserEntity user, CancellationToken cancellationToken = default)
     {
         await _context.Users.AddAsync(user, cancellationToken);
+    }
+
+    public async Task UpdateAsync(UserEntity user, CancellationToken cancellationToken = default)
+    {
+        _context.Users.Update(user);
+        await _context.SaveChangesAsync(cancellationToken);
     }
 
     public void Update(UserEntity user)

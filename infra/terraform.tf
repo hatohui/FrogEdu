@@ -10,6 +10,10 @@ terraform {
       source  = "dopplerhq/doppler"
       version = "~> 1.21"
     }
+    awsutils = {
+      source  = "cloudposse/awsutils"
+      version = ">= 0.11.0"
+    }
   }
 
   cloud {

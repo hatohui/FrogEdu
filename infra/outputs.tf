@@ -115,3 +115,50 @@ output "frontend_env_vars" {
     VITE_AWS_REGION           = local.aws_region
   }
 }
+
+# =============================================================================
+# SES
+# =============================================================================
+
+output "ses_domain_identity_arn" {
+  description = "ARN of the SES domain identity"
+  value       = module.ses.ses_domain_identity_arn
+}
+
+output "ses_domain_identity_verification_token" {
+  description = "SES domain verification token - Add as TXT record to DNS"
+  value       = module.ses.ses_domain_identity_verification_token
+}
+
+output "ses_dkim_tokens" {
+  description = "DKIM tokens - Add as CNAME records to DNS"
+  value       = module.ses.ses_dkim_tokens
+}
+
+output "ses_smtp_password" {
+  description = "SMTP password for SES (use with ses_access_key_id for SMTP)"
+  value       = module.ses.ses_smtp_password
+  sensitive   = true
+}
+
+output "ses_access_key_id" {
+  description = "Access Key ID for SES API/SMTP"
+  value       = module.ses.access_key_id
+  sensitive   = true
+}
+
+output "ses_secret_access_key" {
+  description = "Secret Access Key for SES API"
+  value       = module.ses.secret_access_key
+  sensitive   = true
+}
+
+output "ses_user_arn" {
+  description = "ARN of the IAM user created for SES"
+  value       = module.ses.user_arn
+}
+
+output "ses_spf_record" {
+  description = "SPF record for domain - Add as TXT record to DNS"
+  value       = module.ses.spf_record
+}

@@ -16,6 +16,10 @@ public sealed class User : AuditableSoftdeletableEntity
     public Guid RoleId { get; private set; }
     public string? AvatarUrl { get; private set; }
     public bool IsEmailVerified { get; private set; }
+    public string? EmailVerificationToken { get; private set; }
+    public DateTime? EmailVerificationTokenExpiry { get; private set; }
+    public string? PasswordResetToken { get; private set; }
+    public DateTime? PasswordResetTokenExpiry { get; private set; }
 
     private User() { }
 
@@ -80,6 +84,60 @@ public sealed class User : AuditableSoftdeletableEntity
             return;
 
         IsEmailVerified = true;
+        EmailVerificationToken = null;
+        EmailVerificationTokenExpiry = null;
+        MarkAsUpdated();
+    }
+
+    public void GenerateEmailVerificationToken()
+    {
+        // Generate a cryptographically secure random token
+        EmailVerificationToken = Convert.ToBase64String(
+            System.Security.Cryptography.RandomNumberGenerator.GetBytes(32)
+        );
+        // Token expires in 24 hours
+        EmailVerificationTokenExpiry = DateTime.UtcNow.AddHours(24);
+        MarkAsUpdated();
+    }
+
+    public bool IsEmailVerificationTokenValid(string token)
+    {
+        if (string.IsNullOrWhiteSpace(EmailVerificationToken))
+            return false;
+
+        if (EmailVerificationTokenExpiry == null || EmailVerificationTokenExpiry < DateTime.UtcNow)
+            return false;
+
+        return EmailVerificationToken == token;
+    }
+
+    public void GeneratePasswordResetToken()
+    {
+        // Generate a cryptographically secure random token
+        PasswordResetToken = Convert.ToBase64String(
+            System.Security.Cryptography.RandomNumberGenerator.GetBytes(32)
+        );
+        // Token expires in 1 hour
+        PasswordResetTokenExpiry = DateTime.UtcNow.AddHours(1);
+        MarkAsUpdated();
+    }
+
+    public bool IsPasswordResetTokenValid(string token)
+    {
+        if (string.IsNullOrWhiteSpace(PasswordResetToken))
+            return false;
+
+        if (PasswordResetTokenExpiry == null || PasswordResetTokenExpiry < DateTime.UtcNow)
+            return false;
+
+        return PasswordResetToken == token;
+    }
+
+    public void ClearPasswordResetToken()
+    {
+        PasswordResetToken = null;
+        PasswordResetTokenExpiry = null;
+        MarkAsUpdated();
     }
 
     public void ChangeRole(Guid newRoleId)

@@ -32,6 +32,10 @@ public class UserConfiguration : IEntityTypeConfiguration<UserEntity>
         builder.Property(u => u.RoleId).IsRequired().HasColumnName("RoleId");
         builder.Property(u => u.AvatarUrl).HasMaxLength(1000);
         builder.Property(u => u.IsEmailVerified).IsRequired().HasDefaultValue(false);
+        builder.Property(u => u.EmailVerificationToken).HasMaxLength(500);
+        builder.Property(u => u.EmailVerificationTokenExpiry);
+        builder.Property(u => u.PasswordResetToken).HasMaxLength(500);
+        builder.Property(u => u.PasswordResetTokenExpiry);
 
         builder.Property(u => u.CreatedAt).IsRequired();
         builder.Property(u => u.UpdatedAt).IsRequired(false);
@@ -41,6 +45,10 @@ public class UserConfiguration : IEntityTypeConfiguration<UserEntity>
 
         builder.HasIndex(u => u.CognitoId).IsUnique().HasDatabaseName("IX_Users_CognitoSub");
         builder.HasIndex(u => u.Email).IsUnique().HasDatabaseName("IX_Users_Email");
+        builder
+            .HasIndex(u => u.EmailVerificationToken)
+            .HasDatabaseName("IX_Users_EmailVerificationToken");
+        builder.HasIndex(u => u.PasswordResetToken).HasDatabaseName("IX_Users_PasswordResetToken");
         builder.HasIndex(u => u.RoleId).HasDatabaseName("IX_Users_RoleId");
         builder.HasIndex(u => u.IsDeleted).HasDatabaseName("IX_Users_IsDeleted");
         builder.HasQueryFilter(u => !u.IsDeleted);

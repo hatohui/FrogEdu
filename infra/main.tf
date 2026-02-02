@@ -48,6 +48,22 @@ module "cloudfront" {
 
 
 # =============================================================================
+# Email Service Module
+# =============================================================================
+
+module "ses" {
+  source = "./modules/ses"
+
+  domain            = local.ses_domain
+  namespace         = local.project_name
+  environment       = local.environment
+  zone_id           = try(data.doppler_secrets.this.map.ROUTE53_ZONE_ID, "")
+  verify_domain     = try(data.doppler_secrets.this.map.ROUTE53_ZONE_ID, "") != ""
+  verify_dkim       = try(data.doppler_secrets.this.map.ROUTE53_ZONE_ID, "") != ""
+  create_spf_record = try(data.doppler_secrets.this.map.ROUTE53_ZONE_ID, "") != ""
+}
+
+# =============================================================================
 # Repo Modules
 # =============================================================================
 
@@ -141,6 +157,8 @@ module "user_service" {
     "/swagger/{proxy+}",
     "/swagger",
     "/auth/webhook",
+    "/roles/{proxy+}",
+    "/roles",
   ]
 
   environment_variables = {
@@ -180,6 +198,7 @@ module "class_service" {
     "/health",
     "/swagger/{proxy+}",
     "/swagger",
+
   ]
 
   environment_variables = {
