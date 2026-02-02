@@ -16,7 +16,7 @@ const UserAvatar = ({ user }: { user?: GetMeResponse }) => {
 	return (
 		<Avatar className='h-10 w-10'>
 			<AvatarImage
-				src={user?.avatarUrl ? 'https://' + user.avatarUrl : undefined}
+				src={user?.avatarUrl || undefined}
 				alt={user?.firstName || user?.lastName || 'User'}
 			/>
 			<AvatarFallback className='bg-primary text-primary-foreground'>

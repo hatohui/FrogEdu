@@ -109,7 +109,7 @@ const ProfileForm = ({
 						<Avatar className='h-24 w-24'>
 							<AvatarImage
 								src={
-									avatarPreview ? avatarPreview : 'https://' + user?.avatarUrl
+									avatarPreview ? avatarPreview : user?.avatarUrl || undefined
 								}
 								alt={`${user?.firstName} ${user?.lastName}`}
 							/>
