@@ -24,10 +24,10 @@ import {
 import { Loader2, Camera, Check } from 'lucide-react'
 import { toast } from 'sonner'
 import userService from '@/services/user.service'
-import { resendVerificationEmail } from '@/services/verify.service'
-import type { GetMeResponse, UpdateProfileDto } from '@/types/dtos/users/user'
+import type { UpdateProfileDto } from '@/types/dtos/users/user'
 import { useUploadImage } from '@/hooks/image/useUploadImage'
 import FallBackUserAvatar from './UserAvatar'
+import type { UserWithRole } from '@/hooks/auth/useMe'
 
 const profileSchema = z.object({
 	firstName: z
@@ -43,7 +43,7 @@ const profileSchema = z.object({
 type ProfileFormValues = z.infer<typeof profileSchema>
 
 interface ProfileFormProps {
-	user: GetMeResponse
+	user: UserWithRole
 	onSuccess?: () => void
 }
 
@@ -84,8 +84,8 @@ const ProfileForm = ({
 	const handleResendVerification = async () => {
 		setIsVerifying(true)
 		try {
-			await resendVerificationEmail(user.email)
-			toast.success('Verification email sent!')
+			await userService.sendVerificationEmail(user.id)
+			toast.success('Verification email sent! Please check your inbox.')
 		} catch (err) {
 			toast.error('Failed to send verification email')
 			console.error(err)
@@ -214,7 +214,7 @@ const ProfileForm = ({
 							</div>
 							<div className='space-y-2'>
 								<label className='text-sm font-medium'>Role</label>
-								<Input value={user.roleId} disabled />
+								<Input value={user.role?.name || 'Loading...'} disabled />
 							</div>
 						</div>
 

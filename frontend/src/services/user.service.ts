@@ -100,6 +100,12 @@ class UserService {
 		return apiService.delete<void>(`${this.baseUrl}/account`)
 	}
 
+	async sendVerificationEmail(userId: string): Promise<void> {
+		await axiosInstance.post(
+			`${this.baseUrl}/auth/send-verification-email/${userId}`
+		)
+	}
+
 	async getStatistics(): Promise<
 		ApiResponse<{
 			totalClasses: number
@@ -120,12 +126,14 @@ class UserService {
 	}
 
 	async getRoles(): Promise<Role[]> {
-		const response = await axiosInstance.get<Role[]>('/roles')
+		const response = await axiosInstance.get<Role[]>(`${this.baseUrl}/roles`)
 		return response.data
 	}
 
 	async getRoleById(roleId: string): Promise<Role> {
-		const response = await axiosInstance.get<Role>(`/roles/${roleId}`)
+		const response = await axiosInstance.get<Role>(
+			`${this.baseUrl}/roles/${roleId}`
+		)
 		return response.data
 	}
 }

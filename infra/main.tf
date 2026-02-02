@@ -170,6 +170,14 @@ module "user_service" {
     COGNITO_USER_POOL_ID = module.cognito.user_pool_id
     AWS_COGNITO_REGION   = local.aws_region
 
+    // AWS SES settings for email sending
+    SES_ACCESS_KEY_ID     = module.ses.access_key_id
+    SES_SECRET_ACCESS_KEY = module.ses.secret_access_key
+    SES_REGION            = local.aws_region
+    AWS__SES__FromEmail   = "noreply@${local.ses_domain}"
+    AWS__SES__FromName    = "FrogEdu"
+    Frontend__BaseUrl     = "https://${local.frontend_domain}"
+
     // R2 Storage settings
     R2_ACCOUNT_ID      = local.r2_account_id
     R2_ACCESS_KEY      = local.r2_access_key_id

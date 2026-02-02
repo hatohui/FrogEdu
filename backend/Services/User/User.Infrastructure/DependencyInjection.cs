@@ -180,7 +180,7 @@ public static class DependencyInjection
             return;
         }
 
-        services.AddScoped(sp =>
+        services.AddScoped<IAmazonSimpleEmailService>(sp =>
         {
             var credentials = new BasicAWSCredentials(accessKeyId, secretAccessKey);
             var config = new Amazon.SimpleEmail.AmazonSimpleEmailServiceConfig

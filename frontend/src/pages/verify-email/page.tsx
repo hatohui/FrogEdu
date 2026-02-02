@@ -1,7 +1,7 @@
 import React from 'react'
 import { useNavigate, useSearchParams } from 'react-router'
 import { Button } from '@/components/ui/button'
-import { Loader2, CheckCircle, XCircle, Mail } from 'lucide-react'
+import { Loader2, CheckCircle, XCircle } from 'lucide-react'
 import {
 	Card,
 	CardContent,

@@ -5,7 +5,7 @@ import { useNavigate, useLocation } from 'react-router'
 import type { GetMeResponse } from '@/types/dtos/users/user'
 import type { Role } from '@/types/dtos/users/role'
 
-interface UserWithRole extends GetMeResponse {
+export interface UserWithRole extends GetMeResponse {
 	role?: Role
 }
 
@@ -15,8 +15,6 @@ export const useMe = () => {
 	const refreshAuth = useAuthStore(state => state.refreshAuth)
 	const location = useLocation()
 
-	// Don't query backend if user is on role selection page
-	// This prevents 404 errors when user doesn't exist in backend yet
 	const shouldQuery =
 		isAuthenticated &&
 		!location.pathname.startsWith('/select-role') &&
@@ -57,6 +55,7 @@ export const useMe = () => {
 	}
 
 	return {
+		role,
 		user,
 		isLoading,
 		isFetching,

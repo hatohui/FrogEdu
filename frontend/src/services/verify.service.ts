@@ -1,5 +1,5 @@
-import { resendSignUpCode } from 'aws-amplify/auth'
+import axiosInstance from './axios'
 
-export async function resendVerificationEmail(email: string): Promise<void> {
-	await resendSignUpCode({ username: email })
+export async function resendVerificationEmail(userId: string): Promise<void> {
+	await axiosInstance.post(`/users/auth/send-verification-email/${userId}`)
 }

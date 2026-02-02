@@ -1,4 +1,3 @@
-import axiosInstance from './axios'
 import { ApiService, type ApiResponse } from './api.service'
 
 /**

@@ -64,6 +64,8 @@ const ConfirmEmailPage = (): React.JSX.Element => {
 				confirmationCode: data.code,
 			})
 
+			console.log(result)
+
 			toast.success('Email confirmed successfully! Please sign in.')
 			navigate('/login')
 		} catch (err) {
