@@ -1,4 +1,4 @@
-using FrogEdu.Shared.Kernel.Primitives;
+using FrogEdu.Shared.Kernel;
 using MediatR;
 
 namespace FrogEdu.User.Application.Commands.DeleteRole;

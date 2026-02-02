@@ -1,7 +1,6 @@
-using FrogEdu.Shared.Kernel.Primitives;
+using FrogEdu.Shared.Kernel;
 using MediatR;
 
 namespace FrogEdu.User.Application.Commands.UpdateRole;
 
-public sealed record UpdateRoleCommand(Guid Id, string Name, string Description)
-    : IRequest<Result>;
+public sealed record UpdateRoleCommand(Guid Id, string Name, string Description) : IRequest<Result>;

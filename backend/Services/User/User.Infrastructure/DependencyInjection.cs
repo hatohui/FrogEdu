@@ -60,9 +60,6 @@ public static class DependencyInjection
         // Register database health service
         services.AddScoped<IDatabaseHealthService, DatabaseHealthService>();
 
-        // Register legacy storage service (for existing avatar upload)
-        services.AddScoped<IStorageService, S3StorageService>();
-
         // Register role DbContext and role services
         services.AddDbContext<RoleDbContext>(options =>
         {

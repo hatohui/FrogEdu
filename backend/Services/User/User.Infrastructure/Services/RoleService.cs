@@ -8,9 +8,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FrogEdu.User.Infrastructure.Services;
 
-public sealed class RoleService(RoleDbContext dbContext) : IRoleService
+public sealed class RoleService(RoleDbContext dbContext, UserDbContext userDbContext) : IRoleService
 {
     private readonly RoleDbContext _dbContext = dbContext;
+    private readonly UserDbContext _userDbContext = userDbContext;
 
     public async Task<IReadOnlyList<RoleDto>> GetAllRolesAsync(
         CancellationToken cancellationToken = default
@@ -57,5 +58,53 @@ public sealed class RoleService(RoleDbContext dbContext) : IRoleService
             .ConfigureAwait(false);
 
         return role;
+    }
+
+    public async Task<Domain.Entities.Role?> GetRoleEntityByIdAsync(
+        Guid id,
+        CancellationToken cancellationToken = default
+    )
+    {
+        return await _dbContext
+            .Roles.Where(r => r.Id == id)
+            .FirstOrDefaultAsync(cancellationToken)
+            .ConfigureAwait(false);
+    }
+
+    public async Task CreateRoleAsync(
+        Domain.Entities.Role role,
+        CancellationToken cancellationToken = default
+    )
+    {
+        await _dbContext.Roles.AddAsync(role, cancellationToken).ConfigureAwait(false);
+        await _dbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+    }
+
+    public async Task UpdateRoleAsync(
+        Domain.Entities.Role role,
+        CancellationToken cancellationToken = default
+    )
+    {
+        _dbContext.Roles.Update(role);
+        await _dbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+    }
+
+    public async Task DeleteRoleAsync(
+        Domain.Entities.Role role,
+        CancellationToken cancellationToken = default
+    )
+    {
+        _dbContext.Roles.Remove(role);
+        await _dbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+    }
+
+    public async Task<bool> HasUsersWithRoleAsync(
+        Guid roleId,
+        CancellationToken cancellationToken = default
+    )
+    {
+        return await _userDbContext
+            .Users.AnyAsync(u => u.RoleId == roleId, cancellationToken)
+            .ConfigureAwait(false);
     }
 }

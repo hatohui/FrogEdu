@@ -1,4 +1,4 @@
-using FrogEdu.Shared.Kernel.Primitives;
+using FrogEdu.Shared.Kernel;
 using FrogEdu.User.Application.Interfaces;
 using FrogEdu.User.Domain.Enums;
 using MediatR;
@@ -16,22 +16,17 @@ public sealed class CreateRoleCommandHandler(IRoleService roleService)
     )
     {
         // Check if role with this name already exists
-        var existingRole = await _roleService.GetRoleByNameAsync(
-            request.Name,
-            cancellationToken
-        );
+        var existingRole = await _roleService.GetRoleByNameAsync(request.Name, cancellationToken);
 
         if (existingRole is not null)
         {
-            return Result<Guid>.Failure(new Error("Role.Duplicate", "Role already exists"));
+            return Result<Guid>.Failure("Role already exists");
         }
 
         // Parse the role name to enum
         if (!Enum.TryParse<UserRole>(request.Name, true, out var roleEnum))
         {
-            return Result<Guid>.Failure(
-                new Error("Role.InvalidName", "Invalid role name provided")
-            );
+            return Result<Guid>.Failure("Invalid role name provided");
         }
 
         var role = Domain.Entities.Role.Create(roleEnum, request.Description);

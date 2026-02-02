@@ -1,8 +1,11 @@
 using System.Security.Claims;
+using FrogEdu.User.Application.Commands.DeleteUser;
 using FrogEdu.User.Application.Commands.UpdateAvatar;
 using FrogEdu.User.Application.Commands.UpdateProfile;
+using FrogEdu.User.Application.Commands.UpdateUserRole;
 using FrogEdu.User.Application.DTOs;
-using FrogEdu.User.Application.Queries.GetAvatarUploadUrl;
+using FrogEdu.User.Application.Queries.GetAllUsers;
+using FrogEdu.User.Application.Queries.GetUserById;
 using FrogEdu.User.Application.Queries.GetUserProfile;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -22,6 +25,78 @@ public class UserController : ControllerBase
     {
         _mediator = mediator;
         _logger = logger;
+    }
+
+    [HttpGet("users")]
+    [Authorize(Roles = "Admin")]
+    [ProducesResponseType(typeof(IReadOnlyList<UserDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    public async Task<IActionResult> GetAllUsers(CancellationToken cancellationToken)
+    {
+        var query = new GetAllUsersQuery();
+        var result = await _mediator.Send(query, cancellationToken);
+
+        return Ok(result);
+    }
+
+    [HttpGet("users/{id:guid}")]
+    [Authorize(Roles = "Admin")]
+    [ProducesResponseType(typeof(UserDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetUserById(Guid id, CancellationToken cancellationToken)
+    {
+        var query = new GetUserByIdQuery(id);
+        var result = await _mediator.Send(query, cancellationToken);
+
+        if (result is null)
+        {
+            return NotFound($"User with ID {id} not found");
+        }
+
+        return Ok(result);
+    }
+
+    [HttpPut("users/{id:guid}/role")]
+    [Authorize(Roles = "Admin")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> UpdateUserRole(
+        Guid id,
+        [FromBody] UpdateUserRoleRequest request,
+        CancellationToken cancellationToken
+    )
+    {
+        var command = new UpdateUserRoleCommand(id, request.RoleId);
+        var result = await _mediator.Send(command, cancellationToken);
+
+        if (result.IsFailure)
+        {
+            return BadRequest(result.Error);
+        }
+
+        return NoContent();
+    }
+
+    [HttpDelete("users/{id:guid}")]
+    [Authorize(Roles = "Admin")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> DeleteUser(Guid id, CancellationToken cancellationToken)
+    {
+        var command = new DeleteUserCommand(id);
+        var result = await _mediator.Send(command, cancellationToken);
+
+        if (result.IsFailure)
+        {
+            return BadRequest(result.Error);
+        }
+
+        return NoContent();
     }
 
     [HttpGet("me")]
@@ -68,30 +143,6 @@ public class UserController : ControllerBase
         return NoContent();
     }
 
-    [HttpPost("me/avatar")]
-    [Authorize]
-    [ProducesResponseType(typeof(AvatarPresignedUrlDto), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> GetAvatarUploadUrl(
-        [FromBody] AvatarUploadRequest request,
-        CancellationToken cancellationToken
-    )
-    {
-        var cognitoId = GetCognitoId();
-        if (string.IsNullOrEmpty(cognitoId))
-            return Unauthorized();
-
-        var query = new GetAvatarUploadUrlQuery(cognitoId, request.ContentType);
-        var result = await _mediator.Send(query, cancellationToken);
-
-        if (result is null)
-            return NotFound("User not found");
-
-        return Ok(result);
-    }
-
     [HttpPut("me/avatar")]
     [Authorize]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -121,7 +172,3 @@ public class UserController : ControllerBase
         return User.FindFirstValue(ClaimTypes.NameIdentifier) ?? User.FindFirstValue("sub");
     }
 }
-
-public record AvatarUploadRequest(string ContentType);
-
-public record ConfirmAvatarRequest(string AvatarUrl);

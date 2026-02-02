@@ -98,6 +98,16 @@ public sealed class UserRepository(UserDbContext context) : IUserRepository
         _context.Users.Update(user);
     }
 
+    public async Task<IReadOnlyList<UserEntity>> GetAllAsync(
+        CancellationToken cancellationToken = default
+    )
+    {
+        return await _context
+            .Users.AsNoTracking()
+            .Where(u => !u.IsDeleted)
+            .ToListAsync(cancellationToken);
+    }
+
     public async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
         return await _context.SaveChangesAsync(cancellationToken);
