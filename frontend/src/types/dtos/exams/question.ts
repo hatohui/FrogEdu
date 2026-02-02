@@ -1,8 +1,8 @@
-import type {
+import {
 	CognitiveLevel,
 	QuestionType,
 	QuestionSource,
-} from '@/types/model/exams'
+} from '@/types/model/exam-service'
 
 export interface CreateQuestionRequest {
 	content: string

@@ -18,7 +18,6 @@ public sealed class DeleteRoleCommandHandler(IRoleService roleService)
             return Result.Failure("Role not found");
         }
 
-        // Check if any users are using this role
         var hasUsers = await _roleService.HasUsersWithRoleAsync(request.Id, cancellationToken);
         if (hasUsers)
         {

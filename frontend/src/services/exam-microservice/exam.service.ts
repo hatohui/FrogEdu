@@ -11,6 +11,10 @@ import type {
 	CreateExamRequest,
 	CreateMatrixRequest,
 	CreateQuestionRequest,
+	CreateSubjectRequest,
+	UpdateSubjectRequest,
+	CreateTopicRequest,
+	UpdateTopicRequest,
 } from '@/types/dtos/exams'
 
 class AssessmentService {
@@ -24,11 +28,61 @@ class AssessmentService {
 		})
 	}
 
+	async createSubject(
+		request: CreateSubjectRequest
+	): Promise<ApiResponse<Subject>> {
+		return apiService.post<Subject, CreateSubjectRequest>(
+			`${this.baseUrl}/subjects`,
+			request
+		)
+	}
+
+	async updateSubject(
+		subjectId: string,
+		request: UpdateSubjectRequest
+	): Promise<ApiResponse<Subject>> {
+		return apiService.put<Subject, UpdateSubjectRequest>(
+			`${this.baseUrl}/subjects/${subjectId}`,
+			request
+		)
+	}
+
+	async deleteSubject(subjectId: string): Promise<ApiResponse<void>> {
+		return apiService.delete(`${this.baseUrl}/subjects/${subjectId}`)
+	}
+
 	async getTopics(
 		subjectId: string
 	): Promise<ApiResponse<{ topics: Topic[] }>> {
 		return apiService.get<{ topics: Topic[] }>(
 			`${this.baseUrl}/subjects/${subjectId}/topics`
+		)
+	}
+
+	async createTopic(request: CreateTopicRequest): Promise<ApiResponse<Topic>> {
+		return apiService.post<Topic, CreateTopicRequest>(
+			`${this.baseUrl}/subjects/${request.subjectId}/topics`,
+			request
+		)
+	}
+
+	async updateTopic(
+		subjectId: string,
+		topicId: string,
+		request: UpdateTopicRequest
+	): Promise<ApiResponse<Topic>> {
+		return apiService.put<Topic, UpdateTopicRequest>(
+			`${this.baseUrl}/subjects/${subjectId}/topics/${topicId}`,
+			request
+		)
+	}
+
+	async deleteTopic(
+		subjectId: string,
+		topicId: string
+	): Promise<ApiResponse<void>> {
+		return apiService.delete(
+			`${this.baseUrl}/subjects/${subjectId}/topics/${topicId}`
 		)
 	}
 

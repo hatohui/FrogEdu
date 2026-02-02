@@ -26,7 +26,7 @@ import {
 } from '@/components/ui/select'
 import { Checkbox } from '@/components/ui/checkbox'
 import { useCreateQuestion } from '@/hooks/useExams'
-import { QuestionType, CognitiveLevel } from '@/types/model/exams'
+import { QuestionType, CognitiveLevel } from '@/types/model/exam-service'
 import { TopicSelector } from '@/components/exams/topic-selector'
 
 const answerSchema = z.object({
@@ -60,7 +60,7 @@ const CreateQuestionPage = (): React.ReactElement => {
 			content: '',
 			point: 1,
 			type: QuestionType.MultipleChoice,
-			cognitiveLevel: CognitiveLevel.Easy,
+			cognitiveLevel: CognitiveLevel.Remember,
 			topicId: '',
 			isPublic: true,
 			mediaUrl: '',

@@ -1,5 +1,14 @@
 import React, { useState } from 'react'
-import { Plus, FileText, BookOpen, CheckCircle2 } from 'lucide-react'
+import {
+	Plus,
+	FileText,
+	BookOpen,
+	CheckCircle2,
+	MoreHorizontal,
+	Pencil,
+	Trash2,
+	Eye,
+} from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import {
@@ -10,20 +19,100 @@ import {
 	TableHeader,
 	TableRow,
 } from '@/components/ui/table'
-import { useExams } from '@/hooks/useExams'
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
+import {
+	AlertDialog,
+	AlertDialogAction,
+	AlertDialogCancel,
+	AlertDialogContent,
+	AlertDialogDescription,
+	AlertDialogFooter,
+	AlertDialogHeader,
+	AlertDialogTitle,
+} from '@/components/ui/alert-dialog'
+import {
+	Dialog,
+	DialogContent,
+	DialogDescription,
+	DialogFooter,
+	DialogHeader,
+	DialogTitle,
+} from '@/components/ui/dialog'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from '@/components/ui/select'
+import {
+	useExams,
+	useUpdateExam,
+	useDeleteExam,
+	useSubjects,
+	useTopics,
+} from '@/hooks/useExams'
 import { Badge } from '@/components/ui/badge'
 import { useNavigate } from 'react-router'
+import type { Exam } from '@/types/model/exam-service'
+import type { CreateExamRequest } from '@/types/dtos/exams'
 
 const ExamsPage = (): React.ReactElement => {
 	const navigate = useNavigate()
 	const [filter, setFilter] = useState<'all' | 'draft' | 'published'>('all')
+	const [editingExam, setEditingExam] = useState<Exam | null>(null)
+	const [deletingExam, setDeletingExam] = useState<Exam | null>(null)
+	const [formData, setFormData] = useState<Partial<CreateExamRequest>>({
+		name: '',
+		description: '',
+		topicId: '',
+		subjectId: '',
+		grade: 10,
+	})
 
 	const isDraft =
 		filter === 'draft' ? true : filter === 'published' ? false : undefined
 	const { data: exams, isLoading } = useExams(isDraft)
+	const { data: subjects } = useSubjects(formData.grade)
+	const { data: topics } = useTopics(formData.subjectId || '')
+	const updateExam = useUpdateExam()
+	const deleteExam = useDeleteExam()
 
 	const handleCreateExam = () => {
 		navigate('/app/exams/create')
+	}
+
+	const handleUpdate = async () => {
+		if (!editingExam) return
+		await updateExam.mutateAsync({
+			examId: editingExam.id,
+			data: formData,
+		})
+		setEditingExam(null)
+	}
+
+	const handleDelete = async () => {
+		if (!deletingExam) return
+		await deleteExam.mutateAsync(deletingExam.id)
+		setDeletingExam(null)
+	}
+
+	const openEditDialog = (exam: Exam) => {
+		setEditingExam(exam)
+		setFormData({
+			name: exam.name,
+			description: exam.description,
+			topicId: exam.topicId,
+			subjectId: exam.subjectId,
+			grade: exam.grade,
+		})
 	}
 
 	return (
@@ -112,13 +201,34 @@ const ExamsPage = (): React.ReactElement => {
 											{new Date(exam.createdAt).toLocaleDateString()}
 										</TableCell>
 										<TableCell className='text-right'>
-											<Button
-												variant='ghost'
-												size='sm'
-												onClick={() => navigate(`/app/exams/${exam.id}`)}
-											>
-												View
-											</Button>
+											<DropdownMenu>
+												<DropdownMenuTrigger asChild>
+													<Button variant='ghost' size='icon'>
+														<MoreHorizontal className='h-4 w-4' />
+													</Button>
+												</DropdownMenuTrigger>
+												<DropdownMenuContent align='end'>
+													<DropdownMenuItem
+														onClick={() => navigate(`/app/exams/${exam.id}`)}
+													>
+														<Eye className='h-4 w-4 mr-2' />
+														View
+													</DropdownMenuItem>
+													<DropdownMenuItem
+														onClick={() => openEditDialog(exam)}
+													>
+														<Pencil className='h-4 w-4 mr-2' />
+														Edit
+													</DropdownMenuItem>
+													<DropdownMenuItem
+														onClick={() => setDeletingExam(exam)}
+														className='text-destructive'
+													>
+														<Trash2 className='h-4 w-4 mr-2' />
+														Delete
+													</DropdownMenuItem>
+												</DropdownMenuContent>
+											</DropdownMenu>
 										</TableCell>
 									</TableRow>
 								))}
@@ -136,6 +246,143 @@ const ExamsPage = (): React.ReactElement => {
 					)}
 				</CardContent>
 			</Card>
+
+			{/* Edit Dialog */}
+			<Dialog
+				open={!!editingExam}
+				onOpenChange={open => !open && setEditingExam(null)}
+			>
+				<DialogContent>
+					<DialogHeader>
+						<DialogTitle>Edit Exam</DialogTitle>
+						<DialogDescription>
+							Update the exam information below.
+						</DialogDescription>
+					</DialogHeader>
+					<div className='space-y-4 py-4'>
+						<div className='space-y-2'>
+							<Label htmlFor='name'>Name</Label>
+							<Input
+								id='name'
+								value={formData.name}
+								onChange={e =>
+									setFormData({ ...formData, name: e.target.value })
+								}
+								placeholder='Exam name'
+							/>
+						</div>
+						<div className='space-y-2'>
+							<Label htmlFor='description'>Description</Label>
+							<Input
+								id='description'
+								value={formData.description}
+								onChange={e =>
+									setFormData({ ...formData, description: e.target.value })
+								}
+								placeholder='Exam description'
+							/>
+						</div>
+						<div className='space-y-2'>
+							<Label htmlFor='grade'>Grade</Label>
+							<Select
+								value={formData.grade?.toString()}
+								onValueChange={value =>
+									setFormData({ ...formData, grade: Number(value) })
+								}
+							>
+								<SelectTrigger id='grade'>
+									<SelectValue />
+								</SelectTrigger>
+								<SelectContent>
+									{[10, 11, 12].map(grade => (
+										<SelectItem key={grade} value={grade.toString()}>
+											Grade {grade}
+										</SelectItem>
+									))}
+								</SelectContent>
+							</Select>
+						</div>
+						<div className='space-y-2'>
+							<Label htmlFor='subject'>Subject</Label>
+							<Select
+								value={formData.subjectId}
+								onValueChange={value =>
+									setFormData({ ...formData, subjectId: value, topicId: '' })
+								}
+							>
+								<SelectTrigger id='subject'>
+									<SelectValue placeholder='Select a subject' />
+								</SelectTrigger>
+								<SelectContent>
+									{subjects?.map(subject => (
+										<SelectItem key={subject.id} value={subject.id}>
+											{subject.name}
+										</SelectItem>
+									))}
+								</SelectContent>
+							</Select>
+						</div>
+						<div className='space-y-2'>
+							<Label htmlFor='topic'>Topic</Label>
+							<Select
+								value={formData.topicId}
+								onValueChange={value =>
+									setFormData({ ...formData, topicId: value })
+								}
+								disabled={!formData.subjectId}
+							>
+								<SelectTrigger id='topic'>
+									<SelectValue placeholder='Select a topic' />
+								</SelectTrigger>
+								<SelectContent>
+									{topics?.map(topic => (
+										<SelectItem key={topic.id} value={topic.id}>
+											{topic.title}
+										</SelectItem>
+									))}
+								</SelectContent>
+							</Select>
+						</div>
+					</div>
+					<DialogFooter>
+						<Button variant='outline' onClick={() => setEditingExam(null)}>
+							Cancel
+						</Button>
+						<Button
+							onClick={handleUpdate}
+							disabled={updateExam.isPending || !formData.name}
+						>
+							Update
+						</Button>
+					</DialogFooter>
+				</DialogContent>
+			</Dialog>
+
+			{/* Delete Confirmation Dialog */}
+			<AlertDialog
+				open={!!deletingExam}
+				onOpenChange={open => !open && setDeletingExam(null)}
+			>
+				<AlertDialogContent>
+					<AlertDialogHeader>
+						<AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+						<AlertDialogDescription>
+							This will permanently delete the exam &quot;{deletingExam?.name}
+							&quot;. This action cannot be undone.
+						</AlertDialogDescription>
+					</AlertDialogHeader>
+					<AlertDialogFooter>
+						<AlertDialogCancel>Cancel</AlertDialogCancel>
+						<AlertDialogAction
+							onClick={handleDelete}
+							disabled={deleteExam.isPending}
+							className='bg-destructive text-destructive-foreground hover:bg-destructive/90'
+						>
+							Delete
+						</AlertDialogAction>
+					</AlertDialogFooter>
+				</AlertDialogContent>
+			</AlertDialog>
 		</div>
 	)
 }

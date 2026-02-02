@@ -3,8 +3,12 @@ import type {
 	CreateExamRequest,
 	CreateMatrixRequest,
 	CreateQuestionRequest,
+	CreateSubjectRequest,
+	UpdateSubjectRequest,
+	CreateTopicRequest,
+	UpdateTopicRequest,
 } from '@/types/dtos/exams'
-import type { CognitiveLevel } from '@/types/model/exams'
+import type { CognitiveLevel } from '@/types/model/exam-service'
 import { toast } from 'sonner'
 import examService from '@/services/exam-microservice/exam.service'
 
@@ -287,6 +291,120 @@ export function useRemoveQuestionFromExam() {
 		},
 		onError: (error: Error) => {
 			toast.error(`Failed to remove question: ${error.message}`)
+		},
+	})
+}
+
+// ========== Subjects ==========
+export function useCreateSubject() {
+	const queryClient = useQueryClient()
+
+	return useMutation({
+		mutationFn: (request: CreateSubjectRequest) =>
+			examService.createSubject(request),
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ['subjects'] })
+			toast.success('Subject created successfully!')
+		},
+		onError: (error: Error) => {
+			toast.error(`Failed to create subject: ${error.message}`)
+		},
+	})
+}
+
+export function useUpdateSubject() {
+	const queryClient = useQueryClient()
+
+	return useMutation({
+		mutationFn: ({
+			subjectId,
+			data,
+		}: {
+			subjectId: string
+			data: UpdateSubjectRequest
+		}) => examService.updateSubject(subjectId, data),
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ['subjects'] })
+			toast.success('Subject updated successfully!')
+		},
+		onError: (error: Error) => {
+			toast.error(`Failed to update subject: ${error.message}`)
+		},
+	})
+}
+
+export function useDeleteSubject() {
+	const queryClient = useQueryClient()
+
+	return useMutation({
+		mutationFn: (subjectId: string) => examService.deleteSubject(subjectId),
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ['subjects'] })
+			toast.success('Subject deleted successfully!')
+		},
+		onError: (error: Error) => {
+			toast.error(`Failed to delete subject: ${error.message}`)
+		},
+	})
+}
+
+// ========== Topics ==========
+export function useCreateTopic() {
+	const queryClient = useQueryClient()
+
+	return useMutation({
+		mutationFn: (request: CreateTopicRequest) =>
+			examService.createTopic(request),
+		onSuccess: (_, { subjectId }) => {
+			queryClient.invalidateQueries({ queryKey: examKeys.topics(subjectId) })
+			toast.success('Topic created successfully!')
+		},
+		onError: (error: Error) => {
+			toast.error(`Failed to create topic: ${error.message}`)
+		},
+	})
+}
+
+export function useUpdateTopic() {
+	const queryClient = useQueryClient()
+
+	return useMutation({
+		mutationFn: ({
+			subjectId,
+			topicId,
+			data,
+		}: {
+			subjectId: string
+			topicId: string
+			data: UpdateTopicRequest
+		}) => examService.updateTopic(subjectId, topicId, data),
+		onSuccess: (_, { subjectId }) => {
+			queryClient.invalidateQueries({ queryKey: examKeys.topics(subjectId) })
+			toast.success('Topic updated successfully!')
+		},
+		onError: (error: Error) => {
+			toast.error(`Failed to update topic: ${error.message}`)
+		},
+	})
+}
+
+export function useDeleteTopic() {
+	const queryClient = useQueryClient()
+
+	return useMutation({
+		mutationFn: ({
+			subjectId,
+			topicId,
+		}: {
+			subjectId: string
+			topicId: string
+		}) => examService.deleteTopic(subjectId, topicId),
+		onSuccess: (_, { subjectId }) => {
+			queryClient.invalidateQueries({ queryKey: examKeys.topics(subjectId) })
+			toast.success('Topic deleted successfully!')
+		},
+		onError: (error: Error) => {
+			toast.error(`Failed to delete topic: ${error.message}`)
 		},
 	})
 }

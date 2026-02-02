@@ -8,6 +8,8 @@ import {
 	Eye,
 	Pencil,
 	CheckCircle,
+	MoreHorizontal,
+	Trash2,
 } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -28,9 +30,30 @@ import {
 	TableHeader,
 	TableRow,
 } from '@/components/ui/table'
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
+import {
+	AlertDialog,
+	AlertDialogAction,
+	AlertDialogCancel,
+	AlertDialogContent,
+	AlertDialogDescription,
+	AlertDialogFooter,
+	AlertDialogHeader,
+	AlertDialogTitle,
+} from '@/components/ui/alert-dialog'
 import { Checkbox } from '@/components/ui/checkbox'
-import { useQuestions } from '@/hooks/useExams'
-import type { CognitiveLevel, QuestionType } from '@/types/model/exam-service'
+import {
+	useQuestions,
+	useDeleteQuestion,
+	useAddQuestionsToExam,
+} from '@/hooks/useExams'
+import { CognitiveLevel, QuestionType } from '@/types/model/exam-service'
+import type { Question } from '@/types/model/exam-service'
 
 const QuestionBankPage = (): React.ReactElement => {
 	const navigate = useNavigate()
@@ -41,10 +64,15 @@ const QuestionBankPage = (): React.ReactElement => {
 	const [selectedQuestions, setSelectedQuestions] = useState<Set<string>>(
 		new Set()
 	)
+	const [deletingQuestion, setDeletingQuestion] = useState<Question | null>(
+		null
+	)
 
 	const { data: questions, isLoading } = useQuestions({
 		isPublic: true,
 	})
+	const deleteQuestion = useDeleteQuestion()
+	const addQuestionsToExam = useAddQuestionsToExam()
 
 	const filteredQuestions = questions?.filter(question => {
 		const matchesSearch = question.content
@@ -73,20 +101,32 @@ const QuestionBankPage = (): React.ReactElement => {
 		}
 	}
 
-	const handleAddSelectedToExam = () => {
-		// TODO: Implement adding selected questions to exam
-		console.log('Adding questions to exam:', Array.from(selectedQuestions))
+	const handleAddSelectedToExam = async () => {
+		if (!examId) return
+		await addQuestionsToExam.mutateAsync({
+			examId,
+			questionIds: Array.from(selectedQuestions),
+		})
+		setSelectedQuestions(new Set())
 		navigate(`/app/exams/${examId}`)
+	}
+
+	const handleDelete = async () => {
+		if (!deletingQuestion) return
+		await deleteQuestion.mutateAsync(deletingQuestion.id)
+		setDeletingQuestion(null)
 	}
 
 	const getCognitiveLevelLabel = (level: CognitiveLevel) => {
 		switch (level) {
-			case CognitiveLevel.Easy:
-				return 'Easy'
-			case CognitiveLevel.Medium:
-				return 'Medium'
-			case CognitiveLevel.Hard:
-				return 'Hard'
+			case CognitiveLevel.Remember:
+				return 'Remember'
+			case CognitiveLevel.Understand:
+				return 'Understand'
+			case CognitiveLevel.Apply:
+				return 'Apply'
+			case CognitiveLevel.Analyze:
+				return 'Analyze'
 			default:
 				return 'Unknown'
 		}
@@ -94,11 +134,13 @@ const QuestionBankPage = (): React.ReactElement => {
 
 	const getCognitiveLevelColor = (level: CognitiveLevel) => {
 		switch (level) {
-			case CognitiveLevel.Easy:
+			case CognitiveLevel.Remember:
+				return 'bg-blue-500/10 text-blue-700 dark:text-blue-400'
+			case CognitiveLevel.Understand:
 				return 'bg-green-500/10 text-green-700 dark:text-green-400'
-			case CognitiveLevel.Medium:
+			case CognitiveLevel.Apply:
 				return 'bg-yellow-500/10 text-yellow-700 dark:text-yellow-400'
-			case CognitiveLevel.Hard:
+			case CognitiveLevel.Analyze:
 				return 'bg-red-500/10 text-red-700 dark:text-red-400'
 			default:
 				return ''
@@ -113,8 +155,8 @@ const QuestionBankPage = (): React.ReactElement => {
 				return 'True/False'
 			case QuestionType.Essay:
 				return 'Essay'
-			case QuestionType.FillInBlank:
-				return 'Fill in Blank'
+			case QuestionType.FillInTheBlank:
+				return 'Fill in the Blank'
 			default:
 				return 'Unknown'
 		}
@@ -245,29 +287,43 @@ const QuestionBankPage = (): React.ReactElement => {
 											</Badge>
 										</TableCell>
 										<TableCell>{question.point}</TableCell>
-										<TableCell className='text-right space-x-2'>
-											<Button
-												variant='ghost'
-												size='icon'
-												onClick={() =>
-													navigate(
-														`/app/exams/${examId}/questions/${question.id}/preview`
-													)
-												}
-											>
-												<Eye className='h-4 w-4' />
-											</Button>
-											<Button
-												variant='ghost'
-												size='icon'
-												onClick={() =>
-													navigate(
-														`/app/exams/${examId}/questions/${question.id}/edit`
-													)
-												}
-											>
-												<Pencil className='h-4 w-4' />
-											</Button>
+										<TableCell className='text-right'>
+											<DropdownMenu>
+												<DropdownMenuTrigger asChild>
+													<Button variant='ghost' size='icon'>
+														<MoreHorizontal className='h-4 w-4' />
+													</Button>
+												</DropdownMenuTrigger>
+												<DropdownMenuContent align='end'>
+													<DropdownMenuItem
+														onClick={() =>
+															navigate(
+																`/app/exams/${examId}/questions/${question.id}/preview`
+															)
+														}
+													>
+														<Eye className='h-4 w-4 mr-2' />
+														Preview
+													</DropdownMenuItem>
+													<DropdownMenuItem
+														onClick={() =>
+															navigate(
+																`/app/exams/${examId}/questions/${question.id}/edit`
+															)
+														}
+													>
+														<Pencil className='h-4 w-4 mr-2' />
+														Edit
+													</DropdownMenuItem>
+													<DropdownMenuItem
+														onClick={() => setDeletingQuestion(question)}
+														className='text-destructive'
+													>
+														<Trash2 className='h-4 w-4 mr-2' />
+														Delete
+													</DropdownMenuItem>
+												</DropdownMenuContent>
+											</DropdownMenu>
 										</TableCell>
 									</TableRow>
 								))}
@@ -289,6 +345,32 @@ const QuestionBankPage = (): React.ReactElement => {
 					)}
 				</CardContent>
 			</Card>
+
+			{/* Delete Confirmation Dialog */}
+			<AlertDialog
+				open={!!deletingQuestion}
+				onOpenChange={open => !open && setDeletingQuestion(null)}
+			>
+				<AlertDialogContent>
+					<AlertDialogHeader>
+						<AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+						<AlertDialogDescription>
+							This will permanently delete this question. This action cannot be
+							undone.
+						</AlertDialogDescription>
+					</AlertDialogHeader>
+					<AlertDialogFooter>
+						<AlertDialogCancel>Cancel</AlertDialogCancel>
+						<AlertDialogAction
+							onClick={handleDelete}
+							disabled={deleteQuestion.isPending}
+							className='bg-destructive text-destructive-foreground hover:bg-destructive/90'
+						>
+							Delete
+						</AlertDialogAction>
+					</AlertDialogFooter>
+				</AlertDialogContent>
+			</AlertDialog>
 		</div>
 	)
 }
