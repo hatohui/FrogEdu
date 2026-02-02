@@ -27,6 +27,7 @@ import {
 import { Checkbox } from '@/components/ui/checkbox'
 import { useCreateQuestion } from '@/hooks/useExams'
 import { QuestionType, CognitiveLevel } from '@/types/model/exams'
+import { TopicSelector } from '@/components/exams/topic-selector'
 
 const answerSchema = z.object({
 	content: z.string().min(1, 'Answer content is required'),
@@ -248,27 +249,17 @@ const CreateQuestionPage = (): React.ReactElement => {
 									render={({ field }) => (
 										<FormItem>
 											<FormLabel>Topic *</FormLabel>
-											<Select
-												onValueChange={field.onChange}
-												value={field.value}
-											>
-												<FormControl>
-													<SelectTrigger>
-														<SelectValue placeholder='Select topic' />
-													</SelectTrigger>
-												</FormControl>
-												<SelectContent>
-													<SelectItem value='topic-1'>
-														Algebra - Linear Equations
-													</SelectItem>
-													<SelectItem value='topic-2'>
-														Geometry - Triangles
-													</SelectItem>
-													<SelectItem value='topic-3'>
-														Calculus - Derivatives
-													</SelectItem>
-												</SelectContent>
-											</Select>
+											<FormControl>
+												<TopicSelector
+													topics={[]}
+													value={field.value}
+													onValueChange={field.onChange}
+													placeholder='Search and select a topic...'
+												/>
+											</FormControl>
+											<FormDescription>
+												Search by topic name or number (e.g., 1.1, 2.3)
+											</FormDescription>
 											<FormMessage />
 										</FormItem>
 									)}

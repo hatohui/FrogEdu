@@ -22,7 +22,7 @@ import {
 	FormMessage,
 } from '@/components/ui/form'
 import { toast } from 'sonner'
-import authService from '@/services/auth.service'
+import authService from '@/services/user-microservice/auth.service'
 
 const forgotPasswordSchema = z.object({
 	email: z.string().email({ message: 'Please enter a valid email address' }),

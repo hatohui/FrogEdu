@@ -86,7 +86,16 @@ public sealed class Exam : AuditableEntity
             shouldShuffleAnswerOptions
         );
 
-        exam.MarkAsCreated();
+        // Pass userId to ensure CreatedBy is set
+        if (Guid.TryParse(userId, out var createdByGuid))
+        {
+            exam.MarkAsCreated(createdByGuid);
+        }
+        else
+        {
+            exam.MarkAsCreated();
+        }
+
         exam.AddDomainEvent(new ExamCreatedDomainEvent(exam.Id, exam.Title));
         return exam;
     }

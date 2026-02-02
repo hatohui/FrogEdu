@@ -105,7 +105,11 @@ const ProfileForm = ({
 				{/* Avatar Section */}
 				<div className='flex items-center gap-6'>
 					<div className='relative'>
-						<UserAvatar user={user} avatarPreview={avatarPreview} />
+						<UserAvatar
+							user={user}
+							avatarPreview={avatarPreview}
+							size='h-24 w-24'
+						/>
 						<label
 							htmlFor='avatar-upload'
 							className='absolute bottom-0 right-0 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-primary text-primary-foreground shadow-md hover:bg-primary/90 transition-colors'

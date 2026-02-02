@@ -4,9 +4,11 @@ import type { GetMeResponse } from '@/types/dtos/users/user'
 const UserAvatar = ({
 	user,
 	avatarPreview,
+	size = 'h-10 w-10',
 }: {
 	user?: GetMeResponse
 	avatarPreview?: string | null
+	size?: string
 }) => {
 	const getUserInitials = () => {
 		if (!user) return ''
@@ -20,14 +22,16 @@ const UserAvatar = ({
 	}
 
 	return (
-		<Avatar className='h-10 w-10'>
+		<Avatar className={size}>
 			<AvatarImage
 				src={
 					avatarPreview !== null ? avatarPreview : user?.avatarUrl || undefined
 				}
 				alt={user?.firstName || user?.lastName || 'User'}
 			/>
-			<AvatarFallback className='bg-primary text-primary-foreground h-10 w-10'>
+			<AvatarFallback
+				className={`bg-primary text-primary-foreground flex items-center justify-center font-semibold ${size}`}
+			>
 				{getUserInitials()}
 			</AvatarFallback>
 		</Avatar>

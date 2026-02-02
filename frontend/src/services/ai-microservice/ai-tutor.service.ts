@@ -1,4 +1,4 @@
-import apiService, { type ApiResponse } from './api.service'
+import apiService, { type ApiResponse } from '../api.service'
 
 /**
  * AI Tutor DTOs

@@ -24,14 +24,13 @@ import {
 } from '@/components/ui/select'
 import { useNavigate } from 'react-router'
 import { useCreateExam, useSubjects, useTopics } from '@/hooks/useExams'
+import { TopicSelector } from '@/components/exams/topic-selector'
 
 const examSchema = z.object({
 	title: z.string().min(3, 'Title must be at least 3 characters').max(200),
 	duration: z.number().min(1).max(480),
 	passScore: z.number().min(0).max(100),
 	maxAttempts: z.number().min(1).max(10),
-	startTime: z.string().min(1, 'Start time is required'),
-	endTime: z.string().min(1, 'End time is required'),
 	grade: z.number().min(1).max(5),
 	subjectId: z.string().min(1, 'Subject is required'),
 	topicId: z.string().min(1, 'Topic is required'),
@@ -53,9 +52,7 @@ const CreateExamPage = (): React.ReactElement => {
 			duration: 60,
 			passScore: 50,
 			maxAttempts: 1,
-			grade: 10,
-			startTime: '',
-			endTime: '',
+			grade: 1,
 			subjectId: '',
 			topicId: '',
 			shouldShuffleQuestions: false,
@@ -70,13 +67,17 @@ const CreateExamPage = (): React.ReactElement => {
 
 	const onSubmit = async (data: ExamFormData) => {
 		try {
+			// Use default dates for now - scheduling will be done separately
+			const now = new Date()
+			const futureDate = new Date(now.getTime() + 365 * 24 * 60 * 60 * 1000) // 1 year from now
+
 			const result = await createExamMutation.mutateAsync({
 				title: data.title,
 				duration: data.duration,
 				passScore: data.passScore,
 				maxAttempts: data.maxAttempts,
-				startTime: new Date(data.startTime).toISOString(),
-				endTime: new Date(data.endTime).toISOString(),
+				startTime: now.toISOString(),
+				endTime: futureDate.toISOString(),
 				topicId: data.topicId,
 				shouldShuffleQuestions: data.shouldShuffleQuestions,
 				shouldShuffleAnswerOptions: data.shouldShuffleAnswerOptions,
@@ -102,7 +103,7 @@ const CreateExamPage = (): React.ReactElement => {
 		}
 
 		const isValid = await form.trigger(fieldsToValidate)
-		if (isValid && step < 3) {
+		if (isValid && step < 2) {
 			setStep(step + 1)
 		}
 	}
@@ -126,13 +127,13 @@ const CreateExamPage = (): React.ReactElement => {
 				</Button>
 				<div>
 					<h1 className='text-3xl font-bold'>Create New Exam</h1>
-					<p className='text-muted-foreground'>Step {step} of 3</p>
+					<p className='text-muted-foreground'>Step {step} of 2</p>
 				</div>
 			</div>
 
 			{/* Progress Steps */}
 			<div className='flex items-center justify-between'>
-				{[1, 2, 3].map(num => (
+				{[1, 2].map(num => (
 					<div key={num} className='flex items-center flex-1'>
 						<div
 							className={`flex items-center justify-center w-10 h-10 rounded-full border-2 ${
@@ -318,23 +319,20 @@ const CreateExamPage = (): React.ReactElement => {
 									render={({ field }) => (
 										<FormItem>
 											<FormLabel>Topic *</FormLabel>
-											<Select
-												onValueChange={field.onChange}
-												value={field.value}
-											>
-												<FormControl>
-													<SelectTrigger>
-														<SelectValue placeholder='Select topic' />
-													</SelectTrigger>
-												</FormControl>
-												<SelectContent>
-													{topics?.map(topic => (
-														<SelectItem key={topic.id} value={topic.id}>
-															{topic.title}
-														</SelectItem>
-													))}
-												</SelectContent>
-											</Select>
+											<FormControl>
+												<TopicSelector
+													topics={topics || []}
+													value={field.value}
+													onValueChange={field.onChange}
+													placeholder='Search and select a topic...'
+													disabled={!selectedSubjectId}
+												/>
+											</FormControl>
+											<FormDescription>
+												{!selectedSubjectId
+													? 'Please select a subject first'
+													: 'Search by topic name or number (e.g., 1.1, 2.3)'}
+											</FormDescription>
 											<FormMessage />
 										</FormItem>
 									)}
@@ -343,47 +341,6 @@ const CreateExamPage = (): React.ReactElement => {
 						</Card>
 					)}
 
-					{/* Step 3: Schedule */}
-					{step === 3 && (
-						<Card>
-							<CardHeader>
-								<CardTitle>Schedule & Settings</CardTitle>
-							</CardHeader>
-							<CardContent className='space-y-4'>
-								<div className='grid grid-cols-2 gap-4'>
-									<FormField
-										control={form.control}
-										name='startTime'
-										render={({ field }) => (
-											<FormItem>
-												<FormLabel>Start Time *</FormLabel>
-												<FormControl>
-													<Input type='datetime-local' {...field} />
-												</FormControl>
-												<FormMessage />
-											</FormItem>
-										)}
-									/>
-
-									<FormField
-										control={form.control}
-										name='endTime'
-										render={({ field }) => (
-											<FormItem>
-												<FormLabel>End Time *</FormLabel>
-												<FormControl>
-													<Input type='datetime-local' {...field} />
-												</FormControl>
-												<FormMessage />
-											</FormItem>
-										)}
-									/>
-								</div>
-							</CardContent>
-						</Card>
-					)}
-
-					{/* Navigation */}
 					<div className='flex justify-between'>
 						<Button
 							type='button'
@@ -395,7 +352,7 @@ const CreateExamPage = (): React.ReactElement => {
 							Previous
 						</Button>
 
-						{step < 3 ? (
+						{step < 2 ? (
 							<Button type='button' onClick={nextStep}>
 								Next
 								<ArrowRight className='h-4 w-4 ml-2' />
