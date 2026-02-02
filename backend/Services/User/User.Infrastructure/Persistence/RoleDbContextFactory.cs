@@ -8,11 +8,18 @@ public class RoleDbContextFactory : IDesignTimeDbContextFactory<RoleDbContext>
 {
     public RoleDbContext CreateDbContext(string[] args)
     {
-        Env.Load();
+        // Load .env file from the API project directory
+        var apiProjectPath = Path.Combine(Directory.GetCurrentDirectory(), "..", "User.API");
+        var envFilePath = Path.Combine(apiProjectPath, ".env");
+
+        if (File.Exists(envFilePath))
+        {
+            Env.Load(envFilePath);
+        }
 
         var connectionString =
             Environment.GetEnvironmentVariable("USER_DB_CONNECTION_STRING")
-            ?? "postgresql://root:root@frog-user-db:5432/user?sslmode=disable";
+            ?? "Host=localhost;Port=5432;Database=user;Username=root;Password=root;SSL Mode=Disable";
 
         var optionsBuilder = new DbContextOptionsBuilder<RoleDbContext>().UseNpgsql(
             connectionString,

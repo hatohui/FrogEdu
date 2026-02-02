@@ -23,7 +23,7 @@ public static class DependencyInjection
         var connectionString =
             (!string.IsNullOrWhiteSpace(configConnectionString) ? configConnectionString : null)
             ?? (!string.IsNullOrWhiteSpace(envConnectionString) ? envConnectionString : null)
-            ?? "postgresql://root:root@localhost:5432/class?sslmode=disable";
+            ?? "Host=localhost;Port=5432;Database=class;Username=root;Password=root;SSL Mode=Disable";
 
         Console.WriteLine("Database Connected.");
 
