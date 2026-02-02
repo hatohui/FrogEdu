@@ -10,7 +10,7 @@ public sealed class Subject : Entity
     public string? ImageUrl { get; private set; }
     public int Grade { get; private set; }
 
-    private readonly List<Topic> _topics = new();
+    private readonly List<Topic> _topics = [];
     public IReadOnlyCollection<Topic> Topics => _topics.AsReadOnly();
 
     private Subject() { }

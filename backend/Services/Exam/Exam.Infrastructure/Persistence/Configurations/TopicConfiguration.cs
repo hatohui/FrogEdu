@@ -23,9 +23,9 @@ public class TopicConfiguration : IEntityTypeConfiguration<Topic>
 
         // Auditable properties
         builder.Property(t => t.CreatedAt).IsRequired();
-        builder.Property(t => t.CreatedBy).IsRequired().HasMaxLength(256);
-        builder.Property(t => t.UpdatedAt);
-        builder.Property(t => t.UpdatedBy).HasMaxLength(256);
+        builder.Property(t => t.CreatedBy).IsRequired(false);
+        builder.Property(t => t.UpdatedAt).IsRequired(false);
+        builder.Property(t => t.UpdatedBy).IsRequired(false);
 
         // Indexes
         builder.HasIndex(t => t.SubjectId).HasDatabaseName("IX_Topics_SubjectId");

@@ -26,6 +26,7 @@ public class ExamDbContext : DbContext
         modelBuilder.ApplyConfiguration(new SubjectConfiguration());
         modelBuilder.ApplyConfiguration(new SubjectSeedConfiguration());
         modelBuilder.ApplyConfiguration(new TopicConfiguration());
+        modelBuilder.ApplyConfiguration(new TopicSeedConfiguration());
         modelBuilder.ApplyConfiguration(new QuestionConfiguration());
         modelBuilder.ApplyConfiguration(new AnswerConfiguration());
         modelBuilder.ApplyConfiguration(new ExamConfiguration());
