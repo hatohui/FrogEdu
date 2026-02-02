@@ -63,7 +63,7 @@ public class R2AssetStorageService : IAssetStorageService
 
             var uploadUrl = _s3Client.GetPreSignedURL(presignedRequest);
 
-            var publicUrl = $"{_publicEndpoint.TrimEnd('/')}/{objectKey}";
+            var publicUrl = $"https://{_publicEndpoint.TrimEnd('/')}/{objectKey}";
 
             _logger.LogInformation(
                 "Generated presigned upload URL for object key: {ObjectKey}",

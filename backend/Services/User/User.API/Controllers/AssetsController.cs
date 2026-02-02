@@ -23,11 +23,6 @@ public class AssetsController : ControllerBase
         _logger = logger;
     }
 
-    /// <summary>
-    /// Get a presigned URL for uploading an asset to R2
-    /// </summary>
-    /// <param name="folder">The folder to upload to (e.g., "avatars", "documents")</param>
-    /// <param name="contentType">Optional content type (e.g., "image/png")</param>
     [HttpGet("sign-url")]
     [Authorize]
     [ProducesResponseType(typeof(AssetUploadUrlResponse), StatusCodes.Status200OK)]

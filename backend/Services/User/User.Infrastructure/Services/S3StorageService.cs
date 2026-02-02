@@ -7,9 +7,6 @@ using Microsoft.Extensions.Logging;
 
 namespace FrogEdu.User.Infrastructure.Services;
 
-/// <summary>
-/// S3-based storage service for managing file uploads
-/// </summary>
 public sealed class S3StorageService : IStorageService
 {
     private readonly IAmazonS3 _s3Client;
