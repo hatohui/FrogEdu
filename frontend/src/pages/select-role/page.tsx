@@ -1,6 +1,6 @@
 import React from 'react'
 import { useNavigate } from 'react-router'
-import { useAuthStore } from '@/stores/authStore'
+import { useMe } from '@/hooks/auth/useMe'
 import userService from '@/services/user.service'
 import {
 	Card,
@@ -13,35 +13,30 @@ import { GraduationCap, Users } from 'lucide-react'
 
 const SelectRolePage = (): React.JSX.Element => {
 	const navigate = useNavigate()
-	const user = useAuthStore(state => state.user)
-	const userProfile = useAuthStore(state => state.userProfile)
+	const { user, isAuthenticated } = useMe()
 	const [isSubmitting, setIsSubmitting] = React.useState(false)
 	const [error, setError] = React.useState<string | null>(null)
 
 	React.useEffect(() => {
-		if (!user) {
+		if (!isAuthenticated) {
 			navigate('/login')
-		} else if (userProfile?.['custom:role']) {
+		} else if (user?.roleId) {
 			navigate('/dashboard')
 		}
-	}, [user, userProfile, navigate])
+	}, [user, isAuthenticated, navigate])
 
 	const handleRoleSelect = async (role: 'Teacher' | 'Student') => {
-		if (!user || !userProfile) return
+		if (!user) return
 
 		setIsSubmitting(true)
 		setError(null)
 
 		try {
 			await userService.createUserFromCognito({
-				sub: user.userId,
-				email: userProfile.email || '',
-				givenName:
-					userProfile.given_name || userProfile.name?.split(' ')[0] || 'User',
-				familyName:
-					userProfile.family_name ||
-					userProfile.name?.split(' ').slice(1).join(' ') ||
-					'',
+				sub: user.cognitoId,
+				email: user.email || '',
+				givenName: user.firstName || 'User',
+				familyName: user.lastName || '',
 				customRole: role,
 			})
 

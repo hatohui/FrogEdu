@@ -1,5 +1,5 @@
 import React from 'react'
-import { useAuthStore } from '@/stores/authStore'
+import { useMe } from '@/hooks/auth/useMe'
 import { useDashboardStats, useClasses } from '@/hooks/useClasses'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -50,8 +50,8 @@ const StatCard = ({ title, value, icon: Icon, trend }: StatCardProps) => (
 )
 
 const DashboardPage = (): React.ReactElement => {
-	const { user, isLoading: authLoading, userProfile } = useAuthStore()
-	const isTeacher = userProfile?.['custom:role'] === 'Teacher'
+	const { user, isLoading: authLoading } = useMe()
+	const isTeacher = user?.role?.name === 'Teacher'
 
 	// Fetch real data using TanStack Query
 	const { data: stats, isLoading: statsLoading } = useDashboardStats()
@@ -67,14 +67,8 @@ const DashboardPage = (): React.ReactElement => {
 	]
 
 	const getUserDisplayName = () => {
-		if (!userProfile && !user) return 'User'
-		return (
-			userProfile?.name ||
-			userProfile?.given_name ||
-			userProfile?.email?.split('@')[0] ||
-			user?.username ||
-			'User'
-		)
+		if (!user) return 'User'
+		return user?.firstName || user?.email?.split('@')[0] || 'User'
 	}
 
 	const isLoading = authLoading || statsLoading

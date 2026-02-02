@@ -97,10 +97,8 @@ const ProfilePage = (): React.ReactElement => {
 						<div className='flex items-center gap-3'>
 							<Clock className='h-5 w-5 text-muted-foreground' />
 							<div>
-								<p className='text-sm text-muted-foreground'>Last Login</p>
-								<p>
-									{user.lastLoginAt ? formatDate(user.lastLoginAt) : 'Never'}
-								</p>
+								<p className='text-sm text-muted-foreground'>Member Since</p>
+								<p>{formatDate(user.createdAt)}</p>
 							</div>
 						</div>
 					</div>
@@ -111,7 +109,7 @@ const ProfilePage = (): React.ReactElement => {
 						</div>
 						<div>
 							<p className='text-sm text-muted-foreground'>Last Updated</p>
-							<p>{formatDate(user.updatedAt)}</p>
+							<p>{user.updatedAt ? formatDate(user.updatedAt) : 'Never'}</p>
 						</div>
 					</div>
 				</CardContent>

@@ -214,7 +214,7 @@ const ProfileForm = ({
 							</div>
 							<div className='space-y-2'>
 								<label className='text-sm font-medium'>Role</label>
-								<Input value={user.role} disabled />
+								<Input value={user.roleId} disabled />
 							</div>
 						</div>
 

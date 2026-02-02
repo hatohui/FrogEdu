@@ -139,7 +139,7 @@ export const useAuthStore = create<AuthState>()((set, get) => ({
 				if (!customRole) {
 					try {
 						const backendUser = await userService.getCurrentUser()
-						customRole = backendUser.role
+						customRole = backendUser.roleId
 					} catch (error) {
 						console.log('Could not fetch user from backend:', error)
 					}

@@ -1,7 +1,7 @@
 import React from 'react'
 import { useParams, Link, useNavigate } from 'react-router'
 import { useClassDetails, useRegenerateInviteCode } from '@/hooks/useClasses'
-import { useAuthStore } from '@/stores/authStore'
+import { useMe } from '@/hooks/auth/useMe'
 import { StudentList } from '@/components/classes'
 import { Button } from '@/components/ui/button'
 import {
@@ -30,14 +30,14 @@ import { toast } from 'sonner'
 const ClassDetailPage: React.FC = () => {
 	const { id } = useParams<{ id: string }>()
 	const navigate = useNavigate()
-	const { userProfile } = useAuthStore()
+	const { user } = useMe()
 
 	const { data: classDetails, isLoading, error } = useClassDetails(id || '')
 	const regenerateCode = useRegenerateInviteCode()
 
 	const isTeacher =
-		userProfile?.['custom:role'] === 'Teacher' &&
-		classDetails?.homeroomTeacherId === userProfile?.sub
+		user?.role?.name === 'Teacher' &&
+		classDetails?.homeroomTeacherId === user?.cognitoId
 
 	const copyInviteCode = () => {
 		if (classDetails?.inviteCode) {

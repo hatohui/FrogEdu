@@ -142,7 +142,7 @@ const Sidebar = ({ className, onClose }: SidebarProps): React.ReactElement => {
 							{me ? `${me.firstName} ${me.lastName}` : 'User'}
 						</p>
 						<p className='text-xs text-sidebar-foreground/60 truncate'>
-							{me?.role}
+							{me?.role?.name || 'User'}
 						</p>
 					</div>
 				</div>

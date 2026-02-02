@@ -1,6 +1,6 @@
 import React from 'react'
 import { useNavigate, useLocation } from 'react-router'
-import { useAuthStore } from '@/stores/authStore'
+import { useMe } from '@/hooks/auth/useMe'
 
 /**
  * RoleGuard component checks if authenticated user has a role set
@@ -13,9 +13,7 @@ export const RoleGuard = ({
 }): React.ReactElement => {
 	const navigate = useNavigate()
 	const location = useLocation()
-	const isAuthenticated = useAuthStore(state => state.isAuthenticated)
-	const userProfile = useAuthStore(state => state.userProfile)
-	const isLoading = useAuthStore(state => state.isLoading)
+	const { user, isAuthenticated, isLoading } = useMe()
 
 	React.useEffect(() => {
 		// Skip if still loading or on auth/select-role pages
@@ -31,10 +29,10 @@ export const RoleGuard = ({
 		}
 
 		// If authenticated but no role, redirect to role selection
-		if (isAuthenticated && userProfile && !userProfile['custom:role']) {
+		if (isAuthenticated && user && !user.roleId) {
 			navigate('/select-role', { replace: true })
 		}
-	}, [isAuthenticated, userProfile, isLoading, location.pathname, navigate])
+	}, [isAuthenticated, user, isLoading, location.pathname, navigate])
 
 	return <>{children}</>
 }

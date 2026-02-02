@@ -3,6 +3,7 @@ import type {
 	GetMeResponse,
 	UpdateProfileDto,
 } from '@/types/dtos/users/user'
+import type { Role } from '@/types/dtos/users/role'
 import apiService, { type ApiResponse } from './api.service'
 import axiosInstance, { publicAxios } from './axios'
 import type { GetPresignedImageUrlResponse } from '@/types/dtos/users/sign-image'
@@ -114,6 +115,16 @@ class UserService {
 
 	async refreshToken(): Promise<ApiResponse<{ token: string }>> {
 		return apiService.post<{ token: string }>(`${this.baseUrl}/refresh-token`)
+	}
+
+	async getRoles(): Promise<Role[]> {
+		const response = await axiosInstance.get<Role[]>('/roles')
+		return response.data
+	}
+
+	async getRoleById(roleId: string): Promise<Role> {
+		const response = await axiosInstance.get<Role>(`/roles/${roleId}`)
+		return response.data
 	}
 }
 

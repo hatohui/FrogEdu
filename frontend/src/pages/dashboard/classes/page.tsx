@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { useAuthStore } from '@/stores/authStore'
+import { useMe } from '@/hooks/auth/useMe'
 import { useClasses } from '@/hooks/useClasses'
 import {
 	ClassCard,
@@ -12,8 +12,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Plus, Users, Archive, UserPlus } from 'lucide-react'
 
 const ClassesPage: React.FC = () => {
-	const { userProfile } = useAuthStore()
-	const isTeacher = userProfile?.['custom:role'] === 'Teacher'
+	const { user } = useMe()
+	const isTeacher = user?.role?.name === 'Teacher'
 
 	const [showCreateModal, setShowCreateModal] = useState(false)
 	const [includeArchived, setIncludeArchived] = useState(false)
