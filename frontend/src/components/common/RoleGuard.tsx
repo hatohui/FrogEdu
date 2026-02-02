@@ -13,7 +13,7 @@ export const RoleGuard = ({
 }): React.ReactElement => {
 	const navigate = useNavigate()
 	const location = useLocation()
-	const { user, isAuthenticated, isLoading } = useMe()
+	const { user, isAuthenticated, isLoading, isError } = useMe()
 
 	React.useEffect(() => {
 		// Skip if still loading or on auth/select-role pages
@@ -30,12 +30,24 @@ export const RoleGuard = ({
 			return
 		}
 
-		// If authenticated but no role, redirect to role selection
-		if (isAuthenticated && user && !user.roleId) {
-			console.log('RoleGuard: User has no role, redirecting to select-role')
-			navigate('/select-role', { replace: true })
+		// If authenticated but user doesn't exist in backend or has no role
+		if (isAuthenticated && !isLoading) {
+			// User doesn't exist in backend (404 error)
+			if (isError && !user) {
+				console.log(
+					'RoleGuard: User not found in backend, redirecting to select-role'
+				)
+				navigate('/select-role', { replace: true })
+				return
+			}
+
+			// User exists but has no role
+			if (user && !user.roleId) {
+				console.log('RoleGuard: User has no role, redirecting to select-role')
+				navigate('/select-role', { replace: true })
+			}
 		}
-	}, [isAuthenticated, user, isLoading, location.pathname, navigate])
+	}, [isAuthenticated, user, isLoading, isError, location.pathname, navigate])
 
 	return <>{children}</>
 }

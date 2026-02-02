@@ -15,7 +15,11 @@ export function useLogin() {
 		async (email: string, password: string) => {
 			try {
 				await signIn(email, password)
-				navigate('/dashboard')
+				// Don't navigate immediately - let RoleGuard handle it
+				// This allows checking if user exists in backend first
+				setTimeout(() => {
+					navigate('/dashboard')
+				}, 100)
 			} catch {
 				toast.error('Failed to sign in. Please check your credentials.')
 			}
