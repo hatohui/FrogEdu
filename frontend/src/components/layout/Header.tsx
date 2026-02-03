@@ -35,7 +35,7 @@ const Header = ({
 		<header
 			className={`flex items-center justify-between px-6 py-4 border-b bg-card ${className}`}
 		>
-			{/* Left side - Logo and Menu Button */}
+			{/* Left side - Menu Button */}
 			<div className='flex items-center space-x-4'>
 				<Button
 					variant='ghost'
@@ -45,17 +45,6 @@ const Header = ({
 				>
 					<Menu className='h-6 w-6' />
 				</Button>
-
-				<div className='hidden lg:flex items-center space-x-2'>
-					<div className='w-8 h-8 rounded-lg bg-primary flex items-center justify-center text-primary-foreground font-bold text-lg'>
-						<img
-							src='/frog.png'
-							alt='FrogEdu Logo'
-							className='w-full h-full object-contain'
-						/>
-					</div>
-					<span className='font-bold text-lg'>FrogEdu</span>
-				</div>
 			</div>
 
 			{/* Center - Page Title (optional, can be passed via context or props) */}

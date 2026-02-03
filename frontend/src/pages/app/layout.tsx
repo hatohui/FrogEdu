@@ -1,19 +1,19 @@
 import React from 'react'
-import DashboardLayout from '@/components/layout/DashboardLayout'
+import AppLayout from '@/components/layout/AppLayout'
 import ProtectedRoute from '@/components/common/ProtectedRoute'
 
-interface DashboardLayoutWrapperProps {
+interface AppLayoutWrapperProps {
 	children?: React.ReactNode
 }
 
-const DashboardLayoutWrapper = ({
+const AppLayoutWrapper = ({
 	children,
-}: DashboardLayoutWrapperProps): React.ReactElement => {
+}: AppLayoutWrapperProps): React.ReactElement => {
 	return (
 		<ProtectedRoute>
-			<DashboardLayout>{children}</DashboardLayout>
+			<AppLayout>{children}</AppLayout>
 		</ProtectedRoute>
 	)
 }
 
-export default DashboardLayoutWrapper
+export default AppLayoutWrapper

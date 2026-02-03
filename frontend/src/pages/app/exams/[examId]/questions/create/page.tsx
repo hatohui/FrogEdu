@@ -34,7 +34,6 @@ import {
 import { QuestionType, CognitiveLevel } from '@/types/model/exam-service'
 import { TopicSelector } from '@/components/exams/topic-selector'
 import { MatrixProgressTracker } from '@/components/exams/MatrixProgressTracker'
-import { Badge } from '@/components/ui/badge'
 import { Info } from 'lucide-react'
 
 const answerSchema = z.object({
@@ -131,8 +130,8 @@ const CreateQuestionPage = (): React.ReactElement => {
 				])
 			}
 		} else if (questionType === QuestionType.FillInTheBlank) {
-			// Fill in blank: at least one acceptable answer
-			if (currentAnswers.length === 0) {
+			// Fill in blank: exactly one answer (exact word match)
+			if (currentAnswers.length !== 1 || currentAnswers[0].content === 'True') {
 				form.setValue('answers', [
 					{ content: '', isCorrect: true, explanation: '' },
 				])
@@ -404,11 +403,10 @@ const CreateQuestionPage = (): React.ReactElement => {
 										{questionType === QuestionType.Essay
 											? 'Grading Guidelines'
 											: questionType === QuestionType.FillInTheBlank
-												? 'Acceptable Answers'
+												? 'Correct Answer'
 												: 'Answer Options'}
 									</CardTitle>
-									{(questionType === QuestionType.MultipleChoice ||
-										questionType === QuestionType.FillInTheBlank) && (
+									{questionType === QuestionType.MultipleChoice && (
 										<Button
 											type='button'
 											onClick={addAnswer}
@@ -425,34 +423,35 @@ const CreateQuestionPage = (): React.ReactElement => {
 										<Card key={field.id} className='border-2'>
 											<CardContent className='pt-4 space-y-4'>
 												<div className='flex items-start gap-4'>
-													{questionType !== QuestionType.Essay && (
-														<FormField
-															control={form.control}
-															name={`answers.${index}.isCorrect`}
-															render={({ field }) => (
-																<FormItem className='flex items-center space-x-2 pt-2'>
-																	<FormControl>
-																		<Checkbox
-																			checked={field.value}
-																			onCheckedChange={checked =>
-																				handleCorrectAnswerChange(
-																					index,
-																					!!checked
-																				)
-																			}
-																		/>
-																	</FormControl>
-																	<FormLabel className='!mt-0 font-normal'>
-																		{questionType ===
-																			QuestionType.MultipleChoice ||
-																		questionType === QuestionType.TrueFalse
-																			? 'Correct Answer'
-																			: 'Correct'}
-																	</FormLabel>
-																</FormItem>
-															)}
-														/>
-													)}
+													{questionType !== QuestionType.Essay &&
+														questionType !== QuestionType.FillInTheBlank && (
+															<FormField
+																control={form.control}
+																name={`answers.${index}.isCorrect`}
+																render={({ field }) => (
+																	<FormItem className='flex items-center space-x-2 pt-2'>
+																		<FormControl>
+																			<Checkbox
+																				checked={field.value}
+																				onCheckedChange={checked =>
+																					handleCorrectAnswerChange(
+																						index,
+																						!!checked
+																					)
+																				}
+																			/>
+																		</FormControl>
+																		<FormLabel className='!mt-0 font-normal'>
+																			{questionType ===
+																				QuestionType.MultipleChoice ||
+																			questionType === QuestionType.TrueFalse
+																				? 'Correct Answer'
+																				: 'Correct'}
+																		</FormLabel>
+																	</FormItem>
+																)}
+															/>
+														)}
 
 													<div className='flex-1 space-y-4'>
 														<FormField
@@ -462,10 +461,10 @@ const CreateQuestionPage = (): React.ReactElement => {
 																<FormItem>
 																	<FormLabel>
 																		{questionType === QuestionType.Essay
-																			? 'Grading Rubric'
+																			? 'Grading Rubric / Notes'
 																			: questionType ===
 																				  QuestionType.FillInTheBlank
-																				? `Acceptable Answer ${index + 1} *`
+																				? 'Correct Answer (exact match) *'
 																				: `Answer ${index + 1} *`}
 																	</FormLabel>
 																	<FormControl>
@@ -510,7 +509,8 @@ const CreateQuestionPage = (): React.ReactElement => {
 													</div>
 
 													{questionType !== QuestionType.TrueFalse &&
-														questionType !== QuestionType.Essay && (
+														questionType !== QuestionType.Essay &&
+														questionType !== QuestionType.FillInTheBlank && (
 															<Button
 																type='button'
 																variant='ghost'
@@ -523,33 +523,19 @@ const CreateQuestionPage = (): React.ReactElement => {
 																	) {
 																		return
 																	}
-																	if (
-																		questionType ===
-																			QuestionType.FillInTheBlank &&
-																		fields.length <= 1
-																	) {
-																		return
-																	}
 																	remove(index)
 																}}
 																disabled={
-																	(questionType ===
+																	questionType ===
 																		QuestionType.MultipleChoice &&
-																		fields.length <= 2) ||
-																	(questionType ===
-																		QuestionType.FillInTheBlank &&
-																		fields.length <= 1)
+																	fields.length <= 2
 																}
 																title={
 																	questionType ===
 																		QuestionType.MultipleChoice &&
 																	fields.length <= 2
 																		? 'Multiple choice needs at least 2 answers'
-																		: questionType ===
-																					QuestionType.FillInTheBlank &&
-																			  fields.length <= 1
-																			? 'At least one answer is required'
-																			: 'Remove answer'
+																		: 'Remove answer'
 																}
 															>
 																<Trash2 className='h-4 w-4 text-destructive' />

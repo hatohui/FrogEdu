@@ -1,1 +1,4 @@
-fastapi[standard]==0.113.0
+fastapi[standard]==0.116.1
+google-genai==1.61.0
+python-dotenv==1.1.1
+pydantic-settings==2.8.1
