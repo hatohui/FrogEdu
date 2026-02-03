@@ -101,7 +101,7 @@ async def not_found_handler(request: Request, exc):
         content={"detail": "Not Found"}
     )
 
-# Include API router (already has /api/ai prefix in routes.py)
+# Include API router (has /api/ai prefix in router definition)
 app.include_router(router)
 
 
