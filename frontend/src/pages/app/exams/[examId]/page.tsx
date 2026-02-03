@@ -40,6 +40,7 @@ import {
 	useRemoveQuestionFromExam,
 	useMatrix,
 	useTopics,
+	useSubjects,
 } from '@/hooks/useExams'
 
 const ExamDetailPage = (): React.ReactElement => {
@@ -52,6 +53,7 @@ const ExamDetailPage = (): React.ReactElement => {
 		useExamQuestions(examId || '')
 	const { data: matrix } = useMatrix(examId || '')
 	const { data: topics = [] } = useTopics(exam?.subjectId ?? '')
+	const { data: subjects = [] } = useSubjects(exam?.grade)
 	const publishExamMutation = usePublishExam()
 	const removeQuestionMutation = useRemoveQuestionFromExam()
 
@@ -241,15 +243,26 @@ const ExamDetailPage = (): React.ReactElement => {
 					<CardTitle>Exam Information</CardTitle>
 				</CardHeader>
 				<CardContent className='space-y-4'>
-					<div>
-						<p className='text-sm text-muted-foreground mb-1'>Description</p>
-						<p className='font-medium'>{exam.description}</p>
+					<div className='grid grid-cols-2 gap-4'>
+						<div>
+							<p className='text-sm text-muted-foreground mb-1'>Description</p>
+							<p className='font-medium'>{exam.description}</p>
+						</div>
+						<div>
+							<p className='text-sm text-muted-foreground mb-1'>Subject</p>
+							<p className='font-medium'>
+								{subjects.find(s => s.id === exam.subjectId)?.name ||
+									'Unknown Subject'}
+							</p>
+						</div>
 					</div>
+
 					<div className='grid grid-cols-2 gap-4'>
 						<div>
 							<p className='text-sm text-muted-foreground'>Grade</p>
 							<p className='font-medium'>Grade {exam.grade}</p>
 						</div>
+
 						<div>
 							<p className='text-sm text-muted-foreground'>Created</p>
 							<p className='font-medium'>
