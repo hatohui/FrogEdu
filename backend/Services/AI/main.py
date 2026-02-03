@@ -45,8 +45,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Include API router with /api/ai prefix
-app.include_router(router, prefix="/api/ai")
+# Include API router (already has /api/ai prefix in routes.py)
+app.include_router(router)
 
 
 @app.get("/", include_in_schema=False)
