@@ -12,11 +12,11 @@ RUN python -m pip install --no-cache-dir --upgrade -r requirement.txt
 
 # Copy application code
 COPY main.py .
+COPY handler.py .
 COPY app ./app
 
 # Set environment variables
 ENV PORT=8000
 
-# Use Lambda Web Adapter with FastAPI/Uvicorn
-# This allows the container to run as a web application on Lambda
-CMD exec uvicorn --port ${PORT} main:app
+# Lambda handler entry point - Lambda Web Adapter proxies HTTP to local FastAPI on :8000
+CMD ["handler.lambda_handler"]
