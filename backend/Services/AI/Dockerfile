@@ -1,19 +1,12 @@
-FROM python:3.13-slim
-
-WORKDIR /app
+FROM public.ecr.aws/lambda/python:3.13
 
 # Copy requirements and install dependencies
-COPY requirement.txt .
-RUN pip install --no-cache-dir --upgrade -r requirement.txt
+COPY requirement.txt ${LAMBDA_TASK_ROOT}/
+RUN pip install --no-cache-dir -r ${LAMBDA_TASK_ROOT}/requirement.txt
 
 # Copy application code
-COPY main.py .
-COPY app ./app
+COPY main.py ${LAMBDA_TASK_ROOT}/
+COPY app ${LAMBDA_TASK_ROOT}/app
 
-# Set Python to run in unbuffered mode
-ENV PYTHONUNBUFFERED=1
-
-# Run the application
-EXPOSE 8080
-ENTRYPOINT ["python", "-m", "awslambdaric"]
+# Set the handler
 CMD ["main.handler"]
