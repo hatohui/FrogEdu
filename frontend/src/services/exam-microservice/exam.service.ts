@@ -133,6 +133,22 @@ class AssessmentService {
 		return apiService.post(`${this.baseUrl}/matrices`, request)
 	}
 
+	async getMatrixByExamId(examId: string): Promise<
+		ApiResponse<{
+			id: string
+			examId: string
+			matrixTopics: Array<{
+				topicId: string
+				cognitiveLevel: CognitiveLevel
+				quantity: number
+			}>
+			totalQuestionCount: number
+			createdAt: string
+		}>
+	> {
+		return apiService.get(`${this.baseUrl}/matrices/exam/${examId}`)
+	}
+
 	// ========== Questions ==========
 	async getQuestions(params?: {
 		topicId?: string

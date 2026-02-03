@@ -2,6 +2,7 @@ using FrogEdu.Exam.Application.Commands.CreateMatrix;
 using FrogEdu.Exam.Application.Commands.DeleteMatrix;
 using FrogEdu.Exam.Application.Commands.UpdateMatrix;
 using FrogEdu.Exam.Application.DTOs;
+using FrogEdu.Exam.Application.Queries.GetMatrixByExamId;
 using FrogEdu.Exam.Application.Queries.GetMatrixById;
 using FrogEdu.Exam.Domain.Enums;
 using MediatR;
@@ -37,6 +38,29 @@ public class MatricesController : BaseController
     {
         var userId = GetAuthenticatedUserId();
         var query = new GetMatrixByIdQuery(matrixId, userId);
+        var result = await _mediator.Send(query, cancellationToken);
+
+        if (result is null)
+            return NotFound();
+
+        return Ok(result);
+    }
+
+    /// <summary>
+    /// Get matrix by exam ID
+    /// </summary>
+    [HttpGet("exam/{examId:guid}")]
+    [ProducesResponseType(typeof(MatrixDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<MatrixDto>> GetMatrixByExamId(
+        [FromRoute] Guid examId,
+        CancellationToken cancellationToken
+    )
+    {
+        var userId = GetAuthenticatedUserId();
+        var query = new GetMatrixByExamIdQuery(examId, userId);
         var result = await _mediator.Send(query, cancellationToken);
 
         if (result is null)

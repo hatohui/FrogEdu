@@ -11,5 +11,5 @@ export type { Answer, Question } from './question'
 export type { Exam } from './exam'
 
 // Matrix
-export type { MatrixTopicDto } from './matrix'
+export type { MatrixTopicDto, Matrix } from './matrix'
 export type { MatrixRow } from './matrixRow'

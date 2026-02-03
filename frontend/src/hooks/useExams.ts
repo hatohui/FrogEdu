@@ -19,6 +19,7 @@ export const examKeys = {
 	detail: (id: string) => [...examKeys.all, 'detail', id] as const,
 	subjects: (grade?: number) => ['subjects', { grade }] as const,
 	topics: (subjectId: string) => ['topics', subjectId] as const,
+	matrix: (examId: string) => ['matrix', examId] as const,
 	questions: (params?: {
 		topicId?: string
 		cognitiveLevel?: CognitiveLevel
@@ -139,14 +140,28 @@ export function useDeleteExam() {
 }
 
 // ========== Matrix ==========
+export function useMatrix(examId: string) {
+	return useQuery({
+		queryKey: examKeys.matrix(examId),
+		queryFn: async () => {
+			const response = await examService.getMatrixByExamId(examId)
+			return response.data
+		},
+		enabled: !!examId,
+	})
+}
+
 export function useCreateMatrix() {
 	const queryClient = useQueryClient()
 
 	return useMutation({
 		mutationFn: (request: CreateMatrixRequest) =>
 			examService.createMatrix(request),
-		onSuccess: () => {
+		onSuccess: (_, variables) => {
 			queryClient.invalidateQueries({ queryKey: examKeys.lists() })
+			queryClient.invalidateQueries({
+				queryKey: examKeys.matrix(variables.examId),
+			})
 			toast.success('Matrix created successfully!')
 		},
 		onError: (error: Error) => {
