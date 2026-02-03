@@ -1,8 +1,8 @@
 import type {
 	SubscriptionTier,
 	UserSubscription,
-	SubscribeToProResponse,
 } from '@/types/model/subscription'
+import type { SubscribeToProResponse } from '@/types/dtos/subscriptions'
 import axiosInstance from './axios'
 
 class SubscriptionService {

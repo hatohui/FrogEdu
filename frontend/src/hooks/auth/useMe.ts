@@ -2,12 +2,10 @@ import userService from '@/services/user-microservice/user.service'
 import { useAuthStore } from '@/stores/authStore'
 import { useQuery } from '@tanstack/react-query'
 import { useNavigate, useLocation } from 'react-router'
-import type { GetMeResponse } from '@/types/dtos/users/user'
-import type { Role } from '@/types/model/user-service/role'
+import type { UserWithRole } from '@/types/model/user-service/user'
 
-export interface UserWithRole extends GetMeResponse {
-	role?: Role
-}
+// Re-export for backward compatibility
+export type { UserWithRole } from '@/types/model/user-service/user'
 
 export const useMe = () => {
 	const isAuthenticated = useAuthStore(state => state.isAuthenticated)

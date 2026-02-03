@@ -25,7 +25,7 @@ import { toast } from 'sonner'
 import userService from '@/services/user-microservice/user.service'
 import type { UpdateProfileDto } from '@/types/dtos/users/user'
 import { useUploadImage } from '@/hooks/image/useUploadImage'
-import type { UserWithRole } from '@/hooks/auth/useMe'
+import type { UserWithRole } from '@/types/model/user-service/user'
 import UserAvatar from './UserAvatar'
 
 const profileSchema = z.object({

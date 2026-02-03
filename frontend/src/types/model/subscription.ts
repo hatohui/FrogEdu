@@ -28,7 +28,5 @@ export interface SubscriptionInfo {
 	hasActiveSubscription: boolean
 }
 
-export interface SubscribeToProResponse {
-	subscriptionId: string
-	message: string
-}
+// Re-export response types for convenience
+export type { SubscribeToProResponse } from '@/types/dtos/subscriptions'

@@ -6,7 +6,10 @@ import type {
 import type { Role } from '@/types/model/user-service/role'
 import apiService, { type ApiResponse } from '../api.service'
 import axiosInstance, { publicAxios } from '../axios'
-import type { GetPresignedImageUrlResponse } from '@/types/dtos/users/sign-image'
+import type {
+	GetPresignedImageUrlResponse,
+	GetPresignedImageUrlParams,
+} from '@/types/dtos/users/sign-image'
 import { AVATAR_BUCKET } from '@/common/constants'
 
 class UserService {
@@ -23,12 +26,16 @@ class UserService {
 		await axiosInstance.put(`${this.baseUrl}/me`, updates)
 	}
 
-	async getAvatarUploadUrl(
-		contentType: string
+	/**
+	 * Get a presigned URL for uploading an image
+	 * @param params - Upload parameters including folder and content type
+	 */
+	async getPresignedUploadUrl(
+		params: GetPresignedImageUrlParams
 	): Promise<GetPresignedImageUrlResponse> {
 		const query = new URLSearchParams({
-			folder: AVATAR_BUCKET,
-			contentType: contentType,
+			folder: params.folder,
+			contentType: params.contentType,
 		}).toString()
 
 		const response = await axiosInstance.get<GetPresignedImageUrlResponse>(
@@ -36,6 +43,19 @@ class UserService {
 		)
 
 		return response.data
+	}
+
+	/**
+	 * Get a presigned URL specifically for avatar upload
+	 * @deprecated Use getPresignedUploadUrl with folder param instead
+	 */
+	async getAvatarUploadUrl(
+		contentType: string
+	): Promise<GetPresignedImageUrlResponse> {
+		return this.getPresignedUploadUrl({
+			folder: AVATAR_BUCKET,
+			contentType,
+		})
 	}
 
 	async confirmAvatarUpload(publicUrl: string): Promise<void> {

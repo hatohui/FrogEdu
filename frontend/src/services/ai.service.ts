@@ -4,6 +4,10 @@ import type {
 	GenerateSingleQuestionRequest,
 	AIGeneratedQuestion,
 } from '@/types/model/ai-service'
+import type {
+	AIQuestionApiResponse,
+	AIGenerateQuestionsApiResponse,
+} from '@/types/dtos/ai'
 import axiosInstance from './axios'
 
 class AIService {
@@ -16,7 +20,7 @@ class AIService {
 	async generateQuestions(
 		request: GenerateQuestionsRequest
 	): Promise<GenerateQuestionsResponse> {
-		const response = await axiosInstance.post<GenerateQuestionsResponse>(
+		const response = await axiosInstance.post<AIGenerateQuestionsApiResponse>(
 			`${this.baseUrl}/questions/generate`,
 			{
 				subject: request.subject,
@@ -31,8 +35,8 @@ class AIService {
 			}
 		)
 		return {
-			questions: response.data.questions.map(this.mapQuestion),
-			totalCount: response.data.totalCount,
+			questions: response.data.questions.map(q => this.mapQuestion(q)),
+			totalCount: response.data.total_count,
 		}
 	}
 
@@ -43,7 +47,7 @@ class AIService {
 	async generateSingleQuestion(
 		request: GenerateSingleQuestionRequest
 	): Promise<AIGeneratedQuestion> {
-		const response = await axiosInstance.post<AIGeneratedQuestion>(
+		const response = await axiosInstance.post<AIQuestionApiResponse>(
 			`${this.baseUrl}/questions/generate-single`,
 			{
 				subject: request.subject,
@@ -79,22 +83,21 @@ class AIService {
 	}
 
 	/**
-	 * Map snake_case API response to camelCase
+	 * Map snake_case API response to camelCase frontend type
 	 */
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	private mapQuestion(q: any): AIGeneratedQuestion {
+	private mapQuestion(q: AIQuestionApiResponse): AIGeneratedQuestion {
 		return {
-			content: q.content as string,
-			questionType: q.question_type as number,
-			cognitiveLevel: q.cognitive_level as number,
-			point: (q.point as number) ?? 1,
-			mediaUrl: q.media_url as string | undefined,
-			topicId: q.topic_id as string | undefined,
-			answers: ((q.answers as any[]) ?? []).map((a: any) => ({
-				content: a.content as string,
-				isCorrect: a.is_correct as boolean,
-				explanation: a.explanation as string | undefined,
-				point: a.point as number | undefined,
+			content: q.content,
+			questionType: q.question_type,
+			cognitiveLevel: q.cognitive_level,
+			point: q.point ?? 1,
+			mediaUrl: q.media_url,
+			topicId: q.topic_id,
+			answers: (q.answers ?? []).map(a => ({
+				content: a.content,
+				isCorrect: a.is_correct,
+				explanation: a.explanation,
+				point: a.point,
 			})),
 		}
 	}

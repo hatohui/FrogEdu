@@ -49,6 +49,7 @@ import {
 } from '@/hooks/useExams'
 import { useSubscription } from '@/hooks/useSubscription'
 import { useAIQuestionGeneration } from '@/hooks/useAIQuestionGeneration'
+import { useMediaUpload } from '@/hooks/image/useMediaUpload'
 import { QuestionType, CognitiveLevel } from '@/types/model/exam-service'
 import type { AIGeneratedQuestion } from '@/types/model/ai-service'
 import { TopicSelector } from '@/components/exams/topic-selector'
@@ -91,9 +92,14 @@ const CreateQuestionPage = (): React.ReactElement => {
 		removeGeneratedQuestion,
 		clearGeneratedQuestions,
 	} = useAIQuestionGeneration()
+	const {
+		isUploading,
+		preview: mediaPreview,
+		handleFileChange,
+		clearPreview,
+	} = useMediaUpload()
 
 	const [creationMode, setCreationMode] = useState<CreationMode>('manual')
-	const [isUploading, setIsUploading] = useState(false)
 	const [aiQuantity, setAiQuantity] = useState(1)
 	const [selectedAiTopic, setSelectedAiTopic] = useState('')
 	const [aiQuestionType, setAiQuestionType] = useState<QuestionType>(
@@ -206,23 +212,23 @@ const CreateQuestionPage = (): React.ReactElement => {
 		}
 	}
 
-	const handleMediaUpload = async (
+	/**
+	 * Handle media file upload for question
+	 * Uses the reusable useMediaUpload hook with proper validation
+	 */
+	const handleMediaUpload = handleFileChange(async (file: File) => {
+		// TODO: Replace with actual S3 presigned URL upload when backend is ready
+		// For now, generate a placeholder URL based on file name
+		// The actual URL will be returned once exam service supports media upload
+		return `https://cdn.frogedu.com/questions/media/${encodeURIComponent(file.name)}`
+	})
+
+	const onMediaFileChange = async (
 		event: React.ChangeEvent<HTMLInputElement>
 	) => {
-		const file = event.target.files?.[0]
-		if (!file) return
-
-		setIsUploading(true)
-		try {
-			// TODO: Implement actual file upload to S3
-			// For now, just simulate upload
-			await new Promise(resolve => setTimeout(resolve, 1000))
-			const mockUrl = `https://example.com/media/${file.name}`
-			form.setValue('mediaUrl', mockUrl)
-		} catch (error) {
-			console.error('Upload failed:', error)
-		} finally {
-			setIsUploading(false)
+		const result = await handleMediaUpload(event)
+		if (result.success && result.url) {
+			form.setValue('mediaUrl', result.url)
 		}
 	}
 
@@ -710,7 +716,7 @@ const CreateQuestionPage = (): React.ReactElement => {
 												<Input
 													type='file'
 													accept='image/*,video/*'
-													onChange={handleMediaUpload}
+													onChange={onMediaFileChange}
 													disabled={isUploading}
 												/>
 												<Button
@@ -722,7 +728,28 @@ const CreateQuestionPage = (): React.ReactElement => {
 													{isUploading ? 'Uploading...' : 'Upload'}
 												</Button>
 											</div>
-											{form.watch('mediaUrl') && (
+											{mediaPreview && (
+												<div className='mt-2 relative'>
+													<img
+														src={mediaPreview}
+														alt='Preview'
+														className='max-h-32 rounded border'
+													/>
+													<Button
+														type='button'
+														variant='ghost'
+														size='icon'
+														className='absolute top-1 right-1 h-6 w-6'
+														onClick={() => {
+															clearPreview()
+															form.setValue('mediaUrl', '')
+														}}
+													>
+														<X className='h-4 w-4' />
+													</Button>
+												</div>
+											)}
+											{form.watch('mediaUrl') && !mediaPreview && (
 												<p className='text-sm text-muted-foreground'>
 													File uploaded: {form.watch('mediaUrl')}
 												</p>

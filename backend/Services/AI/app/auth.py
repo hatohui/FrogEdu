@@ -4,15 +4,14 @@ Validates JWT tokens and extracts subscription claims.
 """
 
 import logging
-from datetime import datetime
-from typing import Annotated, Optional
-from functools import lru_cache
+from datetime import datetime, timezone
+from typing import Annotated, Any
 
 import httpx
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from jose import jwt, jwk, JWTError
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 from app.config import get_settings, Settings
 
@@ -24,17 +23,17 @@ security = HTTPBearer(auto_error=False)
 
 class SubscriptionClaims(BaseModel):
     """Subscription claims extracted from JWT token."""
-    plan: str = "free"
-    expires_at: int = 0
-    has_active_subscription: bool = False
+    plan: str = Field(default="free")
+    expires_at: int = Field(default=0)
+    has_active_subscription: bool = Field(default=False)
 
 
 class TokenUser(BaseModel):
     """User information extracted from JWT token."""
-    sub: str  # Cognito user ID
-    email: Optional[str] = None
-    role: Optional[str] = None
-    subscription: SubscriptionClaims = SubscriptionClaims()
+    sub: str = Field(description="Cognito user ID")
+    email: str | None = Field(default=None)
+    role: str | None = Field(default=None)
+    subscription: SubscriptionClaims = Field(default_factory=SubscriptionClaims)
     
     @property
     def has_pro_subscription(self) -> bool:
@@ -45,19 +44,19 @@ class TokenUser(BaseModel):
             return False
         # Check if subscription is not expired
         if self.subscription.expires_at > 0:
-            return datetime.utcnow().timestamp() < self.subscription.expires_at
+            return datetime.now(timezone.utc).timestamp() < self.subscription.expires_at
         return False
 
 
 class JWKSCache:
     """Cache for Cognito JWKS (JSON Web Key Set)."""
     
-    def __init__(self):
-        self._keys: dict = {}
-        self._last_fetched: Optional[datetime] = None
-        self._cache_duration_seconds = 3600  # 1 hour
+    def __init__(self) -> None:
+        self._keys: dict[str, dict[str, Any]] = {}
+        self._last_fetched: datetime | None = None
+        self._cache_duration_seconds: int = 3600  # 1 hour
     
-    async def get_key(self, kid: str, jwks_url: str) -> Optional[dict]:
+    async def get_key(self, kid: str, jwks_url: str) -> dict[str, Any] | None:
         """Get a key from the JWKS cache, refreshing if needed."""
         # Check if cache needs refresh
         if self._should_refresh():
@@ -69,7 +68,7 @@ class JWKSCache:
         """Check if the cache should be refreshed."""
         if not self._last_fetched:
             return True
-        elapsed = (datetime.utcnow() - self._last_fetched).total_seconds()
+        elapsed = (datetime.now(timezone.utc) - self._last_fetched).total_seconds()
         return elapsed > self._cache_duration_seconds
     
     async def _refresh_keys(self, jwks_url: str) -> None:
@@ -78,17 +77,18 @@ class JWKSCache:
             async with httpx.AsyncClient() as client:
                 response = await client.get(jwks_url, timeout=10.0)
                 response.raise_for_status()
-                jwks = response.json()
+                jwks: dict[str, Any] = response.json()
                 
-                self._keys = {key["kid"]: key for key in jwks.get("keys", [])}
-                self._last_fetched = datetime.utcnow()
+                keys_list: list[dict[str, Any]] = jwks.get("keys", [])
+                self._keys = {key["kid"]: key for key in keys_list if "kid" in key}
+                self._last_fetched = datetime.now(timezone.utc)
                 logger.info(f"Refreshed JWKS cache with {len(self._keys)} keys")
         except Exception as e:
             logger.error(f"Failed to refresh JWKS cache: {e}")
             # Keep existing keys if refresh fails
 
 
-# Global JWKS cache
+# Global JWKS cache instance
 _jwks_cache = JWKSCache()
 
 
@@ -174,7 +174,7 @@ async def validate_token(
 
 
 async def get_current_user(
-    credentials: Annotated[Optional[HTTPAuthorizationCredentials], Depends(security)],
+    credentials: Annotated[HTTPAuthorizationCredentials | None, Depends(security)],
     settings: Annotated[Settings, Depends(get_settings)]
 ) -> TokenUser:
     """
@@ -201,9 +201,9 @@ async def get_current_user(
 
 
 async def get_optional_user(
-    credentials: Annotated[Optional[HTTPAuthorizationCredentials], Depends(security)],
+    credentials: Annotated[HTTPAuthorizationCredentials | None, Depends(security)],
     settings: Annotated[Settings, Depends(get_settings)]
-) -> Optional[TokenUser]:
+) -> TokenUser | None:
     """
     FastAPI dependency to get the current user if authenticated, or None.
     
