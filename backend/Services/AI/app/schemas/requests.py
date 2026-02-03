@@ -50,6 +50,10 @@ class GenerateSingleQuestionRequest(BaseModel):
     cognitive_level: CognitiveLevel = Field(..., description="Cognitive level")
     question_type: QuestionType = Field(..., description="Type of question")
     language: str = Field(default="vi", description="Language (vi/en)")
+    topic_description:str = Field(
+        default="", 
+        description="Brief description of the topic for context"
+    )
 
 
 class GenerateQuestionsResponse(BaseModel):
