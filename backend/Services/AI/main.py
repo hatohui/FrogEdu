@@ -1,5 +1,4 @@
 import logging
-import asyncio
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -14,10 +13,6 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-# Global uvicorn server instance for Lambda
-_uvicorn_server = None
-_server_task = None
-
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -29,6 +24,7 @@ async def lifespan(app: FastAPI):
     logger.info("Shutting down FrogEdu AI Service")
 
 
+# Initialize FastAPI application
 app = FastAPI(
     title="FrogEdu AI Service",
     description="AI-powered question generation and tutoring service",
@@ -38,6 +34,7 @@ app = FastAPI(
     redoc_url="/redoc",
 )
 
+# Configure CORS
 settings = get_settings()
 app.add_middleware(
     CORSMiddleware,
@@ -55,34 +52,3 @@ app.include_router(router)
 async def root():
     """Redirect root to API docs."""
     return RedirectResponse(url="/docs")
-
-
-async def start_uvicorn_server():
-    """Start uvicorn server for Lambda Web Adapter."""
-    global _uvicorn_server
-    import uvicorn
-    
-    config = uvicorn.Config(
-        app,
-        host="127.0.0.1",
-        port=8000,
-        log_level="info"
-    )
-    _uvicorn_server = uvicorn.Server(config)
-    await _uvicorn_server.serve()
-
-
-# Start the server when module is imported
-if __name__ != "__main__":
-    # Running in Lambda context
-    try:
-        asyncio.run(start_uvicorn_server())
-    except Exception as e:
-        logger.error(f"Failed to start uvicorn server: {e}")
-        raise
-
-
-if __name__ == "__main__":
-    # Local development
-    import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
