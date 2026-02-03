@@ -10,7 +10,9 @@ import {
 	Settings,
 	Send,
 	Plus,
+	Grid3x3,
 } from 'lucide-react'
+import { getCognitiveLevelLabel } from '@/types/question.types'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -37,6 +39,8 @@ import {
 	useExamQuestions,
 	usePublishExam,
 	useRemoveQuestionFromExam,
+	useMatrix,
+	useTopics,
 } from '@/hooks/useExams'
 
 const ExamDetailPage = (): React.ReactElement => {
@@ -47,6 +51,8 @@ const ExamDetailPage = (): React.ReactElement => {
 	const { data: exam, isLoading: isLoadingExam } = useExam(examId || '')
 	const { data: questions = [], isLoading: isLoadingQuestions } =
 		useExamQuestions(examId || '')
+	const { data: matrix } = useMatrix(examId || '')
+	const { data: topics = [] } = useTopics(exam?.subjectId ?? '')
 	const publishExamMutation = usePublishExam()
 	const removeQuestionMutation = useRemoveQuestionFromExam()
 
@@ -252,6 +258,103 @@ const ExamDetailPage = (): React.ReactElement => {
 							</p>
 						</div>
 					</div>
+				</CardContent>
+			</Card>
+
+			{/* Matrix Section */}
+			<Card>
+				<CardHeader className='flex flex-row items-center justify-between'>
+					<div>
+						<CardTitle>Exam Matrix</CardTitle>
+						<p className='text-sm text-muted-foreground mt-1'>
+							Define question distribution by topic and cognitive level
+						</p>
+					</div>
+					{matrix ? (
+						<Button
+							variant='outline'
+							onClick={() =>
+								navigate(`/app/exams/create/matrix?examId=${examId}`)
+							}
+						>
+							<Edit className='h-4 w-4 mr-2' />
+							Edit Matrix
+						</Button>
+					) : (
+						<Button
+							onClick={() =>
+								navigate(`/app/exams/create/matrix?examId=${examId}`)
+							}
+						>
+							<Plus className='h-4 w-4 mr-2' />
+							Create Matrix
+						</Button>
+					)}
+				</CardHeader>
+				<CardContent>
+					{matrix ? (
+						<div className='space-y-4'>
+							<div className='flex items-center justify-between p-4 bg-muted rounded-lg'>
+								<div className='flex items-center gap-2'>
+									<Grid3x3 className='h-5 w-5 text-primary' />
+									<div>
+										<p className='font-medium'>Matrix Configured</p>
+										<p className='text-sm text-muted-foreground'>
+											{matrix.matrixTopics.length} topic-level combinations
+										</p>
+									</div>
+								</div>
+								<Badge variant='default'>
+									{matrix.totalQuestionCount} questions total
+								</Badge>
+							</div>
+
+							<div className='space-y-2'>
+								{matrix.matrixTopics.slice(0, 5).map((mt, idx) => {
+									const topic = topics.find(t => t.id === mt.topicId)
+									return (
+										<div
+											key={idx}
+											className='flex items-center justify-between p-3 border rounded-lg'
+										>
+											<div className='flex items-center gap-3'>
+												<span className='text-sm font-medium'>
+													{topic?.title || 'Unknown Topic'}
+												</span>
+												<Badge variant='outline'>
+													{getCognitiveLevelLabel(mt.cognitiveLevel)}
+												</Badge>
+											</div>
+											<span className='text-sm text-muted-foreground'>
+												{mt.quantity} questions
+											</span>
+										</div>
+									)
+								})}
+								{matrix.matrixTopics.length > 5 && (
+									<p className='text-sm text-muted-foreground text-center py-2'>
+										+ {matrix.matrixTopics.length - 5} more combinations
+									</p>
+								)}
+							</div>
+						</div>
+					) : (
+						<div className='text-center py-8'>
+							<Grid3x3 className='h-12 w-12 text-muted-foreground mx-auto mb-4' />
+							<p className='text-sm text-muted-foreground mb-4'>
+								No matrix configured yet. Create a matrix to define the
+								structure of your exam.
+							</p>
+							<Button
+								onClick={() =>
+									navigate(`/app/exams/create/matrix?examId=${examId}`)
+								}
+							>
+								<Plus className='h-4 w-4 mr-2' />
+								Create Matrix
+							</Button>
+						</div>
+					)}
 				</CardContent>
 			</Card>
 
