@@ -20,3 +20,31 @@ public sealed record UserSummaryDto(
     Guid RoleId,
     string? AvatarUrl
 );
+
+/// <summary>
+/// Extended user DTO with subscription information for API responses
+/// </summary>
+public sealed record UserWithSubscriptionDto
+{
+    public Guid Id { get; init; }
+    public string CognitoId { get; init; } = null!;
+    public string Email { get; init; } = null!;
+    public string FirstName { get; init; } = null!;
+    public string LastName { get; init; } = null!;
+    public Guid RoleId { get; init; }
+    public string? AvatarUrl { get; init; }
+    public bool IsEmailVerified { get; init; }
+    public DateTime CreatedAt { get; init; }
+    public DateTime? UpdatedAt { get; init; }
+    public SubscriptionInfoDto Subscription { get; init; } = null!;
+}
+
+/// <summary>
+/// Subscription information DTO
+/// </summary>
+public sealed record SubscriptionInfoDto
+{
+    public string Plan { get; init; } = "free";
+    public long ExpiresAt { get; init; }
+    public bool HasActiveSubscription { get; init; }
+}

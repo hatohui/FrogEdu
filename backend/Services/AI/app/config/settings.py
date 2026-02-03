@@ -21,6 +21,20 @@ class Settings(BaseSettings):
     # Rate Limiting (for future use)
     max_tokens_per_user: int = 100000
     
+    # AWS Cognito Configuration for JWT validation
+    cognito_region: str = "ap-southeast-1"
+    cognito_user_pool_id: str = ""
+    
+    @property
+    def cognito_issuer(self) -> str:
+        """Get the Cognito issuer URL for JWT validation."""
+        return f"https://cognito-idp.{self.cognito_region}.amazonaws.com/{self.cognito_user_pool_id}"
+    
+    @property
+    def cognito_jwks_url(self) -> str:
+        """Get the Cognito JWKS URL for fetching public keys."""
+        return f"{self.cognito_issuer}/.well-known/jwks.json"
+    
     model_config = SettingsConfigDict(
         env_file=".env",
         env_file_encoding="utf-8",

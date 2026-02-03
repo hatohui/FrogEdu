@@ -82,6 +82,12 @@ public static class DependencyInjection
         services.AddScoped<IPasswordService, CognitoPasswordService>();
         services.AddSingleton<IApplicationConfiguration, ApplicationConfiguration>();
 
+        // Register Subscription Service HTTP client
+        services.AddHttpClient<ISubscriptionService, SubscriptionServiceClient>(client =>
+        {
+            client.Timeout = TimeSpan.FromSeconds(10);
+        });
+
         return services;
     }
 

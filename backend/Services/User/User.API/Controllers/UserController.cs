@@ -7,6 +7,7 @@ using FrogEdu.User.Application.DTOs;
 using FrogEdu.User.Application.Queries.GetAllUsers;
 using FrogEdu.User.Application.Queries.GetUserById;
 using FrogEdu.User.Application.Queries.GetUserProfile;
+using FrogEdu.User.Application.Queries.GetUserWithSubscription;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -111,6 +112,31 @@ public class UserController : ControllerBase
             return Unauthorized();
 
         var query = new GetUserProfileQuery(cognitoId);
+        var result = await _mediator.Send(query, cancellationToken);
+
+        if (result is null)
+            return NotFound("User not found");
+
+        return Ok(result);
+    }
+
+    /// <summary>
+    /// Get current user profile with subscription information
+    /// </summary>
+    [HttpGet("me/full")]
+    [Authorize]
+    [ProducesResponseType(typeof(UserWithSubscriptionDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetCurrentUserWithSubscription(
+        CancellationToken cancellationToken
+    )
+    {
+        var cognitoId = GetCognitoId();
+        if (string.IsNullOrEmpty(cognitoId))
+            return Unauthorized();
+
+        var query = new GetUserWithSubscriptionQuery(cognitoId);
         var result = await _mediator.Send(query, cancellationToken);
 
         if (result is null)

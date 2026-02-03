@@ -1,5 +1,15 @@
 import React from 'react'
-import { Menu, LogOut, User, Settings, Sun, Moon, Home } from 'lucide-react'
+import {
+	Menu,
+	LogOut,
+	User,
+	Settings,
+	Sun,
+	Moon,
+	Home,
+	CreditCard,
+	Crown,
+} from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
 	DropdownMenu,
@@ -9,9 +19,11 @@ import {
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import { Badge } from '@/components/ui/badge'
 import { Link, useNavigate } from 'react-router'
 import { useTheme } from '@/config/theme'
 import { useMe } from '@/hooks/auth/useMe'
+import { useSubscription } from '@/hooks/useSubscription'
 import UserAvatar from '../common/UserAvatar'
 
 interface HeaderProps {
@@ -24,6 +36,7 @@ const Header = ({
 	className = '',
 }: HeaderProps): React.ReactElement => {
 	const { user, signOut } = useMe()
+	const { isPro } = useSubscription()
 	const [theme, toggleTheme] = useTheme()
 	const navigate = useNavigate()
 
@@ -58,6 +71,28 @@ const Header = ({
 
 			{/* Right side - Actions & User Menu */}
 			<div className='flex items-center space-x-2'>
+				{/* Subscription Status Badge */}
+				{user && (
+					<Button
+						variant='ghost'
+						size='sm'
+						onClick={() => navigate('/profile/subscription')}
+						className='hidden sm:flex items-center gap-2'
+					>
+						{isPro ? (
+							<Badge className='bg-gradient-to-r from-amber-500 to-orange-500 text-white'>
+								<Crown className='h-3 w-3 mr-1' />
+								Pro
+							</Badge>
+						) : (
+							<Badge variant='secondary'>
+								<CreditCard className='h-3 w-3 mr-1' />
+								Free
+							</Badge>
+						)}
+					</Button>
+				)}
+
 				{/* Dark Mode Toggle */}
 				<Button
 					variant='ghost'
@@ -95,9 +130,16 @@ const Header = ({
 
 					<DropdownMenuContent align='end' className='w-56'>
 						<DropdownMenuLabel className='flex flex-col space-y-1'>
-							<span className='text-sm font-medium'>
-								{user?.firstName || user?.email || 'User'}
-							</span>
+							<div className='flex items-center gap-2'>
+								<span className='text-sm font-medium'>
+									{user?.firstName || user?.email || 'User'}
+								</span>
+								{isPro && (
+									<Badge className='bg-gradient-to-r from-amber-500 to-orange-500 text-white text-xs px-1.5 py-0'>
+										Pro
+									</Badge>
+								)}
+							</div>
 							<span className='text-xs text-muted-foreground'>
 								{user?.email || ''}
 							</span>
@@ -109,6 +151,21 @@ const Header = ({
 							<Link to='/profile' className='cursor-pointer'>
 								<User className='mr-2 h-4 w-4' />
 								<span>Profile</span>
+							</Link>
+						</DropdownMenuItem>
+
+						<DropdownMenuItem asChild>
+							<Link to='/profile/subscription' className='cursor-pointer'>
+								<CreditCard className='mr-2 h-4 w-4' />
+								<span>Subscription</span>
+								{!isPro && (
+									<Badge
+										variant='outline'
+										className='ml-auto text-xs border-amber-500 text-amber-600'
+									>
+										Upgrade
+									</Badge>
+								)}
 							</Link>
 						</DropdownMenuItem>
 

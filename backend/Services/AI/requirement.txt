@@ -3,3 +3,5 @@ google-genai==1.61.0
 python-dotenv==1.1.1
 pydantic-settings==2.8.1
 mangum==0.19.0
+python-jose[cryptography]==3.4.0
+httpx==0.28.1

@@ -13,6 +13,7 @@ from app.schemas import (
 )
 from app.services import GeminiService
 from app.config import get_settings, Settings
+from app.auth import TokenUser, get_current_user, get_subscribed_user
 
 logger = logging.getLogger(__name__)
 
@@ -50,7 +51,8 @@ async def health_check(
 )
 async def generate_questions(
     request: GenerateQuestionsRequest,
-    service: Annotated[GeminiService, Depends(get_gemini_service)]
+    service: Annotated[GeminiService, Depends(get_gemini_service)],
+    user: Annotated[TokenUser, Depends(get_subscribed_user)]
 ):
     """
     Generate multiple questions based on an exam matrix.
@@ -59,14 +61,22 @@ async def generate_questions(
     and quantities to generate a set of exam questions.
     
     **Requirements:**
-    - Teacher role with active subscription
+    - Teacher role with active Pro subscription
     - Valid matrix configuration
     
     **Returns:**
     - List of generated questions with answers
     - Total count of questions
     """
+    # Verify user has Teacher role
+    if user.role and user.role.lower() not in ["teacher", "admin"]:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Only teachers can generate exam questions"
+        )
+    
     try:
+        logger.info(f"User {user.sub} generating questions with plan: {user.subscription.plan}")
         questions = await service.generate_questions(request)
         
         return GenerateQuestionsResponse(
@@ -88,18 +98,27 @@ async def generate_questions(
 )
 async def generate_single_question(
     request: GenerateSingleQuestionRequest,
-    service: Annotated[GeminiService, Depends(get_gemini_service)]
+    service: Annotated[GeminiService, Depends(get_gemini_service)],
+    user: Annotated[TokenUser, Depends(get_subscribed_user)]
 ):
     """
     Generate a single question with specified parameters.
     
     **Requirements:**
-    - Teacher role with active subscription
+    - Teacher role with active Pro subscription
     
     **Returns:**
     - A single generated question with answers
     """
+    # Verify user has Teacher role
+    if user.role and user.role.lower() not in ["teacher", "admin"]:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Only teachers can generate exam questions"
+        )
+    
     try:
+        logger.info(f"User {user.sub} generating single question with plan: {user.subscription.plan}")
         question = await service.generate_single_question(request)
         return question
     except Exception as e:
@@ -113,7 +132,8 @@ async def generate_single_question(
 @router.post("/api/ai/tutor/chat", response_model=TutorChatResponse)
 async def tutor_chat(
     request: TutorChatRequest,
-    service: Annotated[GeminiService, Depends(get_gemini_service)]
+    service: Annotated[GeminiService, Depends(get_gemini_service)],
+    user: Annotated[TokenUser, Depends(get_subscribed_user)]
 ):
     """
     Interactive tutoring chat endpoint.
@@ -122,13 +142,14 @@ async def tutor_chat(
     and receive guided explanations appropriate for their grade level.
     
     **Requirements:**
-    - Student role with active subscription
+    - Student role with active Pro subscription
     
     **Returns:**
     - Tutor's response message
     - Optional follow-up suggestions
     """
     try:
+        logger.info(f"User {user.sub} using tutor chat with plan: {user.subscription.plan}")
         response_message = await service.tutor_chat( # type: ignore
             message=request.message,
             subject=request.subject,
