@@ -16,6 +16,7 @@
     "**/dist": true,
     "**/node_modules": true,
     ".config": true,
-    ".cursor": true
+    ".cursor": true,
+    "**/__pycache__": true
   }
 }

@@ -4,6 +4,7 @@
 [![exam-service](https://github.com/hatohui/FrogEdu/actions/workflows/exam-cd.yaml/badge.svg)](https://github.com/hatohui/FrogEdu/actions/workflows/exam-cd.yaml)
 [![class-service](https://github.com/hatohui/FrogEdu/actions/workflows/class-cd.yaml/badge.svg)](https://github.com/hatohui/FrogEdu/actions/workflows/class-cd.yaml)
 [![subscription-service](https://github.com/hatohui/FrogEdu/actions/workflows/subscription-cd.yaml/badge.svg)](https://github.com/hatohui/FrogEdu/actions/workflows/subscription-cd.yaml)
+[![ai-service](https://github.com/hatohui/FrogEdu/actions/workflows/ai-cd.yaml/badge.svg)](https://github.com/hatohui/FrogEdu/actions/workflows/ai-cd.yaml)
 
 FrogEdu is a modern educational platform built with microservices architecture, enabling schools to manage users, classes, exams, and subscriptions efficiently.
 
@@ -31,7 +32,10 @@ FrogEdu is a modern educational platform built with microservices architecture, 
 ![.NET 9](https://img.shields.io/badge/.NET-9-512BD4?style=for-the-badge&logo=dotnet&logoColor=white)
 ![C#](https://img.shields.io/badge/C%23-239120?style=for-the-badge&logo=csharp&logoColor=white)
 ![Entity Framework Core](https://img.shields.io/badge/EF_Core-9-512BD4?style=for-the-badge)
+![FastAPI](https://img.shields.io/badge/FastAPI-0.116-009688?style=for-the-badge&logo=fastapi&logoColor=white)
+![Python](https://img.shields.io/badge/Python-3.13-3776AB?style=for-the-badge&logo=python&logoColor=white)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-17-4169E1?style=for-the-badge&logo=postgresql&logoColor=white)
+![Google Gemini API](https://img.shields.io/badge/Google_Gemini_API-4285F4?style=for-the-badge&logo=google&logoColor=white)
 ![JWT](https://img.shields.io/badge/JWT-000000?style=for-the-badge&logo=jsonwebtokens&logoColor=white)
 ![Swagger](https://img.shields.io/badge/Swagger-85EA2D?style=for-the-badge&logo=swagger&logoColor=black)
 
@@ -39,6 +43,7 @@ FrogEdu is a modern educational platform built with microservices architecture, 
 
 ![MinIO](https://img.shields.io/badge/MinIO-C72E49?style=for-the-badge&logo=minio&logoColor=white)
 ![NGINX](https://img.shields.io/badge/NGINX-009639?style=for-the-badge&logo=nginx&logoColor=white)
+![Google Cloud Compute](https://img.shields.io/badge/Google_Cloud_Compute-4285F4?style=for-the-badge&logo=googlecloud&logoColor=white)
 ![Cloudflare R2](https://img.shields.io/badge/Cloudflare_R2-F38020?style=for-the-badge&logo=cloudflare&logoColor=white)
 ![Cloudflare Pages](https://img.shields.io/badge/Cloudflare_Pages-F38020?style=for-the-badge&logo=cloudflare&logoColor=white)
 ![AWS API Gateway](https://img.shields.io/badge/AWS_API_Gateway-FF4F8B?style=for-the-badge&logo=amazonapigateway&logoColor=white)
@@ -63,12 +68,13 @@ FrogEdu is a modern educational platform built with microservices architecture, 
 
 ### Microservices
 
-FrogEdu consists of 4 independent microservices:
+FrogEdu consists of 5 independent microservices:
 
-- **User Service** - User authentication, profiles, and authorization
-- **Class Service** - Class management, student enrollment, and teacher assignments
-- **Exam Service** - Exam creation, question banks, and assessment management
-- **Subscription Service** - Subscription plans, billing, and feature access control
+- **User Service** - User authentication, profiles, and authorization (.NET 9, PostgreSQL)
+- **Class Service** - Class management, student enrollment, and teacher assignments (.NET 9, PostgreSQL)
+- **Exam Service** - Exam creation, question banks, and assessment management (.NET 9, PostgreSQL)
+- **Subscription Service** - Subscription plans, billing, and feature access control (.NET 9, PostgreSQL)
+- **AI Service** - AI-powered question generation and tutoring with Gemini API (FastAPI, Python, Google Cloud)
 
 Each service follows **Clean Architecture** principles with:
 
@@ -134,6 +140,7 @@ The frontend runs at [http://localhost:5173](http://localhost:5173)
 - **Class Service**: [http://localhost:5002/swagger](http://localhost:5002/swagger)
 - **Exam Service**: [http://localhost:5003/swagger](http://localhost:5003/swagger)
 - **Subscription Service**: [http://localhost:5004/swagger](http://localhost:5004/swagger)
+- **AI Service**: [http://localhost:8000/docs](http://localhost:8000/docs)
 - **MinIO Console**: [http://localhost:9001](http://localhost:9001)
 
 ### Database Access
@@ -276,11 +283,21 @@ backend/
 │   │   ├── Exam.Application/
 │   │   ├── Exam.Domain/
 │   │   └── Exam.Infrastructure/
-│   └── Subscription/       # Subscription & billing
-│       ├── Subscription.API/
-│       ├── Subscription.Application/
-│       ├── Subscription.Domain/
-│       └── Subscription.Infrastructure/
+│   ├── Subscription/       # Subscription & billing
+│   │   ├── Subscription.API/
+│   │   ├── Subscription.Application/
+│   │   ├── Subscription.Domain/
+│   │   └── Subscription.Infrastructure/
+│   └── AI/                 # AI question generation & tutoring
+│       ├── app/
+│       │   ├── api/        # FastAPI routes
+│       │   ├── services/   # Gemini integration
+│       │   ├── schemas/    # Request/response models
+│       │   ├── models/     # Domain models
+│       │   └── config/     # Configuration
+│       ├── main.py         # FastAPI application
+│       ├── Dockerfile      # Container image
+│       └── requirement.txt  # Python dependencies
 └── Shared/
     └── Shared.Kernel/      # Common domain primitives & utilities
 ```
@@ -396,12 +413,15 @@ doppler run -- terraform apply
 - **.NET 9** with C# for high-performance APIs
 - **Entity Framework Core 9** for database access
 - **PostgreSQL 17** for relational data storage
+- **FastAPI** with Python for AI service development
+- **Google Gemini API** for AI-powered question generation and tutoring
 - **Clean Architecture** for maintainable codebase
 - **JWT Authentication** for secure API access
 - **Swagger/OpenAPI** for API documentation
 - **AWS Lambda** for serverless deployment
 - **AWS API Gateway** for HTTP routing and management
 - **AWS ECR** for container image storage
+- **Google Cloud** for AI service infrastructure
 
 ### DevOps
 

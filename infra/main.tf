@@ -248,7 +248,7 @@ module "ai_service" {
   no_auth_routes = [
     "/health/{proxy+}",
     "/health",
-    "/docs#",
+    "/docs",
     "/docs/{proxy+}",
   ]
 
