@@ -97,6 +97,12 @@ module "ecr" {
       lifecycle_policy_keep = 3
       lifecycle_expire_days = 7
     }
+    ai-api = {
+      image_tag_mutability  = "MUTABLE"
+      scan_on_push          = true
+      lifecycle_policy_keep = 3
+      lifecycle_expire_days = 7
+    }
   }
 }
 
@@ -224,5 +230,32 @@ module "subscription_service" {
     MEDIAK_LICENSE_KEY                = local.mediak_license_key
     COGNITO_USER_POOL_ID              = module.cognito.user_pool_id
     AWS_COGNITO_REGION                = local.aws_region
+  }
+}
+
+
+module "ai_service" {
+  source = "./modules/microservice"
+
+  service_name              = "ai"
+  project_name              = local.project_name
+  lambda_role_arn           = module.iam.lambda_execution_role.arn
+  ecr_repository            = module.ecr.repository_urls["ai-api"]
+  api_gateway_id            = module.api_gateway.api_gateway_id
+  api_gateway_execution_arn = module.api_gateway.api_gateway_execution_arn
+  cognito_authorizer_id     = module.api_gateway.cognito_authorizer_id
+
+  no_auth_routes = [
+    "/health/{proxy+}",
+    "/health",
+    "/docs#",
+    "/docs/{proxy+}",
+  ]
+
+  environment_variables = {
+    GEMINI_API_KEY        = local.gemini_api_key
+    GEMINI_KEY_NAME       = local.gemini_key_name
+    GEMINI_PROJECT_NUMBER = local.gemini_project_number
+    GEMINI_PROJECT_NAME   = local.gemini_project_name
   }
 }
