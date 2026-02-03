@@ -88,6 +88,7 @@ const ProtectedRoute = ({
 	}
 
 	if (!requireAuth && isAuthenticated) {
+		// Let useMe determine the redirect location based on role
 		return <Navigate to='/app' replace />
 	}
 

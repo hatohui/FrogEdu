@@ -9,6 +9,9 @@ import {
 	Home,
 	CreditCard,
 	Crown,
+	Shield,
+	BookOpen,
+	GraduationCap,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
@@ -39,6 +42,10 @@ const Header = ({
 	const { isPro } = useSubscription()
 	const [theme, toggleTheme] = useTheme()
 	const navigate = useNavigate()
+
+	const isAdmin = user?.role?.name === 'Admin'
+	const isTeacher = user?.role?.name === 'Teacher'
+	const isStudent = user?.role?.name === 'Student'
 
 	const handleSignOut = async () => {
 		await signOut()
@@ -71,26 +78,52 @@ const Header = ({
 
 			{/* Right side - Actions & User Menu */}
 			<div className='flex items-center space-x-2'>
-				{/* Subscription Status Badge */}
+				{/* Role/Subscription Badge */}
 				{user && (
-					<Button
-						variant='ghost'
-						size='sm'
-						onClick={() => navigate('/profile/subscription')}
-						className='hidden sm:flex items-center gap-2'
-					>
-						{isPro ? (
-							<Badge className='bg-gradient-to-r from-amber-500 to-orange-500 text-white'>
-								<Crown className='h-3 w-3 mr-1' />
-								Pro
+					<>
+						{isAdmin ? (
+							<Badge className='bg-gradient-to-r from-purple-600 to-purple-700 text-white hidden sm:flex'>
+								<Shield className='h-3 w-3 mr-1' />
+								Admin
 							</Badge>
 						) : (
-							<Badge variant='secondary'>
-								<CreditCard className='h-3 w-3 mr-1' />
-								Free
-							</Badge>
+							<>
+								{/* Role Badge for Teacher/Student */}
+								{isTeacher && (
+									<Badge className='bg-gradient-to-r from-blue-600 to-blue-700 text-white hidden sm:flex'>
+										<BookOpen className='h-3 w-3 mr-1' />
+										Teacher
+									</Badge>
+								)}
+								{isStudent && (
+									<Badge className='bg-gradient-to-r from-green-600 to-green-700 text-white hidden sm:flex'>
+										<GraduationCap className='h-3 w-3 mr-1' />
+										Student
+									</Badge>
+								)}
+
+								{/* Subscription Badge for non-admins */}
+								<Button
+									variant='ghost'
+									size='sm'
+									onClick={() => navigate('/profile/subscription')}
+									className='hidden sm:flex items-center gap-2'
+								>
+									{isPro ? (
+										<Badge className='bg-gradient-to-r from-amber-500 to-orange-500 text-white'>
+											<Crown className='h-3 w-3 mr-1' />
+											Pro
+										</Badge>
+									) : (
+										<Badge variant='secondary'>
+											<CreditCard className='h-3 w-3 mr-1' />
+											Free
+										</Badge>
+									)}
+								</Button>
+							</>
 						)}
-					</Button>
+					</>
 				)}
 
 				{/* Dark Mode Toggle */}
@@ -108,16 +141,28 @@ const Header = ({
 					)}
 				</Button>
 
-				{user && (
-					<Button
-						variant='outline'
-						size='sm'
-						onClick={() => navigate('/app')}
-						className='hidden sm:flex items-center gap-2'
-					>
-						<Home className='h-4 w-4' />
-						<span>App</span>
-					</Button>
+				{/* Admin Navigation Buttons */}
+				{user?.role?.name === 'Admin' && (
+					<>
+						<Button
+							variant='outline'
+							size='sm'
+							onClick={() => navigate('/dashboard')}
+							className='hidden md:flex items-center gap-2'
+						>
+							<Home className='h-4 w-4' />
+							<span>Dashboard</span>
+						</Button>
+						<Button
+							variant='outline'
+							size='sm'
+							onClick={() => navigate('/app')}
+							className='hidden md:flex items-center gap-2'
+						>
+							<Home className='h-4 w-4' />
+							<span>App</span>
+						</Button>
+					</>
 				)}
 
 				{/* User Avatar & Dropdown */}
@@ -134,7 +179,24 @@ const Header = ({
 								<span className='text-sm font-medium'>
 									{user?.firstName || user?.email || 'User'}
 								</span>
-								{isPro && (
+								{/* Role Badge */}
+								{isAdmin && (
+									<Badge className='bg-gradient-to-r from-purple-600 to-purple-700 text-white text-xs px-1.5 py-0'>
+										Admin
+									</Badge>
+								)}
+								{isTeacher && (
+									<Badge className='bg-gradient-to-r from-blue-600 to-blue-700 text-white text-xs px-1.5 py-0'>
+										Teacher
+									</Badge>
+								)}
+								{isStudent && (
+									<Badge className='bg-gradient-to-r from-green-600 to-green-700 text-white text-xs px-1.5 py-0'>
+										Student
+									</Badge>
+								)}
+								{/* Subscription Badge for non-admins */}
+								{!isAdmin && isPro && (
 									<Badge className='bg-gradient-to-r from-amber-500 to-orange-500 text-white text-xs px-1.5 py-0'>
 										Pro
 									</Badge>
@@ -158,7 +220,7 @@ const Header = ({
 							<Link to='/profile/subscription' className='cursor-pointer'>
 								<CreditCard className='mr-2 h-4 w-4' />
 								<span>Subscription</span>
-								{!isPro && (
+								{!isAdmin && !isPro && (
 									<Badge
 										variant='outline'
 										className='ml-auto text-xs border-amber-500 text-amber-600'

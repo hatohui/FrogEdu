@@ -109,12 +109,15 @@ async def validate_token(
     Raises:
         HTTPException: If token is invalid
     """
+    logger.info("🔐 validate_token called")
     try:
         # Decode header to get key ID
         unverified_header = jwt.get_unverified_header(token)
         kid = unverified_header.get("kid")
+        logger.info(f"   Token kid: {kid}")
         
         if not kid:
+            logger.error("❌ Token missing key ID")
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Token missing key ID"
@@ -122,8 +125,10 @@ async def validate_token(
         
         # Get the signing key from JWKS
         key_data = await _jwks_cache.get_key(kid, settings.cognito_jwks_url)
+        logger.info(f"   Key data found: {key_data is not None}")
         
         if not key_data:
+            logger.error("❌ Unable to find signing key")
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Unable to find signing key"
@@ -152,15 +157,17 @@ async def validate_token(
             has_active_subscription=payload.get("custom:has_subscription", payload.get("has_subscription", False)) in [True, "true", "True", 1, "1"]
         )
         
-        return TokenUser(
+        user = TokenUser(
             sub=payload.get("sub", ""),
             email=payload.get("email"),
             role=payload.get("custom:role"),
             subscription=subscription
         )
+        logger.info(f"✅ Token validated for user: {user.sub}, role: {user.role}, plan: {user.subscription.plan}")
+        return user
         
     except JWTError as e:
-        logger.warning(f"JWT validation failed: {e}")
+        logger.error(f"❌ JWT validation failed: {e}")
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail=f"Invalid token: {str(e)}"
@@ -190,13 +197,16 @@ async def get_current_user(
     Raises:
         HTTPException: If not authenticated or token is invalid
     """
+    logger.info("🔍 get_current_user called")
     if not credentials:
+        logger.error("❌ No credentials provided")
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Not authenticated",
             headers={"WWW-Authenticate": "Bearer"}
         )
     
+    logger.info("   Credentials present, validating token...")
     return await validate_token(credentials.credentials, settings)
 
 
@@ -236,11 +246,14 @@ def require_subscription(user: TokenUser) -> TokenUser:
     Raises:
         HTTPException: If user doesn't have an active subscription
     """
+    logger.info(f"   Checking subscription: has_pro={user.has_pro_subscription}")
     if not user.has_pro_subscription:
+        logger.warning(f"❌ User {user.sub} does not have active Pro subscription")
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Active Pro subscription required to access this feature"
         )
+    logger.info(f"✅ User {user.sub} has valid Pro subscription")
     return user
 
 
@@ -259,4 +272,6 @@ async def get_subscribed_user(
     Raises:
         HTTPException: If not subscribed
     """
+    logger.info(f"🎫 get_subscribed_user called for user: {user.sub}")
+    logger.info(f"   Subscription: plan={user.subscription.plan}, active={user.subscription.has_active_subscription}")
     return require_subscription(user)

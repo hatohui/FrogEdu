@@ -1,6 +1,6 @@
 import logging
 from contextlib import asynccontextmanager
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import RedirectResponse
 from mangum import Mangum
@@ -21,6 +21,9 @@ async def lifespan(app: FastAPI):
     settings = get_settings()
     logger.info(f"Starting {settings.app_name}")
     logger.info(f"Debug mode: {settings.debug}")
+    logger.info("🔍 Registered routes:")
+    for route in app.routes:
+        logger.info(f"   {route}")
     yield
     logger.info("Shutting down FrogEdu AI Service")
 
@@ -45,6 +48,19 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+# Add request logging middleware
+@app.middleware("http")
+async def log_requests(request: Request, call_next):
+    logger.info(f"📥 Incoming request: {request.method} {request.url.path}")
+    logger.info(f"   Headers: {dict(request.headers)}")
+    logger.info(f"   Query params: {dict(request.query_params)}")
+    
+    response = await call_next(request)
+    
+    logger.info(f"📤 Response status: {response.status_code}")
+    return response
 
 # Include API router (already has /api/ai prefix in routes.py)
 app.include_router(router)

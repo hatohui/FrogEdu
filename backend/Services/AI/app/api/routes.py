@@ -110,19 +110,25 @@ async def generate_single_question(
     **Returns:**
     - A single generated question with answers
     """
+    logger.info("🎯 generate_single_question endpoint hit!")
+    logger.info(f"   Request: topic={request.topic}, cognitive_level={request.cognitive_level}")
+    logger.info(f"   User: {user.sub}, role={user.role}, plan={user.subscription.plan if user.subscription else 'None'}")
+    
     # Verify user has Teacher role
     if user.role and user.role.lower() not in ["teacher", "admin"]:
+        logger.warning(f"❌ User {user.sub} with role {user.role} attempted to generate question (forbidden)")
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Only teachers can generate exam questions"
         )
     
     try:
-        logger.info(f"User {user.sub} generating single question with plan: {user.subscription.plan}")
+        logger.info(f"✅ User {user.sub} authorized, generating single question with plan: {user.subscription.plan}")
         question = await service.generate_single_question(request)
+        logger.info(f"✅ Successfully generated question for user {user.sub}")
         return question
     except Exception as e:
-        logger.error(f"Failed to generate single question: {str(e)}")
+        logger.error(f"❌ Failed to generate single question: {str(e)}", exc_info=True)
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Failed to generate question: {str(e)}"

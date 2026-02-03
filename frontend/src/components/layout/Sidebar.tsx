@@ -11,6 +11,7 @@ import {
 	Users,
 	ChevronLeft,
 	ChevronRight,
+	LayoutDashboard,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
@@ -27,9 +28,16 @@ interface NavItem {
 	name: string
 	href: string
 	icon: React.ComponentType<{ className?: string }>
+	adminOnly?: boolean
 }
 
 const navItems: NavItem[] = [
+	{
+		name: 'Dashboard',
+		href: '/dashboard',
+		icon: LayoutDashboard,
+		adminOnly: true,
+	},
 	{
 		name: 'App',
 		href: '/app',
@@ -155,41 +163,49 @@ const Sidebar = ({
 
 				{/* Navigation Links */}
 				<nav className='flex-1 p-4 space-y-2 overflow-y-auto min-h-0'>
-					{navItems.map(item => {
-						const isActive =
-							location.pathname === item.href ||
-							(item.href !== '/app' && location.pathname.startsWith(item.href))
-						const Icon = item.icon
+					{navItems
+						.filter(item => {
+							const isAdmin = me?.role?.name === 'Admin'
+							if (item.adminOnly) return isAdmin
+							return true
+						})
+						.map(item => {
+							const isActive =
+								location.pathname === item.href ||
+								(item.href !== '/app' &&
+									item.href !== '/dashboard' &&
+									location.pathname.startsWith(item.href))
+							const Icon = item.icon
 
-						const linkContent = (
-							<Link
-								key={item.href}
-								to={item.href}
-								onClick={onClose}
-								className={cn(
-									'flex items-center px-4 py-3 rounded-lg transition-all',
-									'hover:bg-sidebar-accent text-sidebar-foreground hover:text-sidebar-accent-foreground',
-									isActive &&
-										'bg-sidebar-primary text-sidebar-primary-foreground font-medium shadow-sm',
-									collapsed ? 'justify-center' : 'space-x-3'
-								)}
-							>
-								<Icon className='h-5 w-5 flex-shrink-0' />
-								{!collapsed && <span>{item.name}</span>}
-							</Link>
-						)
+							const linkContent = (
+								<Link
+									key={item.href}
+									to={item.href}
+									onClick={onClose}
+									className={cn(
+										'flex items-center px-4 py-3 rounded-lg transition-all',
+										'hover:bg-sidebar-accent text-sidebar-foreground hover:text-sidebar-accent-foreground',
+										isActive &&
+											'bg-sidebar-primary text-sidebar-primary-foreground font-medium shadow-sm',
+										collapsed ? 'justify-center' : 'space-x-3'
+									)}
+								>
+									<Icon className='h-5 w-5 flex-shrink-0' />
+									{!collapsed && <span>{item.name}</span>}
+								</Link>
+							)
 
-						return collapsed ? (
-							<Tooltip key={item.href}>
-								<TooltipTrigger asChild>{linkContent}</TooltipTrigger>
-								<TooltipContent side='right'>
-									<p>{item.name}</p>
-								</TooltipContent>
-							</Tooltip>
-						) : (
-							linkContent
-						)
-					})}
+							return collapsed ? (
+								<Tooltip key={item.href}>
+									<TooltipTrigger asChild>{linkContent}</TooltipTrigger>
+									<TooltipContent side='right'>
+										<p>{item.name}</p>
+									</TooltipContent>
+								</Tooltip>
+							) : (
+								linkContent
+							)
+						})}
 				</nav>
 
 				<Separator className='bg-sidebar-border flex-shrink-0' />

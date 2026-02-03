@@ -11,7 +11,7 @@ import { Key, Smartphone, AlertTriangle } from 'lucide-react'
 
 const SecurityPage = (): React.ReactElement => {
 	return (
-		<div className='space-y-6'>
+		<div className='space-y-6 max-w-4xl mx-auto'>
 			{/* Password Section */}
 			<Card>
 				<CardHeader>

@@ -22,7 +22,7 @@ const SettingsPage = (): React.ReactElement => {
 	const [theme, toggleTheme] = useTheme()
 
 	return (
-		<div className='space-y-6'>
+		<div className='space-y-6 max-w-4xl mx-auto'>
 			{/* Appearance */}
 			<Card>
 				<CardHeader>

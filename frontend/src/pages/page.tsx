@@ -1,7 +1,7 @@
 import React from 'react'
 import { useAuthStore } from '@/stores/authStore'
 import { Skeleton } from '@/components/ui/skeleton'
-import LandingPage from './landing'
+import LandingPage from './landing/page'
 
 const RootPage = (): React.JSX.Element => {
 	const { isLoading } = useAuthStore()

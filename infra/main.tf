@@ -257,5 +257,7 @@ module "ai_service" {
     GEMINI_KEY_NAME       = local.gemini_key_name
     GEMINI_PROJECT_NUMBER = local.gemini_project_number
     GEMINI_PROJECT_NAME   = local.gemini_project_name
+    COGNITO_USER_POOL_ID  = module.cognito.user_pool_id
+    COGNITO_REGION        = local.aws_region
   }
 }

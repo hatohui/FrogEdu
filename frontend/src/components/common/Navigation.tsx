@@ -1,7 +1,19 @@
 import React from 'react'
 import { Link, useLocation, useNavigate } from 'react-router'
 import { Button } from '@/components/ui/button'
-import { Home, Sun, Moon, LogOut, User, Settings } from 'lucide-react'
+import {
+	Home,
+	Sun,
+	Moon,
+	LogOut,
+	User,
+	Settings,
+	Shield,
+	BookOpen,
+	GraduationCap,
+	Crown,
+	CreditCard,
+} from 'lucide-react'
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -10,9 +22,11 @@ import {
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import { Badge } from '@/components/ui/badge'
 import { useTheme } from '@/config/theme'
 import UserAvatar from './UserAvatar'
 import { useMe } from '@/hooks/auth/useMe'
+import { useSubscription } from '@/hooks/useSubscription'
 import { toast } from 'sonner'
 
 const Navigation = (): React.JSX.Element => {
@@ -20,6 +34,11 @@ const Navigation = (): React.JSX.Element => {
 	const navigate = useNavigate()
 	const [theme, toggleTheme] = useTheme()
 	const { user, signOutThenNavigate } = useMe()
+	const { isPro } = useSubscription()
+
+	const isAdmin = user?.role?.name === 'Admin'
+	const isTeacher = user?.role?.name === 'Teacher'
+	const isStudent = user?.role?.name === 'Student'
 
 	const handleSignOut = () => {
 		signOutThenNavigate('/login')
@@ -85,14 +104,55 @@ const Navigation = (): React.JSX.Element => {
 
 						{user ? (
 							<>
+								{/* Role Badge */}
+								{isAdmin && (
+									<Badge className='bg-gradient-to-r from-purple-600 to-purple-700 text-white hidden sm:flex'>
+										<Shield className='h-3 w-3 mr-1' />
+										Admin
+									</Badge>
+								)}
+								{isTeacher && (
+									<Badge className='bg-gradient-to-r from-blue-600 to-blue-700 text-white hidden sm:flex'>
+										<BookOpen className='h-3 w-3 mr-1' />
+										Teacher
+									</Badge>
+								)}
+								{isStudent && (
+									<Badge className='bg-gradient-to-r from-green-600 to-green-700 text-white hidden sm:flex'>
+										<GraduationCap className='h-3 w-3 mr-1' />
+										Student
+									</Badge>
+								)}
+
+								{/* Subscription Badge for non-admins */}
+								{!isAdmin && (
+									<Badge
+										className='hidden sm:flex cursor-pointer'
+										variant={isPro ? 'default' : 'secondary'}
+										onClick={() => navigate('/profile/subscription')}
+									>
+										{isPro ? (
+											<>
+												<Crown className='h-3 w-3 mr-1' />
+												Pro
+											</>
+										) : (
+											<>
+												<CreditCard className='h-3 w-3 mr-1' />
+												Free
+											</>
+										)}
+									</Badge>
+								)}
+
 								<Button
 									variant='outline'
 									size='sm'
-									onClick={() => navigate('/app')}
+									onClick={() => navigate(isAdmin ? '/dashboard' : '/app')}
 									className='hidden sm:flex items-center gap-2'
 								>
 									<Home className='h-4 w-4' />
-									<span>App</span>
+									<span>{isAdmin ? 'Dashboard' : 'App'}</span>
 								</Button>
 
 								<DropdownMenu>
@@ -107,9 +167,33 @@ const Navigation = (): React.JSX.Element => {
 
 									<DropdownMenuContent align='end' className='w-56'>
 										<DropdownMenuLabel className='flex flex-col space-y-1'>
-											<span className='text-sm font-medium'>
-												{user?.firstName || user?.lastName || 'User'}
-											</span>
+											<div className='flex items-center gap-2 flex-wrap'>
+												<span className='text-sm font-medium'>
+													{user?.firstName || user?.lastName || 'User'}
+												</span>
+												{/* Role Badge */}
+												{isAdmin && (
+													<Badge className='bg-gradient-to-r from-purple-600 to-purple-700 text-white text-xs px-1.5 py-0'>
+														Admin
+													</Badge>
+												)}
+												{isTeacher && (
+													<Badge className='bg-gradient-to-r from-blue-600 to-blue-700 text-white text-xs px-1.5 py-0'>
+														Teacher
+													</Badge>
+												)}
+												{isStudent && (
+													<Badge className='bg-gradient-to-r from-green-600 to-green-700 text-white text-xs px-1.5 py-0'>
+														Student
+													</Badge>
+												)}
+												{/* Subscription Badge for non-admins */}
+												{!isAdmin && isPro && (
+													<Badge className='bg-gradient-to-r from-amber-500 to-orange-500 text-white text-xs px-1.5 py-0'>
+														Pro
+													</Badge>
+												)}
+											</div>
 											<span className='text-xs text-muted-foreground'>
 												{user?.email || ''}
 											</span>

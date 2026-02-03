@@ -26,10 +26,10 @@ const UserProfileLayout = ({
 	const { isPro } = useSubscription()
 
 	return (
-		<div className='min-h-[calc(100vh-4rem)]'>
-			<div className='max-w-4xl mx-auto px-4 py-6'>
-				{/* Inline Tab Navigation */}
-				<nav className='flex gap-1 p-1 bg-muted/50 rounded-lg mb-6 overflow-x-auto'>
+		<div className='min-h-[calc(100vh-4rem)] flex'>
+			{/* Left Sidebar Navigation */}
+			<aside className='w-64 border-r bg-card flex-shrink-0'>
+				<nav className='p-4 space-y-1'>
 					{navItems.map(item => (
 						<NavLink
 							key={item.to}
@@ -37,30 +37,27 @@ const UserProfileLayout = ({
 							end={item.to === '/profile'}
 							className={({ isActive }) =>
 								cn(
-									'flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-colors whitespace-nowrap',
+									'flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors',
 									isActive
-										? 'bg-background text-foreground shadow-sm'
-										: 'text-muted-foreground hover:text-foreground hover:bg-background/50'
+										? 'bg-primary text-primary-foreground shadow-sm'
+										: 'text-muted-foreground hover:text-foreground hover:bg-accent'
 								)
 							}
 						>
-							<item.icon className='h-4 w-4' />
-							<span>{item.label}</span>
+							<item.icon className='h-5 w-5' />
+							<span className='flex-1'>{item.label}</span>
 							{item.label === 'Subscription' && isPro && (
-								<Badge
-									variant='secondary'
-									className='ml-1 bg-gradient-to-r from-amber-500 to-orange-500 text-white text-xs px-1.5 py-0'
-								>
+								<Badge className='bg-gradient-to-r from-amber-500 to-orange-500 text-white text-xs px-1.5 py-0'>
 									Pro
 								</Badge>
 							)}
 						</NavLink>
 					))}
 				</nav>
+			</aside>
 
-				{/* Main Content */}
-				<main>{children}</main>
-			</div>
+			{/* Main Content */}
+			<main className='flex-1 p-6 overflow-auto'>{children}</main>
 		</div>
 	)
 }
