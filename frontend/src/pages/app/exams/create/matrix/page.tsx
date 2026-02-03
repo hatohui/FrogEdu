@@ -16,14 +16,13 @@ const CreateMatrixPage = (): React.ReactElement => {
 	const navigate = useNavigate()
 	const [searchParams] = useSearchParams()
 	const examId = searchParams.get('examId')
-	const topicId = searchParams.get('topicId')
 
 	const { data: exam, isLoading: isLoadingExam } = useExam(examId ?? '')
 	const { data: topics = [] } = useTopics(exam?.subjectId ?? '')
 	const [matrixRows, setMatrixRows] = useState<MatrixRow[]>([
 		{
 			id: crypto.randomUUID(),
-			topicId: topicId || '',
+			topicId: '',
 			remember: 0,
 			understand: 0,
 			apply: 0,

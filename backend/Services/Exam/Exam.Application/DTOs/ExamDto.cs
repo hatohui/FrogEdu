@@ -4,7 +4,6 @@ public sealed record ExamDto(
     Guid Id,
     string Name,
     string Description,
-    Guid TopicId,
     Guid SubjectId,
     int Grade,
     bool IsDraft,

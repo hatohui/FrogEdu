@@ -24,18 +24,6 @@ public class ExamRepository : IExamRepository
             .FirstOrDefaultAsync(e => e.Id == id, cancellationToken);
     }
 
-    public async Task<IReadOnlyList<ExamEntity>> GetByTopicIdAsync(
-        Guid topicId,
-        CancellationToken cancellationToken = default
-    )
-    {
-        return await _context
-            .Exams.Include(e => e.ExamQuestions)
-            .Where(e => e.TopicId == topicId)
-            .OrderByDescending(e => e.CreatedAt)
-            .ToListAsync(cancellationToken);
-    }
-
     public async Task<IReadOnlyList<ExamEntity>> GetByCreatorAsync(
         Guid userId,
         CancellationToken cancellationToken = default

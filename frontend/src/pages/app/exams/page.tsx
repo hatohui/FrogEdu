@@ -57,7 +57,6 @@ import {
 	useUpdateExam,
 	useDeleteExam,
 	useSubjects,
-	useTopics,
 } from '@/hooks/useExams'
 import { Badge } from '@/components/ui/badge'
 import { useNavigate } from 'react-router'
@@ -72,7 +71,6 @@ const ExamsPage = (): React.ReactElement => {
 	const [formData, setFormData] = useState<Partial<CreateExamRequest>>({
 		name: '',
 		description: '',
-		topicId: '',
 		subjectId: '',
 		grade: 10,
 	})
@@ -81,7 +79,6 @@ const ExamsPage = (): React.ReactElement => {
 		filter === 'draft' ? true : filter === 'published' ? false : undefined
 	const { data: exams, isLoading } = useExams(isDraft)
 	const { data: subjects } = useSubjects(formData.grade)
-	const { data: topics } = useTopics(formData.subjectId || '')
 	const updateExam = useUpdateExam()
 	const deleteExam = useDeleteExam()
 
@@ -109,7 +106,6 @@ const ExamsPage = (): React.ReactElement => {
 		setFormData({
 			name: exam.name,
 			description: exam.description,
-			topicId: exam.topicId,
 			subjectId: exam.subjectId,
 			grade: exam.grade,
 		})
@@ -307,7 +303,7 @@ const ExamsPage = (): React.ReactElement => {
 							<Select
 								value={formData.subjectId}
 								onValueChange={value =>
-									setFormData({ ...formData, subjectId: value, topicId: '' })
+									setFormData({ ...formData, subjectId: value })
 								}
 							>
 								<SelectTrigger id='subject'>
@@ -317,27 +313,6 @@ const ExamsPage = (): React.ReactElement => {
 									{subjects?.map(subject => (
 										<SelectItem key={subject.id} value={subject.id}>
 											{subject.name}
-										</SelectItem>
-									))}
-								</SelectContent>
-							</Select>
-						</div>
-						<div className='space-y-2'>
-							<Label htmlFor='topic'>Topic</Label>
-							<Select
-								value={formData.topicId}
-								onValueChange={value =>
-									setFormData({ ...formData, topicId: value })
-								}
-								disabled={!formData.subjectId}
-							>
-								<SelectTrigger id='topic'>
-									<SelectValue placeholder='Select a topic' />
-								</SelectTrigger>
-								<SelectContent>
-									{topics?.map(topic => (
-										<SelectItem key={topic.id} value={topic.id}>
-											{topic.title}
 										</SelectItem>
 									))}
 								</SelectContent>

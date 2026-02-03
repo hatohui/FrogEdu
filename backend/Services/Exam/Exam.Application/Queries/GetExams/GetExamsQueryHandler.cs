@@ -36,7 +36,6 @@ public sealed class GetExamsQueryHandler(IExamRepository examRepository)
                 e.Id,
                 e.Name,
                 e.Description,
-                e.TopicId,
                 e.SubjectId,
                 e.Grade,
                 e.IsDraft,

@@ -17,8 +17,6 @@ public class ExamConfiguration : IEntityTypeConfiguration<ExamEntity>
 
         builder.Property(e => e.Description).IsRequired().HasMaxLength(1000);
 
-        builder.Property(e => e.TopicId).IsRequired();
-
         builder.Property(e => e.SubjectId).IsRequired();
 
         builder.Property(e => e.Grade).IsRequired();
@@ -34,8 +32,6 @@ public class ExamConfiguration : IEntityTypeConfiguration<ExamEntity>
         builder.Property(e => e.UpdatedBy).HasMaxLength(256);
 
         // Indexes
-        builder.HasIndex(e => e.TopicId).HasDatabaseName("IX_Exams_TopicId");
-
         builder.HasIndex(e => e.SubjectId).HasDatabaseName("IX_Exams_SubjectId");
 
         builder.HasIndex(e => e.Grade).HasDatabaseName("IX_Exams_Grade");

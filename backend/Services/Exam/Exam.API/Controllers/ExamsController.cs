@@ -63,7 +63,6 @@ public class ExamsController(IMediator mediator) : BaseController
         var command = new CreateExamCommand(
             request.Name,
             request.Description,
-            request.TopicId,
             request.SubjectId,
             request.Grade,
             userId

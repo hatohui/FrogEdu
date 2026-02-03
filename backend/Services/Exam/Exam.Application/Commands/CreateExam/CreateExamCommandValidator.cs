@@ -18,8 +18,6 @@ public sealed class CreateExamCommandValidator : AbstractValidator<CreateExamCom
             .MaximumLength(1000)
             .WithMessage("Description cannot exceed 1000 characters");
 
-        RuleFor(x => x.TopicId).NotEmpty().WithMessage("Topic ID is required");
-
         RuleFor(x => x.SubjectId).NotEmpty().WithMessage("Subject ID is required");
 
         RuleFor(x => x.Grade)

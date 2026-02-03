@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
@@ -24,8 +24,7 @@ import {
 	SelectValue,
 } from '@/components/ui/select'
 import { useNavigate } from 'react-router'
-import { useCreateExam, useSubjects, useTopics } from '@/hooks/useExams'
-import { TopicSelector } from '@/components/exams/topic-selector'
+import { useCreateExam, useSubjects } from '@/hooks/useExams'
 
 const examSchema = z.object({
 	name: z
@@ -42,14 +41,12 @@ const examSchema = z.object({
 		.min(1, 'Grade must be between 1 and 5')
 		.max(5, 'Grade must be between 1 and 5'),
 	subjectId: z.string().min(1, 'Subject is required'),
-	topicId: z.string().min(1, 'Topic is required'),
 })
 
 type ExamFormData = z.infer<typeof examSchema>
 
 const CreateExamPage = (): React.ReactElement => {
 	const navigate = useNavigate()
-	const [selectedSubjectId, setSelectedSubjectId] = useState<string>('')
 
 	const form = useForm<ExamFormData>({
 		resolver: zodResolver(examSchema),
@@ -58,13 +55,11 @@ const CreateExamPage = (): React.ReactElement => {
 			description: '',
 			grade: 1,
 			subjectId: '',
-			topicId: '',
 		},
 	})
 
 	const watchGrade = form.watch('grade')
 	const { data: subjects } = useSubjects(watchGrade)
-	const { data: topics } = useTopics(selectedSubjectId)
 	const createExamMutation = useCreateExam()
 
 	const onSubmit = async (data: ExamFormData) => {
@@ -74,13 +69,10 @@ const CreateExamPage = (): React.ReactElement => {
 				description: data.description,
 				grade: data.grade,
 				subjectId: data.subjectId,
-				topicId: data.topicId,
 			})
 
 			if (result.data?.id) {
-				navigate(
-					`/app/exams/create/matrix?examId=${result.data.id}&topicId=${data.topicId}`
-				)
+				navigate(`/app/exams/create/matrix?examId=${result.data.id}`)
 			}
 		} catch (error) {
 			console.error('Failed to create exam:', error)
@@ -192,11 +184,7 @@ const CreateExamPage = (): React.ReactElement => {
 									<FormItem>
 										<FormLabel>Subject *</FormLabel>
 										<Select
-											onValueChange={value => {
-												field.onChange(value)
-												setSelectedSubjectId(value)
-												form.setValue('topicId', '')
-											}}
+											onValueChange={value => field.onChange(value)}
 											value={field.value}
 										>
 											<FormControl>
@@ -218,31 +206,6 @@ const CreateExamPage = (): React.ReactElement => {
 												)}
 											</SelectContent>
 										</Select>
-										<FormMessage />
-									</FormItem>
-								)}
-							/>
-
-							<FormField
-								control={form.control}
-								name='topicId'
-								render={({ field }) => (
-									<FormItem>
-										<FormLabel>Topic *</FormLabel>
-										<FormControl>
-											<TopicSelector
-												topics={topics || []}
-												value={field.value}
-												onValueChange={field.onChange}
-												placeholder='Search and select a topic...'
-												disabled={!selectedSubjectId}
-											/>
-										</FormControl>
-										<FormDescription>
-											{!selectedSubjectId
-												? 'Please select a subject first'
-												: 'Search by topic name or number (e.g., 1.1, 2.3)'}
-										</FormDescription>
 										<FormMessage />
 									</FormItem>
 								)}

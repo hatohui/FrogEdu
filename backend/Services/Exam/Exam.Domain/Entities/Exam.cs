@@ -7,7 +7,6 @@ public sealed class Exam : AuditableEntity
 {
     public string Name { get; private set; } = null!;
     public string Description { get; private set; } = null!;
-    public Guid TopicId { get; private set; }
     public Guid SubjectId { get; private set; }
     public int Grade { get; private set; }
     public bool IsDraft { get; private set; }
@@ -18,11 +17,10 @@ public sealed class Exam : AuditableEntity
 
     private Exam() { }
 
-    private Exam(string name, string description, Guid topicId, Guid subjectId, int grade)
+    private Exam(string name, string description, Guid subjectId, int grade)
     {
         Name = name;
         Description = description;
-        TopicId = topicId;
         SubjectId = subjectId;
         Grade = grade;
         IsDraft = true;
@@ -32,7 +30,6 @@ public sealed class Exam : AuditableEntity
     public static Exam Create(
         string name,
         string description,
-        Guid topicId,
         Guid subjectId,
         int grade,
         string userId
@@ -42,8 +39,6 @@ public sealed class Exam : AuditableEntity
             throw new ArgumentException("Name cannot be empty", nameof(name));
         if (string.IsNullOrWhiteSpace(description))
             throw new ArgumentException("Description cannot be empty", nameof(description));
-        if (topicId == Guid.Empty)
-            throw new ArgumentException("Topic ID cannot be empty", nameof(topicId));
         if (subjectId == Guid.Empty)
             throw new ArgumentException("Subject ID cannot be empty", nameof(subjectId));
         if (grade < 1 || grade > 5)
@@ -52,7 +47,7 @@ public sealed class Exam : AuditableEntity
                 nameof(grade)
             );
 
-        var exam = new Exam(name, description, topicId, subjectId, grade);
+        var exam = new Exam(name, description, subjectId, grade);
 
         // Pass userId to ensure CreatedBy is set
         if (Guid.TryParse(userId, out var createdByGuid))
@@ -64,7 +59,7 @@ public sealed class Exam : AuditableEntity
             exam.MarkAsCreated();
         }
 
-        exam.AddDomainEvent(new ExamCreatedDomainEvent(exam.Id, exam.Name, exam.TopicId));
+        exam.AddDomainEvent(new ExamCreatedDomainEvent(exam.Id, exam.Name));
         return exam;
     }
 

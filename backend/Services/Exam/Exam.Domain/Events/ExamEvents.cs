@@ -2,7 +2,7 @@ using FrogEdu.Shared.Kernel;
 
 namespace FrogEdu.Exam.Domain.Events;
 
-public sealed record ExamCreatedDomainEvent(Guid ExamId, string Name, Guid TopicId) : IDomainEvent
+public sealed record ExamCreatedDomainEvent(Guid ExamId, string Name) : IDomainEvent
 {
     public Guid EventId { get; } = Guid.NewGuid();
     public DateTime OccurredOn { get; } = DateTime.UtcNow;
