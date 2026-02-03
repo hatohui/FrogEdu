@@ -30,8 +30,9 @@ app = FastAPI(
     description="AI-powered question generation and tutoring service",
     version="1.0.0",
     lifespan=lifespan,
-    docs_url="/docs",
-    redoc_url="/redoc",
+    docs_url="/api/ai/docs",
+    redoc_url="/api/ai/redoc",
+    openapi_url="/api/ai/openapi.json",
 )
 
 # Configure CORS
@@ -44,11 +45,11 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Include API router
-app.include_router(router)
+# Include API router with /api/ai prefix
+app.include_router(router, prefix="/api/ai")
 
 
 @app.get("/", include_in_schema=False)
 async def root():
     """Redirect root to API docs."""
-    return RedirectResponse(url="/docs")
+    return RedirectResponse(url="/api/ai/docs")

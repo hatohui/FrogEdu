@@ -11,5 +11,5 @@ COPY main.py .
 COPY app ./app
 
 # Run the application
-EXPOSE 8000
-CMD ["fastapi", "run", "main.py", "--host", "127.0.0.1", "--port", "8000"]
+EXPOSE 8080
+CMD ["fastapi", "run", "main.py", "--host", "0.0.0.0", "--port", "8080"]
