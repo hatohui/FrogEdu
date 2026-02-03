@@ -102,7 +102,7 @@ async def not_found_handler(request: Request, exc):
     )
 
 # Include API router (already has /api/ai prefix in routes.py)
-app.include_router(router)
+app.include_router(router, prefix="/api/ai")
 
 
 @app.get("/", include_in_schema=False)
