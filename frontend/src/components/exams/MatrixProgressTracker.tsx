@@ -80,39 +80,41 @@ export const MatrixProgressTracker: React.FC<MatrixProgressTrackerProps> = ({
 		}
 	}
 
-	const getCognitiveLevelColor = (level: CognitiveLevel) => {
+	const getCognitiveLevelVariant = (
+		level: CognitiveLevel
+	): 'default' | 'secondary' | 'outline' | 'destructive' => {
 		switch (level) {
 			case CognitiveLevel.Remember:
-				return 'bg-blue-500 text-white'
+				return 'secondary'
 			case CognitiveLevel.Understand:
-				return 'bg-green-500 text-white'
+				return 'default'
 			case CognitiveLevel.Apply:
-				return 'bg-yellow-500 text-white'
+				return 'outline'
 			case CognitiveLevel.Analyze:
-				return 'bg-red-500 text-white'
+				return 'destructive'
 			default:
-				return 'bg-gray-500 text-white'
+				return 'outline'
 		}
 	}
 
 	return (
-		<Card className='border-2 border-primary/20 bg-gradient-to-br from-primary/5 to-background'>
+		<Card>
 			<CardHeader>
 				<div className='flex items-center justify-between'>
 					<CardTitle className='flex items-center gap-2'>
 						<span>Matrix Progress</span>
 						{overallProgress === 100 && (
-							<CheckCircle className='h-5 w-5 text-green-500' />
+							<CheckCircle className='h-5 w-5 text-primary' />
 						)}
 					</CardTitle>
 					<div className='text-sm font-medium'>
-						<span className='text-2xl font-bold'>
+						<span className='text-2xl font-bold text-primary'>
 							{Math.round(overallProgress)}%
 						</span>
 						<span className='text-muted-foreground ml-1'>Complete</span>
 					</div>
 				</div>
-				<Progress value={overallProgress} className='h-3' />
+				<Progress value={overallProgress} className='h-3 mt-4' />
 			</CardHeader>
 			<CardContent className='space-y-3'>
 				{progressData.map((item, index) => {
@@ -122,27 +124,26 @@ export const MatrixProgressTracker: React.FC<MatrixProgressTrackerProps> = ({
 					return (
 						<div
 							key={`${item.topicId}-${item.cognitiveLevel}-${index}`}
-							className='p-3 rounded-lg border bg-card hover:bg-accent/50 transition-colors'
+							className='p-3 rounded-lg border bg-card hover:bg-accent transition-colors'
 						>
 							<div className='flex items-center justify-between mb-2'>
 								<div className='flex items-center gap-2'>
 									<span className='text-sm font-medium'>{item.topicName}</span>
 									<Badge
-										className={getCognitiveLevelColor(item.cognitiveLevel)}
-										variant='default'
+										variant={getCognitiveLevelVariant(item.cognitiveLevel)}
 									>
 										{getCognitiveLevelLabel(item.cognitiveLevel)}
 									</Badge>
 								</div>
 								<div className='flex items-center gap-2'>
-									<span className='text-sm'>
+									<span className='text-sm text-muted-foreground'>
 										{item.created}/{item.required}
 									</span>
 									{isComplete && (
-										<CheckCircle className='h-4 w-4 text-green-500' />
+										<CheckCircle className='h-4 w-4 text-primary' />
 									)}
 									{isOver && (
-										<AlertCircle className='h-4 w-4 text-yellow-500' />
+										<AlertCircle className='h-4 w-4 text-muted-foreground' />
 									)}
 								</div>
 							</div>

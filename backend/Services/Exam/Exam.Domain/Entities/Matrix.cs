@@ -24,8 +24,11 @@ public sealed class Matrix : AuditableEntity
         if (examId == Guid.Empty)
             throw new ArgumentException("Exam ID cannot be empty", nameof(examId));
 
+        if (string.IsNullOrWhiteSpace(userId))
+            throw new ArgumentException("User ID cannot be empty", nameof(userId));
+
         var matrix = new Matrix(examId);
-        matrix.MarkAsCreated();
+        matrix.MarkAsCreated(Guid.Parse(userId));
         return matrix;
     }
 

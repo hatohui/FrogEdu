@@ -17,9 +17,9 @@ public class MatrixConfiguration : IEntityTypeConfiguration<Matrix>
 
         // Auditable properties
         builder.Property(m => m.CreatedAt).IsRequired();
-        builder.Property(m => m.CreatedBy).IsRequired().HasMaxLength(256);
+        builder.Property(m => m.CreatedBy);
         builder.Property(m => m.UpdatedAt);
-        builder.Property(m => m.UpdatedBy).HasMaxLength(256);
+        builder.Property(m => m.UpdatedBy);
 
         // Indexes
         builder.HasIndex(m => m.ExamId).IsUnique().HasDatabaseName("IX_Matrices_ExamId");

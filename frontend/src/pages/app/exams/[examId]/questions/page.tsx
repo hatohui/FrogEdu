@@ -165,18 +165,20 @@ const QuestionBankPage = (): React.ReactElement => {
 		}
 	}
 
-	const getCognitiveLevelColor = (level: CognitiveLevel) => {
+	const getCognitiveLevelVariant = (
+		level: CognitiveLevel
+	): 'default' | 'secondary' | 'outline' | 'destructive' => {
 		switch (level) {
 			case CognitiveLevel.Remember:
-				return 'bg-blue-500/10 text-blue-700 dark:text-blue-400 border-blue-500/20'
+				return 'secondary'
 			case CognitiveLevel.Understand:
-				return 'bg-green-500/10 text-green-700 dark:text-green-400 border-green-500/20'
+				return 'default'
 			case CognitiveLevel.Apply:
-				return 'bg-yellow-500/10 text-yellow-700 dark:text-yellow-400 border-yellow-500/20'
+				return 'outline'
 			case CognitiveLevel.Analyze:
-				return 'bg-red-500/10 text-red-700 dark:text-red-400 border-red-500/20'
+				return 'destructive'
 			default:
-				return ''
+				return 'outline'
 		}
 	}
 
@@ -208,9 +210,7 @@ const QuestionBankPage = (): React.ReactElement => {
 						<ArrowLeft className='h-5 w-5' />
 					</Button>
 					<div>
-						<h1 className='text-3xl font-bold bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent'>
-							Question Bank
-						</h1>
+						<h1 className='text-3xl font-bold'>Question Bank</h1>
 						<p className='text-muted-foreground'>
 							Select questions for your exam
 						</p>
@@ -220,7 +220,6 @@ const QuestionBankPage = (): React.ReactElement => {
 					<Button
 						variant='outline'
 						onClick={() => navigate(`/app/exams/${examId}/questions/create`)}
-						className='border-2'
 					>
 						<Plus className='h-4 w-4 mr-2' />
 						Create Question
@@ -228,7 +227,6 @@ const QuestionBankPage = (): React.ReactElement => {
 					<Button
 						onClick={handleAddSelectedToExam}
 						disabled={selectedQuestions.size === 0}
-						className='bg-gradient-to-r from-primary to-purple-600 hover:opacity-90'
 					>
 						<CheckCircle className='h-4 w-4 mr-2' />
 						Add {selectedQuestions.size} Selected
@@ -246,7 +244,7 @@ const QuestionBankPage = (): React.ReactElement => {
 			)}
 
 			{/* Main Content */}
-			<Card className='border-2'>
+			<Card>
 				<CardHeader>
 					<div className='flex items-center justify-between'>
 						<CardTitle>Available Questions</CardTitle>
@@ -390,10 +388,9 @@ const QuestionBankPage = (): React.ReactElement => {
 												</TableCell>
 												<TableCell>
 													<Badge
-														className={getCognitiveLevelColor(
+														variant={getCognitiveLevelVariant(
 															question.cognitiveLevel
 														)}
-														variant='outline'
 													>
 														{getCognitiveLevelLabel(question.cognitiveLevel)}
 													</Badge>
@@ -453,7 +450,7 @@ const QuestionBankPage = (): React.ReactElement => {
 							</Table>
 						</div>
 					) : (
-						<Card className='border-dashed border-2'>
+						<Card className='border-dashed'>
 							<CardContent className='flex flex-col items-center justify-center py-12 text-center'>
 								<AlertCircle className='h-12 w-12 text-muted-foreground mb-4' />
 								<p className='text-lg font-medium mb-2'>No questions found</p>
