@@ -10,6 +10,10 @@ RUN pip install --no-cache-dir --upgrade -r requirement.txt
 COPY main.py .
 COPY app ./app
 
+# Set Python to run in unbuffered mode
+ENV PYTHONUNBUFFERED=1
+
 # Run the application
 EXPOSE 8080
-CMD ["fastapi", "run", "main.py", "--host", "0.0.0.0", "--port", "8080"]
+ENTRYPOINT ["python", "-m", "awslambdaric"]
+CMD ["main.handler"]

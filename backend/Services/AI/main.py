@@ -3,6 +3,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import RedirectResponse
+from mangum import Mangum
 
 from app.api import router
 from app.config import get_settings
@@ -53,3 +54,7 @@ app.include_router(router)
 async def root():
     """Redirect root to API docs."""
     return RedirectResponse(url="/api/ai/docs")
+
+
+# Lambda handler with Mangum
+handler = Mangum(app, lifespan="off")
