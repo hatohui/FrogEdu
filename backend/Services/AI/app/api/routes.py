@@ -26,7 +26,7 @@ def get_gemini_service(
     return GeminiService(settings)
 
 
-@router.get("/api/ai/health", response_model=HealthResponse)
+@router.get("/health", response_model=HealthResponse)
 async def health_check(
     service: Annotated[GeminiService, Depends(get_gemini_service)],
     settings: Annotated[Settings, Depends(get_settings)]
@@ -44,7 +44,7 @@ async def health_check(
 
 
 @router.post(
-    "/api/ai/questions/generate",
+    "/questions/generate",
     response_model=GenerateQuestionsResponse,
     status_code=status.HTTP_201_CREATED
 )
@@ -82,7 +82,7 @@ async def generate_questions(
 
 
 @router.post(
-    "/api/ai/questions/generate-single",
+    "/questions/generate-single",
     response_model=Question,
     status_code=status.HTTP_201_CREATED
 )
@@ -110,7 +110,7 @@ async def generate_single_question(
         )
 
 
-@router.post("/api/ai/tutor/chat", response_model=TutorChatResponse)
+@router.post("/tutor/chat", response_model=TutorChatResponse)
 async def tutor_chat(
     request: TutorChatRequest,
     service: Annotated[GeminiService, Depends(get_gemini_service)]

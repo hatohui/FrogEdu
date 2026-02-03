@@ -246,10 +246,10 @@ module "ai_service" {
   cognito_authorizer_id     = module.api_gateway.cognito_authorizer_id
 
   no_auth_routes = [
-    "/health/{proxy+}",
     "/health",
     "/docs",
-    "/docs/{proxy+}",
+    "/redoc",
+    "/openapi.json",
   ]
 
   environment_variables = {
