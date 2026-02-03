@@ -111,3 +111,11 @@ tfplan
 
 # Output files
 outputs.json
+# Python FastAPI cache
+.fastapi_cache/
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.coverage
+htmlcov/
