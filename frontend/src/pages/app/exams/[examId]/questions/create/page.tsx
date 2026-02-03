@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router'
 import { useForm, useFieldArray } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -25,9 +25,17 @@ import {
 	SelectValue,
 } from '@/components/ui/select'
 import { Checkbox } from '@/components/ui/checkbox'
-import { useCreateQuestion } from '@/hooks/useExams'
+import {
+	useCreateQuestion,
+	useMatrix,
+	useExam,
+	useTopics,
+} from '@/hooks/useExams'
 import { QuestionType, CognitiveLevel } from '@/types/model/exam-service'
 import { TopicSelector } from '@/components/exams/topic-selector'
+import { MatrixProgressTracker } from '@/components/exams/MatrixProgressTracker'
+import { Badge } from '@/components/ui/badge'
+import { Info } from 'lucide-react'
 
 const answerSchema = z.object({
 	content: z.string().min(1, 'Answer content is required'),
@@ -51,6 +59,9 @@ type QuestionFormData = z.infer<typeof questionSchema>
 const CreateQuestionPage = (): React.ReactElement => {
 	const navigate = useNavigate()
 	const { examId } = useParams<{ examId: string }>()
+	const { data: exam } = useExam(examId ?? '')
+	const { data: matrix } = useMatrix(examId ?? '')
+	const { data: topics = [] } = useTopics(exam?.subjectId ?? '')
 	const createQuestionMutation = useCreateQuestion()
 	const [isUploading, setIsUploading] = useState(false)
 
@@ -75,6 +86,42 @@ const CreateQuestionPage = (): React.ReactElement => {
 		control: form.control,
 		name: 'answers',
 	})
+
+	const questionType = form.watch('type')
+
+	// Update answers when question type changes
+	useEffect(() => {
+		if (questionType === QuestionType.TrueFalse) {
+			// True/False: exactly 2 answers (True and False)
+			form.setValue('answers', [
+				{ content: 'True', isCorrect: false, explanation: '' },
+				{ content: 'False', isCorrect: false, explanation: '' },
+			])
+		} else if (questionType === QuestionType.Essay) {
+			// Essay: no predefined answers needed
+			form.setValue('answers', [
+				{
+					content: 'Sample answer or grading rubric',
+					isCorrect: true,
+					explanation: '',
+				},
+			])
+		} else if (questionType === QuestionType.FillInTheBlank) {
+			// Fill in blank: one or more acceptable answers
+			form.setValue('answers', [
+				{ content: '', isCorrect: true, explanation: '' },
+			])
+		} else if (
+			questionType === QuestionType.MultipleChoice &&
+			fields.length < 2
+		) {
+			// Multiple choice: at least 2 options
+			form.setValue('answers', [
+				{ content: '', isCorrect: false, explanation: '' },
+				{ content: '', isCorrect: false, explanation: '' },
+			])
+		}
+	}, [questionType])
 
 	const onSubmit = async (data: QuestionFormData) => {
 		try {
@@ -141,6 +188,30 @@ const CreateQuestionPage = (): React.ReactElement => {
 				</div>
 			</div>
 
+			{/* Matrix Progress Tracker */}
+			{matrix && (
+				<Card className='border-primary/20 bg-primary/5'>
+					<CardHeader>
+						<div className='flex items-start gap-3'>
+							<Info className='h-5 w-5 text-primary mt-0.5' />
+							<div className='flex-1'>
+								<CardTitle className='text-base'>Matrix Requirements</CardTitle>
+								<p className='text-sm text-muted-foreground mt-1'>
+									Create questions based on your exam matrix configuration
+								</p>
+							</div>
+						</div>
+					</CardHeader>
+					<CardContent>
+						<MatrixProgressTracker
+							matrix={matrix}
+							questions={[]}
+							topics={topics}
+						/>
+					</CardContent>
+				</Card>
+			)}
+
 			{/* Form */}
 			<Form {...form}>
 				<form onSubmit={form.handleSubmit(onSubmit)} className='space-y-6'>
@@ -201,7 +272,7 @@ const CreateQuestionPage = (): React.ReactElement => {
 									name='cognitiveLevel'
 									render={({ field }) => (
 										<FormItem>
-											<FormLabel>Difficulty Level *</FormLabel>
+											<FormLabel>Cognitive Level *</FormLabel>
 											<Select
 												onValueChange={value => field.onChange(Number(value))}
 												defaultValue={String(field.value)}
@@ -212,9 +283,10 @@ const CreateQuestionPage = (): React.ReactElement => {
 													</SelectTrigger>
 												</FormControl>
 												<SelectContent>
-													<SelectItem value='0'>Easy</SelectItem>
-													<SelectItem value='1'>Medium</SelectItem>
-													<SelectItem value='2'>Hard</SelectItem>
+													<SelectItem value='0'>Remember</SelectItem>
+													<SelectItem value='1'>Understand</SelectItem>
+													<SelectItem value='2'>Apply</SelectItem>
+													<SelectItem value='3'>Analyze</SelectItem>
 												</SelectContent>
 											</Select>
 											<FormMessage />
@@ -318,39 +390,50 @@ const CreateQuestionPage = (): React.ReactElement => {
 					{/* Answers Card */}
 					<Card>
 						<CardHeader className='flex flex-row items-center justify-between'>
-							<CardTitle>Answer Options</CardTitle>
-							<Button
-								type='button'
-								onClick={addAnswer}
-								variant='outline'
-								size='sm'
-							>
-								<Plus className='h-4 w-4 mr-2' />
-								Add Answer
-							</Button>
+							<CardTitle>
+								{questionType === QuestionType.Essay
+									? 'Grading Guidelines'
+									: questionType === QuestionType.FillInTheBlank
+										? 'Acceptable Answers'
+										: 'Answer Options'}
+							</CardTitle>
+							{(questionType === QuestionType.MultipleChoice ||
+								questionType === QuestionType.FillInTheBlank) && (
+								<Button
+									type='button'
+									onClick={addAnswer}
+									variant='outline'
+									size='sm'
+								>
+									<Plus className='h-4 w-4 mr-2' />
+									Add Answer
+								</Button>
+							)}
 						</CardHeader>
 						<CardContent className='space-y-4'>
 							{fields.map((field, index) => (
 								<Card key={field.id} className='border-2'>
 									<CardContent className='pt-4 space-y-4'>
 										<div className='flex items-start gap-4'>
-											<FormField
-												control={form.control}
-												name={`answers.${index}.isCorrect`}
-												render={({ field }) => (
-													<FormItem className='flex items-center space-x-2 pt-2'>
-														<FormControl>
-															<Checkbox
-																checked={field.value}
-																onCheckedChange={field.onChange}
-															/>
-														</FormControl>
-														<FormLabel className='!mt-0 font-normal'>
-															Correct
-														</FormLabel>
-													</FormItem>
-												)}
-											/>
+											{questionType !== QuestionType.Essay && (
+												<FormField
+													control={form.control}
+													name={`answers.${index}.isCorrect`}
+													render={({ field }) => (
+														<FormItem className='flex items-center space-x-2 pt-2'>
+															<FormControl>
+																<Checkbox
+																	checked={field.value}
+																	onCheckedChange={field.onChange}
+																/>
+															</FormControl>
+															<FormLabel className='!mt-0 font-normal'>
+																Correct
+															</FormLabel>
+														</FormItem>
+													)}
+												/>
+											)}
 
 											<div className='flex-1 space-y-4'>
 												<FormField
@@ -358,12 +441,29 @@ const CreateQuestionPage = (): React.ReactElement => {
 													name={`answers.${index}.content`}
 													render={({ field }) => (
 														<FormItem>
-															<FormLabel>Answer {index + 1} *</FormLabel>
+															<FormLabel>
+																{questionType === QuestionType.Essay
+																	? 'Grading Rubric'
+																	: questionType === QuestionType.FillInTheBlank
+																		? `Acceptable Answer ${index + 1} *`
+																		: `Answer ${index + 1} *`}
+															</FormLabel>
 															<FormControl>
-																<Input
-																	placeholder='Enter answer...'
-																	{...field}
-																/>
+																{questionType === QuestionType.Essay ? (
+																	<Textarea
+																		placeholder='Describe the grading criteria...'
+																		rows={4}
+																		{...field}
+																	/>
+																) : (
+																	<Input
+																		placeholder='Enter answer...'
+																		disabled={
+																			questionType === QuestionType.TrueFalse
+																		}
+																		{...field}
+																	/>
+																)}
 															</FormControl>
 															<FormMessage />
 														</FormItem>
@@ -388,15 +488,23 @@ const CreateQuestionPage = (): React.ReactElement => {
 												/>
 											</div>
 
-											<Button
-												type='button'
-												variant='ghost'
-												size='icon'
-												onClick={() => remove(index)}
-												disabled={fields.length <= 2}
-											>
-												<Trash2 className='h-4 w-4 text-destructive' />
-											</Button>
+											{questionType !== QuestionType.TrueFalse &&
+												questionType !== QuestionType.Essay && (
+													<Button
+														type='button'
+														variant='ghost'
+														size='icon'
+														onClick={() => remove(index)}
+														disabled={
+															(questionType === QuestionType.MultipleChoice &&
+																fields.length <= 2) ||
+															(questionType === QuestionType.FillInTheBlank &&
+																fields.length <= 1)
+														}
+													>
+														<Trash2 className='h-4 w-4 text-destructive' />
+													</Button>
+												)}
 										</div>
 									</CardContent>
 								</Card>

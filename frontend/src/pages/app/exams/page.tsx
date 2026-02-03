@@ -176,7 +176,11 @@ const ExamsPage = (): React.ReactElement => {
 							</TableHeader>
 							<TableBody>
 								{exams.map(exam => (
-									<TableRow key={exam.id}>
+									<TableRow
+										key={exam.id}
+										className='cursor-pointer hover:bg-muted/50'
+										onClick={() => navigate(`/app/exams/${exam.id}`)}
+									>
 										<TableCell className='font-medium'>{exam.name}</TableCell>
 										<TableCell>-</TableCell>
 										<TableCell>{exam.grade}</TableCell>
@@ -196,7 +200,10 @@ const ExamsPage = (): React.ReactElement => {
 										<TableCell>
 											{new Date(exam.createdAt).toLocaleDateString()}
 										</TableCell>
-										<TableCell className='text-right'>
+										<TableCell
+											className='text-right'
+											onClick={e => e.stopPropagation()}
+										>
 											<DropdownMenu>
 												<DropdownMenuTrigger asChild>
 													<Button variant='ghost' size='icon'>
@@ -290,7 +297,7 @@ const ExamsPage = (): React.ReactElement => {
 									<SelectValue />
 								</SelectTrigger>
 								<SelectContent>
-									{[10, 11, 12].map(grade => (
+									{[1, 2, 3, 4, 5].map(grade => (
 										<SelectItem key={grade} value={grade.toString()}>
 											Grade {grade}
 										</SelectItem>

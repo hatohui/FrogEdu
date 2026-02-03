@@ -144,10 +144,26 @@ export function useMatrix(examId: string) {
 	return useQuery({
 		queryKey: examKeys.matrix(examId),
 		queryFn: async () => {
-			const response = await examService.getMatrixByExamId(examId)
-			return response.data
+			try {
+				const response = await examService.getMatrixByExamId(examId)
+				return response.data
+			} catch (error: any) {
+				// If matrix doesn't exist (404), return null instead of throwing
+				if (error?.response?.status === 404) {
+					return null
+				}
+				throw error
+			}
 		},
 		enabled: !!examId,
+		retry: (failureCount, error: any) => {
+			// Don't retry on 404 (matrix not found)
+			if (error?.response?.status === 404) {
+				return false
+			}
+			// Retry other errors up to 3 times
+			return failureCount < 3
+		},
 	})
 }
 
