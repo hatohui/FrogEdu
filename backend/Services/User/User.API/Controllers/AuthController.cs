@@ -46,8 +46,8 @@ public class AuthController : ControllerBase
         var command = new CreateUserCommand(
             userAttributes.Sub,
             userAttributes.Email,
-            userAttributes.GivenName ?? "Unknown",
-            userAttributes.FamilyName ?? "Unknown",
+            string.IsNullOrWhiteSpace(userAttributes.GivenName) ? null : userAttributes.GivenName,
+            string.IsNullOrWhiteSpace(userAttributes.FamilyName) ? null : userAttributes.FamilyName,
             role,
             userAttributes.Picture
         );

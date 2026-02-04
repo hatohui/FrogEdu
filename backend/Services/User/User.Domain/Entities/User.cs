@@ -11,8 +11,8 @@ public sealed class User : AuditableSoftdeletableEntity
 {
     public CognitoUserId CognitoId { get; private set; } = null!;
     public Email Email { get; private set; } = null!;
-    public string FirstName { get; private set; } = null!;
-    public string LastName { get; private set; } = null!;
+    public string? FirstName { get; private set; }
+    public string? LastName { get; private set; }
     public Guid RoleId { get; private set; }
     public string? AvatarUrl { get; private set; }
     public bool IsEmailVerified { get; private set; }
@@ -26,8 +26,8 @@ public sealed class User : AuditableSoftdeletableEntity
     private User(
         CognitoUserId cognitoId,
         Email email,
-        string firstName,
-        string lastName,
+        string? firstName,
+        string? lastName,
         Guid roleId,
         string? avatarUrl = null
     )
@@ -45,8 +45,8 @@ public sealed class User : AuditableSoftdeletableEntity
     public static User Create(
         string cognitoId,
         string email,
-        string firstName,
-        string lastName,
+        string? firstName,
+        string? lastName,
         Guid roleId,
         string? avatarUrl = null
     )
@@ -150,13 +150,8 @@ public sealed class User : AuditableSoftdeletableEntity
         MarkAsUpdated();
     }
 
-    public void UpdateProfile(string firstName, string lastName)
+    public void UpdateProfile(string? firstName, string? lastName)
     {
-        if (string.IsNullOrWhiteSpace(firstName))
-            throw new ArgumentException("First name cannot be empty", nameof(firstName));
-        if (string.IsNullOrWhiteSpace(lastName))
-            throw new ArgumentException("Last name cannot be empty", nameof(lastName));
-
         FirstName = firstName;
         LastName = lastName;
         MarkAsUpdated();
