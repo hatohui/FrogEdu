@@ -56,7 +56,9 @@ app.UseDevelopmentCors();
 
 // Authentication & Authorization
 app.UseAuthentication();
-app.UseSubscriptionEnrichment(); // Enrich authenticated requests with subscription claims
+
+// Note: Subscription enrichment not needed - Exam service doesn't require subscription checks
+// Only AI service needs to verify premium plans for AI generation features
 app.UseAuthorization();
 
 // ============================================================================
