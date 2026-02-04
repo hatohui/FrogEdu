@@ -53,6 +53,24 @@ const questionSchema = z
 		message: 'At least one answer must be marked as correct',
 		path: ['answers'],
 	})
+	.refine(
+		data => {
+			// Only MultipleAnswer and FillInTheBlank can have multiple correct answers
+			const correctCount = data.answers.filter(a => a.isCorrect).length
+			if (correctCount > 1) {
+				return (
+					data.type === QuestionType.MultipleAnswer ||
+					data.type === QuestionType.FillInTheBlank
+				)
+			}
+			return true
+		},
+		{
+			message:
+				'Only Multiple Answer and Fill in the Blank questions can have more than one correct answer',
+			path: ['answers'],
+		}
+	)
 
 export type QuestionFormData = z.infer<typeof questionSchema>
 

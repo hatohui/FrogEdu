@@ -3,12 +3,11 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { QuestionType } from '@/types/model/exam-service'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { AlertCircle } from 'lucide-react'
-import {
-	QuestionAnswersRenderer,
-	getAnswersSectionTitle,
-} from '@/components/exams/question-answers'
+
 import type { UseFormReturn, UseFieldArrayReturn } from 'react-hook-form'
 import type { QuestionFormData } from '@/hooks/useQuestionForm'
+import { QuestionAnswersRenderer } from '@/components/question-answers'
+import { getAnswersSectionTitle } from '@/components/question-answers/QuestionAnswersRenderer'
 
 interface QuestionAnswersSectionProps {
 	form: UseFormReturn<QuestionFormData>

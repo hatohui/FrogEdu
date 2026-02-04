@@ -35,6 +35,23 @@ public sealed class CreateQuestionCommandValidator : AbstractValidator<CreateQue
             .Must(answers => answers.Any(a => a.IsCorrect))
             .WithMessage("At least one answer must be marked as correct");
 
+        // Only MultipleAnswer type can have multiple correct answers
+        RuleFor(x => x)
+            .Must(x =>
+            {
+                var correctCount = x.Answers.Count(a => a.IsCorrect);
+                if (correctCount > 1)
+                {
+                    // Allow FillInTheBlank and MultipleAnswer to have multiple correct
+                    return x.Type == Domain.Enums.QuestionType.MultipleAnswer
+                        || x.Type == Domain.Enums.QuestionType.FillInTheBlank;
+                }
+                return true;
+            })
+            .WithMessage(
+                "Only Multiple Answer and Fill in the Blank questions can have more than one correct answer"
+            );
+
         RuleForEach(x => x.Answers)
             .ChildRules(answer =>
             {
