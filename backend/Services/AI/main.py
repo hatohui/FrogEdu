@@ -18,37 +18,6 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-
-
-# ASGI middleware for path rewriting - mimics UsePathPrefixRewrite from C# services
-class PathPrefixRewriteMiddleware:
-    """
-    Rewrites incoming paths by adding the /api/ai/questions prefix.
-    This is needed because API Gateway strips the service prefix and path
-    when using the Lambda integration with overwrite:path parameter.
-    """
-    def __init__(self, app, prefix: str = "/api/ai/"):
-        self.app = app
-        self.prefix = prefix
-
-    async def __call__(self, scope, receive, send):
-        if scope["type"] == "http":
-            path = scope["path"]
-            logger.info(f"🔍 Original path: {path}")
-            
-            # If path doesn't already start with the prefix, add it
-            if not path.startswith(self.prefix) and not path.startswith("/api/ai/"):
-                # Special cases for root and health
-                if path == "/" or path == "/test":
-                    pass  # Don't modify these
-                else:
-                    # Add the questions prefix for the API endpoints
-                    scope["path"] = self.prefix + path
-                    logger.info(f"🔄 Rewritten path: {scope['path']}")
-        
-        await self.app(scope, receive, send)
-
-
 # Initialize FastAPI application
 app = FastAPI(
     title="FrogEdu AI Service",
@@ -59,8 +28,6 @@ app = FastAPI(
     openapi_url="/openapi.json",
 )
 
-# Add path rewriting middleware BEFORE CORS
-app.add_middleware(PathPrefixRewriteMiddleware)
 
 # Configure CORS
 settings = get_settings()
