@@ -48,6 +48,7 @@ public sealed class CreateQuestionCommandHandler
             var answer = Answer.Create(
                 answerDto.Content,
                 answerDto.IsCorrect,
+                answerDto.Point,
                 question.Id,
                 answerDto.Explanation
             );
@@ -72,6 +73,7 @@ public sealed class CreateQuestionCommandHandler
                     a.Id,
                     a.Content,
                     a.IsCorrect,
+                    a.Point,
                     a.Explanation
                 ))
                 .ToList(),

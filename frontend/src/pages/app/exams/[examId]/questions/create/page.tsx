@@ -191,7 +191,12 @@ const CreateQuestionPage = (): React.ReactElement => {
 				isPublic: data.isPublic,
 				mediaUrl: data.mediaUrl || undefined,
 				source: QuestionSource.Manual,
-				answers: data.answers,
+				answers: data.answers.map(a => ({
+					content: a.content,
+					isCorrect: a.isCorrect,
+					point: a.isCorrect ? data.point : 0, // Award full points if correct, 0 if wrong
+					explanation: a.explanation ?? '',
+				})),
 			})
 
 			// Automatically associate the question with the exam
@@ -254,6 +259,7 @@ const CreateQuestionPage = (): React.ReactElement => {
 				answers: question.answers.map(a => ({
 					content: a.content,
 					isCorrect: a.isCorrect,
+					point: a.point ?? (a.isCorrect ? question.point : 0), // Use AI-provided point or calculate
 					explanation: a.explanation ?? '',
 				})),
 			})
@@ -331,6 +337,7 @@ const CreateQuestionPage = (): React.ReactElement => {
 						answers: question.answers.map(a => ({
 							content: a.content,
 							isCorrect: a.isCorrect,
+							point: a.point ?? (a.isCorrect ? question.point : 0), // Use AI-provided point or calculate
 							explanation: a.explanation ?? '',
 						})),
 					})

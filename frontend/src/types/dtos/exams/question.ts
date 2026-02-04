@@ -16,6 +16,7 @@ export interface CreateQuestionRequest {
 	answers: Array<{
 		content: string
 		isCorrect: boolean
+		point: number
 		explanation?: string
 	}>
 }

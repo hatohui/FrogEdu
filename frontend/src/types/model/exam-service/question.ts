@@ -4,6 +4,7 @@ export interface Answer {
 	id: string
 	content: string
 	isCorrect: boolean
+	point: number
 	explanation?: string
 }
 

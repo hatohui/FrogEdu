@@ -11,7 +11,7 @@ const AdminLayout = ({ children }: AdminLayoutProps): React.ReactElement => {
 	const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
 
 	return (
-		<div className='flex h-screen overflow-hidden bg-background'>
+		<div className='flex absolute top-0 w-screen h-screen overflow-hidden bg-background'>
 			{sidebarOpen && (
 				<div
 					className='fixed inset-0 bg-black/50 z-40 lg:hidden'

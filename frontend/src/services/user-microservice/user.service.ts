@@ -152,6 +152,45 @@ class UserService {
 		)
 		return response.data
 	}
+
+	// User management endpoints for admin dashboard
+	async getAllUsers(params?: {
+		page?: number
+		pageSize?: number
+		search?: string
+		role?: string
+	}): Promise<
+		ApiResponse<{
+			items: GetMeResponse[]
+			total: number
+			page: number
+			pageSize: number
+			totalPages: number
+		}>
+	> {
+		return apiService.get(`${this.baseUrl}`, params)
+	}
+
+	async getUserById(userId: string): Promise<ApiResponse<GetMeResponse>> {
+		return apiService.get(`${this.baseUrl}/${userId}`)
+	}
+
+	async updateUser(
+		userId: string,
+		updates: Partial<UpdateProfileDto & { roleId: string }>
+	): Promise<ApiResponse<void>> {
+		return apiService.put(`${this.baseUrl}/${userId}`, updates)
+	}
+
+	async deleteUser(userId: string): Promise<ApiResponse<void>> {
+		return apiService.delete(`${this.baseUrl}/${userId}`)
+	}
+
+	async sendPasswordResetEmail(email: string): Promise<ApiResponse<void>> {
+		return apiService.post(`${this.baseUrl}/auth/send-password-reset`, {
+			email,
+		})
+	}
 }
 
 export default new UserService()
