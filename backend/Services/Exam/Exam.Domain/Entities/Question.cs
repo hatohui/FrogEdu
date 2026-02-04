@@ -69,7 +69,7 @@ public sealed class Question : AuditableEntity
             mediaUrl,
             isPublic
         );
-        question.MarkAsCreated();
+        question.MarkAsCreated(Guid.Parse(userId));
         return question;
     }
 
