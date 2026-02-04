@@ -28,8 +28,10 @@ export enum QuestionType {
 }
 
 export enum QuestionSource {
-	Manual = 0,
-	AIGenerated = 1,
+	Manual = 1,
+	AIGenerated = 2,
+	Imported = 3,
+	CurriculumBank = 4,
 }
 
 /**

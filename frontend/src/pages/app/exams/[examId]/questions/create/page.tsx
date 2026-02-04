@@ -41,7 +41,11 @@ import { QuestionAnswersSection } from './components/QuestionAnswersSection'
 import { AIGeneratorSection } from './components/AIGeneratorSection'
 import { useQuestionForm, type QuestionFormData } from '@/hooks/useQuestionForm'
 import type { AIGeneratedQuestion } from '@/types/model/ai-service'
-import type { CognitiveLevel } from '@/types/model/exam-service'
+import {
+	QuestionSource,
+	QuestionType,
+	CognitiveLevel,
+} from '@/types/model/exam-service'
 import examService from '@/services/exam-microservice/exam.service'
 import {
 	validateMatrixProgress,
@@ -73,6 +77,7 @@ const CreateQuestionPage = (): React.ReactElement => {
 		isGenerating,
 		generatedQuestions,
 		generateSingle,
+		generateFromMatrix,
 		removeGeneratedQuestion,
 		clearGeneratedQuestions,
 	} = useAIQuestionGeneration()
@@ -80,6 +85,12 @@ const CreateQuestionPage = (): React.ReactElement => {
 	const [mainTab, setMainTab] = useState<MainTab>('create')
 	const [creationMode, setCreationMode] = useState<CreationMode>('manual')
 	const [selectedAiTopic, setSelectedAiTopic] = useState('')
+	const [aiCognitiveLevel, setAiCognitiveLevel] = useState<CognitiveLevel>(
+		CognitiveLevel.Remember
+	)
+	const [aiQuestionType, setAiQuestionType] = useState<QuestionType>(
+		QuestionType.MultipleChoice
+	)
 	const [showBankDialog, setShowBankDialog] = useState(false)
 
 	// Track existing question IDs for quick lookup
@@ -90,6 +101,33 @@ const CreateQuestionPage = (): React.ReactElement => {
 		matrix,
 		existingQuestions,
 		topics
+	)
+
+	// Wrap generateSingle to pass topicId to the backend
+	const handleGenerateWithTopic = useCallback(
+		async (
+			subject: string,
+			grade: number,
+			topicName: string,
+			cognitiveLevel: CognitiveLevel,
+			questionType: QuestionType,
+			language?: 'vi' | 'en',
+			topicDescription?: string
+		) => {
+			// Pass topicId to backend so it returns the question with topicId attached
+			const question = await generateSingle(
+				subject,
+				grade,
+				topicName,
+				cognitiveLevel,
+				questionType,
+				language,
+				topicDescription,
+				selectedAiTopic // Pass topicId to backend
+			)
+			return question
+		},
+		[generateSingle, selectedAiTopic]
 	)
 
 	// Use our custom form hook
@@ -109,13 +147,18 @@ const CreateQuestionPage = (): React.ReactElement => {
 	// Handle clicking on a matrix requirement to pre-fill the form
 	const handleMatrixRequirementClick = useCallback(
 		(topicId: string, cognitiveLevel: CognitiveLevel) => {
-			form.setValue('topicId', topicId)
-			form.setValue('cognitiveLevel', cognitiveLevel)
+			if (creationMode === 'manual') {
+				form.setValue('topicId', topicId)
+				form.setValue('cognitiveLevel', cognitiveLevel)
+				toast.info('Form pre-filled with matrix requirement')
+			} else if (creationMode === 'ai') {
+				setSelectedAiTopic(topicId)
+				setAiCognitiveLevel(cognitiveLevel)
+				toast.info('AI form pre-filled with matrix requirement')
+			}
 			setMainTab('create')
-			setCreationMode('manual')
-			toast.info('Form pre-filled with matrix requirement')
 		},
-		[form]
+		[form, creationMode]
 	)
 
 	// Handle form submission
@@ -147,7 +190,7 @@ const CreateQuestionPage = (): React.ReactElement => {
 				topicId: data.topicId,
 				isPublic: data.isPublic,
 				mediaUrl: data.mediaUrl || undefined,
-				source: 0, // QuestionSource.Manual
+				source: QuestionSource.Manual,
 				answers: data.answers,
 			})
 
@@ -179,15 +222,35 @@ const CreateQuestionPage = (): React.ReactElement => {
 	) => {
 		if (!examId) return
 
+		// Use question's own topicId first (from AI generation), then fall back to selectedAiTopic
+		const topicId = question.topicId || selectedAiTopic
+		if (!topicId) {
+			toast.error(
+				'This question has no topic associated. Please select a topic first.'
+			)
+			return
+		}
+
+		// Validate answers
+		if (!question.answers || question.answers.length < 2) {
+			toast.error('Question must have at least 2 answers')
+			return
+		}
+
+		if (!question.answers.some(a => a.isCorrect)) {
+			toast.error('Question must have at least one correct answer')
+			return
+		}
+
 		try {
 			const result = await createQuestionMutation.mutateAsync({
 				content: question.content,
 				point: question.point,
 				type: question.questionType,
 				cognitiveLevel: question.cognitiveLevel,
-				topicId: selectedAiTopic || question.topicId || '',
+				topicId: topicId,
 				isPublic: true,
-				source: 1, // QuestionSource.AIGenerated
+				source: QuestionSource.AIGenerated,
 				answers: question.answers.map(a => ({
 					content: a.content,
 					isCorrect: a.isCorrect,
@@ -198,13 +261,183 @@ const CreateQuestionPage = (): React.ReactElement => {
 			if (result.data?.id) {
 				await examService.addQuestionsToExam(examId, [result.data.id])
 				refetchExamQuestions()
+				removeGeneratedQuestion(index)
+				toast.success('AI question saved and added to exam!')
+			} else {
+				console.error('No question ID returned:', result)
+				toast.error('Failed to save question: No ID returned')
 			}
-
-			removeGeneratedQuestion(index)
 		} catch (error) {
-			console.error('Failed to save question:', error)
+			console.error('Failed to save AI question:', error)
+			toast.error(
+				`Failed to save question: ${error instanceof Error ? error.message : 'Unknown error'}`
+			)
 		}
 	}
+
+	// State to track saving all questions
+	const [isSavingAll, setIsSavingAll] = useState(false)
+
+	// Save all AI generated questions at once
+	const handleSaveAllGeneratedQuestions = async () => {
+		if (!examId || generatedQuestions.length === 0) return
+
+		// Validate all questions have topicId
+		const questionsWithoutTopic = generatedQuestions.filter(
+			q => !q.topicId && !selectedAiTopic
+		)
+		if (questionsWithoutTopic.length > 0) {
+			toast.error(
+				`${questionsWithoutTopic.length} question(s) have no topic. Please generate questions with a topic selected.`
+			)
+			return
+		}
+
+		setIsSavingAll(true)
+		let savedCount = 0
+		let failedCount = 0
+		const savedQuestionIds: string[] = []
+
+		try {
+			// Process questions in order (from last to first to maintain indices during removal)
+			for (let i = generatedQuestions.length - 1; i >= 0; i--) {
+				const question = generatedQuestions[i]
+				const topicId = question.topicId || selectedAiTopic
+
+				if (!topicId) {
+					failedCount++
+					continue
+				}
+
+				// Validate answers
+				if (
+					!question.answers ||
+					question.answers.length < 2 ||
+					!question.answers.some(a => a.isCorrect)
+				) {
+					failedCount++
+					continue
+				}
+
+				try {
+					const result = await createQuestionMutation.mutateAsync({
+						content: question.content,
+						point: question.point,
+						type: question.questionType,
+						cognitiveLevel: question.cognitiveLevel,
+						topicId: topicId,
+						isPublic: true,
+						source: QuestionSource.AIGenerated,
+						answers: question.answers.map(a => ({
+							content: a.content,
+							isCorrect: a.isCorrect,
+							explanation: a.explanation ?? '',
+						})),
+					})
+
+					if (result.data?.id) {
+						savedQuestionIds.push(result.data.id)
+						savedCount++
+					} else {
+						failedCount++
+					}
+				} catch (error) {
+					console.error(`Failed to save question ${i}:`, error)
+					failedCount++
+				}
+			}
+
+			// Add all saved questions to exam at once
+			if (savedQuestionIds.length > 0) {
+				await examService.addQuestionsToExam(examId, savedQuestionIds)
+				refetchExamQuestions()
+				clearGeneratedQuestions()
+			}
+
+			if (savedCount > 0) {
+				toast.success(`Saved ${savedCount} question(s) to exam!`)
+			}
+			if (failedCount > 0) {
+				toast.warning(`${failedCount} question(s) failed to save`)
+			}
+		} catch (error) {
+			console.error('Failed to save all questions:', error)
+			toast.error('Failed to save questions')
+		} finally {
+			setIsSavingAll(false)
+		}
+	}
+
+	// Generate all matrix questions at once
+	const handleGenerateMatrix = useCallback(async () => {
+		if (!examId || !exam || !matrix) return
+
+		if (!isPro) {
+			toast.error('Pro subscription required for AI matrix generation')
+			return
+		}
+
+		// Build matrix topics configuration
+		const matrixTopics: Array<{
+			topicId: string
+			topicName: string
+			cognitiveLevel: CognitiveLevel
+			quantity: number
+		}> = []
+
+		for (const matrixTopic of matrix.matrixTopics) {
+			const topic = topics.find(t => t.id === matrixTopic.topicId)
+			if (!topic) continue
+
+			// Calculate how many questions are already created for this cell
+			const existing = existingQuestions.filter(
+				q =>
+					q.topicId === topic.id &&
+					q.cognitiveLevel === matrixTopic.cognitiveLevel
+			).length
+
+			const needed = matrixTopic.quantity - existing
+			if (needed > 0) {
+				matrixTopics.push({
+					topicId: topic.id,
+					topicName: topic.title,
+					cognitiveLevel: matrixTopic.cognitiveLevel,
+					quantity: needed,
+				})
+			}
+		}
+
+		if (matrixTopics.length === 0) {
+			toast.info('Matrix is already complete!')
+			return
+		}
+
+		try {
+			const result = await generateFromMatrix(
+				exam.name ?? 'General',
+				exam.grade ?? 10,
+				matrixTopics,
+				'vi'
+			)
+
+			if (result?.questions) {
+				toast.success(
+					`Generated ${result.questions.length} questions for the matrix!`
+				)
+			}
+		} catch (error) {
+			console.error('Failed to generate matrix questions:', error)
+			toast.error('Failed to generate matrix questions')
+		}
+	}, [
+		examId,
+		exam,
+		matrix,
+		topics,
+		existingQuestions,
+		isPro,
+		generateFromMatrix,
+	])
 
 	// Handle adding questions from bank
 	const handleAddFromBank = async (questionIds: string[]) => {
@@ -328,16 +561,24 @@ const CreateQuestionPage = (): React.ReactElement => {
 								<AIGeneratorSection
 									exam={exam}
 									topics={topics}
+									matrix={matrix ?? undefined}
 									selectedTopic={selectedAiTopic}
 									onTopicChange={setSelectedAiTopic}
+									cognitiveLevel={aiCognitiveLevel}
+									onCognitiveLevelChange={setAiCognitiveLevel}
+									questionType={aiQuestionType}
+									onQuestionTypeChange={setAiQuestionType}
 									isGenerating={isGenerating}
 									generatedQuestions={generatedQuestions}
-									onGenerate={generateSingle}
+									onGenerate={handleGenerateWithTopic}
+									onGenerateMatrix={handleGenerateMatrix}
 									onEditQuestion={handleEditGeneratedQuestion}
 									onSaveQuestion={handleSaveGeneratedQuestion}
+									onSaveAllQuestions={handleSaveAllGeneratedQuestions}
 									onRemoveQuestion={removeGeneratedQuestion}
 									onClearAll={clearGeneratedQuestions}
 									isSaving={createQuestionMutation.isPending}
+									isSavingAll={isSavingAll}
 								/>
 							) : (
 								<Form {...form}>

@@ -1,5 +1,5 @@
 import React from 'react'
-import { Check, X, PenLine, Save, Trash2 } from 'lucide-react'
+import { Check, X, PenLine, Save, Trash2, Tag } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -17,6 +17,7 @@ interface AIQuestionPreviewProps {
 	onSave: (question: AIGeneratedQuestion, index: number) => void
 	onRemove: (index: number) => void
 	isSaving?: boolean
+	topicName?: string
 }
 
 /**
@@ -30,6 +31,7 @@ export const AIQuestionPreview: React.FC<AIQuestionPreviewProps> = ({
 	onSave,
 	onRemove,
 	isSaving = false,
+	topicName,
 }) => {
 	return (
 		<Card className='border-2'>
@@ -46,6 +48,20 @@ export const AIQuestionPreview: React.FC<AIQuestionPreviewProps> = ({
 								{getCognitiveLevelLabel(question.cognitiveLevel)}
 							</Badge>
 							<Badge variant='secondary'>{question.point} pts</Badge>
+							{topicName && (
+								<Badge
+									variant='outline'
+									className='border-primary/30 text-primary'
+								>
+									<Tag className='h-3 w-3 mr-1' />
+									{topicName}
+								</Badge>
+							)}
+							{!question.topicId && (
+								<Badge variant='destructive' className='text-xs'>
+									No Topic
+								</Badge>
+							)}
 						</div>
 					</div>
 					<div className='flex gap-2'>

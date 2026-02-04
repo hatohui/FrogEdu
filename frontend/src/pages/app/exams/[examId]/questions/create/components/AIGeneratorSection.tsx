@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Sparkles, Loader2 } from 'lucide-react'
+import { Sparkles, Loader2, Zap, SaveAll } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
@@ -10,13 +10,18 @@ import { CognitiveLevelSelector } from '@/components/exams/CognitiveLevelSelecto
 import { AIQuestionPreview } from '@/components/exams/AIQuestionPreview'
 import { QuestionType, CognitiveLevel } from '@/types/model/exam-service'
 import type { AIGeneratedQuestion } from '@/types/model/ai-service'
-import type { Topic, Exam } from '@/types/model/exam-service'
+import type { Topic, Exam, Matrix } from '@/types/model/exam-service'
 
 interface AIGeneratorSectionProps {
 	exam: Exam | undefined
 	topics: Topic[]
+	matrix?: Matrix
 	selectedTopic: string
 	onTopicChange: (topicId: string) => void
+	cognitiveLevel: CognitiveLevel
+	onCognitiveLevelChange: (level: CognitiveLevel) => void
+	questionType: QuestionType
+	onQuestionTypeChange: (type: QuestionType) => void
 	isGenerating: boolean
 	generatedQuestions: AIGeneratedQuestion[]
 	onGenerate: (
@@ -28,11 +33,14 @@ interface AIGeneratorSectionProps {
 		language?: 'vi' | 'en',
 		topicDescription?: string
 	) => Promise<AIGeneratedQuestion | undefined>
+	onGenerateMatrix?: () => Promise<void>
 	onEditQuestion: (question: AIGeneratedQuestion) => void
 	onSaveQuestion: (question: AIGeneratedQuestion, index: number) => void
+	onSaveAllQuestions?: () => Promise<void>
 	onRemoveQuestion: (index: number) => void
 	onClearAll: () => void
 	isSaving: boolean
+	isSavingAll?: boolean
 }
 
 /**
@@ -41,24 +49,26 @@ interface AIGeneratorSectionProps {
 export const AIGeneratorSection: React.FC<AIGeneratorSectionProps> = ({
 	exam,
 	topics,
+	matrix,
 	selectedTopic,
 	onTopicChange,
+	cognitiveLevel,
+	onCognitiveLevelChange,
+	questionType,
+	onQuestionTypeChange,
 	isGenerating,
 	generatedQuestions,
 	onGenerate,
+	onGenerateMatrix,
 	onEditQuestion,
 	onSaveQuestion,
+	onSaveAllQuestions,
 	onRemoveQuestion,
 	onClearAll,
 	isSaving,
+	isSavingAll = false,
 }) => {
 	const [aiQuantity, setAiQuantity] = useState(1)
-	const [aiQuestionType, setAiQuestionType] = useState<QuestionType>(
-		QuestionType.MultipleChoice
-	)
-	const [aiCognitiveLevel, setAiCognitiveLevel] = useState<CognitiveLevel>(
-		CognitiveLevel.Remember
-	)
 
 	const handleGenerate = async () => {
 		if (!exam || !selectedTopic) return
@@ -71,8 +81,8 @@ export const AIGeneratorSection: React.FC<AIGeneratorSectionProps> = ({
 				exam.name ?? 'General',
 				exam.grade ?? 10,
 				selectedTopicData.title,
-				aiCognitiveLevel,
-				aiQuestionType,
+				cognitiveLevel,
+				questionType,
 				'vi',
 				selectedTopicData.description
 			)
@@ -81,6 +91,42 @@ export const AIGeneratorSection: React.FC<AIGeneratorSectionProps> = ({
 
 	return (
 		<>
+			{/* Matrix Generation Card */}
+			{matrix && onGenerateMatrix && (
+				<Card className='border-amber-200 bg-gradient-to-br from-amber-50 to-orange-50'>
+					<CardHeader>
+						<CardTitle className='flex items-center gap-2'>
+							<Zap className='h-5 w-5 text-amber-600' />
+							Generate Entire Matrix
+						</CardTitle>
+					</CardHeader>
+					<CardContent>
+						<p className='text-sm text-muted-foreground mb-4'>
+							Generate all remaining questions needed to complete the exam
+							matrix in one go.
+						</p>
+						<Button
+							onClick={onGenerateMatrix}
+							disabled={isGenerating}
+							className='w-full bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700'
+							size='lg'
+						>
+							{isGenerating ? (
+								<>
+									<Loader2 className='h-4 w-4 mr-2 animate-spin' />
+									Generating Matrix...
+								</>
+							) : (
+								<>
+									<Zap className='h-4 w-4 mr-2' />
+									Generate All Matrix Questions
+								</>
+							)}
+						</Button>
+					</CardContent>
+				</Card>
+			)}
+
 			{/* AI Generation Card */}
 			<Card>
 				<CardHeader>
@@ -104,8 +150,8 @@ export const AIGeneratorSection: React.FC<AIGeneratorSectionProps> = ({
 						<div className='space-y-2'>
 							<Label>Question Type</Label>
 							<QuestionTypeSelector
-								value={aiQuestionType}
-								onValueChange={setAiQuestionType}
+								value={questionType}
+								onValueChange={onQuestionTypeChange}
 							/>
 						</div>
 					</div>
@@ -115,8 +161,8 @@ export const AIGeneratorSection: React.FC<AIGeneratorSectionProps> = ({
 						<div className='space-y-2'>
 							<Label>Cognitive Level</Label>
 							<CognitiveLevelSelector
-								value={aiCognitiveLevel}
-								onValueChange={setAiCognitiveLevel}
+								value={cognitiveLevel}
+								onValueChange={onCognitiveLevelChange}
 							/>
 						</div>
 						<div className='space-y-2'>
@@ -159,9 +205,36 @@ export const AIGeneratorSection: React.FC<AIGeneratorSectionProps> = ({
 						<CardTitle>
 							Generated Questions ({generatedQuestions.length})
 						</CardTitle>
-						<Button variant='outline' size='sm' onClick={onClearAll}>
-							Clear All
-						</Button>
+						<div className='flex gap-2'>
+							{onSaveAllQuestions && generatedQuestions.length > 1 && (
+								<Button
+									size='sm'
+									onClick={onSaveAllQuestions}
+									disabled={isSavingAll || isSaving}
+									className='bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600'
+								>
+									{isSavingAll ? (
+										<>
+											<Loader2 className='h-4 w-4 mr-2 animate-spin' />
+											Saving All...
+										</>
+									) : (
+										<>
+											<SaveAll className='h-4 w-4 mr-2' />
+											Save All ({generatedQuestions.length})
+										</>
+									)}
+								</Button>
+							)}
+							<Button
+								variant='outline'
+								size='sm'
+								onClick={onClearAll}
+								disabled={isSavingAll}
+							>
+								Clear All
+							</Button>
+						</div>
 					</CardHeader>
 					<CardContent className='space-y-4'>
 						{generatedQuestions.map((question, index) => (
@@ -172,7 +245,8 @@ export const AIGeneratorSection: React.FC<AIGeneratorSectionProps> = ({
 								onEdit={onEditQuestion}
 								onSave={onSaveQuestion}
 								onRemove={onRemoveQuestion}
-								isSaving={isSaving}
+								isSaving={isSaving || isSavingAll}
+								topicName={topics.find(t => t.id === question.topicId)?.title}
 							/>
 						))}
 					</CardContent>

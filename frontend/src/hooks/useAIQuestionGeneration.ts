@@ -114,6 +114,7 @@ export const useAIQuestionGeneration = () => {
 
 	/**
 	 * Generate a single question with specific parameters
+	 * @param topicId - Optional topic ID to associate with the generated question
 	 */
 	const generateSingle = useCallback(
 		async (
@@ -123,7 +124,8 @@ export const useAIQuestionGeneration = () => {
 			cognitiveLevel: CognitiveLevel,
 			questionType: QuestionType,
 			language: 'vi' | 'en' = 'vi',
-			topicDescription?: string
+			topicDescription?: string,
+			topicId?: string
 		) => {
 			if (!isPro) {
 				toast.error('Pro subscription required for AI question generation')
@@ -134,6 +136,7 @@ export const useAIQuestionGeneration = () => {
 				subject,
 				grade,
 				topicName,
+				topicId,
 				cognitiveLevel,
 				questionType,
 				language,

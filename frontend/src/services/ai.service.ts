@@ -135,6 +135,7 @@ class AIService {
 				subject: request.subject,
 				grade: request.grade,
 				topic_name: request.topicName,
+				topic_id: request.topicId,
 				cognitive_level: this.mapCognitiveLevel(request.cognitiveLevel),
 				question_type: this.mapQuestionType(request.questionType),
 				language: request.language ?? 'vi',

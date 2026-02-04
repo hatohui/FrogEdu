@@ -47,6 +47,7 @@ class GenerateSingleQuestionRequest(BaseModel):
     subject: str = Field(..., description="Subject name")
     grade: int = Field(..., ge=1, le=12, description="Grade level")
     topic_name: str = Field(..., description="Topic name")
+    topic_id: Optional[str] = Field(None, description="Topic ID to associate with the question")
     cognitive_level: CognitiveLevel = Field(..., description="Cognitive level")
     question_type: QuestionType = Field(..., description="Type of question")
     language: str = Field(default="vi", description="Language (vi/en)")

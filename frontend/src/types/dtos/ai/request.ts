@@ -30,6 +30,7 @@ export interface GenerateSingleQuestionRequest {
 	subject: string
 	grade: number
 	topicName: string
+	topicId?: string
 	cognitiveLevel: CognitiveLevel
 	questionType: QuestionType
 	language?: 'vi' | 'en'

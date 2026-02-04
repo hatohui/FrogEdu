@@ -138,38 +138,59 @@ class GeminiService:
         self, 
         request: GenerateQuestionsRequest
     ) -> list[Question]:
-        """Generate questions based on exam matrix."""
+        """Generate questions based on exam matrix.
+        
+        Generates questions for each matrix topic configuration and associates
+        the topic_id with each generated question.
+        """
         try:
-            # Build the prompt
-            prompt = build_matrix_prompt(request)
+            all_validated_questions: list[Question] = []
             
-            # Configure with JSON schema
-            config = types.GenerateContentConfig(
-                response_mime_type="application/json",
-                response_schema=self._create_question_schema(),
-                temperature=0.7,
-            )
+            # Process each matrix topic separately to maintain topic_id association
+            for topic_config in request.matrix_topics:
+                # Build a single-topic request for this batch
+                single_topic_request = GenerateQuestionsRequest(
+                    subject=request.subject,
+                    grade=request.grade,
+                    matrix_topics=[topic_config],
+                    language=request.language
+                )
+                
+                # Build the prompt for this topic
+                prompt = build_matrix_prompt(single_topic_request)
+                
+                # Configure with JSON schema
+                config = types.GenerateContentConfig(
+                    response_mime_type="application/json",
+                    response_schema=self._create_question_schema(),
+                    temperature=0.7,
+                )
+                
+                # Generate content
+                response = self.client.models.generate_content(
+                    model=self.model_name,
+                    contents=prompt,
+                    config=config,
+                )
+                
+                # Parse response
+                if response.text is None:
+                    logger.warning(f"No response for topic {topic_config.topic_name}, skipping")
+                    continue
+                    
+                result = json.loads(response.text)
+                
+                # Validate and fix each question, attaching the topic_id
+                for q in result.get("questions", []):
+                    validated_q = self._validate_question(q)
+                    # Attach the topic_id from the matrix configuration
+                    validated_q["topic_id"] = topic_config.topic_id
+                    all_validated_questions.append(Question(**validated_q))
+                
+                logger.info(f"Generated {len(result.get('questions', []))} questions for topic {topic_config.topic_name}")
             
-            # Generate content
-            response = self.client.models.generate_content(
-                model=self.model_name,
-                contents=prompt,
-                config=config,
-            )
-            
-            # Parse response
-            if response.text is None:
-                raise ValueError("No response text received from Gemini API")
-            result = json.loads(response.text)
-            
-            # Validate and fix each question
-            validated_questions = []
-            for q in result.get("questions", []):
-                validated_q = self._validate_question(q)
-                validated_questions.append(Question(**validated_q))
-            
-            logger.info(f"Generated {len(validated_questions)} questions successfully")
-            return validated_questions
+            logger.info(f"Generated {len(all_validated_questions)} total questions successfully")
+            return all_validated_questions
             
         except Exception as e:
             logger.error(f"Error generating questions: {str(e)}")
@@ -179,7 +200,11 @@ class GeminiService:
         self,
         request: GenerateSingleQuestionRequest
     ) -> Question:
-        """Generate a single question with type-specific validation."""
+        """Generate a single question with type-specific validation.
+        
+        If topic_id is provided in the request, it will be associated with
+        the generated question.
+        """
         try:
             prompt = build_single_question_prompt(request)
             
@@ -205,6 +230,11 @@ class GeminiService:
             
             # Validate and fix the question based on expected type
             validated_q = self._validate_question(questions[0], request.question_type)
+            
+            # Attach the topic_id if provided in the request
+            if request.topic_id:
+                validated_q["topic_id"] = request.topic_id
+            
             question = Question(**validated_q)
             logger.info(f"Generated single {request.question_type.value} question successfully")
             return question
