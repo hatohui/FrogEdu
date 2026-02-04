@@ -26,6 +26,9 @@ import {
 	useQuestions,
 	useAddQuestionsToExam,
 	useRemoveQuestionFromExam,
+	useDeleteMatrix,
+	useExportMatrixToPdf,
+	useExportMatrixToExcel,
 } from '@/hooks/useExams'
 import { useSubscription } from '@/hooks/useSubscription'
 import { useAIQuestionGeneration } from '@/hooks/useAIQuestionGeneration'
@@ -84,6 +87,9 @@ const CreateQuestionPage = (): React.ReactElement => {
 	const createQuestionMutation = useCreateQuestion(examId)
 	const addQuestionsMutation = useAddQuestionsToExam()
 	const removeQuestionMutation = useRemoveQuestionFromExam()
+	const deleteMatrixMutation = useDeleteMatrix()
+	const exportMatrixToPdf = useExportMatrixToPdf()
+	const exportMatrixToExcel = useExportMatrixToExcel()
 	const { isPro } = useSubscription()
 	const {
 		isGenerating,
@@ -501,6 +507,36 @@ const CreateQuestionPage = (): React.ReactElement => {
 	// Handle viewing question
 	const handleViewQuestion = (questionId: string) => {
 		navigate(`/app/exams/${examId}/questions/${questionId}`)
+	}
+
+	// Handle matrix export to PDF
+	const handleExportMatrixPdf = async () => {
+		if (!matrix?.id) return
+		await exportMatrixToPdf.mutateAsync(matrix.id)
+	}
+
+	// Handle matrix export to Excel
+	const handleExportMatrixExcel = async () => {
+		if (!matrix?.id) return
+		await exportMatrixToExcel.mutateAsync(matrix.id)
+	}
+
+	// Handle matrix deletion
+	const handleDeleteMatrix = async () => {
+		if (!matrix?.id) return
+
+		const confirmed = await confirm({
+			title: 'Delete Matrix',
+			description:
+				'Are you sure you want to delete this exam matrix? This action cannot be undone.',
+			confirmText: 'Delete',
+			variant: 'destructive',
+		})
+
+		if (confirmed) {
+			await deleteMatrixMutation.mutateAsync(matrix.id)
+			toast.success('Matrix deleted successfully')
+		}
 	}
 
 	return (
@@ -922,6 +958,12 @@ const CreateQuestionPage = (): React.ReactElement => {
 									topics={topics}
 									onRequirementClick={handleMatrixRequirementClick}
 									interactive
+									onExportPdf={handleExportMatrixPdf}
+									onExportExcel={handleExportMatrixExcel}
+									onDelete={handleDeleteMatrix}
+									isExportingPdf={exportMatrixToPdf.isPending}
+									isExportingExcel={exportMatrixToExcel.isPending}
+									isDeleting={deleteMatrixMutation.isPending}
 								/>
 							</Card>
 						)}

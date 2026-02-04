@@ -3,7 +3,20 @@ import { CardContent, CardTitle } from '@/components/ui/card'
 import { Progress } from '@/components/ui/progress'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { CheckCircle, AlertCircle, Plus } from 'lucide-react'
+import {
+	CheckCircle,
+	AlertCircle,
+	Plus,
+	Download,
+	FileText,
+	Trash2,
+} from 'lucide-react'
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
 import type {
 	Matrix,
 	MatrixTopicDto,
@@ -18,6 +31,12 @@ interface MatrixProgressTrackerProps {
 	topics: Topic[]
 	onRequirementClick?: (topicId: string, cognitiveLevel: CognitiveLevel) => void
 	interactive?: boolean
+	onExportPdf?: () => void
+	onExportExcel?: () => void
+	onDelete?: () => void
+	isExportingPdf?: boolean
+	isExportingExcel?: boolean
+	isDeleting?: boolean
 }
 
 interface ProgressItem {
@@ -35,6 +54,12 @@ export const MatrixProgressTracker: React.FC<MatrixProgressTrackerProps> = ({
 	topics,
 	onRequirementClick,
 	interactive = false,
+	onExportPdf,
+	onExportExcel,
+	onDelete,
+	isExportingPdf = false,
+	isExportingExcel = false,
+	isDeleting = false,
 }) => {
 	const progressData = useMemo(() => {
 		const data: ProgressItem[] = []
@@ -112,11 +137,67 @@ export const MatrixProgressTracker: React.FC<MatrixProgressTrackerProps> = ({
 							<CheckCircle className='h-5 w-5 text-primary' />
 						)}
 					</CardTitle>
-					<div className='text-sm font-medium'>
-						<span className={`font-bold text-primary `}>
-							{Math.round(overallProgress)}%
-						</span>
-						<span className='text-muted-foreground ml-1'>Complete</span>
+					<div className='flex items-center gap-2'>
+						{(onExportPdf || onExportExcel || onDelete) && (
+							<div className='flex items-center gap-1'>
+								{(onExportPdf || onExportExcel) && (
+									<DropdownMenu>
+										<DropdownMenuTrigger asChild>
+											<Button
+												variant='ghost'
+												size='sm'
+												disabled={isExportingPdf || isExportingExcel}
+											>
+												<Download className='h-4 w-4 mr-1' />
+												Export
+											</Button>
+										</DropdownMenuTrigger>
+										<DropdownMenuContent>
+											{onExportPdf && (
+												<DropdownMenuItem
+													onClick={onExportPdf}
+													disabled={isExportingPdf}
+												>
+													<FileText className='h-4 w-4 mr-2' />
+													{isExportingPdf
+														? 'Exporting PDF...'
+														: 'Export as PDF'}
+												</DropdownMenuItem>
+											)}
+											{onExportExcel && (
+												<DropdownMenuItem
+													onClick={onExportExcel}
+													disabled={isExportingExcel}
+												>
+													<FileText className='h-4 w-4 mr-2' />
+													{isExportingExcel
+														? 'Exporting Excel...'
+														: 'Export as Excel'}
+												</DropdownMenuItem>
+											)}
+										</DropdownMenuContent>
+									</DropdownMenu>
+								)}
+								{onDelete && (
+									<Button
+										variant='ghost'
+										size='sm'
+										onClick={onDelete}
+										disabled={isDeleting}
+										className='text-destructive hover:text-destructive'
+									>
+										<Trash2 className='h-4 w-4 mr-1' />
+										{isDeleting ? 'Deleting...' : 'Delete'}
+									</Button>
+								)}
+							</div>
+						)}
+						<div className='text-sm font-medium'>
+							<span className={`font-bold text-primary `}>
+								{Math.round(overallProgress)}%
+							</span>
+							<span className='text-muted-foreground ml-1'>Complete</span>
+						</div>
 					</div>
 				</div>
 				<Progress className='mb-2' value={overallProgress} />

@@ -208,7 +208,7 @@ const CreateMatrixPage = (): React.ReactElement => {
 
 	const handleSkip = () => {
 		if (!examId) return
-		navigate(`/app/exams/${examId}/questions`)
+		navigate(`/app/exams/${examId}`)
 	}
 
 	// Show loading state

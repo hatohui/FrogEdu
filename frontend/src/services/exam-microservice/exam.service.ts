@@ -264,6 +264,21 @@ class AssessmentService {
 	async exportExamToExcel(examId: string): Promise<Blob> {
 		return apiService.getBlob(`${this.baseUrl}/exams/${examId}/export/excel`)
 	}
+
+	// ========== Matrix Export & Delete ==========
+	async deleteMatrix(matrixId: string): Promise<ApiResponse<void>> {
+		return apiService.delete(`${this.baseUrl}/matrices/${matrixId}`)
+	}
+
+	async exportMatrixToPdf(matrixId: string): Promise<Blob> {
+		return apiService.getBlob(`${this.baseUrl}/matrices/${matrixId}/export/pdf`)
+	}
+
+	async exportMatrixToExcel(matrixId: string): Promise<Blob> {
+		return apiService.getBlob(
+			`${this.baseUrl}/matrices/${matrixId}/export/excel`
+		)
+	}
 }
 
 export default new AssessmentService()

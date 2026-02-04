@@ -537,3 +537,68 @@ export function useExportExamToExcel() {
 		},
 	})
 }
+
+// ========== Matrix Operations ==========
+export function useDeleteMatrix() {
+	const queryClient = useQueryClient()
+
+	return useMutation({
+		mutationFn: async (matrixId: string) => {
+			const response = await examService.deleteMatrix(matrixId)
+			if (!response.success) {
+				throw new Error(response.error?.detail || 'Failed to delete matrix')
+			}
+		},
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ['matrices'] })
+			toast.success('Matrix deleted successfully')
+		},
+		onError: (error: Error) => {
+			toast.error(`Failed to delete matrix: ${error.message}`)
+		},
+	})
+}
+
+export function useExportMatrixToPdf() {
+	return useMutation({
+		mutationFn: async (matrixId: string) => {
+			const blob = await examService.exportMatrixToPdf(matrixId)
+			const url = window.URL.createObjectURL(blob)
+			const link = document.createElement('a')
+			link.href = url
+			link.download = `matrix-${matrixId}.pdf`
+			document.body.appendChild(link)
+			link.click()
+			document.body.removeChild(link)
+			window.URL.revokeObjectURL(url)
+		},
+		onSuccess: () => {
+			toast.success('Matrix exported to PDF successfully!')
+		},
+		onError: (error: Error) => {
+			toast.error(`Failed to export PDF: ${error.message}`)
+		},
+	})
+}
+
+export function useExportMatrixToExcel() {
+	return useMutation({
+		mutationFn: async (matrixId: string) => {
+			const blob = await examService.exportMatrixToExcel(matrixId)
+			const url = window.URL.createObjectURL(blob)
+			const link = document.createElement('a')
+			link.href = url
+			link.download = `matrix-${matrixId}.xlsx`
+			document.body.appendChild(link)
+			link.click()
+			document.body.removeChild(link)
+			window.URL.revokeObjectURL(url)
+		},
+		onSuccess: () => {
+			toast.success('Matrix exported to Excel successfully!')
+		},
+		onError: (error: Error) => {
+			toast.error(`Failed to export Excel: ${error.message}`)
+		},
+	})
+}
