@@ -107,7 +107,9 @@ export class ApiService {
 			return this.handleError(error)
 		}
 	}
-
+	getBaseUrl(): string {
+		return axiosInstance.defaults.baseURL || ''
+	}
 	private handleError(error: unknown): ApiResponse<never> {
 		if (error instanceof AxiosError) {
 			const status = error.response?.status || 500

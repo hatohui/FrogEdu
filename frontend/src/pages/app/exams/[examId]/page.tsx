@@ -11,6 +11,7 @@ import {
 	Send,
 	Plus,
 	Grid3x3,
+	FileText,
 } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -189,6 +190,13 @@ const ExamDetailPage = (): React.ReactElement => {
 					</div>
 				</div>
 				<div className='flex gap-2'>
+					<Button
+						variant='outline'
+						onClick={() => navigate(`/app/exams/${examId}/preview`)}
+					>
+						<FileText className='h-4 w-4 mr-2' />
+						Preview
+					</Button>
 					<Button
 						variant='outline'
 						onClick={() => navigate(`/app/exams/${examId}/edit`)}

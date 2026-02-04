@@ -4,7 +4,10 @@ using FrogEdu.Exam.Application.Commands.DeleteExam;
 using FrogEdu.Exam.Application.Commands.RemoveQuestionFromExam;
 using FrogEdu.Exam.Application.Commands.UpdateExam;
 using FrogEdu.Exam.Application.DTOs;
+using FrogEdu.Exam.Application.Queries.ExportExamToExcel;
+using FrogEdu.Exam.Application.Queries.ExportExamToPdf;
 using FrogEdu.Exam.Application.Queries.GetExamById;
+using FrogEdu.Exam.Application.Queries.GetExamPreview;
 using FrogEdu.Exam.Application.Queries.GetExamQuestions;
 using FrogEdu.Exam.Application.Queries.GetExams;
 using MediatR;
@@ -159,5 +162,68 @@ public class ExamsController(IMediator mediator) : BaseController
         var command = new RemoveQuestionFromExamCommand(examId, questionId, userId);
         await _mediator.Send(command, cancellationToken);
         return NoContent();
+    }
+
+    // ========== Exam Preview & Export ==========
+
+    [HttpGet("{examId:guid}/preview")]
+    [ProducesResponseType(typeof(ExamPreviewDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<ExamPreviewDto>> GetExamPreview(
+        [FromRoute] Guid examId,
+        CancellationToken cancellationToken
+    )
+    {
+        var userId = GetAuthenticatedUserId();
+        var query = new GetExamPreviewQuery(examId, userId);
+        var result = await _mediator.Send(query, cancellationToken);
+
+        if (result is null)
+            return NotFound();
+
+        return Ok(result);
+    }
+
+    [HttpGet("{examId:guid}/export/pdf")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> ExportExamToPdf(
+        [FromRoute] Guid examId,
+        CancellationToken cancellationToken
+    )
+    {
+        var userId = GetAuthenticatedUserId();
+        var query = new ExportExamToPdfQuery(examId, userId);
+        var pdfBytes = await _mediator.Send(query, cancellationToken);
+
+        if (pdfBytes is null)
+            return NotFound();
+
+        return File(pdfBytes, "application/pdf", $"exam-{examId}.pdf");
+    }
+
+    [HttpGet("{examId:guid}/export/excel")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> ExportExamToExcel(
+        [FromRoute] Guid examId,
+        CancellationToken cancellationToken
+    )
+    {
+        var userId = GetAuthenticatedUserId();
+        var query = new ExportExamToExcelQuery(examId, userId);
+        var excelBytes = await _mediator.Send(query, cancellationToken);
+
+        if (excelBytes is null)
+            return NotFound();
+
+        return File(
+            excelBytes,
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            $"exam-{examId}.xlsx"
+        );
     }
 }

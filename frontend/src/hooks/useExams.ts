@@ -480,3 +480,60 @@ export function useDeleteTopic() {
 		},
 	})
 }
+
+// ========== Preview & Export ==========
+
+export function useExamPreview(examId: string) {
+	return useQuery({
+		queryKey: [...examKeys.detail(examId), 'preview'],
+		queryFn: async () => {
+			const response = await examService.getExamPreview(examId)
+			return response.data
+		},
+		enabled: !!examId,
+	})
+}
+
+export function useExportExamToPdf() {
+	return useMutation({
+		mutationFn: async (examId: string) => {
+			const blob = await examService.exportExamToPdf(examId)
+			const url = window.URL.createObjectURL(blob)
+			const link = document.createElement('a')
+			link.href = url
+			link.download = `exam-${examId}.pdf`
+			document.body.appendChild(link)
+			link.click()
+			document.body.removeChild(link)
+			window.URL.revokeObjectURL(url)
+		},
+		onSuccess: () => {
+			toast.success('Exam exported to PDF successfully!')
+		},
+		onError: (error: Error) => {
+			toast.error(`Failed to export PDF: ${error.message}`)
+		},
+	})
+}
+
+export function useExportExamToExcel() {
+	return useMutation({
+		mutationFn: async (examId: string) => {
+			const blob = await examService.exportExamToExcel(examId)
+			const url = window.URL.createObjectURL(blob)
+			const link = document.createElement('a')
+			link.href = url
+			link.download = `exam-${examId}.xlsx`
+			document.body.appendChild(link)
+			link.click()
+			document.body.removeChild(link)
+			window.URL.revokeObjectURL(url)
+		},
+		onSuccess: () => {
+			toast.success('Exam exported to Excel successfully!')
+		},
+		onError: (error: Error) => {
+			toast.error(`Failed to export Excel: ${error.message}`)
+		},
+	})
+}

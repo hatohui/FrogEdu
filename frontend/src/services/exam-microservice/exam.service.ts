@@ -227,6 +227,61 @@ class AssessmentService {
 			`${this.baseUrl}/exams/${examId}/questions/${questionId}`
 		)
 	}
+
+	// ========== Preview & Export ==========
+	async getExamPreview(examId: string): Promise<
+		ApiResponse<{
+			id: string
+			name: string
+			description: string
+			subjectName: string
+			grade: number
+			questionCount: number
+			totalPoints: number
+			createdAt: string
+			questions: Array<{
+				questionNumber: number
+				content: string
+				point: number
+				type: string
+				cognitiveLevel: string
+				mediaUrl?: string
+				answers: Array<{
+					label: string
+					content: string
+					isCorrect: boolean
+				}>
+			}>
+		}>
+	> {
+		return apiService.get(`${this.baseUrl}/exams/${examId}/preview`)
+	}
+
+	async exportExamToPdf(examId: string): Promise<Blob> {
+		const response = await fetch(
+			`${apiService.getBaseUrl()}${this.baseUrl}/exams/${examId}/export/pdf`,
+			{
+				headers: {
+					Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+				},
+			}
+		)
+		if (!response.ok) throw new Error('Failed to export PDF')
+		return response.blob()
+	}
+
+	async exportExamToExcel(examId: string): Promise<Blob> {
+		const response = await fetch(
+			`${apiService.getBaseUrl()}${this.baseUrl}/exams/${examId}/export/excel`,
+			{
+				headers: {
+					Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+				},
+			}
+		)
+		if (!response.ok) throw new Error('Failed to export Excel')
+		return response.blob()
+	}
 }
 
 export default new AssessmentService()

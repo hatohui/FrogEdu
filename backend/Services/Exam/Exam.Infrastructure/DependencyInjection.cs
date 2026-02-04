@@ -58,6 +58,9 @@ public static class DependencyInjection
         // Register database health service
         services.AddScoped<IDatabaseHealthService, DatabaseHealthService>();
 
+        // Register export service
+        services.AddScoped<IExamExportService, ExamExportService>();
+
         // Register subscription claims HTTP client for backend token enrichment
         services.AddSubscriptionClaimsClient();
 

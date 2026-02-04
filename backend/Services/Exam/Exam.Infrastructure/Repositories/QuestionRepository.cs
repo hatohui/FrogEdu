@@ -72,6 +72,25 @@ public class QuestionRepository : IQuestionRepository
             .ToListAsync(cancellationToken);
     }
 
+    public async Task<IReadOnlyList<Question>> GetExamQuestionsAsync(
+        Guid examId,
+        CancellationToken cancellationToken = default
+    )
+    {
+        // Query questions that belong to the exam through the ExamQuestion join table
+        var questionIds = await _context
+            .Set<ExamQuestion>()
+            .Where(eq => eq.ExamId == examId)
+            .Select(eq => eq.QuestionId)
+            .ToListAsync(cancellationToken);
+
+        return await _context
+            .Questions.Include(q => q.Answers)
+            .Where(q => questionIds.Contains(q.Id))
+            .OrderBy(q => q.CreatedAt)
+            .ToListAsync(cancellationToken);
+    }
+
     public async Task AddAsync(Question question, CancellationToken cancellationToken = default)
     {
         await _context.Questions.AddAsync(question, cancellationToken);

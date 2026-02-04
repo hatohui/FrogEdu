@@ -21,6 +21,10 @@ public interface IQuestionRepository
         Guid userId,
         CancellationToken cancellationToken = default
     );
+    Task<IReadOnlyList<Question>> GetExamQuestionsAsync(
+        Guid examId,
+        CancellationToken cancellationToken = default
+    );
     Task AddAsync(Question question, CancellationToken cancellationToken = default);
     void Update(Question question);
     void Delete(Question question);
