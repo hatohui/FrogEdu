@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react'
-import { CardContent, CardTitle } from '@/components/ui/card'
+import { CardContent } from '@/components/ui/card'
 import { Progress } from '@/components/ui/progress'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -128,15 +128,24 @@ export const MatrixProgressTracker: React.FC<MatrixProgressTrackerProps> = ({
 	}
 
 	return (
-		<div className='px-6'>
-			<div className='px-2 pb-2'>
-				<div className='flex items-center justify-between'>
-					<CardTitle className={`flex items-center gap-2`}>
-						<span>Matrix Progress</span>
-						{overallProgress === 100 && (
-							<CheckCircle className='h-5 w-5 text-primary' />
-						)}
-					</CardTitle>
+		<div className='p-6'>
+			<div className='space-y-4'>
+				{/* Header Section */}
+				<div className='flex items-start justify-between gap-4'>
+					<div className='space-y-1'>
+						<div className='flex items-center gap-2'>
+							<h3 className='text-base font-semibold tracking-tight'>
+								Matrix Progress
+							</h3>
+							{overallProgress === 100 && (
+								<CheckCircle className='h-4 w-4 text-primary' />
+							)}
+						</div>
+						<p className='text-sm text-muted-foreground'>
+							Track your exam question distribution progress
+						</p>
+					</div>
+
 					<div className='flex items-center gap-2'>
 						{(onExportPdf || onExportExcel || onDelete) && (
 							<div className='flex items-center gap-1'>
@@ -144,15 +153,15 @@ export const MatrixProgressTracker: React.FC<MatrixProgressTrackerProps> = ({
 									<DropdownMenu>
 										<DropdownMenuTrigger asChild>
 											<Button
-												variant='ghost'
+												variant='outline'
 												size='sm'
 												disabled={isExportingPdf || isExportingExcel}
 											>
-												<Download className='h-4 w-4 mr-1' />
-												Export
+												<Download className='h-3.5 w-3.5 mr-1.5' />
+												<span className='text-xs'>Export</span>
 											</Button>
 										</DropdownMenuTrigger>
-										<DropdownMenuContent>
+										<DropdownMenuContent align='end'>
 											{onExportPdf && (
 												<DropdownMenuItem
 													onClick={onExportPdf}
@@ -180,29 +189,42 @@ export const MatrixProgressTracker: React.FC<MatrixProgressTrackerProps> = ({
 								)}
 								{onDelete && (
 									<Button
-										variant='ghost'
+										variant='outline'
 										size='sm'
 										onClick={onDelete}
 										disabled={isDeleting}
-										className='text-destructive hover:text-destructive'
+										className='text-destructive hover:text-destructive hover:bg-destructive/10'
 									>
-										<Trash2 className='h-4 w-4 mr-1' />
-										{isDeleting ? 'Deleting...' : 'Delete'}
+										<Trash2 className='h-3.5 w-3.5 mr-1.5' />
+										<span className='text-xs'>
+											{isDeleting ? 'Deleting...' : 'Delete'}
+										</span>
 									</Button>
 								)}
 							</div>
 						)}
-						<div className='text-sm font-medium'>
-							<span className={`font-bold text-primary `}>
-								{Math.round(overallProgress)}%
-							</span>
-							<span className='text-muted-foreground ml-1'>Complete</span>
-						</div>
 					</div>
 				</div>
-				<Progress className='mb-2' value={overallProgress} />
+
+				{/* Progress Bar Section */}
+				<div className='space-y-2'>
+					<div className='flex items-center justify-between'>
+						<span className='text-xs font-medium text-muted-foreground uppercase tracking-wider'>
+							Overall Progress
+						</span>
+						<div className='flex items-baseline gap-1'>
+							<span className='text-lg font-bold text-primary'>
+								{Math.round(overallProgress)}%
+							</span>
+							<span className='text-xs text-muted-foreground'>Complete</span>
+						</div>
+					</div>
+					<Progress className='h-2' value={overallProgress} />
+				</div>
 			</div>
-			<CardContent className='space-y-2 mt-2 p-0'>
+
+			{/* Requirements List */}
+			<CardContent className='space-y-2.5 mt-6 p-0'>
 				{progressData.map((item, index) => {
 					const isComplete = item.created >= item.required
 					const isOver = item.created > item.required
@@ -211,54 +233,71 @@ export const MatrixProgressTracker: React.FC<MatrixProgressTrackerProps> = ({
 					return (
 						<div
 							key={`${item.topicId}-${item.cognitiveLevel}-${index}`}
-							className={`p-3 rounded-lg border bg-card transition-colors ${
+							className={`group relative p-4 rounded-lg border transition-all duration-200 ${
 								interactive && canAddMore
-									? 'cursor-pointer hover:bg-accent hover:border-primary/50'
-									: 'hover:bg-accent'
-							} ${isComplete ? 'border-primary/30 bg-primary/5' : ''}`}
+									? 'cursor-pointer hover:shadow-sm hover:border-primary/50 hover:bg-accent/50'
+									: 'hover:bg-accent/30'
+							} ${isComplete ? 'border-primary/20 bg-primary/5' : 'border-border bg-card'}`}
 							onClick={() => {
 								if (interactive && canAddMore && onRequirementClick) {
 									onRequirementClick(item.topicId, item.cognitiveLevel)
 								}
 							}}
 						>
-							<div className='flex items-center justify-between mb-1.5'>
-								<div className='flex items-center gap-2'>
-									<span className='text-sm font-medium'>{item.topicName}</span>
-									<Badge
-										variant={getCognitiveLevelVariant(item.cognitiveLevel)}
-									>
-										{getCognitiveLevelLabel(item.cognitiveLevel)}
-									</Badge>
-								</div>
-								<div className='flex items-center gap-2'>
-									<span className='text-sm text-muted-foreground'>
-										{item.created}/{item.required}
-									</span>
-									{isComplete && (
-										<CheckCircle className='h-4 w-4 text-primary' />
-									)}
-									{isOver && (
-										<AlertCircle className='h-4 w-4 text-muted-foreground' />
-									)}
-									{interactive && canAddMore && (
-										<Button
-											variant='ghost'
-											size='icon'
-											className='h-6 w-6'
-											onClick={e => {
-												e.stopPropagation()
-												if (onRequirementClick) {
-													onRequirementClick(item.topicId, item.cognitiveLevel)
-												}
-											}}
+							<div className='space-y-2.5'>
+								<div className='flex items-start justify-between gap-3'>
+									<div className='flex-1 min-w-0 space-y-1.5'>
+										<h4 className='text-sm font-medium leading-none truncate'>
+											{item.topicName}
+										</h4>
+										<Badge
+											variant={getCognitiveLevelVariant(item.cognitiveLevel)}
+											className='text-xs'
 										>
-											<Plus className='h-4 w-4' />
-										</Button>
-									)}
+											{getCognitiveLevelLabel(item.cognitiveLevel)}
+										</Badge>
+									</div>
+
+									<div className='flex items-center gap-2 flex-shrink-0'>
+										<div className='text-right'>
+											<div className='flex items-baseline gap-1'>
+												<span className='text-sm font-semibold tabular-nums'>
+													{item.created}
+												</span>
+												<span className='text-xs text-muted-foreground'>/</span>
+												<span className='text-sm font-medium text-muted-foreground tabular-nums'>
+													{item.required}
+												</span>
+											</div>
+										</div>
+										{isComplete && (
+											<CheckCircle className='h-4 w-4 text-primary flex-shrink-0' />
+										)}
+										{isOver && (
+											<AlertCircle className='h-4 w-4 text-amber-500 flex-shrink-0' />
+										)}
+										{interactive && canAddMore && (
+											<Button
+												variant='ghost'
+												size='icon'
+												className='h-7 w-7 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0'
+												onClick={e => {
+													e.stopPropagation()
+													if (onRequirementClick) {
+														onRequirementClick(
+															item.topicId,
+															item.cognitiveLevel
+														)
+													}
+												}}
+											>
+												<Plus className='h-3.5 w-3.5' />
+											</Button>
+										)}
+									</div>
 								</div>
+								<Progress value={item.percentage} className='h-1.5' />
 							</div>
-							<Progress value={item.percentage} className='h-2' />
 						</div>
 					)
 				})}

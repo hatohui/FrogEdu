@@ -941,15 +941,19 @@ const CreateQuestionPage = (): React.ReactElement => {
 						{/* Matrix Requirements */}
 						{matrix && (
 							<Card>
-								<div className='flex items-start gap-2 ml-6'>
-									<Info className='h-4 w-4 text-muted-foreground mt-0.5' />
-									<div className='flex-1 space-y-1'>
-										<CardTitle className='text-sm font-medium'>
-											Matrix Requirements
-										</CardTitle>
-										<p className='text-xs text-muted-foreground'>
-											Click any requirement to pre-fill the form
-										</p>
+								<div className='px-6 pt-6 pb-2'>
+									<div className='flex items-start gap-3'>
+										<div className='mt-0.5 rounded-full p-1.5 bg-primary/10'>
+											<Info className='h-4 w-4 text-primary' />
+										</div>
+										<div className='flex-1 space-y-1'>
+											<h3 className='text-base font-semibold tracking-tight'>
+												Matrix Requirements
+											</h3>
+											<p className='text-sm text-muted-foreground'>
+												Click any requirement to pre-fill the form
+											</p>
+										</div>
 									</div>
 								</div>
 								<MatrixProgressTracker

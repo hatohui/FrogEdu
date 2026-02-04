@@ -177,24 +177,22 @@ const MatricesPage = (): React.ReactElement => {
 		<div className='p-6 space-y-6 max-w-7xl mx-auto'>
 			{/* Header */}
 			<div className='flex items-center justify-between'>
-				<div className='space-y-2'>
-					<div className='flex items-center gap-4'>
-						<Button
-							variant='ghost'
-							size='icon'
-							onClick={() => navigate('/app/exams')}
-						>
-							<ArrowLeft className='h-5 w-5' />
-						</Button>
-						<div>
-							<h1 className='text-3xl font-bold tracking-tight flex items-center gap-2'>
-								<Grid3x3 className='h-8 w-8' />
-								Exam Matrices
-							</h1>
-							<p className='text-muted-foreground'>
-								Create and manage reusable exam blueprints
-							</p>
-						</div>
+				<div className='flex items-center gap-4'>
+					<Button
+						variant='ghost'
+						size='icon'
+						onClick={() => navigate('/app/exams')}
+					>
+						<ArrowLeft className='h-5 w-5' />
+					</Button>
+					<div>
+						<h1 className='text-3xl font-bold tracking-tight flex items-center gap-2'>
+							<Grid3x3 className='h-8 w-8' />
+							Exam Matrices
+						</h1>
+						<p className='text-muted-foreground'>
+							Create and manage reusable exam blueprints
+						</p>
 					</div>
 				</div>
 				<Button onClick={() => navigate('/app/matrices/new')}>

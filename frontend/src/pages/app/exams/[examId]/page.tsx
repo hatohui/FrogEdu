@@ -17,6 +17,7 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
+import { Input } from '@/components/ui/input'
 import {
 	Table,
 	TableBody,
@@ -51,7 +52,9 @@ import {
 	useSubjects,
 	useExportExamToPdf,
 	useExportExamToExcel,
-	useDeleteMatrix,
+	useDetachMatrixFromExam,
+	useMatrices,
+	useAttachMatrixToExam,
 } from '@/hooks/useExams'
 import { useConfirm } from '@/hooks/useConfirm'
 import { ConfirmDialog } from '@/components/common/ConfirmDialog'
@@ -60,6 +63,10 @@ const ExamDetailPage = (): React.ReactElement => {
 	const navigate = useNavigate()
 	const { examId } = useParams<{ examId: string }>()
 	const [isPublishDialogOpen, setIsPublishDialogOpen] = useState(false)
+	const [isAttachMatrixDialogOpen, setIsAttachMatrixDialogOpen] =
+		useState(false)
+	const [selectedMatrixId, setSelectedMatrixId] = useState<string>('')
+	const [matrixSearchQuery, setMatrixSearchQuery] = useState('')
 
 	const { data: exam, isLoading: isLoadingExam } = useExam(examId || '')
 	const { data: questions = [], isLoading: isLoadingQuestions } =
@@ -67,11 +74,13 @@ const ExamDetailPage = (): React.ReactElement => {
 	const { data: matrix } = useMatrixByExamId(examId || '')
 	const { data: topics = [] } = useTopics(exam?.subjectId ?? '')
 	const { data: subjects = [] } = useSubjects(exam?.grade)
+	const { data: matrices = [] } = useMatrices()
 	const publishExamMutation = usePublishExam()
 	const removeQuestionMutation = useRemoveQuestionFromExam()
 	const exportToPdf = useExportExamToPdf()
 	const exportToExcel = useExportExamToExcel()
-	const deleteMatrixMutation = useDeleteMatrix()
+	const detachMatrixMutation = useDetachMatrixFromExam()
+	const attachMatrixMutation = useAttachMatrixToExam()
 	const {
 		confirm,
 		confirmState,
@@ -126,23 +135,38 @@ const ExamDetailPage = (): React.ReactElement => {
 		}
 	}
 
-	const handleDeleteMatrix = async () => {
-		if (!matrix?.id) return
+	const handleDetachMatrix = async () => {
+		if (!examId) return
 
 		const confirmed = await confirm({
-			title: 'Remove Matrix',
+			title: 'Detach Matrix',
 			description:
-				'Are you sure you want to remove this exam matrix? This will not delete the questions, only the matrix structure.',
-			confirmText: 'Remove',
+				'Are you sure you want to detach this matrix from the exam? The matrix will still be available for other exams.',
+			confirmText: 'Detach',
 			variant: 'destructive',
 		})
 
 		if (confirmed) {
 			try {
-				await deleteMatrixMutation.mutateAsync(matrix.id)
+				await detachMatrixMutation.mutateAsync(examId)
 			} catch (error) {
-				console.error('Failed to delete matrix:', error)
+				console.error('Failed to detach matrix:', error)
 			}
+		}
+	}
+
+	const handleAttachMatrix = async () => {
+		if (!examId || !selectedMatrixId) return
+
+		try {
+			await attachMatrixMutation.mutateAsync({
+				examId,
+				matrixId: selectedMatrixId,
+			})
+			setIsAttachMatrixDialogOpen(false)
+			setSelectedMatrixId('')
+		} catch (error) {
+			console.error('Failed to attach matrix:', error)
 		}
 	}
 
@@ -390,12 +414,12 @@ const ExamDetailPage = (): React.ReactElement => {
 								</Button>
 								<Button
 									variant='outline'
-									onClick={handleDeleteMatrix}
-									disabled={deleteMatrixMutation.isPending}
+									onClick={handleDetachMatrix}
+									disabled={detachMatrixMutation.isPending}
 									className='text-destructive hover:text-destructive'
 								>
 									<Trash2 className='h-4 w-4 mr-2' />
-									{deleteMatrixMutation.isPending ? 'Removing...' : 'Remove'}
+									{detachMatrixMutation.isPending ? 'Detaching...' : 'Detach'}
 								</Button>
 							</div>
 						) : (
@@ -460,17 +484,25 @@ const ExamDetailPage = (): React.ReactElement => {
 							<div className='text-center py-8'>
 								<Grid3x3 className='h-12 w-12 text-muted-foreground mx-auto mb-4' />
 								<p className='text-sm text-muted-foreground mb-4'>
-									No matrix configured yet. Create a matrix to define the
-									structure of your exam.
+									No matrix configured yet. Create a new matrix or attach an
+									existing one.
 								</p>
-								<Button
-									onClick={() =>
-										navigate(`/app/exams/create/matrix?examId=${examId}`)
-									}
-								>
-									<Plus className='h-4 w-4 mr-2' />
-									Create Matrix
-								</Button>
+								<div className='flex gap-2 justify-center'>
+									<Button
+										onClick={() =>
+											navigate(`/app/exams/create/matrix?examId=${examId}`)
+										}
+									>
+										<Plus className='h-4 w-4 mr-2' />
+										Create Matrix
+									</Button>
+									<Button
+										variant='outline'
+										onClick={() => setIsAttachMatrixDialogOpen(true)}
+									>
+										Attach Existing Matrix
+									</Button>
+								</div>
 							</div>
 						)}
 					</CardContent>
@@ -566,7 +598,9 @@ const ExamDetailPage = (): React.ReactElement => {
 									No questions added yet
 								</p>
 								<Button
-									onClick={() => navigate(`/app/exams/${examId}/questions`)}
+									onClick={() =>
+										navigate(`/app/exams/${examId}/questions/create`)
+									}
 								>
 									<Plus className='h-4 w-4 mr-2' />
 									Add Questions
@@ -587,6 +621,116 @@ const ExamDetailPage = (): React.ReactElement => {
 				cancelText={confirmState.cancelText}
 				variant={confirmState.variant}
 			/>
+			<Dialog
+				open={isAttachMatrixDialogOpen}
+				onOpenChange={setIsAttachMatrixDialogOpen}
+			>
+				<DialogContent>
+					<DialogHeader>
+						<DialogTitle>Attach Existing Matrix</DialogTitle>
+						<DialogDescription>
+							Select a matrix to attach to this exam. The matrix must match the
+							exam's subject and grade.
+						</DialogDescription>
+					</DialogHeader>
+					<div className='space-y-4 py-4'>
+						{matrices.length === 0 ? (
+							<p className='text-sm text-muted-foreground text-center py-4'>
+								No matrices available. Create a new matrix first.
+							</p>
+						) : (
+							<>
+								<Input
+									placeholder='Search matrices...'
+									value={matrixSearchQuery}
+									onChange={e => setMatrixSearchQuery(e.target.value)}
+									className='w-full'
+								/>
+								<div className='space-y-2 max-h-[400px] overflow-y-auto'>
+									{matrices
+										.filter(
+											m =>
+												m.subjectId === exam?.subjectId &&
+												m.grade === exam?.grade &&
+												(matrixSearchQuery === '' ||
+													m.name
+														.toLowerCase()
+														.includes(matrixSearchQuery.toLowerCase()) ||
+													m.description
+														?.toLowerCase()
+														.includes(matrixSearchQuery.toLowerCase()))
+										)
+										.map(matrix => (
+											<div
+												key={matrix.id}
+												className={`p-4 border rounded-lg cursor-pointer transition-colors hover:bg-accent ${
+													selectedMatrixId === matrix.id
+														? 'border-primary bg-accent'
+														: ''
+												}`}
+												onClick={() => setSelectedMatrixId(matrix.id)}
+											>
+												<div className='flex items-center justify-between gap-4'>
+													<div className='flex-1 min-w-0'>
+														<p className='font-medium truncate'>
+															{matrix.name}
+														</p>
+														{matrix.description && (
+															<p className='text-sm text-muted-foreground line-clamp-2'>
+																{matrix.description}
+															</p>
+														)}
+													</div>
+													<Badge variant='outline' className='shrink-0'>
+														{matrix.totalQuestionCount} questions
+													</Badge>
+												</div>
+											</div>
+										))}
+									{matrices.filter(
+										m =>
+											m.subjectId === exam?.subjectId &&
+											m.grade === exam?.grade &&
+											(matrixSearchQuery === '' ||
+												m.name
+													.toLowerCase()
+													.includes(matrixSearchQuery.toLowerCase()) ||
+												m.description
+													?.toLowerCase()
+													.includes(matrixSearchQuery.toLowerCase()))
+									).length === 0 && (
+										<p className='text-sm text-muted-foreground text-center py-4'>
+											{matrixSearchQuery
+												? 'No matrices found matching your search.'
+												: "No compatible matrices found. The matrix must match the exam's subject and grade."}
+										</p>
+									)}
+								</div>
+							</>
+						)}
+					</div>
+					<DialogFooter>
+						<Button
+							variant='outline'
+							onClick={() => {
+								setIsAttachMatrixDialogOpen(false)
+								setSelectedMatrixId('')
+								setMatrixSearchQuery('')
+							}}
+						>
+							Cancel
+						</Button>
+						<Button
+							onClick={handleAttachMatrix}
+							disabled={!selectedMatrixId || attachMatrixMutation.isPending}
+						>
+							{attachMatrixMutation.isPending
+								? 'Attaching...'
+								: 'Attach Matrix'}
+						</Button>
+					</DialogFooter>
+				</DialogContent>
+			</Dialog>
 		</>
 	)
 }

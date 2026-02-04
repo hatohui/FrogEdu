@@ -3,12 +3,10 @@ import { Link, useLocation } from 'react-router'
 import { cn } from '@/utils/shadcn'
 import {
 	Home,
-	BookOpen,
 	FileText,
 	User,
 	LogOut,
 	X,
-	Users,
 	ChevronLeft,
 	ChevronRight,
 	LayoutDashboard,
@@ -43,16 +41,6 @@ const navItems: NavItem[] = [
 		name: 'App',
 		href: '/app',
 		icon: Home,
-	},
-	{
-		name: 'My Classes',
-		href: '/app/classes',
-		icon: Users,
-	},
-	{
-		name: 'Content Library',
-		href: '/app/content',
-		icon: BookOpen,
 	},
 	{
 		name: 'Exams',

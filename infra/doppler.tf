@@ -36,8 +36,5 @@ locals {
   r2_public_endpoint   = data.doppler_secrets.this.map.R2_PUBLIC_ENDPOINT
 
   # Gemini API Key
-  gemini_api_key        = data.doppler_secrets.this.map.GEMINI_API_KEY
-  gemini_key_name       = data.doppler_secrets.this.map.GEMINI_KEY_NAME
-  gemini_project_number = data.doppler_secrets.this.map.GEMINI_PROJECT_NUMBER
-  gemini_project_name   = data.doppler_secrets.this.map.GEMINI_PROJECT_NAME
+  gemini_api_key = data.doppler_secrets.this.map.GEMINI_API_KEY
 }
