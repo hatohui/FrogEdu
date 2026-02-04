@@ -107,6 +107,14 @@ export class ApiService {
 			return this.handleError(error)
 		}
 	}
+
+	async getBlob(url: string): Promise<Blob> {
+		const response = await axiosInstance.get(url, {
+			responseType: 'blob',
+		})
+		return response.data
+	}
+
 	getBaseUrl(): string {
 		return axiosInstance.defaults.baseURL || ''
 	}

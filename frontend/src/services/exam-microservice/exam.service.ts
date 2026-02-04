@@ -258,29 +258,11 @@ class AssessmentService {
 	}
 
 	async exportExamToPdf(examId: string): Promise<Blob> {
-		const response = await fetch(
-			`${apiService.getBaseUrl()}${this.baseUrl}/exams/${examId}/export/pdf`,
-			{
-				headers: {
-					Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
-				},
-			}
-		)
-		if (!response.ok) throw new Error('Failed to export PDF')
-		return response.blob()
+		return apiService.getBlob(`${this.baseUrl}/exams/${examId}/export/pdf`)
 	}
 
 	async exportExamToExcel(examId: string): Promise<Blob> {
-		const response = await fetch(
-			`${apiService.getBaseUrl()}${this.baseUrl}/exams/${examId}/export/excel`,
-			{
-				headers: {
-					Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
-				},
-			}
-		)
-		if (!response.ok) throw new Error('Failed to export Excel')
-		return response.blob()
+		return apiService.getBlob(`${this.baseUrl}/exams/${examId}/export/excel`)
 	}
 }
 

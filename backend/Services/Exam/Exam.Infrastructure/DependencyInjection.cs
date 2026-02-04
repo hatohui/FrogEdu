@@ -7,6 +7,7 @@ using FrogEdu.Shared.Kernel.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using QuestPDF.Infrastructure;
 
 namespace FrogEdu.Exam.Infrastructure;
 
@@ -17,6 +18,8 @@ public static class DependencyInjection
         IConfiguration configuration
     )
     {
+        // Configure QuestPDF license
+        QuestPDF.Settings.License = LicenseType.Community;
         var configConnectionString = configuration.GetConnectionString("ExamDb");
         var envConnectionString = Environment.GetEnvironmentVariable("EXAM_DB_CONNECTION_STRING");
 
