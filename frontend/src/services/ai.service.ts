@@ -8,10 +8,87 @@ import type {
 	AIQuestionApiResponse,
 	AIGenerateQuestionsApiResponse,
 } from '@/types/dtos/ai'
+import { CognitiveLevel, QuestionType } from '@/types/model/exam-service/enums'
 import axiosInstance from './axios'
 
 class AIService {
 	private readonly baseUrl = '/ai'
+
+	/**
+	 * Map frontend numeric CognitiveLevel enum to API string format
+	 */
+	private mapCognitiveLevel(level: CognitiveLevel): string {
+		switch (level) {
+			case CognitiveLevel.Remember:
+				return 'remember'
+			case CognitiveLevel.Understand:
+				return 'understand'
+			case CognitiveLevel.Apply:
+				return 'apply'
+			case CognitiveLevel.Analyze:
+				return 'analyze'
+			default:
+				return 'remember'
+		}
+	}
+
+	/**
+	 * Map frontend numeric QuestionType enum to API string format
+	 */
+	private mapQuestionType(type: QuestionType): string {
+		switch (type) {
+			case QuestionType.MultipleChoice:
+			case QuestionType.MultipleAnswer:
+				return 'multiple_choice'
+			case QuestionType.TrueFalse:
+				return 'true_false'
+			case QuestionType.ShortAnswer:
+				return 'short_answer'
+			case QuestionType.Essay:
+				return 'essay'
+			case QuestionType.FillInTheBlank:
+				return 'short_answer'
+			default:
+				return 'multiple_choice'
+		}
+	}
+
+	/**
+	 * Map API string format back to frontend numeric enum
+	 */
+	private mapCognitiveLevelFromApi(level: string): CognitiveLevel {
+		switch (level.toLowerCase()) {
+			case 'remember':
+				return CognitiveLevel.Remember
+			case 'understand':
+				return CognitiveLevel.Understand
+			case 'apply':
+				return CognitiveLevel.Apply
+			case 'analyze':
+				return CognitiveLevel.Analyze
+			default:
+				return CognitiveLevel.Remember
+		}
+	}
+
+	/**
+	 * Map API string format back to frontend numeric enum
+	 */
+	private mapQuestionTypeFromApi(type: string): QuestionType {
+		switch (type.toLowerCase()) {
+			case 'multiple_choice':
+				return QuestionType.MultipleChoice
+			case 'true_false':
+				return QuestionType.TrueFalse
+			case 'short_answer':
+			case 'fill_in_the_blank':
+				return QuestionType.ShortAnswer
+			case 'essay':
+				return QuestionType.Essay
+			default:
+				return QuestionType.MultipleChoice
+		}
+	}
 
 	/**
 	 * Generate multiple questions based on a matrix configuration
@@ -28,7 +105,7 @@ class AIService {
 				matrix_topics: request.matrixTopics.map(topic => ({
 					topic_id: topic.topicId,
 					topic_name: topic.topicName,
-					cognitive_level: topic.cognitiveLevel,
+					cognitive_level: this.mapCognitiveLevel(topic.cognitiveLevel),
 					quantity: topic.quantity,
 				})),
 				language: request.language ?? 'vi',
@@ -53,8 +130,8 @@ class AIService {
 				subject: request.subject,
 				grade: request.grade,
 				topic_name: request.topicName,
-				cognitive_level: request.cognitiveLevel,
-				question_type: request.questionType,
+				cognitive_level: this.mapCognitiveLevel(request.cognitiveLevel),
+				question_type: this.mapQuestionType(request.questionType),
 				language: request.language ?? 'vi',
 				topic_description: request.topicDescription ?? '',
 			}
@@ -88,8 +165,8 @@ class AIService {
 	private mapQuestion(q: AIQuestionApiResponse): AIGeneratedQuestion {
 		return {
 			content: q.content,
-			questionType: q.question_type,
-			cognitiveLevel: q.cognitive_level,
+			questionType: this.mapQuestionTypeFromApi(String(q.question_type)),
+			cognitiveLevel: this.mapCognitiveLevelFromApi(String(q.cognitive_level)),
 			point: q.point ?? 1,
 			mediaUrl: q.media_url,
 			topicId: q.topic_id,
