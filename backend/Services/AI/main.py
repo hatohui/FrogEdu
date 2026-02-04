@@ -48,7 +48,7 @@ class PathPrefixRewriteMiddleware:
     This is needed because API Gateway strips the service prefix and path
     when using the Lambda integration with overwrite:path parameter.
     """
-    def __init__(self, app, prefix: str = "/api/ai/questions"):
+    def __init__(self, app, prefix: str = "/api/ai/"):
         self.app = app
         self.prefix = prefix
 
@@ -95,7 +95,6 @@ app.add_middleware(
 )
 
 
-# Add request logging middleware
 @app.middleware("http")
 async def log_requests(request: Request, call_next):
     logger.info("=" * 80)
@@ -118,7 +117,6 @@ async def log_requests(request: Request, call_next):
         raise
 
 
-# Add a catch-all 404 handler to log unmatched routes
 @app.exception_handler(404)
 async def not_found_handler(request: Request, exc):
     logger.error("=" * 80)
@@ -144,16 +142,5 @@ async def root():
     return RedirectResponse(url="/api/ai/docs")
 
 
-@app.get("/test", include_in_schema=False)
-async def test():
-    """Simple test endpoint."""
-    logger.info("🧪 Test endpoint hit")
-    return {"status": "ok", "message": "AI Service is running"}
-
-
-# Lambda handler with Mangum
-# The api_gateway_base_path is set to /api/ai because API Gateway rewrites the path
-# and we need FastAPI to understand it's running under that prefix
-logger.info("🔧 Creating Mangum handler...")
 handler = Mangum(app, lifespan="auto", api_gateway_base_path="/api/ai")
 logger.info("✅ Mangum handler created successfully")
