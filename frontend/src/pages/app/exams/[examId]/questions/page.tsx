@@ -63,6 +63,8 @@ import {
 	useMatrix,
 	useExam,
 	useTopics,
+	useExamQuestions,
+	useRemoveQuestionFromExam,
 } from '@/hooks/useExams'
 import { CognitiveLevel, QuestionType } from '@/types/model/exam-service'
 import type { Question } from '@/types/model/exam-service'
@@ -81,16 +83,33 @@ const QuestionBankPage = (): React.ReactElement => {
 	const [deletingQuestion, setDeletingQuestion] = useState<Question | null>(
 		null
 	)
-	const [viewMode, setViewMode] = useState<'all' | 'matrix'>('all')
+	const [viewMode, setViewMode] = useState<'exam' | 'all' | 'matrix'>('exam')
 
 	const { data: exam } = useExam(examId ?? '')
 	const { data: matrix } = useMatrix(examId ?? '')
 	const { data: topics = [] } = useTopics(exam?.subjectId ?? '')
+	const { data: examQuestions = [] } = useExamQuestions(examId ?? '')
 	const { data: questions, isLoading } = useQuestions({
 		isPublic: true,
 	})
 	const deleteQuestion = useDeleteQuestion()
 	const addQuestionsToExam = useAddQuestionsToExam()
+	const removeQuestionFromExam = useRemoveQuestionFromExam()
+
+	// Get existing question IDs for quick lookup
+	const examQuestionIds = new Set(examQuestions.map(q => q.id))
+
+	// Filter exam questions based on search and filters
+	const filteredExamQuestions = examQuestions.filter(question => {
+		const matchesSearch = question.content
+			.toLowerCase()
+			.includes(searchQuery.toLowerCase())
+		const matchesLevel =
+			filterLevel === 'all' || question.cognitiveLevel === Number(filterLevel)
+		const matchesTopic =
+			filterTopic === 'all' || question.topicId === filterTopic
+		return matchesSearch && matchesLevel && matchesTopic
+	})
 
 	const filteredQuestions = questions?.filter(question => {
 		const matchesSearch = question.content
@@ -113,8 +132,13 @@ const QuestionBankPage = (): React.ReactElement => {
 		)
 	})
 
+	// Choose which questions to display based on view mode
 	const displayQuestions =
-		viewMode === 'matrix' && matrix ? matrixNeededQuestions : filteredQuestions
+		viewMode === 'exam'
+			? filteredExamQuestions
+			: viewMode === 'matrix' && matrix
+				? matrixNeededQuestions
+				: filteredQuestions
 
 	const toggleQuestion = (questionId: string) => {
 		const newSelected = new Set(selectedQuestions)
@@ -222,23 +246,25 @@ const QuestionBankPage = (): React.ReactElement => {
 						onClick={() => navigate(`/app/exams/${examId}/questions/create`)}
 					>
 						<Plus className='h-4 w-4 mr-2' />
-						Create Question
+						Manage Questions
 					</Button>
-					<Button
-						onClick={handleAddSelectedToExam}
-						disabled={selectedQuestions.size === 0}
-					>
-						<CheckCircle className='h-4 w-4 mr-2' />
-						Add {selectedQuestions.size} Selected
-					</Button>
+					{viewMode !== 'exam' && (
+						<Button
+							onClick={handleAddSelectedToExam}
+							disabled={selectedQuestions.size === 0}
+						>
+							<CheckCircle className='h-4 w-4 mr-2' />
+							Add {selectedQuestions.size} Selected
+						</Button>
+					)}
 				</div>
 			</div>
 
 			{/* Matrix Progress Tracker */}
-			{matrix && questions && (
+			{matrix && (
 				<MatrixProgressTracker
 					matrix={matrix}
-					questions={questions}
+					questions={examQuestions}
 					topics={topics}
 				/>
 			)}
@@ -317,22 +343,27 @@ const QuestionBankPage = (): React.ReactElement => {
 								</SelectItem>
 							</SelectContent>
 						</Select>
-						{matrix && (
-							<Tabs
-								value={viewMode}
-								onValueChange={(v: string) =>
-									setViewMode(v as 'all' | 'matrix')
-								}
+						<Tabs
+							value={viewMode}
+							onValueChange={(v: string) =>
+								setViewMode(v as 'exam' | 'all' | 'matrix')
+							}
+						>
+							<TabsList
+								className={`grid w-full ${matrix ? 'grid-cols-3' : 'grid-cols-2'}`}
 							>
-								<TabsList className='grid w-full grid-cols-2'>
-									<TabsTrigger value='all'>All</TabsTrigger>
+								<TabsTrigger value='exam'>
+									In Exam ({examQuestions.length})
+								</TabsTrigger>
+								<TabsTrigger value='all'>All Bank</TabsTrigger>
+								{matrix && (
 									<TabsTrigger value='matrix'>
-										Matrix Only
+										Matrix
 										<Sparkles className='h-3 w-3 ml-1' />
 									</TabsTrigger>
-								</TabsList>
-							</Tabs>
-						)}
+								)}
+							</TabsList>
+						</Tabs>
 					</div>
 
 					{/* Questions Table */}
@@ -374,11 +405,23 @@ const QuestionBankPage = (): React.ReactElement => {
 													<Checkbox
 														checked={selectedQuestions.has(question.id)}
 														onCheckedChange={() => toggleQuestion(question.id)}
+														disabled={viewMode === 'exam'}
 													/>
 												</TableCell>
 												<TableCell className='max-w-md'>
-													<div className='line-clamp-2 text-sm'>
-														{question.content}
+													<div className='flex items-start gap-2'>
+														<div className='line-clamp-2 text-sm'>
+															{question.content}
+														</div>
+														{viewMode !== 'exam' &&
+															examQuestionIds.has(question.id) && (
+																<Badge
+																	variant='secondary'
+																	className='text-xs shrink-0'
+																>
+																	In Exam
+																</Badge>
+															)}
 													</div>
 												</TableCell>
 												<TableCell>
@@ -423,6 +466,22 @@ const QuestionBankPage = (): React.ReactElement => {
 																<Eye className='h-4 w-4 mr-2' />
 																View
 															</DropdownMenuItem>
+															{viewMode === 'exam' && (
+																<DropdownMenuItem
+																	onClick={async () => {
+																		if (examId) {
+																			await removeQuestionFromExam.mutateAsync({
+																				examId,
+																				questionId: question.id,
+																			})
+																		}
+																	}}
+																	className='text-destructive'
+																>
+																	<Trash2 className='h-4 w-4 mr-2' />
+																	Remove from Exam
+																</DropdownMenuItem>
+															)}
 															<DropdownMenuItem
 																onClick={() =>
 																	navigate(

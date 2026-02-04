@@ -228,7 +228,7 @@ export function useExamQuestions(examId: string) {
 	})
 }
 
-export function useCreateQuestion() {
+export function useCreateQuestion(examId?: string) {
 	const queryClient = useQueryClient()
 
 	return useMutation({
@@ -236,6 +236,13 @@ export function useCreateQuestion() {
 			examService.createQuestion(request),
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ['questions'] })
+			// Also invalidate exam questions if we're creating in context of an exam
+			if (examId) {
+				queryClient.invalidateQueries({
+					queryKey: examKeys.examQuestions(examId),
+				})
+				queryClient.invalidateQueries({ queryKey: examKeys.matrix(examId) })
+			}
 			toast.success('Question created successfully!')
 		},
 		onError: (error: Error) => {

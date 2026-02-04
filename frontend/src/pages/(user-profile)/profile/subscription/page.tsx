@@ -268,18 +268,13 @@ const SubscriptionPage = (): React.ReactElement => {
 
 			{/* Info Note */}
 			<Card className='bg-blue-50 dark:bg-blue-950/20 border-blue-200 dark:border-blue-800'>
-				<CardContent className='pt-6'>
+				<CardContent>
 					<div className='flex items-start gap-3'>
 						<Zap className='h-5 w-5 text-blue-600 mt-0.5' />
 						<div>
 							<p className='font-medium text-blue-900 dark:text-blue-100'>
-								Demo Mode
-							</p>
-							<p className='text-sm text-blue-700 dark:text-blue-300'>
-								This is a demo subscription. In production, this will be
-								integrated with payment providers like VNPay, Stripe, or PayOS.
-								Click "Upgrade to Pro" to instantly activate Pro features for
-								testing.
+								You can cancel your subscription at any time from your profile
+								settings.
 							</p>
 						</div>
 					</div>

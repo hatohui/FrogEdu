@@ -2,7 +2,8 @@ import React, { useMemo } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Progress } from '@/components/ui/progress'
 import { Badge } from '@/components/ui/badge'
-import { CheckCircle, AlertCircle } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { CheckCircle, AlertCircle, Plus } from 'lucide-react'
 import type {
 	Matrix,
 	MatrixTopicDto,
@@ -15,6 +16,9 @@ interface MatrixProgressTrackerProps {
 	matrix: Matrix
 	questions: Question[]
 	topics: Topic[]
+	onRequirementClick?: (topicId: string, cognitiveLevel: CognitiveLevel) => void
+	interactive?: boolean
+	compact?: boolean
 }
 
 interface ProgressItem {
@@ -30,6 +34,9 @@ export const MatrixProgressTracker: React.FC<MatrixProgressTrackerProps> = ({
 	matrix,
 	questions,
 	topics,
+	onRequirementClick,
+	interactive = false,
+	compact = false,
 }) => {
 	const progressData = useMemo(() => {
 		const data: ProgressItem[] = []
@@ -98,33 +105,50 @@ export const MatrixProgressTracker: React.FC<MatrixProgressTrackerProps> = ({
 	}
 
 	return (
-		<Card>
-			<CardHeader>
+		<Card className={compact ? '' : ''}>
+			<CardHeader className={compact ? 'py-3 px-4' : ''}>
 				<div className='flex items-center justify-between'>
-					<CardTitle className='flex items-center gap-2'>
+					<CardTitle
+						className={`flex items-center gap-2 ${compact ? 'text-sm font-medium' : ''}`}
+					>
 						<span>Matrix Progress</span>
 						{overallProgress === 100 && (
 							<CheckCircle className='h-5 w-5 text-primary' />
 						)}
 					</CardTitle>
 					<div className='text-sm font-medium'>
-						<span className='text-2xl font-bold text-primary'>
+						<span
+							className={`font-bold text-primary ${compact ? 'text-lg' : 'text-2xl'}`}
+						>
 							{Math.round(overallProgress)}%
 						</span>
 						<span className='text-muted-foreground ml-1'>Complete</span>
 					</div>
 				</div>
-				<Progress value={overallProgress} className='h-3 mt-4' />
+				<Progress
+					value={overallProgress}
+					className={`mt-4 ${compact ? 'h-2' : 'h-3'}`}
+				/>
 			</CardHeader>
-			<CardContent className='space-y-3'>
+			<CardContent className={`space-y-3 ${compact ? 'pt-0' : ''}`}>
 				{progressData.map((item, index) => {
 					const isComplete = item.created >= item.required
 					const isOver = item.created > item.required
+					const canAddMore = !isComplete
 
 					return (
 						<div
 							key={`${item.topicId}-${item.cognitiveLevel}-${index}`}
-							className='p-3 rounded-lg border bg-card hover:bg-accent transition-colors'
+							className={`p-3 rounded-lg border bg-card transition-colors ${
+								interactive && canAddMore
+									? 'cursor-pointer hover:bg-accent hover:border-primary/50'
+									: 'hover:bg-accent'
+							} ${isComplete ? 'border-primary/30 bg-primary/5' : ''}`}
+							onClick={() => {
+								if (interactive && canAddMore && onRequirementClick) {
+									onRequirementClick(item.topicId, item.cognitiveLevel)
+								}
+							}}
 						>
 							<div className='flex items-center justify-between mb-2'>
 								<div className='flex items-center gap-2'>
@@ -144,6 +168,21 @@ export const MatrixProgressTracker: React.FC<MatrixProgressTrackerProps> = ({
 									)}
 									{isOver && (
 										<AlertCircle className='h-4 w-4 text-muted-foreground' />
+									)}
+									{interactive && canAddMore && (
+										<Button
+											variant='ghost'
+											size='icon'
+											className='h-6 w-6'
+											onClick={e => {
+												e.stopPropagation()
+												if (onRequirementClick) {
+													onRequirementClick(item.topicId, item.cognitiveLevel)
+												}
+											}}
+										>
+											<Plus className='h-4 w-4' />
+										</Button>
 									)}
 								</div>
 							</div>
