@@ -8,7 +8,6 @@ from mangum import Mangum
 
 from app.api import router
 from app.config import get_settings
-from app.middleware import PathPrefixMiddleware
 
 # Configure logging for Lambda
 logging.basicConfig(
@@ -40,8 +39,14 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Add path prefix middleware
-app.add_middleware(PathPrefixMiddleware)
+
+@app.middleware("http")
+async def fix_path_middleware(request: Request, call_next):
+    """Fix paths that come from API Gateway without leading slashes."""
+    path = request.scope.get("path", "")
+    if not path.startswith("/"):
+        request.scope["path"] = "/" + path
+    return await call_next(request)
 
 
 @app.middleware("http")
