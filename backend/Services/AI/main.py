@@ -120,8 +120,8 @@ async def test():
 
 
 # Lambda handler with Mangum
-# The root_path is set to /api/ai because API Gateway rewrites the path
+# The api_gateway_base_path is set to /api/ai because API Gateway rewrites the path
 # and we need FastAPI to understand it's running under that prefix
 logger.info("🔧 Creating Mangum handler...")
-handler = Mangum(app, lifespan="auto", root_path="/api/ai")
+handler = Mangum(app, lifespan="auto", api_gateway_base_path="/api/ai")
 logger.info("✅ Mangum handler created successfully")
