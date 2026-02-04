@@ -1,3 +1,4 @@
+using FrogEdu.Shared.Kernel.Authorization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 
@@ -96,6 +97,9 @@ public static class AuthenticationExtensions
     public static IServiceCollection AddRoleBasedAuthorization(this IServiceCollection services)
     {
         services.AddAuthorization();
+
+        // Add subscription-based authorization policies and handlers
+        services.AddSubscriptionAuthorization();
 
         return services;
     }

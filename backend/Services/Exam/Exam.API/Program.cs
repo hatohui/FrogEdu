@@ -3,6 +3,7 @@ using FrogEdu.Exam.API.Middleware;
 using FrogEdu.Exam.Application;
 using FrogEdu.Exam.Infrastructure;
 using FrogEdu.Shared.Kernel;
+using FrogEdu.Shared.Kernel.Authorization;
 
 Env.Load();
 
@@ -55,6 +56,7 @@ app.UseDevelopmentCors();
 
 // Authentication & Authorization
 app.UseAuthentication();
+app.UseSubscriptionEnrichment(); // Enrich authenticated requests with subscription claims
 app.UseAuthorization();
 
 // ============================================================================

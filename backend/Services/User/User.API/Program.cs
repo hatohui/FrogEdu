@@ -1,5 +1,6 @@
 using DotNetEnv;
 using FrogEdu.Shared.Kernel;
+using FrogEdu.Shared.Kernel.Authorization;
 using FrogEdu.User.API.Middleware;
 using FrogEdu.User.Application;
 using FrogEdu.User.Domain.Enums;
@@ -85,6 +86,7 @@ app.UseRouting();
 app.UseDevelopmentCors();
 
 app.UseAuthentication();
+app.UseSubscriptionEnrichment(); // Enrich authenticated requests with subscription claims
 app.UseAuthorization();
 
 // ============================================================================

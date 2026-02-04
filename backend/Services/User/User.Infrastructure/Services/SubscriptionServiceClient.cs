@@ -1,4 +1,5 @@
 using System.Net.Http.Json;
+using FrogEdu.Shared.Kernel.Authorization;
 using FrogEdu.User.Application.Interfaces;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -6,7 +7,8 @@ using Microsoft.Extensions.Logging;
 namespace FrogEdu.User.Infrastructure.Services;
 
 /// <summary>
-/// HTTP client service for fetching subscription information from the Subscription microservice
+/// HTTP client service for fetching subscription information from the Subscription microservice.
+/// Implements ISubscriptionService which extends ISubscriptionClaimsClient.
 /// </summary>
 public sealed class SubscriptionServiceClient : ISubscriptionService
 {
@@ -51,40 +53,21 @@ public sealed class SubscriptionServiceClient : ISubscriptionService
                 );
 
                 // Return free plan as default
-                return new SubscriptionClaimsDto
-                {
-                    UserId = userId,
-                    Plan = "free",
-                    ExpiresAt = 0,
-                    HasActiveSubscription = false,
-                };
+                return SubscriptionClaimsDto.FreePlan(userId);
             }
 
             var claims = await response.Content.ReadFromJsonAsync<SubscriptionClaimsDto>(
                 cancellationToken: cancellationToken
             );
 
-            return claims
-                ?? new SubscriptionClaimsDto
-                {
-                    UserId = userId,
-                    Plan = "free",
-                    ExpiresAt = 0,
-                    HasActiveSubscription = false,
-                };
+            return claims ?? SubscriptionClaimsDto.FreePlan(userId);
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error fetching subscription claims for user {UserId}", userId);
 
             // Return free plan as fallback
-            return new SubscriptionClaimsDto
-            {
-                UserId = userId,
-                Plan = "free",
-                ExpiresAt = 0,
-                HasActiveSubscription = false,
-            };
+            return SubscriptionClaimsDto.FreePlan(userId);
         }
     }
 }

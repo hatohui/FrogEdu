@@ -176,6 +176,7 @@ module "user_service" {
     R2_SECRET_KEY             = local.r2_secret_access_key
     R2_BUCKET_NAME            = local.r2_bucket_name
     R2_PUBLIC_ENDPOINT        = local.r2_public_endpoint
+    SUBSCRIPTION_SERVICE_URL  = "https://${local.api_domain}/api/subscriptions"
   }
 }
 
@@ -203,6 +204,7 @@ module "class_service" {
     MEDIAK_LICENSE_KEY         = local.mediak_license_key
     COGNITO_USER_POOL_ID       = module.cognito.user_pool_id
     AWS_COGNITO_REGION         = local.aws_region
+    SUBSCRIPTION_SERVICE_URL   = "https://${local.api_domain}/api/subscriptions"
   }
 }
 
@@ -253,11 +255,12 @@ module "ai_service" {
   ]
 
   environment_variables = {
-    GEMINI_API_KEY        = local.gemini_api_key
-    GEMINI_KEY_NAME       = local.gemini_key_name
-    GEMINI_PROJECT_NUMBER = local.gemini_project_number
-    GEMINI_PROJECT_NAME   = local.gemini_project_name
-    COGNITO_USER_POOL_ID  = module.cognito.user_pool_id
-    COGNITO_REGION        = local.aws_region
+    GEMINI_API_KEY           = local.gemini_api_key
+    GEMINI_KEY_NAME          = local.gemini_key_name
+    GEMINI_PROJECT_NUMBER    = local.gemini_project_number
+    GEMINI_PROJECT_NAME      = local.gemini_project_name
+    COGNITO_USER_POOL_ID     = module.cognito.user_pool_id
+    COGNITO_REGION           = local.aws_region
+    SUBSCRIPTION_SERVICE_URL = "https://${local.api_domain}/api/subscriptions"
   }
 }

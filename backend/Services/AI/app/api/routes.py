@@ -110,7 +110,7 @@ async def generate_single_question(
     - A single generated question with answers
     """
     logger.info("🎯 generate_single_question endpoint hit!")
-    logger.info(f"   Request: topic={request.topic}, cognitive_level={request.cognitive_level}")
+    logger.info(f"   Request: topic={request.topic}, cognitive_level={request.cognitive_level}") # type: ignore
     logger.info(f"   User: {user.sub}, role={user.role}, plan={user.subscription.plan if user.subscription else 'None'}")
     
     # Verify user has Teacher role

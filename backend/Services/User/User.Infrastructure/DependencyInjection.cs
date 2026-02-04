@@ -2,6 +2,7 @@ using Amazon.CognitoIdentityProvider;
 using Amazon.Runtime;
 using Amazon.S3;
 using Amazon.SimpleEmail;
+using FrogEdu.Shared.Kernel.Authorization;
 using FrogEdu.User.Application.Interfaces;
 using FrogEdu.User.Domain.Repositories;
 using FrogEdu.User.Domain.Services;
@@ -83,10 +84,14 @@ public static class DependencyInjection
         services.AddSingleton<IApplicationConfiguration, ApplicationConfiguration>();
 
         // Register Subscription Service HTTP client
+        // Also register as ISubscriptionClaimsClient for the shared middleware
         services.AddHttpClient<ISubscriptionService, SubscriptionServiceClient>(client =>
         {
             client.Timeout = TimeSpan.FromSeconds(10);
         });
+        services.AddScoped<ISubscriptionClaimsClient>(sp =>
+            sp.GetRequiredService<ISubscriptionService>()
+        );
 
         return services;
     }

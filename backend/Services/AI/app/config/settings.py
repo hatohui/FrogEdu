@@ -25,6 +25,9 @@ class Settings(BaseSettings):
     cognito_region: str = "ap-southeast-1"
     cognito_user_pool_id: str = ""
     
+    # Subscription Service Configuration (for Backend Token Enrichment)
+    subscription_service_url: str = "http://localhost:5003/api/subscriptions"
+    
     @property
     def cognito_issuer(self) -> str:
         """Get the Cognito issuer URL for JWT validation."""

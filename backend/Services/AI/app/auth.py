@@ -1,6 +1,10 @@
 """
 Authentication module for JWT validation with AWS Cognito.
-Validates JWT tokens and extracts subscription claims.
+Validates JWT tokens and fetches subscription claims from Subscription service.
+
+This implements Backend Token Enrichment - subscription data is fetched from
+the Subscription microservice at runtime instead of relying on Cognito custom
+claims (which don't exist for subscription info).
 """
 
 import logging
@@ -14,6 +18,11 @@ from jose import jwt, jwk, JWTError
 from pydantic import BaseModel, Field
 
 from app.config import get_settings, Settings
+from app.services.subscription_client import (
+    SubscriptionClient,
+    SubscriptionClaimsResponse,
+    get_subscription_client,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -22,7 +31,7 @@ security = HTTPBearer(auto_error=False)
 
 
 class SubscriptionClaims(BaseModel):
-    """Subscription claims extracted from JWT token."""
+    """Subscription claims fetched from Subscription service."""
     plan: str = Field(default="free")
     expires_at: int = Field(default=0)
     has_active_subscription: bool = Field(default=False)
@@ -94,17 +103,24 @@ _jwks_cache = JWKSCache()
 
 async def validate_token(
     token: str,
-    settings: Settings
+    settings: Settings,
+    subscription_client: SubscriptionClient | None = None
 ) -> TokenUser:
     """
-    Validate a JWT token from Cognito and extract user/subscription claims.
+    Validate a JWT token from Cognito and fetch subscription claims from Subscription service.
+    
+    This implements Backend Token Enrichment:
+    1. Validate the JWT token using Cognito JWKS
+    2. Extract user info (sub, email, role) from the token
+    3. Fetch subscription claims from the Subscription microservice using the user ID
     
     Args:
         token: The JWT token to validate
         settings: Application settings
+        subscription_client: Optional subscription client (uses singleton if not provided)
         
     Returns:
-        TokenUser with extracted claims
+        TokenUser with extracted claims and enriched subscription data
         
     Raises:
         HTTPException: If token is invalid
@@ -151,15 +167,28 @@ async def validate_token(
             }
         )
         
-        # Extract subscription claims from token
+        # Get user ID for subscription lookup
+        # Try custom:user_id first (database user ID), then fall back to sub (Cognito ID)
+        user_id = payload.get("custom:user_id", payload.get("sub", ""))
+        cognito_sub = payload.get("sub", "")
+        
+        # Fetch subscription claims from Subscription service (Backend Token Enrichment)
+        client = subscription_client or get_subscription_client()
+        subscription_response = await client.get_subscription_claims(user_id)
+        
         subscription = SubscriptionClaims(
-            plan=payload.get("custom:plan", payload.get("plan", "free")),
-            expires_at=int(payload.get("custom:subscription_expires_at", payload.get("subscription_expires_at", 0))),
-            has_active_subscription=payload.get("custom:has_subscription", payload.get("has_subscription", False)) in [True, "true", "True", 1, "1"]
+            plan=subscription_response.plan,
+            expires_at=subscription_response.expiresAt,
+            has_active_subscription=subscription_response.hasActiveSubscription
+        )
+        
+        logger.info(
+            f"   Subscription enriched from service: plan={subscription.plan}, "
+            f"active={subscription.has_active_subscription}"
         )
         
         user = TokenUser(
-            sub=payload.get("sub", ""),
+            sub=cognito_sub,
             email=payload.get("email"),
             role=payload.get("custom:role"),
             subscription=subscription

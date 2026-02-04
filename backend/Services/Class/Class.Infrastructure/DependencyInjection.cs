@@ -3,6 +3,7 @@ using FrogEdu.Class.Domain.Repositories;
 using FrogEdu.Class.Infrastructure.Persistence;
 using FrogEdu.Class.Infrastructure.Repositories;
 using FrogEdu.Class.Infrastructure.Services;
+using FrogEdu.Shared.Kernel.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -47,6 +48,9 @@ public static class DependencyInjection
 
         // Register database health service
         services.AddScoped<IDatabaseHealthService, DatabaseHealthService>();
+
+        // Register subscription claims HTTP client for backend token enrichment
+        services.AddSubscriptionClaimsClient();
 
         return services;
     }
