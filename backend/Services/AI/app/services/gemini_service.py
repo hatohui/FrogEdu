@@ -27,9 +27,9 @@ class GeminiService:
         """Initialize Gemini client with settings."""
         self.settings = settings
         self.client = genai.Client(api_key=settings.gemini_api_key)
-        self.model_name = "gemini-3-flash-preview"
+        self.model_name = "gemma-3-27b-it"
         logger.info(f"Initialized GeminiService with model: {self.model_name}")
-    
+            
     def _create_question_schema(self, question_type: Optional[QuestionType] = None) -> dict[str, Any]:
         """
         Create JSON schema for question generation.
