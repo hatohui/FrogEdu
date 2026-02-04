@@ -144,10 +144,10 @@ async def validate_token(
             algorithms=["RS256"],
             issuer=settings.cognito_issuer,
             options={
-                "verify_aud": False,  # Cognito doesn't always include audience
+                "verify_aud": False, 
                 "verify_exp": True,
                 "verify_iss": True,
-                "verify_at_hash": False,  # Skip at_hash verification for ID tokens
+                "verify_at_hash": False, 
             }
         )
         

@@ -18,27 +18,6 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-# Log immediately to verify logging works
-logger.info("=" * 80)
-logger.info("🚀 AI SERVICE STARTING - LOGGING INITIALIZED")
-logger.info("=" * 80)
-
-
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    """Lifespan context manager for startup and shutdown events."""
-    logger.info("=" * 80)
-    logger.info("📋 LIFESPAN STARTUP")
-    settings = get_settings()
-    logger.info(f"   App name: {settings.app_name}")
-    logger.info(f"   Debug mode: {settings.debug}")
-    logger.info("🔍 Registered routes:")
-    for route in app.routes:
-        if hasattr(route, 'methods') and hasattr(route, 'path'):
-            logger.info(f"   {list(route.methods)} {route.path}") # type: ignore
-    logger.info("=" * 80)
-    yield
-    logger.info("📋 LIFESPAN SHUTDOWN")
 
 
 # ASGI middleware for path rewriting - mimics UsePathPrefixRewrite from C# services
@@ -75,10 +54,9 @@ app = FastAPI(
     title="FrogEdu AI Service",
     description="AI-powered question generation and tutoring service",
     version="1.0.0",
-    lifespan=lifespan,
-    docs_url="/api/ai/docs",
-    redoc_url="/api/ai/redoc",
-    openapi_url="/api/ai/openapi.json",
+    docs_url="/docs",
+    redoc_url="/redoc",
+    openapi_url="/openapi.json",
 )
 
 # Add path rewriting middleware BEFORE CORS
@@ -131,7 +109,6 @@ async def not_found_handler(request: Request, exc):
         content={"detail": "Not Found"}
     )
 
-# Include API router (has /api/ai prefix in router definition)
 app.include_router(router)
 
 
@@ -139,7 +116,7 @@ app.include_router(router)
 async def root():
     """Redirect root to API docs."""
     logger.info("🏠 Root endpoint hit, redirecting to docs")
-    return RedirectResponse(url="/api/ai/docs")
+    return RedirectResponse(url="/docs")
 
 
 handler = Mangum(app, lifespan="auto", api_gateway_base_path="/api/ai")
