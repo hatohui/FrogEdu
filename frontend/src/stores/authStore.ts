@@ -8,7 +8,6 @@ import {
 	signInWithRedirect,
 } from 'aws-amplify/auth'
 import userService from '@/services/user-microservice/user.service'
-import { toast } from 'sonner'
 
 interface AuthState {
 	isAuthenticated: boolean

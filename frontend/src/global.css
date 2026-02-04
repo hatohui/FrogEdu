@@ -135,4 +135,7 @@
 	#root {
 		@apply h-full;
 	}
+	body.app-layout-active {
+		@apply overflow-hidden;
+	}
 }

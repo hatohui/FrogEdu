@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Sidebar from './Sidebar'
 import Header from './Header'
 
@@ -9,6 +9,13 @@ interface AppLayoutProps {
 const AppLayout = ({ children }: AppLayoutProps): React.ReactElement => {
 	const [sidebarOpen, setSidebarOpen] = useState(false)
 	const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
+
+	useEffect(() => {
+		document.body.classList.add('app-layout-active')
+		return () => {
+			document.body.classList.remove('app-layout-active')
+		}
+	}, [])
 
 	return (
 		<div className='flex h-screen overflow-hidden bg-background'>
@@ -33,7 +40,6 @@ const AppLayout = ({ children }: AppLayoutProps): React.ReactElement => {
 
 			<div className='flex-1 flex flex-col overflow-hidden'>
 				<Header onMenuClick={() => setSidebarOpen(!sidebarOpen)} />
-
 				<main className='flex-1 overflow-y-auto bg-background'>{children}</main>
 			</div>
 		</div>

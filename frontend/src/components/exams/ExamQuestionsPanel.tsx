@@ -96,15 +96,15 @@ export const ExamQuestionsPanel: React.FC<ExamQuestionsPanelProps> = ({
 	return (
 		<>
 			<CardContent className='p-0'>
-				<ScrollArea className='h-[300px] space-y-4'>
-					<div className='divide-y'>
+				<ScrollArea className='h-[300px]'>
+					<div className='space-y-4 p-4'>
 						{questions.map((question, index) => {
 							const inMatrix = isQuestionInMatrix(question)
 
 							return (
 								<div
 									key={question.id}
-									className={`p-3 hover:bg-muted/50 rounded-lg mx-4 border-dashed border-accent border transition-colors ${
+									className={`p-3 hover:bg-muted/50 rounded-lg border-dashed border-accent border transition-colors ${
 										!inMatrix ? 'bg-yellow-50/50 dark:bg-yellow-900/10' : ''
 									}`}
 									onContextMenu={e => {
