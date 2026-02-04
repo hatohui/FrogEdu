@@ -12,6 +12,7 @@ import {
 	Plus,
 	Grid3x3,
 	FileText,
+	Download,
 } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -33,6 +34,12 @@ import {
 	DialogTitle,
 	DialogTrigger,
 } from '@/components/ui/dialog'
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
 import { CognitiveLevel, QuestionType } from '@/types/model/exam-service'
 import {
 	useExam,
@@ -42,7 +49,11 @@ import {
 	useMatrix,
 	useTopics,
 	useSubjects,
+	useExportExamToPdf,
+	useExportExamToExcel,
 } from '@/hooks/useExams'
+import { useConfirm } from '@/hooks/useConfirm'
+import { ConfirmDialog } from '@/components/common/ConfirmDialog'
 
 const ExamDetailPage = (): React.ReactElement => {
 	const navigate = useNavigate()
@@ -57,6 +68,15 @@ const ExamDetailPage = (): React.ReactElement => {
 	const { data: subjects = [] } = useSubjects(exam?.grade)
 	const publishExamMutation = usePublishExam()
 	const removeQuestionMutation = useRemoveQuestionFromExam()
+	const exportToPdf = useExportExamToPdf()
+	const exportToExcel = useExportExamToExcel()
+	const {
+		confirm,
+		confirmState,
+		handleConfirm,
+		handleCancel,
+		handleOpenChange,
+	} = useConfirm()
 
 	const handlePublish = async () => {
 		if (!examId) return
@@ -74,12 +94,28 @@ const ExamDetailPage = (): React.ReactElement => {
 		}
 	}
 
+	const handleExportPdf = async () => {
+		if (!examId) return
+		await exportToPdf.mutateAsync(examId)
+	}
+
+	const handleExportExcel = async () => {
+		if (!examId) return
+		await exportToExcel.mutateAsync(examId)
+	}
+
 	const handleDelete = async (questionId: string) => {
 		if (!examId) return
 
-		if (
-			confirm('Are you sure you want to remove this question from the exam?')
-		) {
+		const confirmed = await confirm({
+			title: 'Remove Question',
+			description:
+				'Are you sure you want to remove this question from the exam?',
+			confirmText: 'Remove',
+			variant: 'destructive',
+		})
+
+		if (confirmed) {
 			try {
 				await removeQuestionMutation.mutateAsync({ examId, questionId })
 			} catch (error) {
@@ -158,213 +194,178 @@ const ExamDetailPage = (): React.ReactElement => {
 	const totalPoints = questions.reduce((sum, q) => sum + (q.point || 0), 0)
 
 	return (
-		<div className='p-6 space-y-6 max-w-7xl mx-auto'>
-			{/* Header */}
-			<div className='flex items-center justify-between'>
-				<div className='flex items-center space-x-4'>
-					<Button
-						variant='ghost'
-						size='icon'
-						onClick={() => navigate('/app/exams')}
-					>
-						<ArrowLeft className='h-5 w-5' />
-					</Button>
-					<div>
-						<div className='flex items-center gap-3'>
-							<h1 className='text-3xl font-bold'>{exam.name}</h1>
-							{exam.isDraft ? (
-								<Badge variant='secondary'>
-									<BookOpen className='h-3 w-3 mr-1' />
-									Draft
-								</Badge>
-							) : (
-								<Badge variant='default'>
-									<CheckCircle className='h-3 w-3 mr-1' />
-									Active
-								</Badge>
-							)}
-						</div>
-						<p className='text-muted-foreground'>
-							{questions.length} questions • {totalPoints} points total
-						</p>
-					</div>
-				</div>
-				<div className='flex gap-2'>
-					<Button
-						variant='outline'
-						onClick={() => navigate(`/app/exams/${examId}/preview`)}
-					>
-						<FileText className='h-4 w-4 mr-2' />
-						Preview
-					</Button>
-					<Button
-						variant='outline'
-						onClick={() => navigate(`/app/exams/${examId}/edit`)}
-					>
-						<Settings className='h-4 w-4 mr-2' />
-						Edit
-					</Button>
-					{exam.isDraft && (
-						<Dialog
-							open={isPublishDialogOpen}
-							onOpenChange={setIsPublishDialogOpen}
-						>
-							<DialogTrigger asChild>
-								<Button disabled={questions.length === 0}>
-									<Send className='h-4 w-4 mr-2' />
-									Publish Exam
-								</Button>
-							</DialogTrigger>
-							<DialogContent>
-								<DialogHeader>
-									<DialogTitle>Publish Exam</DialogTitle>
-									<DialogDescription>
-										Are you sure you want to publish this exam? Students will be
-										able to access it after publishing.
-									</DialogDescription>
-								</DialogHeader>
-								<DialogFooter>
-									<Button
-										variant='outline'
-										onClick={() => setIsPublishDialogOpen(false)}
-									>
-										Cancel
-									</Button>
-									<Button
-										onClick={handlePublish}
-										disabled={publishExamMutation.isPending}
-									>
-										{publishExamMutation.isPending
-											? 'Publishing...'
-											: 'Publish'}
-									</Button>
-								</DialogFooter>
-							</DialogContent>
-						</Dialog>
-					)}
-				</div>
-			</div>
-
-			{/* Exam Details */}
-			<Card>
-				<CardHeader>
-					<CardTitle>Exam Information</CardTitle>
-				</CardHeader>
-				<CardContent className='space-y-4'>
-					<div className='grid grid-cols-2 gap-4'>
-						<div>
-							<p className='text-sm text-muted-foreground mb-1'>Description</p>
-							<p className='font-medium'>{exam.description}</p>
-						</div>
-						<div>
-							<p className='text-sm text-muted-foreground mb-1'>Subject</p>
-							<p className='font-medium'>
-								{subjects.find(s => s.id === exam.subjectId)?.name ||
-									'Unknown Subject'}
-							</p>
-						</div>
-					</div>
-
-					<div className='grid grid-cols-2 gap-4'>
-						<div>
-							<p className='text-sm text-muted-foreground'>Grade</p>
-							<p className='font-medium'>Grade {exam.grade}</p>
-						</div>
-
-						<div>
-							<p className='text-sm text-muted-foreground'>Created</p>
-							<p className='font-medium'>
-								{new Date(exam.createdAt).toLocaleDateString()}
-							</p>
-						</div>
-					</div>
-				</CardContent>
-			</Card>
-
-			{/* Matrix Section */}
-			<Card>
-				<CardHeader className='flex flex-row items-center justify-between'>
-					<div>
-						<CardTitle>Exam Matrix</CardTitle>
-						<p className='text-sm text-muted-foreground mt-1'>
-							Define question distribution by topic and cognitive level
-						</p>
-					</div>
-					{matrix ? (
+		<>
+			<div className='p-6 space-y-6 max-w-7xl mx-auto'>
+				{/* Header */}
+				<div className='flex items-center justify-between'>
+					<div className='flex items-center space-x-4'>
 						<Button
-							variant='outline'
-							onClick={() =>
-								navigate(`/app/exams/create/matrix?examId=${examId}`)
-							}
+							variant='ghost'
+							size='icon'
+							onClick={() => navigate('/app/exams')}
 						>
-							<Edit className='h-4 w-4 mr-2' />
-							Edit Matrix
+							<ArrowLeft className='h-5 w-5' />
 						</Button>
-					) : (
-						<Button
-							onClick={() =>
-								navigate(`/app/exams/create/matrix?examId=${examId}`)
-							}
-						>
-							<Plus className='h-4 w-4 mr-2' />
-							Create Matrix
-						</Button>
-					)}
-				</CardHeader>
-				<CardContent>
-					{matrix ? (
-						<div className='space-y-4'>
-							<div className='flex items-center justify-between p-4 bg-muted rounded-lg'>
-								<div className='flex items-center gap-2'>
-									<Grid3x3 className='h-5 w-5 text-primary' />
-									<div>
-										<p className='font-medium'>Matrix Configured</p>
-										<p className='text-sm text-muted-foreground'>
-											{matrix.matrixTopics.length} topic-level combinations
-										</p>
-									</div>
-								</div>
-								<Badge variant='default'>
-									{matrix.totalQuestionCount} questions total
-								</Badge>
-							</div>
-
-							<div className='space-y-2'>
-								{matrix.matrixTopics.slice(0, 5).map((mt, idx) => {
-									const topic = topics.find(t => t.id === mt.topicId)
-									return (
-										<div
-											key={idx}
-											className='flex items-center justify-between p-3 border rounded-lg'
-										>
-											<div className='flex items-center gap-3'>
-												<span className='text-sm font-medium'>
-													{topic?.title || 'Unknown Topic'}
-												</span>
-												<Badge variant='outline'>
-													{getCognitiveLevelLabel(mt.cognitiveLevel)}
-												</Badge>
-											</div>
-											<span className='text-sm text-muted-foreground'>
-												{mt.quantity} questions
-											</span>
-										</div>
-									)
-								})}
-								{matrix.matrixTopics.length > 5 && (
-									<p className='text-sm text-muted-foreground text-center py-2'>
-										+ {matrix.matrixTopics.length - 5} more combinations
-									</p>
+						<div>
+							<div className='flex items-center gap-3'>
+								<h1 className='text-3xl font-bold'>{exam.name}</h1>
+								{exam.isDraft ? (
+									<Badge variant='secondary'>
+										<BookOpen className='h-3 w-3 mr-1' />
+										Draft
+									</Badge>
+								) : (
+									<Badge variant='default'>
+										<CheckCircle className='h-3 w-3 mr-1' />
+										Active
+									</Badge>
 								)}
 							</div>
-						</div>
-					) : (
-						<div className='text-center py-8'>
-							<Grid3x3 className='h-12 w-12 text-muted-foreground mx-auto mb-4' />
-							<p className='text-sm text-muted-foreground mb-4'>
-								No matrix configured yet. Create a matrix to define the
-								structure of your exam.
+							<p className='text-muted-foreground'>
+								{questions.length} questions • {totalPoints} points total
 							</p>
+						</div>
+					</div>
+					<div className='flex gap-2'>
+						<Button
+							variant='outline'
+							onClick={() => navigate(`/app/exams/${examId}/preview`)}
+						>
+							<FileText className='h-4 w-4 mr-2' />
+							Preview
+						</Button>
+						<Button
+							variant='outline'
+							onClick={() => navigate(`/app/exams/${examId}/edit`)}
+						>
+							<Settings className='h-4 w-4 mr-2' />
+							Edit
+						</Button>
+						<DropdownMenu>
+							<DropdownMenuTrigger asChild>
+								<Button variant='outline'>
+									<Download className='h-4 w-4 mr-2' />
+									Export
+								</Button>
+							</DropdownMenuTrigger>
+							<DropdownMenuContent>
+								<DropdownMenuItem
+									onClick={handleExportPdf}
+									disabled={exportToPdf.isPending}
+								>
+									<FileText className='h-4 w-4 mr-2' />
+									{exportToPdf.isPending ? 'Exporting PDF...' : 'Export as PDF'}
+								</DropdownMenuItem>
+								<DropdownMenuItem
+									onClick={handleExportExcel}
+									disabled={exportToExcel.isPending}
+								>
+									<FileText className='h-4 w-4 mr-2' />
+									{exportToExcel.isPending
+										? 'Exporting Excel...'
+										: 'Export as Excel'}
+								</DropdownMenuItem>
+							</DropdownMenuContent>
+						</DropdownMenu>
+						{exam.isDraft && (
+							<Dialog
+								open={isPublishDialogOpen}
+								onOpenChange={setIsPublishDialogOpen}
+							>
+								<DialogTrigger asChild>
+									<Button disabled={questions.length === 0}>
+										<Send className='h-4 w-4 mr-2' />
+										Publish Exam
+									</Button>
+								</DialogTrigger>
+								<DialogContent>
+									<DialogHeader>
+										<DialogTitle>Publish Exam</DialogTitle>
+										<DialogDescription>
+											Are you sure you want to publish this exam? Students will
+											be able to access it after publishing.
+										</DialogDescription>
+									</DialogHeader>
+									<DialogFooter>
+										<Button
+											variant='outline'
+											onClick={() => setIsPublishDialogOpen(false)}
+										>
+											Cancel
+										</Button>
+										<Button
+											onClick={handlePublish}
+											disabled={publishExamMutation.isPending}
+										>
+											{publishExamMutation.isPending
+												? 'Publishing...'
+												: 'Publish'}
+										</Button>
+									</DialogFooter>
+								</DialogContent>
+							</Dialog>
+						)}
+					</div>
+				</div>
+
+				{/* Exam Details */}
+				<Card>
+					<CardHeader>
+						<CardTitle>Exam Information</CardTitle>
+					</CardHeader>
+					<CardContent className='space-y-4'>
+						<div className='grid grid-cols-2 gap-4'>
+							<div>
+								<p className='text-sm text-muted-foreground mb-1'>
+									Description
+								</p>
+								<p className='font-medium'>{exam.description}</p>
+							</div>
+							<div>
+								<p className='text-sm text-muted-foreground mb-1'>Subject</p>
+								<p className='font-medium'>
+									{subjects.find(s => s.id === exam.subjectId)?.name ||
+										'Unknown Subject'}
+								</p>
+							</div>
+						</div>
+
+						<div className='grid grid-cols-2 gap-4'>
+							<div>
+								<p className='text-sm text-muted-foreground'>Grade</p>
+								<p className='font-medium'>Grade {exam.grade}</p>
+							</div>
+
+							<div>
+								<p className='text-sm text-muted-foreground'>Created</p>
+								<p className='font-medium'>
+									{new Date(exam.createdAt).toLocaleDateString()}
+								</p>
+							</div>
+						</div>
+					</CardContent>
+				</Card>
+
+				{/* Matrix Section */}
+				<Card>
+					<CardHeader className='flex flex-row items-center justify-between'>
+						<div>
+							<CardTitle>Exam Matrix</CardTitle>
+							<p className='text-sm text-muted-foreground mt-1'>
+								Define question distribution by topic and cognitive level
+							</p>
+						</div>
+						{matrix ? (
+							<Button
+								variant='outline'
+								onClick={() =>
+									navigate(`/app/exams/create/matrix?examId=${examId}`)
+								}
+							>
+								<Edit className='h-4 w-4 mr-2' />
+								Edit Matrix
+							</Button>
+						) : (
 							<Button
 								onClick={() =>
 									navigate(`/app/exams/create/matrix?examId=${examId}`)
@@ -373,111 +374,187 @@ const ExamDetailPage = (): React.ReactElement => {
 								<Plus className='h-4 w-4 mr-2' />
 								Create Matrix
 							</Button>
-						</div>
-					)}
-				</CardContent>
-			</Card>
+						)}
+					</CardHeader>
+					<CardContent>
+						{matrix ? (
+							<div className='space-y-4'>
+								<div className='flex items-center justify-between p-4 bg-muted rounded-lg'>
+									<div className='flex items-center gap-2'>
+										<Grid3x3 className='h-5 w-5 text-primary' />
+										<div>
+											<p className='font-medium'>Matrix Configured</p>
+											<p className='text-sm text-muted-foreground'>
+												{matrix.matrixTopics.length} topic-level combinations
+											</p>
+										</div>
+									</div>
+									<Badge variant='default'>
+										{matrix.totalQuestionCount} questions total
+									</Badge>
+								</div>
 
-			{/* Questions List */}
-			<Card>
-				<CardHeader className='flex flex-row items-center justify-between'>
-					<CardTitle>Questions ({questions.length})</CardTitle>
-					<Button
-						variant='outline'
-						onClick={() => navigate(`/app/exams/${examId}/questions/create`)}
-					>
-						<Plus className='h-4 w-4 mr-2' />
-						Add Questions
-					</Button>
-				</CardHeader>
-				<CardContent>
-					{questions.length > 0 ? (
-						<Table>
-							<TableHeader>
-								<TableRow>
-									<TableHead className='w-12'>#</TableHead>
-									<TableHead className='w-[50%]'>Question</TableHead>
-									<TableHead>Type</TableHead>
-									<TableHead>Level</TableHead>
-									<TableHead>Points</TableHead>
-									<TableHead className='text-right'>Actions</TableHead>
-								</TableRow>
-							</TableHeader>
-							<TableBody>
-								{questions.map((question, index) => (
-									<TableRow key={question.id}>
-										<TableCell className='font-medium'>{index + 1}</TableCell>
-										<TableCell>
-											<div className='line-clamp-2'>{question.content}</div>
-										</TableCell>
-										<TableCell>
-											<Badge variant='outline'>
-												{getQuestionTypeLabel(question.type)}
-											</Badge>
-										</TableCell>
-										<TableCell>
-											<Badge
-												className={getCognitiveLevelColor(
-													question.cognitiveLevel
-												)}
+								<div className='space-y-2'>
+									{matrix.matrixTopics.slice(0, 5).map((mt, idx) => {
+										const topic = topics.find(t => t.id === mt.topicId)
+										return (
+											<div
+												key={idx}
+												className='flex items-center justify-between p-3 border rounded-lg'
 											>
-												{getCognitiveLevelLabel(question.cognitiveLevel)}
-											</Badge>
-										</TableCell>
-										<TableCell>{question.point}</TableCell>
-										<TableCell className='text-right space-x-2'>
-											<Button
-												variant='ghost'
-												size='icon'
-												onClick={() =>
-													navigate(
-														`/app/exams/${examId}/questions/${question.id}/preview`
-													)
-												}
-											>
-												<Eye className='h-4 w-4' />
-											</Button>
-											<Button
-												variant='ghost'
-												size='icon'
-												onClick={() =>
-													navigate(
-														`/app/exams/${examId}/questions/${question.id}/edit`
-													)
-												}
-											>
-												<Edit className='h-4 w-4' />
-											</Button>
-											<Button
-												variant='ghost'
-												size='icon'
-												onClick={() => handleDelete(question.id)}
-												disabled={removeQuestionMutation.isPending}
-											>
-												<Trash2 className='h-4 w-4 text-destructive' />
-											</Button>
-										</TableCell>
+												<div className='flex items-center gap-3'>
+													<span className='text-sm font-medium'>
+														{topic?.title || 'Unknown Topic'}
+													</span>
+													<Badge variant='outline'>
+														{getCognitiveLevelLabel(mt.cognitiveLevel)}
+													</Badge>
+												</div>
+												<span className='text-sm text-muted-foreground'>
+													{mt.quantity} questions
+												</span>
+											</div>
+										)
+									})}
+									{matrix.matrixTopics.length > 5 && (
+										<p className='text-sm text-muted-foreground text-center py-2'>
+											+ {matrix.matrixTopics.length - 5} more combinations
+										</p>
+									)}
+								</div>
+							</div>
+						) : (
+							<div className='text-center py-8'>
+								<Grid3x3 className='h-12 w-12 text-muted-foreground mx-auto mb-4' />
+								<p className='text-sm text-muted-foreground mb-4'>
+									No matrix configured yet. Create a matrix to define the
+									structure of your exam.
+								</p>
+								<Button
+									onClick={() =>
+										navigate(`/app/exams/create/matrix?examId=${examId}`)
+									}
+								>
+									<Plus className='h-4 w-4 mr-2' />
+									Create Matrix
+								</Button>
+							</div>
+						)}
+					</CardContent>
+				</Card>
+
+				{/* Questions List */}
+				<Card>
+					<CardHeader className='flex flex-row items-center justify-between'>
+						<CardTitle>Questions ({questions.length})</CardTitle>
+						<Button
+							variant='outline'
+							onClick={() => navigate(`/app/exams/${examId}/questions/create`)}
+						>
+							<Plus className='h-4 w-4 mr-2' />
+							Add Questions
+						</Button>
+					</CardHeader>
+					<CardContent>
+						{questions.length > 0 ? (
+							<Table>
+								<TableHeader>
+									<TableRow>
+										<TableHead className='w-12'>#</TableHead>
+										<TableHead className='w-[50%]'>Question</TableHead>
+										<TableHead>Type</TableHead>
+										<TableHead>Level</TableHead>
+										<TableHead>Points</TableHead>
+										<TableHead className='text-right'>Actions</TableHead>
 									</TableRow>
-								))}
-							</TableBody>
-						</Table>
-					) : (
-						<div className='text-center py-12'>
-							<BookOpen className='h-12 w-12 mx-auto text-muted-foreground mb-4' />
-							<p className='text-muted-foreground mb-4'>
-								No questions added yet
-							</p>
-							<Button
-								onClick={() => navigate(`/app/exams/${examId}/questions`)}
-							>
-								<Plus className='h-4 w-4 mr-2' />
-								Add Questions
-							</Button>
-						</div>
-					)}
-				</CardContent>
-			</Card>
-		</div>
+								</TableHeader>
+								<TableBody>
+									{questions.map((question, index) => (
+										<TableRow key={question.id}>
+											<TableCell className='font-medium'>{index + 1}</TableCell>
+											<TableCell>
+												<div className='line-clamp-2'>{question.content}</div>
+											</TableCell>
+											<TableCell>
+												<Badge variant='outline'>
+													{getQuestionTypeLabel(question.type)}
+												</Badge>
+											</TableCell>
+											<TableCell>
+												<Badge
+													className={getCognitiveLevelColor(
+														question.cognitiveLevel
+													)}
+												>
+													{getCognitiveLevelLabel(question.cognitiveLevel)}
+												</Badge>
+											</TableCell>
+											<TableCell>{question.point}</TableCell>
+											<TableCell className='text-right space-x-2'>
+												<Button
+													variant='ghost'
+													size='icon'
+													onClick={() =>
+														navigate(
+															`/app/exams/${examId}/questions/${question.id}/preview`
+														)
+													}
+												>
+													<Eye className='h-4 w-4' />
+												</Button>
+												<Button
+													variant='ghost'
+													size='icon'
+													onClick={() =>
+														navigate(
+															`/app/exams/${examId}/questions/${question.id}/edit`
+														)
+													}
+												>
+													<Edit className='h-4 w-4' />
+												</Button>
+												<Button
+													variant='ghost'
+													size='icon'
+													onClick={() => handleDelete(question.id)}
+													disabled={removeQuestionMutation.isPending}
+												>
+													<Trash2 className='h-4 w-4 text-destructive' />
+												</Button>
+											</TableCell>
+										</TableRow>
+									))}
+								</TableBody>
+							</Table>
+						) : (
+							<div className='text-center py-12'>
+								<BookOpen className='h-12 w-12 mx-auto text-muted-foreground mb-4' />
+								<p className='text-muted-foreground mb-4'>
+									No questions added yet
+								</p>
+								<Button
+									onClick={() => navigate(`/app/exams/${examId}/questions`)}
+								>
+									<Plus className='h-4 w-4 mr-2' />
+									Add Questions
+								</Button>
+							</div>
+						)}
+					</CardContent>
+				</Card>
+			</div>
+			<ConfirmDialog
+				open={confirmState.isOpen}
+				onOpenChange={handleOpenChange}
+				title={confirmState.title}
+				description={confirmState.description}
+				onConfirm={handleConfirm}
+				onCancel={handleCancel}
+				confirmText={confirmState.confirmText}
+				cancelText={confirmState.cancelText}
+				variant={confirmState.variant}
+			/>
+		</>
 	)
 }
 

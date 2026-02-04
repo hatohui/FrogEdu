@@ -29,6 +29,8 @@ import {
 } from '@/hooks/useExams'
 import { useSubscription } from '@/hooks/useSubscription'
 import { useAIQuestionGeneration } from '@/hooks/useAIQuestionGeneration'
+import { useConfirm } from '@/hooks/useConfirm'
+import { ConfirmDialog } from '@/components/common/ConfirmDialog'
 import { Info } from 'lucide-react'
 import { MatrixProgressTracker } from '@/components/exams/MatrixProgressTracker'
 import { ExamQuestionsPanel } from '@/components/exams/ExamQuestionsPanel'
@@ -91,6 +93,13 @@ const CreateQuestionPage = (): React.ReactElement => {
 		removeGeneratedQuestion,
 		clearGeneratedQuestions,
 	} = useAIQuestionGeneration()
+	const {
+		confirm,
+		confirmState,
+		handleConfirm,
+		handleCancel,
+		handleOpenChange,
+	} = useConfirm()
 
 	const [mainTab, setMainTab] = useState<MainTab>('create')
 	const [creationMode, setCreationMode] = useState<CreationMode>('manual')
@@ -192,9 +201,13 @@ const CreateQuestionPage = (): React.ReactElement => {
 			)
 
 			if (wouldExceed) {
-				const proceed = window.confirm(
-					'This question exceeds the matrix requirements for this topic and cognitive level. Do you want to add it anyway?'
-				)
+				const proceed = await confirm({
+					title: 'Matrix Limit Exceeded',
+					description:
+						'This question exceeds the matrix requirements for this topic and cognitive level. Do you want to add it anyway?',
+					confirmText: 'Add Anyway',
+					variant: 'default',
+				})
 				if (!proceed) return
 			}
 		}
@@ -915,6 +928,17 @@ const CreateQuestionPage = (): React.ReactElement => {
 					</div>
 				</div>
 			</Tabs>
+			<ConfirmDialog
+				open={confirmState.isOpen}
+				onOpenChange={handleOpenChange}
+				title={confirmState.title}
+				description={confirmState.description}
+				onConfirm={handleConfirm}
+				onCancel={handleCancel}
+				confirmText={confirmState.confirmText}
+				cancelText={confirmState.cancelText}
+				variant={confirmState.variant}
+			/>
 		</div>
 	)
 }
