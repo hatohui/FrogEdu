@@ -218,7 +218,10 @@ const Sidebar = ({
 								<UserAvatar user={me} />
 								<div className='flex-1 min-w-0'>
 									<p className='text-sm font-medium text-sidebar-foreground truncate'>
-										{me ? `${me.firstName} ${me.lastName}` : 'User'}
+										{me
+											? [me.firstName, me.lastName].filter(Boolean).join(' ') ||
+												me.email
+											: 'User'}
 									</p>
 									<p className='text-xs text-sidebar-foreground/60 truncate'>
 										{me?.role?.name || 'User'}
@@ -245,7 +248,10 @@ const Sidebar = ({
 								</TooltipTrigger>
 								<TooltipContent side='right'>
 									<p className='font-medium'>
-										{me ? `${me.firstName} ${me.lastName}` : 'User'}
+										{me
+											? [me.firstName, me.lastName].filter(Boolean).join(' ') ||
+												me.email
+											: 'User'}
 									</p>
 									<p className='text-xs text-muted-foreground'>
 										{me?.role?.name || 'User'}

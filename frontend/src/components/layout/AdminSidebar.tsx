@@ -298,7 +298,10 @@ const AdminSidebar = ({
 								<UserAvatar user={me} />
 								<div className='flex-1 min-w-0'>
 									<p className='text-sm font-medium text-sidebar-foreground truncate'>
-										{me ? `${me.firstName} ${me.lastName}` : 'Admin'}
+										{me
+											? [me.firstName, me.lastName].filter(Boolean).join(' ') ||
+												me.email
+											: 'Admin'}
 									</p>
 									<p className='text-xs text-sidebar-foreground/60 truncate'>
 										{me?.role?.name || 'Administrator'}
@@ -325,7 +328,10 @@ const AdminSidebar = ({
 								</TooltipTrigger>
 								<TooltipContent side='right'>
 									<p className='font-medium'>
-										{me ? `${me.firstName} ${me.lastName}` : 'Admin'}
+										{me
+											? [me.firstName, me.lastName].filter(Boolean).join(' ') ||
+												me.email
+											: 'Admin'}
 									</p>
 									<p className='text-xs text-muted-foreground'>
 										{me?.role?.name || 'Administrator'}

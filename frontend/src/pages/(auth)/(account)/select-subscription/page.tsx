@@ -114,7 +114,10 @@ const SelectSubscriptionPage = (): React.JSX.Element => {
 					<CardContent className='space-y-6'>
 						<div className='grid md:grid-cols-2 gap-6'>
 							{/* Free Tier Card */}
-							<Card className='relative border-2 hover:border-muted-foreground/50 transition-colors'>
+							<Card
+								className='relative border-2 hover:border-muted-foreground/50 transition-colors cursor-pointer'
+								onClick={handleSelectFree}
+							>
 								<CardHeader>
 									<div className='flex items-center justify-between'>
 										<Badge variant='secondary'>
@@ -144,11 +147,14 @@ const SelectSubscriptionPage = (): React.JSX.Element => {
 										))}
 									</ul>
 								</CardContent>
-								<CardFooter>
+								<CardFooter className='pt-6'>
 									<Button
 										variant='outline'
 										className='w-full'
-										onClick={handleSelectFree}
+										onClick={e => {
+											e.stopPropagation()
+											handleSelectFree()
+										}}
 									>
 										Continue with Free
 									</Button>
@@ -156,7 +162,10 @@ const SelectSubscriptionPage = (): React.JSX.Element => {
 							</Card>
 
 							{/* Pro Tier Card */}
-							<Card className='relative border-2 border-primary shadow-lg'>
+							<Card
+								className='relative border-2 border-primary shadow-lg cursor-pointer'
+								onClick={handleSelectPro}
+							>
 								<div className='absolute -top-3 left-1/2 -translate-x-1/2'>
 									<Badge className='bg-primary text-primary-foreground'>
 										<Sparkles className='w-3 h-3 mr-1' />
@@ -193,10 +202,13 @@ const SelectSubscriptionPage = (): React.JSX.Element => {
 										))}
 									</ul>
 								</CardContent>
-								<CardFooter>
+								<CardFooter className='pt-6'>
 									<Button
 										className='w-full'
-										onClick={handleSelectPro}
+										onClick={e => {
+											e.stopPropagation()
+											handleSelectPro()
+										}}
 										disabled={isSubscribing}
 									>
 										{isSubscribing ? (
