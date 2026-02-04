@@ -5,6 +5,7 @@ public sealed record MatrixDto(
     string Name,
     string? Description,
     Guid SubjectId,
+    string? SubjectName,
     int Grade,
     List<MatrixTopicDto> MatrixTopics,
     int TotalQuestionCount,

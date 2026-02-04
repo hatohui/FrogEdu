@@ -43,88 +43,99 @@ public class ExamExportService : IExamExportService
 
     public byte[] ExportToExcel(ExamPreviewDto examPreview)
     {
-        using var workbook = new XLWorkbook();
-        var worksheet = workbook.AddWorksheet("Exam");
-
-        // Header Section
-        var currentRow = 1;
-
-        worksheet.Cell(currentRow, 1).Value = "Exam Name:";
-        worksheet.Cell(currentRow, 1).Style.Font.Bold = true;
-        worksheet.Cell(currentRow, 2).Value = examPreview.Name;
-        worksheet.Range(currentRow, 2, currentRow, 4).Merge();
-        currentRow++;
-
-        worksheet.Cell(currentRow, 1).Value = "Subject:";
-        worksheet.Cell(currentRow, 1).Style.Font.Bold = true;
-        worksheet.Cell(currentRow, 2).Value = examPreview.SubjectName;
-        currentRow++;
-
-        worksheet.Cell(currentRow, 1).Value = "Grade:";
-        worksheet.Cell(currentRow, 1).Style.Font.Bold = true;
-        worksheet.Cell(currentRow, 2).Value = examPreview.Grade;
-        currentRow++;
-
-        worksheet.Cell(currentRow, 1).Value = "Description:";
-        worksheet.Cell(currentRow, 1).Style.Font.Bold = true;
-        worksheet.Cell(currentRow, 2).Value = examPreview.Description;
-        worksheet.Range(currentRow, 2, currentRow, 4).Merge();
-        currentRow++;
-
-        worksheet.Cell(currentRow, 1).Value = "Total Questions:";
-        worksheet.Cell(currentRow, 1).Style.Font.Bold = true;
-        worksheet.Cell(currentRow, 2).Value = examPreview.QuestionCount;
-        currentRow++;
-
-        worksheet.Cell(currentRow, 1).Value = "Total Points:";
-        worksheet.Cell(currentRow, 1).Style.Font.Bold = true;
-        worksheet.Cell(currentRow, 2).Value = examPreview.TotalPoints;
-        currentRow += 2;
-
-        // Questions Table Header
-        worksheet.Cell(currentRow, 1).Value = "No.";
-        worksheet.Cell(currentRow, 2).Value = "Question";
-        worksheet.Cell(currentRow, 3).Value = "Points";
-        worksheet.Cell(currentRow, 4).Value = "Answers";
-
-        var headerRange = worksheet.Range(currentRow, 1, currentRow, 4);
-        headerRange.Style.Font.Bold = true;
-        headerRange.Style.Fill.BackgroundColor = XLColor.LightGray;
-        headerRange.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
-        currentRow++;
-
-        // Questions
-        foreach (var question in examPreview.Questions)
+        try
         {
-            worksheet.Cell(currentRow, 1).Value = question.QuestionNumber;
-            worksheet.Cell(currentRow, 2).Value = question.Content;
-            worksheet.Cell(currentRow, 3).Value = question.Point;
+            using var workbook = new XLWorkbook();
+            var worksheet = workbook.AddWorksheet("Exam");
 
-            // Answers (without correct indicator)
-            var answersText = string.Join(
-                "\n",
-                question.Answers.Select(a => $"{a.Label}. {a.Content}")
-            );
-            worksheet.Cell(currentRow, 4).Value = answersText;
-            worksheet.Cell(currentRow, 4).Style.Alignment.WrapText = true;
+            // Header Section
+            var currentRow = 1;
 
-            // Apply borders
-            var questionRange = worksheet.Range(currentRow, 1, currentRow, 4);
-            questionRange.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
-            questionRange.Style.Border.InsideBorder = XLBorderStyleValues.Hair;
-
+            worksheet.Cell(currentRow, 1).Value = "Exam Name:";
+            worksheet.Cell(currentRow, 1).Style.Font.Bold = true;
+            worksheet.Cell(currentRow, 2).Value = examPreview.Name ?? string.Empty;
+            worksheet.Range(currentRow, 2, currentRow, 4).Merge();
             currentRow++;
+
+            worksheet.Cell(currentRow, 1).Value = "Subject:";
+            worksheet.Cell(currentRow, 1).Style.Font.Bold = true;
+            worksheet.Cell(currentRow, 2).Value = examPreview.SubjectName ?? string.Empty;
+            currentRow++;
+
+            worksheet.Cell(currentRow, 1).Value = "Grade:";
+            worksheet.Cell(currentRow, 1).Style.Font.Bold = true;
+            worksheet.Cell(currentRow, 2).Value = examPreview.Grade;
+            currentRow++;
+
+            worksheet.Cell(currentRow, 1).Value = "Description:";
+            worksheet.Cell(currentRow, 1).Style.Font.Bold = true;
+            worksheet.Cell(currentRow, 2).Value = examPreview.Description ?? string.Empty;
+            worksheet.Range(currentRow, 2, currentRow, 4).Merge();
+            currentRow++;
+
+            worksheet.Cell(currentRow, 1).Value = "Total Questions:";
+            worksheet.Cell(currentRow, 1).Style.Font.Bold = true;
+            worksheet.Cell(currentRow, 2).Value = examPreview.QuestionCount;
+            currentRow++;
+
+            worksheet.Cell(currentRow, 1).Value = "Total Points:";
+            worksheet.Cell(currentRow, 1).Style.Font.Bold = true;
+            worksheet.Cell(currentRow, 2).Value = examPreview.TotalPoints;
+            currentRow += 2;
+
+            // Questions Table Header
+            worksheet.Cell(currentRow, 1).Value = "No.";
+            worksheet.Cell(currentRow, 2).Value = "Question";
+            worksheet.Cell(currentRow, 3).Value = "Points";
+            worksheet.Cell(currentRow, 4).Value = "Answers";
+
+            var headerRange = worksheet.Range(currentRow, 1, currentRow, 4);
+            headerRange.Style.Font.Bold = true;
+            headerRange.Style.Fill.BackgroundColor = XLColor.LightGray;
+            headerRange.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+            currentRow++;
+
+            // Questions
+            foreach (var question in examPreview.Questions)
+            {
+                worksheet.Cell(currentRow, 1).Value = question.QuestionNumber;
+                worksheet.Cell(currentRow, 2).Value = question.Content ?? string.Empty;
+                worksheet.Cell(currentRow, 3).Value = question.Point;
+
+                // Answer options (without correct answer indicators for student practice)
+                var answersText = string.Join(
+                    "\n",
+                    question.Answers.Select(a => $"{a.Label}. {a.Content ?? string.Empty}")
+                );
+                worksheet.Cell(currentRow, 4).Value = answersText;
+                worksheet.Cell(currentRow, 4).Style.Alignment.WrapText = true;
+
+                // Apply borders
+                var questionRange = worksheet.Range(currentRow, 1, currentRow, 4);
+                questionRange.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+                questionRange.Style.Border.InsideBorder = XLBorderStyleValues.Hair;
+
+                currentRow++;
+            }
+
+            // Adjust column widths
+            worksheet.Column(1).Width = 5;
+            worksheet.Column(2).Width = 50;
+            worksheet.Column(3).Width = 8;
+            worksheet.Column(4).Width = 50;
+
+            using var stream = new MemoryStream();
+            workbook.SaveAs(stream);
+            return stream.ToArray();
         }
-
-        // Adjust column widths
-        worksheet.Column(1).Width = 5;
-        worksheet.Column(2).Width = 50;
-        worksheet.Column(3).Width = 8;
-        worksheet.Column(4).Width = 50;
-
-        using var stream = new MemoryStream();
-        workbook.SaveAs(stream);
-        return stream.ToArray();
+        catch (Exception ex)
+        {
+            // Log the exception or rethrow with more context
+            throw new InvalidOperationException(
+                $"Failed to export exam to Excel: {ex.Message}",
+                ex
+            );
+        }
     }
 
     private static void ComposeHeader(IContainer container, ExamPreviewDto examPreview)
@@ -207,7 +218,7 @@ public class ExamExportService : IExamExportService
             .Padding(10)
             .Column(column =>
             {
-                // Question header
+                // Question header (student version - no type or cognitive level)
                 column
                     .Item()
                     .Row(row =>
@@ -222,7 +233,7 @@ public class ExamExportService : IExamExportService
                         row.ConstantItem(80).AlignRight().Text($"({question.Point} pts)").Italic();
                     });
 
-                // Answers
+                // Answer options (no correct answer indicators)
                 column
                     .Item()
                     .PaddingTop(10)
@@ -237,6 +248,7 @@ public class ExamExportService : IExamExportService
                                 {
                                     text.Span($"{answer.Label}. ");
                                     text.Span(answer.Content);
+                                    // IsCorrect is intentionally not displayed for student practice
                                 });
                         }
                     });
@@ -290,67 +302,77 @@ public class ExamExportService : IExamExportService
         int grade
     )
     {
-        using var workbook = new XLWorkbook();
-        var worksheet = workbook.AddWorksheet("Exam Matrix");
-
-        var currentRow = 1;
-
-        // Header
-        worksheet.Cell(currentRow, 1).Value = "Exam Matrix";
-        worksheet.Cell(currentRow, 1).Style.Font.Bold = true;
-        worksheet.Cell(currentRow, 1).Style.Font.FontSize = 16;
-        worksheet.Range(currentRow, 1, currentRow, 4).Merge();
-        currentRow += 2;
-
-        worksheet.Cell(currentRow, 1).Value = "Exam:";
-        worksheet.Cell(currentRow, 1).Style.Font.Bold = true;
-        worksheet.Cell(currentRow, 2).Value = examName;
-        currentRow++;
-
-        worksheet.Cell(currentRow, 1).Value = "Subject:";
-        worksheet.Cell(currentRow, 1).Style.Font.Bold = true;
-        worksheet.Cell(currentRow, 2).Value = subjectName;
-        currentRow++;
-
-        worksheet.Cell(currentRow, 1).Value = "Grade:";
-        worksheet.Cell(currentRow, 1).Style.Font.Bold = true;
-        worksheet.Cell(currentRow, 2).Value = grade;
-        currentRow++;
-
-        worksheet.Cell(currentRow, 1).Value = "Total Questions:";
-        worksheet.Cell(currentRow, 1).Style.Font.Bold = true;
-        worksheet.Cell(currentRow, 2).Value = matrix.TotalQuestionCount;
-        currentRow += 2;
-
-        // Matrix table
-        worksheet.Cell(currentRow, 1).Value = "Topic ID";
-        worksheet.Cell(currentRow, 2).Value = "Cognitive Level";
-        worksheet.Cell(currentRow, 3).Value = "Quantity";
-
-        var headerRange = worksheet.Range(currentRow, 1, currentRow, 3);
-        headerRange.Style.Font.Bold = true;
-        headerRange.Style.Fill.BackgroundColor = XLColor.LightGray;
-        headerRange.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
-        currentRow++;
-
-        foreach (var topic in matrix.MatrixTopics)
+        try
         {
-            worksheet.Cell(currentRow, 1).Value = topic.TopicId.ToString();
-            worksheet.Cell(currentRow, 2).Value = topic.CognitiveLevel.ToString();
-            worksheet.Cell(currentRow, 3).Value = topic.Quantity;
+            using var workbook = new XLWorkbook();
+            var worksheet = workbook.AddWorksheet("Exam Matrix");
 
-            var rowRange = worksheet.Range(currentRow, 1, currentRow, 3);
-            rowRange.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+            var currentRow = 1;
+
+            // Header
+            worksheet.Cell(currentRow, 1).Value = "Exam Matrix";
+            worksheet.Cell(currentRow, 1).Style.Font.Bold = true;
+            worksheet.Cell(currentRow, 1).Style.Font.FontSize = 16;
+            worksheet.Range(currentRow, 1, currentRow, 4).Merge();
+            currentRow += 2;
+
+            worksheet.Cell(currentRow, 1).Value = "Exam:";
+            worksheet.Cell(currentRow, 1).Style.Font.Bold = true;
+            worksheet.Cell(currentRow, 2).Value = examName ?? string.Empty;
             currentRow++;
+
+            worksheet.Cell(currentRow, 1).Value = "Subject:";
+            worksheet.Cell(currentRow, 1).Style.Font.Bold = true;
+            worksheet.Cell(currentRow, 2).Value = subjectName ?? string.Empty;
+            currentRow++;
+
+            worksheet.Cell(currentRow, 1).Value = "Grade:";
+            worksheet.Cell(currentRow, 1).Style.Font.Bold = true;
+            worksheet.Cell(currentRow, 2).Value = grade;
+            currentRow++;
+
+            worksheet.Cell(currentRow, 1).Value = "Total Questions:";
+            worksheet.Cell(currentRow, 1).Style.Font.Bold = true;
+            worksheet.Cell(currentRow, 2).Value = matrix.TotalQuestionCount;
+            currentRow += 2;
+
+            // Matrix table
+            worksheet.Cell(currentRow, 1).Value = "Topic";
+            worksheet.Cell(currentRow, 2).Value = "Cognitive Level";
+            worksheet.Cell(currentRow, 3).Value = "Quantity";
+
+            var headerRange = worksheet.Range(currentRow, 1, currentRow, 3);
+            headerRange.Style.Font.Bold = true;
+            headerRange.Style.Fill.BackgroundColor = XLColor.LightGray;
+            headerRange.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+            currentRow++;
+
+            foreach (var topic in matrix.MatrixTopics)
+            {
+                worksheet.Cell(currentRow, 1).Value = topic.TopicTitle ?? "Unknown Topic";
+                worksheet.Cell(currentRow, 2).Value = topic.CognitiveLevel.ToString();
+                worksheet.Cell(currentRow, 3).Value = topic.Quantity;
+
+                var rowRange = worksheet.Range(currentRow, 1, currentRow, 3);
+                rowRange.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+                currentRow++;
+            }
+
+            worksheet.Column(1).Width = 40;
+            worksheet.Column(2).Width = 20;
+            worksheet.Column(3).Width = 10;
+
+            using var stream = new MemoryStream();
+            workbook.SaveAs(stream);
+            return stream.ToArray();
         }
-
-        worksheet.Column(1).Width = 40;
-        worksheet.Column(2).Width = 20;
-        worksheet.Column(3).Width = 10;
-
-        using var stream = new MemoryStream();
-        workbook.SaveAs(stream);
-        return stream.ToArray();
+        catch (Exception ex)
+        {
+            throw new InvalidOperationException(
+                $"Failed to export matrix to Excel: {ex.Message}",
+                ex
+            );
+        }
     }
 
     private static void ComposeMatrixHeader(
@@ -414,7 +436,7 @@ public class ExamExportService : IExamExportService
             // Header
             table.Header(header =>
             {
-                header.Cell().Element(CellStyle).Text("Topic ID").Bold();
+                header.Cell().Element(CellStyle).Text("Topic").Bold();
                 header.Cell().Element(CellStyle).Text("Cognitive Level").Bold();
                 header.Cell().Element(CellStyle).Text("Quantity").Bold();
 
@@ -425,7 +447,7 @@ public class ExamExportService : IExamExportService
             // Content
             foreach (var topic in matrix.MatrixTopics)
             {
-                table.Cell().Element(CellStyle).Text(topic.TopicId.ToString());
+                table.Cell().Element(CellStyle).Text(topic.TopicTitle ?? "Unknown Topic");
                 table.Cell().Element(CellStyle).Text(topic.CognitiveLevel.ToString());
                 table.Cell().Element(CellStyle).Text(topic.Quantity.ToString());
 

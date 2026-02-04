@@ -11,6 +11,7 @@ import {
 } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
+import { ExamListSkeleton } from '@/components/common/skeletons'
 import {
 	Table,
 	TableBody,
@@ -171,9 +172,7 @@ const ExamsPage = (): React.ReactElement => {
 				</CardHeader>
 				<CardContent>
 					{isLoading ? (
-						<div className='text-center py-8 text-muted-foreground'>
-							Loading exams...
-						</div>
+						<ExamListSkeleton />
 					) : exams && exams.length > 0 ? (
 						<Table>
 							<TableHeader>

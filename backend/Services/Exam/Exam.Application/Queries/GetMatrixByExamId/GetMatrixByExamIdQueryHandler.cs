@@ -49,6 +49,7 @@ public sealed class GetMatrixByExamIdQueryHandler
         var matrixTopics = matrix
             .MatrixTopics.Select(mt => new MatrixTopicDto(
                 mt.TopicId,
+                null, // TopicTitle not needed for this view
                 mt.CognitiveLevel,
                 mt.Quantity
             ))
@@ -59,6 +60,7 @@ public sealed class GetMatrixByExamIdQueryHandler
             matrix.Name,
             matrix.Description,
             matrix.SubjectId,
+            null, // SubjectName not needed for this view
             matrix.Grade,
             matrixTopics,
             matrix.GetTotalQuestionCount(),

@@ -5,6 +5,7 @@ import * as z from 'zod'
 import { ArrowLeft, Save } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
+import { ExamFormSkeleton } from '@/components/common/skeletons'
 import {
 	Form,
 	FormControl,
@@ -93,11 +94,7 @@ const EditExamPage = (): React.ReactElement => {
 	}
 
 	if (isLoadingExam) {
-		return (
-			<div className='p-6 space-y-6 max-w-4xl mx-auto'>
-				<div className='text-center py-12'>Loading...</div>
-			</div>
-		)
+		return <ExamFormSkeleton />
 	}
 
 	if (!exam) {

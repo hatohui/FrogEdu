@@ -1,0 +1,5 @@
+export { MatrixDetailSkeleton } from './MatrixDetailSkeleton'
+export { ExamDetailSkeleton } from './ExamDetailSkeleton'
+export { ExamFormSkeleton } from './ExamFormSkeleton'
+export { ExamListSkeleton } from './ExamListSkeleton'
+export { MatrixListSkeleton } from './MatrixListSkeleton'

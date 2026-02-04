@@ -27,9 +27,11 @@ public sealed class GetMatricesQueryHandler : IRequestHandler<GetMatricesQuery, 
                 m.Name,
                 m.Description,
                 m.SubjectId,
+                null, // SubjectName not needed for list view
                 m.Grade,
                 m.MatrixTopics.Select(mt => new MatrixTopicDto(
                         mt.TopicId,
+                        null, // TopicTitle not needed for list view
                         mt.CognitiveLevel,
                         mt.Quantity
                     ))

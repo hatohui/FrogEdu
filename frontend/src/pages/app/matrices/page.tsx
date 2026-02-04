@@ -9,6 +9,7 @@ import {
 } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
+import { MatrixListSkeleton } from '@/components/common/skeletons'
 import {
 	Grid3x3,
 	ArrowLeft,
@@ -166,11 +167,7 @@ const MatricesPage = (): React.ReactElement => {
 		useConfirm()
 
 	if (isLoading) {
-		return (
-			<div className='p-6'>
-				<p>Loading matrices...</p>
-			</div>
-		)
+		return <MatrixListSkeleton />
 	}
 
 	return (

@@ -187,7 +187,7 @@ public class MatricesController : BaseController
         var pdf = _exportService.ExportMatrixToPdf(
             matrix,
             matrix.Name,
-            matrix.SubjectId.ToString(),
+            matrix.SubjectName ?? "Unknown Subject",
             matrix.Grade
         );
 
@@ -220,7 +220,7 @@ public class MatricesController : BaseController
         var excel = _exportService.ExportMatrixToExcel(
             matrix,
             matrix.Name,
-            matrix.SubjectId.ToString(),
+            matrix.SubjectName ?? "Unknown Subject",
             matrix.Grade
         );
 

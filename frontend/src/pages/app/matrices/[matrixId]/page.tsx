@@ -29,6 +29,7 @@ import {
 import { useConfirm } from '@/hooks/useConfirm'
 import { ConfirmDialog } from '@/components/common/ConfirmDialog'
 import { CognitiveLevel } from '@/types/model/exam-service'
+import { MatrixDetailSkeleton } from '@/components/common/skeletons'
 
 const MatrixDetailPage = (): React.ReactElement => {
 	const navigate = useNavigate()
@@ -112,11 +113,7 @@ const MatrixDetailPage = (): React.ReactElement => {
 	}
 
 	if (isLoading) {
-		return (
-			<div className='p-6 space-y-6 max-w-7xl mx-auto'>
-				<div className='text-center py-12'>Loading...</div>
-			</div>
-		)
+		return <MatrixDetailSkeleton />
 	}
 
 	if (!matrix) {

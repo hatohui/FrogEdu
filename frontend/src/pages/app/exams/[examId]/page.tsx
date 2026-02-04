@@ -58,6 +58,7 @@ import {
 } from '@/hooks/useExams'
 import { useConfirm } from '@/hooks/useConfirm'
 import { ConfirmDialog } from '@/components/common/ConfirmDialog'
+import { ExamDetailSkeleton } from '@/components/common/skeletons'
 
 const ExamDetailPage = (): React.ReactElement => {
 	const navigate = useNavigate()
@@ -216,11 +217,7 @@ const ExamDetailPage = (): React.ReactElement => {
 	}
 
 	if (isLoadingExam || isLoadingQuestions) {
-		return (
-			<div className='p-6 space-y-6 max-w-7xl mx-auto'>
-				<div className='text-center py-12'>Loading...</div>
-			</div>
-		)
+		return <ExamDetailSkeleton />
 	}
 
 	if (!exam) {
