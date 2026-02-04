@@ -10,22 +10,49 @@ import {
 
 // Answer schema
 const answerSchema = z.object({
-	content: z.string().min(1, 'Answer content is required'),
+	content: z
+		.string()
+		.min(1, 'Answer content is required')
+		.max(500, 'Answer content cannot exceed 500 characters'),
 	isCorrect: z.boolean(),
 	explanation: z.string().optional(),
 })
 
-// Base question schema
-const questionSchema = z.object({
-	content: z.string().min(10, 'Question must be at least 10 characters'),
-	point: z.number().min(0.5).max(100),
-	type: z.nativeEnum(QuestionType),
-	cognitiveLevel: z.nativeEnum(CognitiveLevel),
-	topicId: z.string().min(1, 'Topic is required'),
-	isPublic: z.boolean(),
-	mediaUrl: z.string().optional(),
-	answers: z.array(answerSchema),
-})
+// Base question schema with type-specific validation
+const questionSchema = z
+	.object({
+		content: z
+			.string()
+			.min(10, 'Question must be at least 10 characters')
+			.max(2000, 'Content cannot exceed 2000 characters'),
+		point: z.number().min(0.5).max(100),
+		type: z.nativeEnum(QuestionType),
+		cognitiveLevel: z.nativeEnum(CognitiveLevel),
+		topicId: z.string().min(1, 'Topic is required'),
+		isPublic: z.boolean(),
+		mediaUrl: z.string().optional(),
+		answers: z.array(answerSchema).min(1, 'At least one answer is required'),
+	})
+	.refine(
+		data => {
+			// Essay and FillInTheBlank only need 1 answer, others need at least 2
+			if (
+				data.type === QuestionType.Essay ||
+				data.type === QuestionType.FillInTheBlank
+			) {
+				return data.answers.length >= 1
+			}
+			return data.answers.length >= 2
+		},
+		{
+			message: 'At least 2 answers are required for this question type',
+			path: ['answers'],
+		}
+	)
+	.refine(data => data.answers.some(a => a.isCorrect), {
+		message: 'At least one answer must be marked as correct',
+		path: ['answers'],
+	})
 
 export type QuestionFormData = z.infer<typeof questionSchema>
 

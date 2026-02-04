@@ -1,6 +1,8 @@
 import React from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { QuestionType } from '@/types/model/exam-service'
+import { Alert, AlertDescription } from '@/components/ui/alert'
+import { AlertCircle } from 'lucide-react'
 import {
 	QuestionAnswersRenderer,
 	getAnswersSectionTitle,
@@ -31,12 +33,26 @@ export const QuestionAnswersSection: React.FC<QuestionAnswersSectionProps> = ({
 	append,
 	remove,
 }) => {
+	const answersError = form.formState.errors.answers
+
 	return (
 		<Card>
 			<CardHeader>
 				<CardTitle>{getAnswersSectionTitle(questionType)}</CardTitle>
+				<p className='text-sm text-muted-foreground mt-2'>
+					{questionType === QuestionType.Essay ||
+					questionType === QuestionType.FillInTheBlank
+						? 'You must mark at least one answer as correct'
+						: 'You must mark at least one answer as correct (minimum 2 answers required)'}
+				</p>
 			</CardHeader>
-			<CardContent>
+			<CardContent className='space-y-4'>
+				{answersError?.root && (
+					<Alert variant='destructive'>
+						<AlertCircle className='h-4 w-4' />
+						<AlertDescription>{answersError.root.message}</AlertDescription>
+					</Alert>
+				)}
 				<QuestionAnswersRenderer
 					questionType={questionType}
 					control={form.control}

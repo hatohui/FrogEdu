@@ -20,11 +20,16 @@ public sealed class CreateQuestionCommandValidator : AbstractValidator<CreateQue
 
         RuleFor(x => x.TopicId).NotEmpty().WithMessage("Topic ID is required");
 
-        RuleFor(x => x.Answers)
-            .NotEmpty()
-            .WithMessage("At least one answer is required")
-            .Must(answers => answers.Count >= 2)
-            .WithMessage("At least 2 answers are required");
+        RuleFor(x => x.Answers).NotEmpty().WithMessage("At least one answer is required");
+
+        // Minimum answer count depends on question type
+        RuleFor(x => x)
+            .Must(x =>
+                x.Type == Domain.Enums.QuestionType.Essay
+                || x.Type == Domain.Enums.QuestionType.FillInTheBlank
+                || x.Answers.Count >= 2
+            )
+            .WithMessage("At least 2 answers are required for this question type");
 
         RuleFor(x => x.Answers)
             .Must(answers => answers.Any(a => a.IsCorrect))
