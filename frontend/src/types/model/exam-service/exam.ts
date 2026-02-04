@@ -6,6 +6,8 @@ export interface Exam {
 	grade: number
 	isDraft: boolean
 	isActive: boolean
+	matrixId: string | null
+	questionCount: number
 	createdAt: string
 	updatedAt: string | null
 }

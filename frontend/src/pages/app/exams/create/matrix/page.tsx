@@ -10,7 +10,8 @@ import {
 	useUpdateMatrix,
 	useExam,
 	useTopics,
-	useMatrix,
+	useMatrixByExamId,
+	useAttachMatrixToExam,
 } from '@/hooks/useExams'
 import {
 	type MatrixTopicDto,
@@ -25,9 +26,9 @@ const CreateMatrixPage = (): React.ReactElement => {
 
 	const { data: exam, isLoading: isLoadingExam } = useExam(examId ?? '')
 	const { data: topics = [] } = useTopics(exam?.subjectId ?? '')
-	const { data: existingMatrix, isLoading: isLoadingMatrix } = useMatrix(
-		examId ?? ''
-	)
+	const { data: existingMatrix, isLoading: isLoadingMatrix } =
+		useMatrixByExamId(examId ?? '')
+	const attachMatrixMutation = useAttachMatrixToExam()
 	const [matrixRows, setMatrixRows] = useState<MatrixRow[]>([
 		{
 			id: crypto.randomUUID(),
@@ -54,31 +55,37 @@ const CreateMatrixPage = (): React.ReactElement => {
 				{ remember: number; understand: number; apply: number; analyze: number }
 			>()
 
-			existingMatrix.matrixTopics.forEach(topic => {
-				const existing = topicMap.get(topic.topicId) || {
-					remember: 0,
-					understand: 0,
-					apply: 0,
-					analyze: 0,
-				}
+			existingMatrix.matrixTopics.forEach(
+				(topic: {
+					topicId: string
+					cognitiveLevel: CognitiveLevel
+					quantity: number
+				}) => {
+					const existing = topicMap.get(topic.topicId) || {
+						remember: 0,
+						understand: 0,
+						apply: 0,
+						analyze: 0,
+					}
 
-				switch (topic.cognitiveLevel) {
-					case CognitiveLevel.Remember:
-						existing.remember = topic.quantity
-						break
-					case CognitiveLevel.Understand:
-						existing.understand = topic.quantity
-						break
-					case CognitiveLevel.Apply:
-						existing.apply = topic.quantity
-						break
-					case CognitiveLevel.Analyze:
-						existing.analyze = topic.quantity
-						break
-				}
+					switch (topic.cognitiveLevel) {
+						case CognitiveLevel.Remember:
+							existing.remember = topic.quantity
+							break
+						case CognitiveLevel.Understand:
+							existing.understand = topic.quantity
+							break
+						case CognitiveLevel.Apply:
+							existing.apply = topic.quantity
+							break
+						case CognitiveLevel.Analyze:
+							existing.analyze = topic.quantity
+							break
+					}
 
-				topicMap.set(topic.topicId, existing)
-			})
+					topicMap.set(topic.topicId, existing)
+				}
+			)
 
 			// Convert to MatrixRow format
 			const rows: MatrixRow[] = Array.from(topicMap.entries()).map(
@@ -185,15 +192,29 @@ const CreateMatrixPage = (): React.ReactElement => {
 				// Update existing matrix
 				await updateMatrixMutation.mutateAsync({
 					matrixId: existingMatrix.id,
-					examId,
-					matrixTopics,
+					data: {
+						name: existingMatrix.name,
+						description: existingMatrix.description ?? undefined,
+						matrixTopics,
+					},
 				})
 			} else {
-				// Create new matrix
-				await createMatrixMutation.mutateAsync({
-					examId,
+				// Create new matrix and attach to exam
+				const response = await createMatrixMutation.mutateAsync({
+					name: `Matrix for ${exam?.name || 'Exam'}`,
+					description: `Auto-generated matrix for exam`,
+					subjectId: exam?.subjectId || '',
+					grade: exam?.grade || 1,
 					matrixTopics,
 				})
+
+				// Attach the new matrix to the exam
+				if (response.data?.id) {
+					await attachMatrixMutation.mutateAsync({
+						examId,
+						matrixId: response.data.id,
+					})
+				}
 			}
 
 			// Navigate to question bank

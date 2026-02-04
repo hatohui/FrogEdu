@@ -6,7 +6,15 @@ public sealed class CreateMatrixCommandValidator : AbstractValidator<CreateMatri
 {
     public CreateMatrixCommandValidator()
     {
-        RuleFor(x => x.ExamId).NotEmpty().WithMessage("Exam ID is required");
+        RuleFor(x => x.Name)
+            .NotEmpty()
+            .WithMessage("Matrix name is required")
+            .MaximumLength(200)
+            .WithMessage("Matrix name cannot exceed 200 characters");
+
+        RuleFor(x => x.SubjectId).NotEmpty().WithMessage("Subject ID is required");
+
+        RuleFor(x => x.Grade).InclusiveBetween(1, 12).WithMessage("Grade must be between 1 and 12");
 
         RuleFor(x => x.MatrixTopics)
             .NotEmpty()

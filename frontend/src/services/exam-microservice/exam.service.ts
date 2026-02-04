@@ -4,12 +4,15 @@ import type {
 	CognitiveLevel,
 	Question,
 	Topic,
+	Matrix,
 } from '@/types/model/exam-service'
 import apiService, { type ApiResponse } from '../api.service'
 
 import type {
 	CreateExamRequest,
 	CreateMatrixRequest,
+	UpdateMatrixRequest,
+	AttachMatrixRequest,
 	CreateQuestionRequest,
 	CreateSubjectRequest,
 	UpdateSubjectRequest,
@@ -122,10 +125,20 @@ class AssessmentService {
 	}
 
 	// ========== Matrices ==========
+	async getMatrices(): Promise<ApiResponse<{ matrices: Matrix[] }>> {
+		return apiService.get<{ matrices: Matrix[] }>(`${this.baseUrl}/matrices`)
+	}
+
+	async getMatrixById(matrixId: string): Promise<ApiResponse<Matrix>> {
+		return apiService.get<Matrix>(`${this.baseUrl}/matrices/${matrixId}`)
+	}
+
 	async createMatrix(request: CreateMatrixRequest): Promise<
 		ApiResponse<{
 			id: string
-			examId: string
+			name: string
+			subjectId: string
+			grade: number
 			totalQuestions: number
 			createdAt: string
 		}>
@@ -135,31 +148,28 @@ class AssessmentService {
 
 	async updateMatrix(
 		matrixId: string,
-		request: {
-			matrixTopics: Array<{
-				topicId: string
-				cognitiveLevel: CognitiveLevel
-				quantity: number
-			}>
-		}
+		request: UpdateMatrixRequest
 	): Promise<ApiResponse<void>> {
 		return apiService.put(`${this.baseUrl}/matrices/${matrixId}`, request)
 	}
 
-	async getMatrixByExamId(examId: string): Promise<
-		ApiResponse<{
-			id: string
-			examId: string
-			matrixTopics: Array<{
-				topicId: string
-				cognitiveLevel: CognitiveLevel
-				quantity: number
-			}>
-			totalQuestionCount: number
-			createdAt: string
-		}>
-	> {
-		return apiService.get(`${this.baseUrl}/matrices/exam/${examId}`)
+	async deleteMatrix(matrixId: string): Promise<ApiResponse<void>> {
+		return apiService.delete(`${this.baseUrl}/matrices/${matrixId}`)
+	}
+
+	async getMatrixByExamId(examId: string): Promise<ApiResponse<Matrix>> {
+		return apiService.get<Matrix>(`${this.baseUrl}/matrices/exam/${examId}`)
+	}
+
+	async attachMatrixToExam(
+		examId: string,
+		request: AttachMatrixRequest
+	): Promise<ApiResponse<void>> {
+		return apiService.post(`${this.baseUrl}/exams/${examId}/matrix`, request)
+	}
+
+	async detachMatrixFromExam(examId: string): Promise<ApiResponse<void>> {
+		return apiService.delete(`${this.baseUrl}/exams/${examId}/matrix`)
 	}
 
 	// ========== Questions ==========
@@ -265,11 +275,7 @@ class AssessmentService {
 		return apiService.getBlob(`${this.baseUrl}/exams/${examId}/export/excel`)
 	}
 
-	// ========== Matrix Export & Delete ==========
-	async deleteMatrix(matrixId: string): Promise<ApiResponse<void>> {
-		return apiService.delete(`${this.baseUrl}/matrices/${matrixId}`)
-	}
-
+	// ========== Matrix Export ==========
 	async exportMatrixToPdf(matrixId: string): Promise<Blob> {
 		return apiService.getBlob(`${this.baseUrl}/matrices/${matrixId}/export/pdf`)
 	}

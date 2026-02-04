@@ -21,14 +21,29 @@ public class MatrixRepository : IMatrixRepository
             .FirstOrDefaultAsync(m => m.Id == id, cancellationToken);
     }
 
-    public async Task<Matrix?> GetByExamIdAsync(
-        Guid examId,
+    public async Task<IReadOnlyList<Matrix>> GetByCreatorAsync(
+        Guid userId,
         CancellationToken cancellationToken = default
     )
     {
         return await _context
             .Matrices.Include(m => m.MatrixTopics)
-            .FirstOrDefaultAsync(m => m.ExamId == examId, cancellationToken);
+            .Where(m => m.CreatedBy == userId)
+            .OrderByDescending(m => m.CreatedAt)
+            .ToListAsync(cancellationToken);
+    }
+
+    public async Task<IReadOnlyList<Matrix>> GetBySubjectAndGradeAsync(
+        Guid subjectId,
+        int grade,
+        CancellationToken cancellationToken = default
+    )
+    {
+        return await _context
+            .Matrices.Include(m => m.MatrixTopics)
+            .Where(m => m.SubjectId == subjectId && m.Grade == grade)
+            .OrderByDescending(m => m.CreatedAt)
+            .ToListAsync(cancellationToken);
     }
 
     public async Task AddAsync(Matrix matrix, CancellationToken cancellationToken = default)

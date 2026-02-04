@@ -21,21 +21,27 @@ public sealed class UpdateMatrixCommandHandler : IRequestHandler<UpdateMatrixCom
         if (matrix.CreatedBy != Guid.Parse(request.UserId))
             throw new UnauthorizedAccessException("You are not authorized to update this matrix");
 
-        _matrixRepository.Delete(matrix);
+        // Update matrix properties if provided
+        if (!string.IsNullOrWhiteSpace(request.Name))
+        {
+            matrix.Update(request.Name, request.Description, request.UserId);
+        }
 
-        var updatedMatrix = Domain.Entities.Matrix.Create(matrix.ExamId, request.UserId);
+        // Clear and rebuild matrix topics
+        matrix.ClearMatrixTopics();
+
         foreach (var matrixTopicDto in request.MatrixTopics)
         {
             var matrixTopic = Domain.Entities.MatrixTopic.Create(
-                updatedMatrix.Id,
+                matrix.Id,
                 matrixTopicDto.TopicId,
                 matrixTopicDto.CognitiveLevel,
                 matrixTopicDto.Quantity
             );
-            updatedMatrix.AddMatrixTopic(matrixTopic);
+            matrix.AddMatrixTopic(matrixTopic);
         }
 
-        await _matrixRepository.AddAsync(updatedMatrix, cancellationToken);
+        _matrixRepository.Update(matrix);
         await _matrixRepository.SaveChangesAsync(cancellationToken);
 
         return Unit.Value;

@@ -4,6 +4,7 @@ using FrogEdu.Exam.Application.Commands.UpdateMatrix;
 using FrogEdu.Exam.Application.DTOs;
 using FrogEdu.Exam.Application.Interfaces;
 using FrogEdu.Exam.Application.Queries.GetExamById;
+using FrogEdu.Exam.Application.Queries.GetMatrices;
 using FrogEdu.Exam.Application.Queries.GetMatrixByExamId;
 using FrogEdu.Exam.Application.Queries.GetMatrixById;
 using FrogEdu.Exam.Domain.Enums;
@@ -25,6 +26,22 @@ public class MatricesController : BaseController
     {
         _mediator = mediator;
         _exportService = exportService;
+    }
+
+    /// <summary>
+    /// Get all matrices for the current user
+    /// </summary>
+    [HttpGet]
+    [ProducesResponseType(typeof(GetMatricesResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    public async Task<ActionResult<GetMatricesResponse>> GetMatrices(
+        CancellationToken cancellationToken
+    )
+    {
+        var userId = GetAuthenticatedUserId();
+        var query = new GetMatricesQuery(userId);
+        var result = await _mediator.Send(query, cancellationToken);
+        return Ok(result);
     }
 
     /// <summary>
@@ -74,7 +91,7 @@ public class MatricesController : BaseController
     }
 
     /// <summary>
-    /// Create an exam matrix (blueprint)
+    /// Create a standalone matrix blueprint
     /// </summary>
     [HttpPost]
     [ProducesResponseType(typeof(CreateMatrixResponse), StatusCodes.Status201Created)]
@@ -86,7 +103,14 @@ public class MatricesController : BaseController
     )
     {
         var userId = GetAuthenticatedUserId();
-        var command = new CreateMatrixCommand(request.ExamId, request.MatrixTopics, userId);
+        var command = new CreateMatrixCommand(
+            request.Name,
+            request.Description,
+            request.SubjectId,
+            request.Grade,
+            request.MatrixTopics,
+            userId
+        );
         var response = await _mediator.Send(command, cancellationToken);
         return CreatedAtAction(nameof(GetMatrixById), new { matrixId = response.Id }, response);
     }
@@ -107,7 +131,13 @@ public class MatricesController : BaseController
     )
     {
         var userId = GetAuthenticatedUserId();
-        var command = new UpdateMatrixCommand(matrixId, request.MatrixTopics, userId);
+        var command = new UpdateMatrixCommand(
+            matrixId,
+            request.Name,
+            request.Description,
+            request.MatrixTopics,
+            userId
+        );
         await _mediator.Send(command, cancellationToken);
         return NoContent();
     }
@@ -154,18 +184,14 @@ public class MatricesController : BaseController
         if (matrix is null)
             return NotFound();
 
-        // Get exam for additional info
-        var exam = await _mediator.Send(
-            new GetExamByIdQuery(matrix.ExamId, userId),
-            cancellationToken
+        var pdf = _exportService.ExportMatrixToPdf(
+            matrix,
+            matrix.Name,
+            matrix.SubjectId.ToString(),
+            matrix.Grade
         );
 
-        if (exam is null)
-            return NotFound();
-
-        var pdf = _exportService.ExportMatrixToPdf(matrix, exam.Name, exam.SubjectName, exam.Grade);
-
-        return File(pdf, "application/pdf", $"matrix-{exam.Name}.pdf");
+        return File(pdf, "application/pdf", $"matrix-{matrix.Name}.pdf");
     }
 
     /// <summary>
@@ -191,26 +217,17 @@ public class MatricesController : BaseController
         if (matrix is null)
             return NotFound();
 
-        // Get exam for additional info
-        var exam = await _mediator.Send(
-            new GetExamByIdQuery(matrix.ExamId, userId),
-            cancellationToken
-        );
-
-        if (exam is null)
-            return NotFound();
-
         var excel = _exportService.ExportMatrixToExcel(
             matrix,
-            exam.Name,
-            exam.SubjectName,
-            exam.Grade
+            matrix.Name,
+            matrix.SubjectId.ToString(),
+            matrix.Grade
         );
 
         return File(
             excel,
             "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-            $"matrix-{exam.Name}.xlsx"
+            $"matrix-{matrix.Name}.xlsx"
         );
     }
 }

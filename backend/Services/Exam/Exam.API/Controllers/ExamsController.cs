@@ -1,6 +1,8 @@
 using FrogEdu.Exam.Application.Commands.AddQuestionsToExam;
+using FrogEdu.Exam.Application.Commands.AttachMatrixToExam;
 using FrogEdu.Exam.Application.Commands.CreateExam;
 using FrogEdu.Exam.Application.Commands.DeleteExam;
+using FrogEdu.Exam.Application.Commands.DetachMatrixFromExam;
 using FrogEdu.Exam.Application.Commands.RemoveQuestionFromExam;
 using FrogEdu.Exam.Application.Commands.UpdateExam;
 using FrogEdu.Exam.Application.DTOs;
@@ -184,6 +186,50 @@ public class ExamsController(IMediator mediator) : BaseController
 
         return Ok(result);
     }
+
+    // ========== Exam Matrix Management ==========
+
+    /// <summary>
+    /// Attach a matrix blueprint to an exam
+    /// </summary>
+    [HttpPost("{examId:guid}/matrix")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> AttachMatrixToExam(
+        [FromRoute] Guid examId,
+        [FromBody] AttachMatrixRequest request,
+        CancellationToken cancellationToken
+    )
+    {
+        var userId = GetAuthenticatedUserId();
+        var command = new AttachMatrixToExamCommand(examId, request.MatrixId, userId);
+        await _mediator.Send(command, cancellationToken);
+        return NoContent();
+    }
+
+    /// <summary>
+    /// Detach the matrix blueprint from an exam
+    /// </summary>
+    [HttpDelete("{examId:guid}/matrix")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> DetachMatrixFromExam(
+        [FromRoute] Guid examId,
+        CancellationToken cancellationToken
+    )
+    {
+        var userId = GetAuthenticatedUserId();
+        var command = new DetachMatrixFromExamCommand(examId, userId);
+        await _mediator.Send(command, cancellationToken);
+        return NoContent();
+    }
+
+    // ========== Exam Export ==========
 
     [HttpGet("{examId:guid}/export/pdf")]
     [ProducesResponseType(StatusCodes.Status200OK)]

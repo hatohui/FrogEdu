@@ -40,6 +40,7 @@ public sealed class GetExamsQueryHandler(IExamRepository examRepository)
                 e.Grade,
                 e.IsDraft,
                 e.IsActive,
+                e.MatrixId,
                 e.ExamQuestions.Count,
                 e.CreatedAt,
                 e.UpdatedAt

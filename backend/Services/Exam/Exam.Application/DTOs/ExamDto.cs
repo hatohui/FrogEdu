@@ -8,6 +8,7 @@ public sealed record ExamDto(
     int Grade,
     bool IsDraft,
     bool IsActive,
+    Guid? MatrixId,
     int QuestionCount,
     DateTime CreatedAt,
     DateTime? UpdatedAt

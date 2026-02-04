@@ -11,6 +11,7 @@ public sealed class Exam : AuditableEntity
     public int Grade { get; private set; }
     public bool IsDraft { get; private set; }
     public bool IsActive { get; private set; }
+    public Guid? MatrixId { get; private set; }
 
     private readonly List<ExamQuestion> _examQuestions = new();
     public IReadOnlyCollection<ExamQuestion> ExamQuestions => _examQuestions.AsReadOnly();
@@ -72,6 +73,27 @@ public sealed class Exam : AuditableEntity
 
         Name = name;
         Description = description;
+        MarkAsUpdated();
+    }
+
+    /// <summary>
+    /// Attach a reusable Matrix blueprint to this exam
+    /// </summary>
+    public void AttachMatrix(Guid matrixId)
+    {
+        if (matrixId == Guid.Empty)
+            throw new ArgumentException("Matrix ID cannot be empty", nameof(matrixId));
+
+        MatrixId = matrixId;
+        MarkAsUpdated();
+    }
+
+    /// <summary>
+    /// Detach the Matrix blueprint from this exam
+    /// </summary>
+    public void DetachMatrix()
+    {
+        MatrixId = null;
         MarkAsUpdated();
     }
 

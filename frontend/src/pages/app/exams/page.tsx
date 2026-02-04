@@ -112,6 +112,17 @@ const ExamsPage = (): React.ReactElement => {
 		})
 	}
 
+	// Ensure formData.subjectId is valid when subjects change
+	React.useEffect(() => {
+		if (editingExam && subjects && subjects.length > 0) {
+			const subjectExists = subjects.some(s => s.id === formData.subjectId)
+			if (!subjectExists && formData.subjectId) {
+				// If the current subjectId doesn't exist in the loaded subjects, keep it
+				// This handles cross-grade subject selection
+			}
+		}
+	}, [subjects, editingExam, formData.subjectId])
+
 	return (
 		<div className='p-6 space-y-6 max-w-7xl mx-auto'>
 			{/* Header */}
@@ -318,7 +329,7 @@ const ExamsPage = (): React.ReactElement => {
 						<div className='space-y-2'>
 							<Label htmlFor='subject'>Subject</Label>
 							<Select
-								value={formData.subjectId}
+								value={formData.subjectId || undefined}
 								onValueChange={value =>
 									setFormData({ ...formData, subjectId: value })
 								}

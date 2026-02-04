@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import type {
 	CreateExamRequest,
 	CreateMatrixRequest,
+	UpdateMatrixRequest,
 	CreateQuestionRequest,
 	CreateSubjectRequest,
 	UpdateSubjectRequest,
@@ -19,7 +20,9 @@ export const examKeys = {
 	detail: (id: string) => [...examKeys.all, 'detail', id] as const,
 	subjects: (grade?: number) => ['subjects', { grade }] as const,
 	topics: (subjectId: string) => ['topics', subjectId] as const,
-	matrix: (examId: string) => ['matrix', examId] as const,
+	matrices: () => ['matrices'] as const,
+	matrix: (matrixId: string) => ['matrices', matrixId] as const,
+	matrixByExam: (examId: string) => ['matrices', 'exam', examId] as const,
 	questions: (params?: {
 		topicId?: string
 		cognitiveLevel?: CognitiveLevel
@@ -140,9 +143,30 @@ export function useDeleteExam() {
 }
 
 // ========== Matrix ==========
-export function useMatrix(examId: string) {
+export function useMatrices() {
 	return useQuery({
-		queryKey: examKeys.matrix(examId),
+		queryKey: examKeys.matrices(),
+		queryFn: async () => {
+			const response = await examService.getMatrices()
+			return response.data?.matrices || []
+		},
+	})
+}
+
+export function useMatrixById(matrixId: string) {
+	return useQuery({
+		queryKey: examKeys.matrix(matrixId),
+		queryFn: async () => {
+			const response = await examService.getMatrixById(matrixId)
+			return response.data
+		},
+		enabled: !!matrixId,
+	})
+}
+
+export function useMatrixByExamId(examId: string) {
+	return useQuery({
+		queryKey: examKeys.matrixByExam(examId),
 		queryFn: async () => {
 			try {
 				const response = await examService.getMatrixByExamId(examId)
@@ -178,11 +202,8 @@ export function useCreateMatrix() {
 	return useMutation({
 		mutationFn: (request: CreateMatrixRequest) =>
 			examService.createMatrix(request),
-		onSuccess: (_, variables) => {
-			queryClient.invalidateQueries({ queryKey: examKeys.lists() })
-			queryClient.invalidateQueries({
-				queryKey: examKeys.matrix(variables.examId),
-			})
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: examKeys.matrices() })
 			toast.success('Matrix created successfully!')
 		},
 		onError: (error: Error) => {
@@ -195,27 +216,75 @@ export function useUpdateMatrix() {
 	const queryClient = useQueryClient()
 
 	return useMutation({
-		mutationFn: (params: {
-			matrixId: string
-			examId: string
-			matrixTopics: Array<{
-				topicId: string
-				cognitiveLevel: CognitiveLevel
-				quantity: number
-			}>
-		}) =>
-			examService.updateMatrix(params.matrixId, {
-				matrixTopics: params.matrixTopics,
-			}),
+		mutationFn: (params: { matrixId: string; data: UpdateMatrixRequest }) =>
+			examService.updateMatrix(params.matrixId, params.data),
 		onSuccess: (_, variables) => {
-			queryClient.invalidateQueries({ queryKey: examKeys.lists() })
+			queryClient.invalidateQueries({ queryKey: examKeys.matrices() })
 			queryClient.invalidateQueries({
-				queryKey: examKeys.matrix(variables.examId),
+				queryKey: examKeys.matrix(variables.matrixId),
 			})
 			toast.success('Matrix updated successfully!')
 		},
 		onError: (error: Error) => {
 			toast.error(`Failed to update matrix: ${error.message}`)
+		},
+	})
+}
+
+export function useDeleteMatrix() {
+	const queryClient = useQueryClient()
+
+	return useMutation({
+		mutationFn: (matrixId: string) => examService.deleteMatrix(matrixId),
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: examKeys.matrices() })
+			toast.success('Matrix deleted successfully!')
+		},
+		onError: (error: Error) => {
+			toast.error(`Failed to delete matrix: ${error.message}`)
+		},
+	})
+}
+
+export function useAttachMatrixToExam() {
+	const queryClient = useQueryClient()
+
+	return useMutation({
+		mutationFn: (params: { examId: string; matrixId: string }) =>
+			examService.attachMatrixToExam(params.examId, {
+				matrixId: params.matrixId,
+			}),
+		onSuccess: (_, variables) => {
+			queryClient.invalidateQueries({ queryKey: examKeys.lists() })
+			queryClient.invalidateQueries({
+				queryKey: examKeys.detail(variables.examId),
+			})
+			queryClient.invalidateQueries({
+				queryKey: examKeys.matrixByExam(variables.examId),
+			})
+			toast.success('Matrix attached to exam successfully!')
+		},
+		onError: (error: Error) => {
+			toast.error(`Failed to attach matrix: ${error.message}`)
+		},
+	})
+}
+
+export function useDetachMatrixFromExam() {
+	const queryClient = useQueryClient()
+
+	return useMutation({
+		mutationFn: (examId: string) => examService.detachMatrixFromExam(examId),
+		onSuccess: (_, examId) => {
+			queryClient.invalidateQueries({ queryKey: examKeys.lists() })
+			queryClient.invalidateQueries({ queryKey: examKeys.detail(examId) })
+			queryClient.invalidateQueries({
+				queryKey: examKeys.matrixByExam(examId),
+			})
+			toast.success('Matrix detached from exam successfully!')
+		},
+		onError: (error: Error) => {
+			toast.error(`Failed to detach matrix: ${error.message}`)
 		},
 	})
 }
@@ -538,27 +607,7 @@ export function useExportExamToExcel() {
 	})
 }
 
-// ========== Matrix Operations ==========
-export function useDeleteMatrix() {
-	const queryClient = useQueryClient()
-
-	return useMutation({
-		mutationFn: async (matrixId: string) => {
-			const response = await examService.deleteMatrix(matrixId)
-			if (!response.success) {
-				throw new Error(response.error?.detail || 'Failed to delete matrix')
-			}
-		},
-		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: ['matrices'] })
-			toast.success('Matrix deleted successfully')
-		},
-		onError: (error: Error) => {
-			toast.error(`Failed to delete matrix: ${error.message}`)
-		},
-	})
-}
-
+// ========== Matrix Export ==========
 export function useExportMatrixToPdf() {
 	return useMutation({
 		mutationFn: async (matrixId: string) => {

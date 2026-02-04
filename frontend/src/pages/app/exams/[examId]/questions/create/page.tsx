@@ -19,7 +19,7 @@ import { Label } from '@/components/ui/label'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import {
 	useCreateQuestion,
-	useMatrix,
+	useMatrixByExamId,
 	useExam,
 	useTopics,
 	useExamQuestions,
@@ -78,7 +78,7 @@ const CreateQuestionPage = (): React.ReactElement => {
 	const navigate = useNavigate()
 	const { examId } = useParams<{ examId: string }>()
 	const { data: exam } = useExam(examId ?? '')
-	const { data: matrix } = useMatrix(examId ?? '')
+	const { data: matrix } = useMatrixByExamId(examId ?? '')
 	const { data: topics = [] } = useTopics(exam?.subjectId ?? '')
 	const { data: existingQuestions = [], refetch: refetchExamQuestions } =
 		useExamQuestions(examId ?? '')

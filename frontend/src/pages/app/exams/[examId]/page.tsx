@@ -46,11 +46,12 @@ import {
 	useExamQuestions,
 	usePublishExam,
 	useRemoveQuestionFromExam,
-	useMatrix,
+	useMatrixByExamId,
 	useTopics,
 	useSubjects,
 	useExportExamToPdf,
 	useExportExamToExcel,
+	useDeleteMatrix,
 } from '@/hooks/useExams'
 import { useConfirm } from '@/hooks/useConfirm'
 import { ConfirmDialog } from '@/components/common/ConfirmDialog'
@@ -63,13 +64,14 @@ const ExamDetailPage = (): React.ReactElement => {
 	const { data: exam, isLoading: isLoadingExam } = useExam(examId || '')
 	const { data: questions = [], isLoading: isLoadingQuestions } =
 		useExamQuestions(examId || '')
-	const { data: matrix } = useMatrix(examId || '')
+	const { data: matrix } = useMatrixByExamId(examId || '')
 	const { data: topics = [] } = useTopics(exam?.subjectId ?? '')
 	const { data: subjects = [] } = useSubjects(exam?.grade)
 	const publishExamMutation = usePublishExam()
 	const removeQuestionMutation = useRemoveQuestionFromExam()
 	const exportToPdf = useExportExamToPdf()
 	const exportToExcel = useExportExamToExcel()
+	const deleteMatrixMutation = useDeleteMatrix()
 	const {
 		confirm,
 		confirmState,
@@ -120,6 +122,26 @@ const ExamDetailPage = (): React.ReactElement => {
 				await removeQuestionMutation.mutateAsync({ examId, questionId })
 			} catch (error) {
 				console.error('Failed to delete question:', error)
+			}
+		}
+	}
+
+	const handleDeleteMatrix = async () => {
+		if (!matrix?.id) return
+
+		const confirmed = await confirm({
+			title: 'Remove Matrix',
+			description:
+				'Are you sure you want to remove this exam matrix? This will not delete the questions, only the matrix structure.',
+			confirmText: 'Remove',
+			variant: 'destructive',
+		})
+
+		if (confirmed) {
+			try {
+				await deleteMatrixMutation.mutateAsync(matrix.id)
+			} catch (error) {
+				console.error('Failed to delete matrix:', error)
 			}
 		}
 	}
@@ -356,15 +378,26 @@ const ExamDetailPage = (): React.ReactElement => {
 							</p>
 						</div>
 						{matrix ? (
-							<Button
-								variant='outline'
-								onClick={() =>
-									navigate(`/app/exams/create/matrix?examId=${examId}`)
-								}
-							>
-								<Edit className='h-4 w-4 mr-2' />
-								Edit Matrix
-							</Button>
+							<div className='flex gap-2'>
+								<Button
+									variant='outline'
+									onClick={() =>
+										navigate(`/app/exams/create/matrix?examId=${examId}`)
+									}
+								>
+									<Edit className='h-4 w-4 mr-2' />
+									Edit Matrix
+								</Button>
+								<Button
+									variant='outline'
+									onClick={handleDeleteMatrix}
+									disabled={deleteMatrixMutation.isPending}
+									className='text-destructive hover:text-destructive'
+								>
+									<Trash2 className='h-4 w-4 mr-2' />
+									{deleteMatrixMutation.isPending ? 'Removing...' : 'Remove'}
+								</Button>
+							</div>
 						) : (
 							<Button
 								onClick={() =>

@@ -39,6 +39,7 @@ public sealed class GetExamByIdQueryHandler : IRequestHandler<GetExamByIdQuery, 
             exam.Grade,
             exam.IsDraft,
             exam.IsActive,
+            exam.MatrixId,
             exam.ExamQuestions.Count,
             exam.CreatedAt,
             exam.UpdatedAt

@@ -9,17 +9,17 @@ public sealed class CreateMatrixCommandHandler
     : IRequestHandler<CreateMatrixCommand, CreateMatrixResponse>
 {
     private readonly IMatrixRepository _matrixRepository;
-    private readonly IExamRepository _examRepository;
+    private readonly ISubjectRepository _subjectRepository;
     private readonly ITopicRepository _topicRepository;
 
     public CreateMatrixCommandHandler(
         IMatrixRepository matrixRepository,
-        IExamRepository examRepository,
+        ISubjectRepository subjectRepository,
         ITopicRepository topicRepository
     )
     {
         _matrixRepository = matrixRepository;
-        _examRepository = examRepository;
+        _subjectRepository = subjectRepository;
         _topicRepository = topicRepository;
     }
 
@@ -28,12 +28,12 @@ public sealed class CreateMatrixCommandHandler
         CancellationToken cancellationToken
     )
     {
-        // Verify exam exists
-        var exam = await _examRepository.GetByIdAsync(request.ExamId, cancellationToken);
-        if (exam is null)
-            throw new InvalidOperationException($"Exam with ID {request.ExamId} not found");
+        // Verify subject exists
+        var subject = await _subjectRepository.GetByIdAsync(request.SubjectId, cancellationToken);
+        if (subject is null)
+            throw new InvalidOperationException($"Subject with ID {request.SubjectId} not found");
 
-        // Verify all topics exist
+        // Verify all topics exist and belong to the subject
         foreach (var matrixTopic in request.MatrixTopics)
         {
             var topic = await _topicRepository.GetByIdAsync(matrixTopic.TopicId, cancellationToken);
@@ -43,7 +43,13 @@ public sealed class CreateMatrixCommandHandler
                 );
         }
 
-        var matrix = Matrix.Create(request.ExamId, request.UserId);
+        var matrix = Matrix.Create(
+            request.Name,
+            request.Description,
+            request.SubjectId,
+            request.Grade,
+            request.UserId
+        );
 
         foreach (var matrixTopicDto in request.MatrixTopics)
         {
@@ -61,7 +67,9 @@ public sealed class CreateMatrixCommandHandler
 
         return new CreateMatrixResponse(
             matrix.Id,
-            matrix.ExamId,
+            matrix.Name,
+            matrix.SubjectId,
+            matrix.Grade,
             matrix.GetTotalQuestionCount(),
             matrix.CreatedAt
         );

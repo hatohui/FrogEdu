@@ -16,6 +16,7 @@ import {
 	Settings,
 	BarChart3,
 	Shield,
+	Grid3x3,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
@@ -82,6 +83,11 @@ const appNavItems: NavItem[] = [
 		name: 'Exams',
 		href: '/app/exams',
 		icon: FileText,
+	},
+	{
+		name: 'Matrices',
+		href: '/app/matrices',
+		icon: Grid3x3,
 	},
 	{
 		name: 'Profile',

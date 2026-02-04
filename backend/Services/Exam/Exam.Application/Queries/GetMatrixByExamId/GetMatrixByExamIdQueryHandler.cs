@@ -24,7 +24,7 @@ public sealed class GetMatrixByExamIdQueryHandler
         CancellationToken cancellationToken
     )
     {
-        // Verify exam exists and user has access
+        // Get the exam and check access
         var exam = await _examRepository.GetByIdAsync(request.ExamId, cancellationToken);
         if (exam is null)
             return null;
@@ -36,7 +36,12 @@ public sealed class GetMatrixByExamIdQueryHandler
             return null;
         }
 
-        var matrix = await _matrixRepository.GetByExamIdAsync(request.ExamId, cancellationToken);
+        // If exam has no matrix attached, return null
+        if (exam.MatrixId is null)
+            return null;
+
+        // Get the attached matrix
+        var matrix = await _matrixRepository.GetByIdAsync(exam.MatrixId.Value, cancellationToken);
 
         if (matrix is null)
             return null;
@@ -51,7 +56,10 @@ public sealed class GetMatrixByExamIdQueryHandler
 
         return new MatrixDto(
             matrix.Id,
-            matrix.ExamId,
+            matrix.Name,
+            matrix.Description,
+            matrix.SubjectId,
+            matrix.Grade,
             matrixTopics,
             matrix.GetTotalQuestionCount(),
             matrix.CreatedAt

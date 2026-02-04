@@ -1,3 +1,4 @@
+using FrogEdu.Exam.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using ExamEntity = FrogEdu.Exam.Domain.Entities.Exam;
@@ -25,6 +26,9 @@ public class ExamConfiguration : IEntityTypeConfiguration<ExamEntity>
 
         builder.Property(e => e.IsActive).IsRequired().HasDefaultValue(false);
 
+        // Optional Matrix reference (nullable FK)
+        builder.Property(e => e.MatrixId);
+
         // Auditable properties
         builder.Property(e => e.CreatedAt).IsRequired();
         builder.Property(e => e.CreatedBy).IsRequired().HasMaxLength(256);
@@ -41,5 +45,15 @@ public class ExamConfiguration : IEntityTypeConfiguration<ExamEntity>
         builder.HasIndex(e => e.IsActive).HasDatabaseName("IX_Exams_IsActive");
 
         builder.HasIndex(e => e.CreatedBy).HasDatabaseName("IX_Exams_CreatedBy");
+
+        builder.HasIndex(e => e.MatrixId).HasDatabaseName("IX_Exams_MatrixId");
+
+        // Relationship: Many Exams can reference one Matrix (optional)
+        builder
+            .HasOne<Matrix>()
+            .WithMany()
+            .HasForeignKey(e => e.MatrixId)
+            .IsRequired(false)
+            .OnDelete(DeleteBehavior.SetNull);
     }
 }

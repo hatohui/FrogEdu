@@ -30,7 +30,10 @@ public sealed class GetMatrixByIdQueryHandler : IRequestHandler<GetMatrixByIdQue
 
         return new MatrixDto(
             matrix.Id,
-            matrix.ExamId,
+            matrix.Name,
+            matrix.Description,
+            matrix.SubjectId,
+            matrix.Grade,
             matrix
                 .MatrixTopics.Select(mt => new MatrixTopicDto(
                     mt.TopicId,
