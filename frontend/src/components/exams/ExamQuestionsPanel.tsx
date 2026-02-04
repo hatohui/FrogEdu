@@ -96,7 +96,7 @@ export const ExamQuestionsPanel: React.FC<ExamQuestionsPanelProps> = ({
 	return (
 		<>
 			<CardContent className='p-0'>
-				<ScrollArea className='h-[300px]'>
+				<ScrollArea className='h-[300px] space-y-4'>
 					<div className='divide-y'>
 						{questions.map((question, index) => {
 							const inMatrix = isQuestionInMatrix(question)
