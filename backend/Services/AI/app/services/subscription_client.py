@@ -42,12 +42,17 @@ class SubscriptionClient:
         self._cache: dict[str, tuple[SubscriptionClaimsResponse, float]] = {}
         self._cache_ttl = 300  # 5 minutes cache
     
-    async def get_subscription_claims(self, user_id: str) -> SubscriptionClaimsResponse:
+    async def get_subscription_claims(
+        self, 
+        user_id: str,
+        auth_token: str | None = None
+    ) -> SubscriptionClaimsResponse:
         """
         Fetch subscription claims for a user from the Subscription service.
         
         Args:
             user_id: The user's ID (from JWT sub claim or custom:user_id)
+            auth_token: Optional JWT token to pass for service-to-service auth
             
         Returns:
             SubscriptionClaimsResponse with the user's subscription data
@@ -65,11 +70,16 @@ class SubscriptionClient:
         try:
             logger.info(f"Fetching subscription claims for user {user_id} from {self._base_url}")
             
+            # Prepare headers
+            headers = {"Accept": "application/json"}
+            if auth_token:
+                headers["Authorization"] = f"Bearer {auth_token}"
+            
             async with httpx.AsyncClient() as client:
                 response = await client.get(
                     f"{self._base_url}/claims/{user_id}",
                     timeout=self._timeout,
-                    headers={"Accept": "application/json"}
+                    headers=headers
                 )
                 
                 if response.status_code == 200:

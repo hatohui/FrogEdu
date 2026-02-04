@@ -173,8 +173,9 @@ async def validate_token(
         cognito_sub = payload.get("sub", "")
         
         # Fetch subscription claims from Subscription service (Backend Token Enrichment)
+        # Pass the original JWT token for service-to-service authentication
         client = subscription_client or get_subscription_client()
-        subscription_response = await client.get_subscription_claims(user_id)
+        subscription_response = await client.get_subscription_claims(user_id, auth_token=token)
         
         subscription = SubscriptionClaims(
             plan=subscription_response.plan,
