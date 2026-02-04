@@ -84,5 +84,5 @@ async def root():
     return RedirectResponse(url="/api/ai/docs")
 
 
-handler = Mangum(app)
+handler = Mangum(app, lifespan="off", api_gateway_base_path="/api/ai")
 logger.info("✅ Mangum handler created successfully")
