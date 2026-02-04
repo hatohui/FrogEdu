@@ -47,9 +47,9 @@ app = FastAPI(
     description="AI-powered question generation and tutoring service",
     version="1.0.0",
     lifespan=lifespan,
-    docs_url="/docs",
-    redoc_url="/redoc",
-    openapi_url="/openapi.json",
+    docs_url="/api/ai/docs",
+    redoc_url="/api/ai/redoc",
+    openapi_url="/api/ai/openapi.json",
 )
 
 # Configure CORS
@@ -66,6 +66,14 @@ app.add_middleware(
 # Add request logging middleware
 @app.middleware("http")
 async def log_requests(request: Request, call_next):
+    # Rewrite path for API Gateway routing - similar to UsePathPrefixRewrite in C# services
+    # This handles the case where API Gateway passes the full path but Lambda integration
+    # strips the service prefix
+    path = request.url.path
+    if path.startswith("/api/ai/"):
+        # Strip the /api/ai prefix for internal routing
+        request._url = request.url.replace(path=path[7:])  # len("/api/ai") = 7
+    
     logger.info("=" * 80)
     logger.info(f"📥 INCOMING REQUEST: {request.method} {request.url.path}")
     logger.info(f"   Full URL: {request.url}")
@@ -109,7 +117,7 @@ app.include_router(router)
 async def root():
     """Redirect root to API docs."""
     logger.info("🏠 Root endpoint hit, redirecting to docs")
-    return RedirectResponse(url="/docs")
+    return RedirectResponse(url="/api/ai/docs")
 
 
 @app.get("/test", include_in_schema=False)
