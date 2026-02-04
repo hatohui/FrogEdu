@@ -47,9 +47,9 @@ app = FastAPI(
     description="AI-powered question generation and tutoring service",
     version="1.0.0",
     lifespan=lifespan,
-    docs_url="/api/ai/docs",
-    redoc_url="/api/ai/redoc",
-    openapi_url="/api/ai/openapi.json",
+    docs_url="/docs",
+    redoc_url="/redoc",
+    openapi_url="/openapi.json",
 )
 
 # Configure CORS
@@ -109,7 +109,7 @@ app.include_router(router)
 async def root():
     """Redirect root to API docs."""
     logger.info("🏠 Root endpoint hit, redirecting to docs")
-    return RedirectResponse(url="/api/ai/docs")
+    return RedirectResponse(url="/docs")
 
 
 @app.get("/test", include_in_schema=False)
@@ -120,20 +120,8 @@ async def test():
 
 
 # Lambda handler with Mangum
+# The root_path is set to /api/ai because API Gateway rewrites the path
+# and we need FastAPI to understand it's running under that prefix
 logger.info("🔧 Creating Mangum handler...")
-mangum_handler = Mangum(app, lifespan="auto")
+handler = Mangum(app, lifespan="auto", root_path="/api/ai")
 logger.info("✅ Mangum handler created successfully")
-
-
-# Wrapper to handle path routing from API Gateway proxy integration
-async def handler(event, context):
-    """
-    Wrapper handler that ensures the full path is properly routed.
-    API Gateway proxy integration passes the full path in requestContext.resourcePath
-    """
-    logger.info(f"🔧 Lambda event path: {event.get('path')}")
-    logger.info(f"🔧 Lambda event rawPath: {event.get('rawPath')}")
-    logger.info(f"🔧 Lambda requestContext: {event.get('requestContext', {})}")
-    
-    # Call the Mangum handler
-    return await mangum_handler(event, context)
