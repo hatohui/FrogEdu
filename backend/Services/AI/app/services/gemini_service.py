@@ -10,6 +10,7 @@ from app.schemas import (
     GenerateQuestionsRequest,
     GenerateSingleQuestionRequest,
 )
+from app.models.enums import QuestionType
 from app.services.prompts import (
     build_matrix_prompt,
     build_single_question_prompt,
@@ -29,8 +30,26 @@ class GeminiService:
         self.model_name = "gemini-3-flash-preview"
         logger.info(f"Initialized GeminiService with model: {self.model_name}")
     
-    def _create_question_schema(self) -> dict[str, Any]:
-        """Create JSON schema for question generation."""
+    def _create_question_schema(self, question_type: Optional[QuestionType] = None) -> dict[str, Any]:
+        """
+        Create JSON schema for question generation.
+        Schema adapts based on question type for better AI output.
+        """
+        # Base answer schema
+        answer_schema = {
+            "type": "OBJECT",
+            "properties": {
+                "content": {"type": "STRING"},
+                "is_correct": {"type": "BOOLEAN"},
+                "explanation": {"type": "STRING"},
+                "point": {"type": "NUMBER"},
+            },
+            "required": ["content", "is_correct"]
+        }
+        
+        # Question type enum values
+        question_type_enum = ["select", "multiple_choice", "true_false", "essay", "fill_in_blank"]
+        
         return {
             "type": "OBJECT",
             "properties": {
@@ -40,22 +59,19 @@ class GeminiService:
                         "type": "OBJECT",
                         "properties": {
                             "content": {"type": "STRING"},
-                            "question_type": {"type": "STRING"},
-                            "cognitive_level": {"type": "STRING"},
+                            "question_type": {
+                                "type": "STRING",
+                                "enum": question_type_enum
+                            },
+                            "cognitive_level": {
+                                "type": "STRING",
+                                "enum": ["remember", "understand", "apply", "analyze"]
+                            },
                             "point": {"type": "NUMBER"},
                             "media_url": {"type": "STRING"},
                             "answers": {
                                 "type": "ARRAY",
-                                "items": {
-                                    "type": "OBJECT",
-                                    "properties": {
-                                        "content": {"type": "STRING"},
-                                        "is_correct": {"type": "BOOLEAN"},
-                                        "explanation": {"type": "STRING"},
-                                        "point": {"type": "NUMBER"},
-                                    },
-                                    "required": ["content", "is_correct"]
-                                }
+                                "items": answer_schema
                             }
                         },
                         "required": ["content", "question_type", "cognitive_level", "answers"]
@@ -64,6 +80,59 @@ class GeminiService:
             },
             "required": ["questions"]
         }
+    
+    def _validate_question(self, question_data: dict, expected_type: Optional[QuestionType] = None) -> dict:
+        """
+        Validate and fix question data based on question type rules.
+        """
+        question_type_str = question_data.get("question_type", "select")
+        answers = question_data.get("answers", [])
+        
+        # Ensure question_type is set correctly
+        if expected_type:
+            question_data["question_type"] = expected_type.value
+            question_type_str = expected_type.value
+        
+        # Validate based on question type
+        if question_type_str == "true_false":
+            # True/False must have exactly 2 answers: True and False
+            if len(answers) != 2:
+                question_data["answers"] = [
+                    {"content": "True", "is_correct": answers[0].get("is_correct", False) if answers else False, "explanation": answers[0].get("explanation", "") if answers else ""},
+                    {"content": "False", "is_correct": not (answers[0].get("is_correct", False) if answers else False), "explanation": answers[1].get("explanation", "") if len(answers) > 1 else ""}
+                ]
+            else:
+                # Ensure content is exactly "True" and "False"
+                question_data["answers"][0]["content"] = "True"
+                question_data["answers"][1]["content"] = "False"
+        
+        elif question_type_str == "select":
+            # Select must have exactly one correct answer
+            correct_count = sum(1 for a in answers if a.get("is_correct", False))
+            if correct_count != 1 and answers:
+                # Set only the first correct one as correct
+                found_correct = False
+                for answer in question_data["answers"]:
+                    if answer.get("is_correct", False) and not found_correct:
+                        found_correct = True
+                    else:
+                        answer["is_correct"] = False
+                if not found_correct and question_data["answers"]:
+                    question_data["answers"][0]["is_correct"] = True
+        
+        elif question_type_str == "essay":
+            # Essay should have 0 or 1 answer (grading rubric)
+            if len(answers) > 1:
+                question_data["answers"] = [answers[0]]
+            if question_data["answers"]:
+                question_data["answers"][0]["is_correct"] = True
+        
+        elif question_type_str == "fill_in_blank":
+            # Fill in blank - all answers are correct (acceptable answers)
+            for answer in question_data.get("answers", []):
+                answer["is_correct"] = True
+        
+        return question_data
     
     async def generate_questions(
         self, 
@@ -92,10 +161,15 @@ class GeminiService:
             if response.text is None:
                 raise ValueError("No response text received from Gemini API")
             result = json.loads(response.text)
-            questions = [Question(**q) for q in result.get("questions", [])]
             
-            logger.info(f"Generated {len(questions)} questions successfully")
-            return questions
+            # Validate and fix each question
+            validated_questions = []
+            for q in result.get("questions", []):
+                validated_q = self._validate_question(q)
+                validated_questions.append(Question(**validated_q))
+            
+            logger.info(f"Generated {len(validated_questions)} questions successfully")
+            return validated_questions
             
         except Exception as e:
             logger.error(f"Error generating questions: {str(e)}")
@@ -105,13 +179,13 @@ class GeminiService:
         self,
         request: GenerateSingleQuestionRequest
     ) -> Question:
-        """Generate a single question."""
+        """Generate a single question with type-specific validation."""
         try:
             prompt = build_single_question_prompt(request)
             
             config = types.GenerateContentConfig(
                 response_mime_type="application/json",
-                response_schema=self._create_question_schema(),
+                response_schema=self._create_question_schema(request.question_type),
                 temperature=0.7,
             )
             
@@ -129,8 +203,10 @@ class GeminiService:
             if not questions:
                 raise ValueError("No question generated")
             
-            question = Question(**questions[0])
-            logger.info("Generated single question successfully")
+            # Validate and fix the question based on expected type
+            validated_q = self._validate_question(questions[0], request.question_type)
+            question = Question(**validated_q)
+            logger.info(f"Generated single {request.question_type.value} question successfully")
             return question
             
         except Exception as e:

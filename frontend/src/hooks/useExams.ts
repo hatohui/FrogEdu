@@ -147,18 +147,23 @@ export function useMatrix(examId: string) {
 			try {
 				const response = await examService.getMatrixByExamId(examId)
 				return response.data
-			} catch (error: any) {
+			} catch (error) {
 				// If matrix doesn't exist (404), return null instead of throwing
-				if (error?.response?.status === 404) {
+				if (
+					(error as { response?: { status?: number } })?.response?.status ===
+					404
+				) {
 					return null
 				}
 				throw error
 			}
 		},
 		enabled: !!examId,
-		retry: (failureCount, error: any) => {
+		retry: (failureCount, error) => {
 			// Don't retry on 404 (matrix not found)
-			if (error?.response?.status === 404) {
+			if (
+				(error as { response?: { status?: number } })?.response?.status === 404
+			) {
 				return false
 			}
 			// Retry other errors up to 3 times

@@ -125,8 +125,8 @@ const ExamDetailPage = (): React.ReactElement => {
 				return 'True/False'
 			case QuestionType.Essay:
 				return 'Essay'
-			case QuestionType.ShortAnswer:
-				return 'Short Answer'
+			case QuestionType.FillInTheBlank:
+				return 'Fill in the Blank'
 			default:
 				return 'Unknown'
 		}

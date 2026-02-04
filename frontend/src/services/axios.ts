@@ -8,7 +8,7 @@ const ApiUrl = import.meta.env.VITE_API_URL
 // This matches the API Gateway routing pattern
 const axiosInstance = axios.create({
 	baseURL: `${ApiUrl}/api`,
-	timeout: 10000,
+	timeout: 30000,
 	headers: {
 		'Content-Type': 'application/json',
 	},

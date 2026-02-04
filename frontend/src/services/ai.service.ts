@@ -11,6 +11,29 @@ import type {
 import { CognitiveLevel, QuestionType } from '@/types/model/exam-service/enums'
 import axiosInstance from './axios'
 
+/**
+ * Mapping from frontend QuestionType enum to AI backend string format
+ */
+const QUESTION_TYPE_TO_API: Record<QuestionType, string> = {
+	[QuestionType.MultipleChoice]: 'select', // Single choice
+	[QuestionType.MultipleAnswer]: 'multiple_choice', // Multiple correct answers
+	[QuestionType.TrueFalse]: 'true_false',
+	[QuestionType.Essay]: 'essay',
+	[QuestionType.FillInTheBlank]: 'fill_in_blank',
+}
+
+/**
+ * Mapping from AI backend string format to frontend QuestionType enum
+ */
+const API_TO_QUESTION_TYPE: Record<string, QuestionType> = {
+	select: QuestionType.MultipleChoice,
+	multiple_choice: QuestionType.MultipleAnswer,
+	true_false: QuestionType.TrueFalse,
+	essay: QuestionType.Essay,
+	fill_in_blank: QuestionType.FillInTheBlank,
+	short_answer: QuestionType.FillInTheBlank,
+}
+
 class AIService {
 	private readonly baseUrl = '/ai'
 
@@ -36,27 +59,16 @@ class AIService {
 	 * Map frontend numeric QuestionType enum to API string format
 	 */
 	private mapQuestionType(type: QuestionType): string {
-		switch (type) {
-			case QuestionType.MultipleChoice:
-			case QuestionType.MultipleAnswer:
-				return 'multiple_choice'
-			case QuestionType.TrueFalse:
-				return 'true_false'
-			case QuestionType.ShortAnswer:
-				return 'short_answer'
-			case QuestionType.Essay:
-				return 'essay'
-			case QuestionType.FillInTheBlank:
-				return 'short_answer'
-			default:
-				return 'multiple_choice'
-		}
+		return QUESTION_TYPE_TO_API[type] ?? 'select'
 	}
 
 	/**
 	 * Map API string format back to frontend numeric enum
 	 */
-	private mapCognitiveLevelFromApi(level: string): CognitiveLevel {
+	private mapCognitiveLevelFromApi(level: string | number): CognitiveLevel {
+		if (typeof level === 'number') {
+			return level as CognitiveLevel
+		}
 		switch (level.toLowerCase()) {
 			case 'remember':
 				return CognitiveLevel.Remember
@@ -74,20 +86,13 @@ class AIService {
 	/**
 	 * Map API string format back to frontend numeric enum
 	 */
-	private mapQuestionTypeFromApi(type: string): QuestionType {
-		switch (type.toLowerCase()) {
-			case 'multiple_choice':
-				return QuestionType.MultipleChoice
-			case 'true_false':
-				return QuestionType.TrueFalse
-			case 'short_answer':
-			case 'fill_in_the_blank':
-				return QuestionType.ShortAnswer
-			case 'essay':
-				return QuestionType.Essay
-			default:
-				return QuestionType.MultipleChoice
+	private mapQuestionTypeFromApi(type: string | number): QuestionType {
+		if (typeof type === 'number') {
+			return type as QuestionType
 		}
+		return (
+			API_TO_QUESTION_TYPE[type.toLowerCase()] ?? QuestionType.MultipleChoice
+		)
 	}
 
 	/**

@@ -1,5 +1,14 @@
 // Enums
-export { CognitiveLevel, QuestionType, QuestionSource } from './enums'
+export {
+	CognitiveLevel,
+	QuestionType,
+	QuestionSource,
+	QUESTION_TYPE_CONFIGS,
+	COGNITIVE_LEVEL_LABELS,
+	getQuestionTypeLabel,
+	getCognitiveLevelLabel,
+} from './enums'
+export type { QuestionTypeConfig } from './enums'
 
 // Subject & Topic
 export type { Subject, Topic } from './subject'
