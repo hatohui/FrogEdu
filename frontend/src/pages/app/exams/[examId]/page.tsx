@@ -376,7 +376,7 @@ const ExamDetailPage = (): React.ReactElement => {
 					<CardTitle>Questions ({questions.length})</CardTitle>
 					<Button
 						variant='outline'
-						onClick={() => navigate(`/app/exams/${examId}/questions`)}
+						onClick={() => navigate(`/app/exams/${examId}/questions/create`)}
 					>
 						<Plus className='h-4 w-4 mr-2' />
 						Add Questions

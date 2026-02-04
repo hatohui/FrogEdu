@@ -42,7 +42,7 @@ export const SelectAnswers: React.FC<AnswerFieldProps> = ({
 	}
 
 	return (
-		<div className='space-y-4'>
+		<div className='space-y-3'>
 			<div className='flex items-center justify-between'>
 				<p className='text-sm text-muted-foreground'>
 					Add answer options. Select ONE correct answer.
@@ -66,7 +66,7 @@ export const SelectAnswers: React.FC<AnswerFieldProps> = ({
 			>
 				{fields.map((field, index) => (
 					<Card key={field.id} className='border-2'>
-						<CardContent className='pt-4'>
+						<CardContent className='py-1'>
 							<div className='flex items-start gap-4'>
 								{/* Radio button for correct answer */}
 								<div className='flex items-center space-x-2 pt-2'>
@@ -80,7 +80,7 @@ export const SelectAnswers: React.FC<AnswerFieldProps> = ({
 								</div>
 
 								{/* Answer content */}
-								<div className='flex-1 space-y-4'>
+								<div className='flex-1 space-y-3'>
 									<FormField
 										control={control}
 										name={`answers.${index}.content`}

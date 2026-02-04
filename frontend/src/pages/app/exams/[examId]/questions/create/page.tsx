@@ -32,8 +32,16 @@ import { useAIQuestionGeneration } from '@/hooks/useAIQuestionGeneration'
 import { Info } from 'lucide-react'
 import { MatrixProgressTracker } from '@/components/exams/MatrixProgressTracker'
 import { ExamQuestionsPanel } from '@/components/exams/ExamQuestionsPanel'
-import { QuestionBankDialog } from '@/components/exams/QuestionBankDialog'
 import { toast } from 'sonner'
+import { Checkbox } from '@/components/ui/checkbox'
+import { ScrollArea } from '@/components/ui/scroll-area'
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from '@/components/ui/select'
 
 // Local components
 import { QuestionFormFields } from './components/QuestionFormFields'
@@ -50,7 +58,9 @@ import examService from '@/services/exam-microservice/exam.service'
 import {
 	validateMatrixProgress,
 	wouldExceedMatrixLimit,
+	filterQuestionsForMatrix,
 } from '@/utils/matrixValidation'
+import { Input } from '@/components/ui/input'
 
 type CreationMode = 'manual' | 'ai'
 type MainTab = 'create' | 'bank'
@@ -91,10 +101,18 @@ const CreateQuestionPage = (): React.ReactElement => {
 	const [aiQuestionType, setAiQuestionType] = useState<QuestionType>(
 		QuestionType.MultipleChoice
 	)
-	const [showBankDialog, setShowBankDialog] = useState(false)
 
 	// Track existing question IDs for quick lookup
 	const existingQuestionIds = new Set(existingQuestions.map(q => q.id))
+
+	// Bank tab state
+	const [bankSearchQuery, setBankSearchQuery] = useState('')
+	const [bankFilterLevel, setBankFilterLevel] = useState<string>('all')
+	const [bankFilterTopic, setBankFilterTopic] = useState<string>('all')
+	const [bankViewMode, setBankViewMode] = useState<'all' | 'matrix'>('matrix')
+	const [selectedBankQuestions, setSelectedBankQuestions] = useState<
+		Set<string>
+	>(new Set())
 
 	// Matrix validation
 	const matrixValidation = validateMatrixProgress(
@@ -521,7 +539,7 @@ const CreateQuestionPage = (): React.ReactElement => {
 						<TabsContent value='create' className='mt-0 space-y-6'>
 							{/* Creation Mode Toggle */}
 							<Card>
-								<CardContent className='pt-6'>
+								<CardContent className='px-6'>
 									<div className='flex items-center gap-4'>
 										<span className='text-sm font-medium'>Creation Mode:</span>
 										<RadioGroup
@@ -639,24 +657,214 @@ const CreateQuestionPage = (): React.ReactElement => {
 							)}
 						</TabsContent>
 
-						<TabsContent value='bank' className='mt-0'>
+						<TabsContent value='bank' className='mt-0 space-y-4'>
+							{/* Question Bank Content */}
 							<Card>
 								<CardHeader>
-									<CardTitle className='flex items-center gap-2'>
-										<Library className='h-5 w-5' />
+									<CardTitle className='flex items-center gap-2 text-sm'>
+										<Library className='h-4 w-4' />
 										Question Bank
 									</CardTitle>
+									<p className='text-xs text-muted-foreground mt-1'>
+										Select questions from your question bank to add to this
+										exam.
+										{matrix &&
+											' Questions are filtered to match your matrix requirements.'}
+									</p>
 								</CardHeader>
 								<CardContent className='space-y-4'>
-									<p className='text-sm text-muted-foreground'>
-										Browse and add existing questions from your question bank.
-										{matrix &&
-											' Questions will be filtered to match your matrix requirements.'}
-									</p>
-									<Button onClick={() => setShowBankDialog(true)}>
-										<Plus className='h-4 w-4 mr-2' />
-										Browse Question Bank
-									</Button>
+									{/* View Mode Toggle */}
+									{matrix && (
+										<div className='flex items-center gap-2 mb-4'>
+											<span className='text-sm text-muted-foreground'>
+												View:
+											</span>
+											<div className='flex gap-1 bg-muted p-1 rounded-md'>
+												<Button
+													variant={bankViewMode === 'all' ? 'default' : 'ghost'}
+													size='sm'
+													onClick={() => setBankViewMode('all')}
+													className='h-8'
+												>
+													All Questions
+												</Button>
+												<Button
+													variant={
+														bankViewMode === 'matrix' ? 'default' : 'ghost'
+													}
+													size='sm'
+													onClick={() => setBankViewMode('matrix')}
+													className='h-8'
+												>
+													Matrix Only
+												</Button>
+											</div>
+										</div>
+									)}
+
+									{/* Filters */}
+									<div className='flex items-center gap-4'>
+										<div className='flex-1'>
+											<Input
+												placeholder='Search questions...'
+												value={bankSearchQuery}
+												onChange={e => setBankSearchQuery(e.target.value)}
+											/>
+										</div>
+										<Select
+											value={bankFilterLevel}
+											onValueChange={setBankFilterLevel}
+										>
+											<SelectTrigger className='w-[180px]'>
+												<SelectValue placeholder='Cognitive Level' />
+											</SelectTrigger>
+											<SelectContent>
+												<SelectItem value='all'>All Levels</SelectItem>
+												<SelectItem value={String(CognitiveLevel.Remember)}>
+													Remember
+												</SelectItem>
+												<SelectItem value={String(CognitiveLevel.Understand)}>
+													Understand
+												</SelectItem>
+												<SelectItem value={String(CognitiveLevel.Apply)}>
+													Apply
+												</SelectItem>
+												<SelectItem value={String(CognitiveLevel.Analyze)}>
+													Analyze
+												</SelectItem>
+											</SelectContent>
+										</Select>
+										<Select
+											value={bankFilterTopic}
+											onValueChange={setBankFilterTopic}
+										>
+											<SelectTrigger className='w-[180px]'>
+												<SelectValue placeholder='Topic' />
+											</SelectTrigger>
+											<SelectContent>
+												<SelectItem value='all'>All Topics</SelectItem>
+												{topics.map(topic => (
+													<SelectItem key={topic.id} value={topic.id}>
+														{topic.title}
+													</SelectItem>
+												))}
+											</SelectContent>
+										</Select>
+									</div>
+
+									{/* Question List */}
+									<ScrollArea className='h-[500px] border rounded-md p-4'>
+										<div className='space-y-2'>
+											{(() => {
+												const availableQuestions = allQuestions.filter(
+													q => !existingQuestionIds.has(q.id)
+												)
+												const viewFiltered =
+													bankViewMode === 'matrix' && matrix
+														? filterQuestionsForMatrix(
+																availableQuestions,
+																matrix,
+																existingQuestions
+															)
+														: availableQuestions
+												const filtered = viewFiltered.filter(q => {
+													const matchesSearch = q.content
+														.toLowerCase()
+														.includes(bankSearchQuery.toLowerCase())
+													const matchesLevel =
+														bankFilterLevel === 'all' ||
+														q.cognitiveLevel === Number(bankFilterLevel)
+													const matchesTopic =
+														bankFilterTopic === 'all' ||
+														q.topicId === bankFilterTopic
+													return matchesSearch && matchesLevel && matchesTopic
+												})
+
+												if (isLoadingQuestions) {
+													return (
+														<div className='text-center py-8 text-muted-foreground'>
+															Loading questions...
+														</div>
+													)
+												}
+
+												if (filtered.length === 0) {
+													return (
+														<div className='text-center py-8 text-muted-foreground'>
+															No questions found
+														</div>
+													)
+												}
+
+												return filtered.map(question => (
+													<div
+														key={question.id}
+														className='flex items-start gap-3 p-3 border rounded-lg hover:bg-accent/50'
+													>
+														<Checkbox
+															checked={selectedBankQuestions.has(question.id)}
+															onCheckedChange={() => {
+																const newSelected = new Set(
+																	selectedBankQuestions
+																)
+																if (newSelected.has(question.id)) {
+																	newSelected.delete(question.id)
+																} else {
+																	newSelected.add(question.id)
+																}
+																setSelectedBankQuestions(newSelected)
+															}}
+														/>
+														<div className='flex-1 min-w-0'>
+															<p className='text-sm line-clamp-2 mb-2'>
+																{question.content}
+															</p>
+															<div className='flex items-center gap-2 flex-wrap'>
+																<Badge variant='outline' className='text-xs'>
+																	{topics.find(t => t.id === question.topicId)
+																		?.title || 'Unknown'}
+																</Badge>
+																<span className='text-xs text-muted-foreground'>
+																	{question.point} pts
+																</span>
+															</div>
+														</div>
+													</div>
+												))
+											})()}
+										</div>
+									</ScrollArea>
+
+									{/* Add Button */}
+									<div className='flex justify-between items-center'>
+										<p className='text-sm text-muted-foreground'>
+											{selectedBankQuestions.size} question(s) selected
+										</p>
+										<Button
+											onClick={async () => {
+												await handleAddFromBank(
+													Array.from(selectedBankQuestions)
+												)
+												setSelectedBankQuestions(new Set())
+											}}
+											disabled={
+												selectedBankQuestions.size === 0 ||
+												addQuestionsMutation.isPending
+											}
+										>
+											{addQuestionsMutation.isPending ? (
+												<>
+													<Loader2 className='h-4 w-4 mr-2 animate-spin' />
+													Adding...
+												</>
+											) : (
+												<>
+													<Plus className='h-4 w-4 mr-2' />
+													Add Selected to Exam
+												</>
+											)}
+										</Button>
+									</div>
 								</CardContent>
 							</Card>
 						</TabsContent>
@@ -666,68 +874,47 @@ const CreateQuestionPage = (): React.ReactElement => {
 					<div className='lg:col-span-1 space-y-6'>
 						{/* Exam Questions Panel */}
 						<Card>
-							<CardHeader className='py-3 px-4'>
+							<CardHeader>
 								<CardTitle className='text-sm font-medium'>
-									Questions in this Exam
+									Questions in this Exam ({existingQuestions.length})
 								</CardTitle>
 							</CardHeader>
-							<CardContent className='pt-0'>
-								<ExamQuestionsPanel
-									questions={existingQuestions}
-									topics={topics}
-									matrix={matrix}
-									onRemoveQuestion={handleRemoveQuestion}
-									onViewQuestion={handleViewQuestion}
-									isRemoving={removeQuestionMutation.isPending}
-								/>
-							</CardContent>
+							<ExamQuestionsPanel
+								questions={existingQuestions}
+								topics={topics}
+								matrix={matrix}
+								onRemoveQuestion={handleRemoveQuestion}
+								onViewQuestion={handleViewQuestion}
+								isRemoving={removeQuestionMutation.isPending}
+							/>
 						</Card>
 
 						{/* Matrix Requirements */}
 						{matrix && (
-							<Card className='border-primary/20 bg-primary/5'>
-								<CardHeader className='py-3 px-4'>
-									<div className='flex items-start gap-3'>
-										<Info className='h-5 w-5 text-primary mt-0.5' />
-										<div className='flex-1'>
-											<CardTitle className='text-sm font-medium'>
-												Matrix Requirements
-											</CardTitle>
-											<p className='text-xs text-muted-foreground mt-1'>
-												Click a requirement to pre-fill the form
-											</p>
-										</div>
+							<Card>
+								<div className='flex items-start gap-2 ml-6'>
+									<Info className='h-4 w-4 text-muted-foreground mt-0.5' />
+									<div className='flex-1 space-y-1'>
+										<CardTitle className='text-sm font-medium'>
+											Matrix Requirements
+										</CardTitle>
+										<p className='text-xs text-muted-foreground'>
+											Click any requirement to pre-fill the form
+										</p>
 									</div>
-								</CardHeader>
-								<CardContent className='pt-0'>
-									<MatrixProgressTracker
-										matrix={matrix}
-										questions={existingQuestions}
-										topics={topics}
-										onRequirementClick={handleMatrixRequirementClick}
-										interactive
-										compact
-									/>
-								</CardContent>
+								</div>
+								<MatrixProgressTracker
+									matrix={matrix}
+									questions={existingQuestions}
+									topics={topics}
+									onRequirementClick={handleMatrixRequirementClick}
+									interactive
+								/>
 							</Card>
 						)}
 					</div>
 				</div>
 			</Tabs>
-
-			{/* Question Bank Dialog */}
-			<QuestionBankDialog
-				open={showBankDialog}
-				onOpenChange={setShowBankDialog}
-				allQuestions={allQuestions}
-				existingQuestionIds={existingQuestionIds}
-				existingQuestions={existingQuestions}
-				topics={topics}
-				matrix={matrix}
-				onAddQuestions={handleAddFromBank}
-				isLoading={isLoadingQuestions}
-				isAdding={addQuestionsMutation.isPending}
-			/>
 		</div>
 	)
 }

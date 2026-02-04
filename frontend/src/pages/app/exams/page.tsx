@@ -68,6 +68,7 @@ const ExamsPage = (): React.ReactElement => {
 	const [filter, setFilter] = useState<'all' | 'draft' | 'published'>('all')
 	const [editingExam, setEditingExam] = useState<Exam | null>(null)
 	const [deletingExam, setDeletingExam] = useState<Exam | null>(null)
+	const [openMenuId, setOpenMenuId] = useState<string | null>(null)
 	const [formData, setFormData] = useState<Partial<CreateExamRequest>>({
 		name: '',
 		description: '',
@@ -180,6 +181,10 @@ const ExamsPage = (): React.ReactElement => {
 										key={exam.id}
 										className='cursor-pointer hover:bg-muted/50'
 										onClick={() => navigate(`/app/exams/${exam.id}`)}
+										onContextMenu={e => {
+											e.preventDefault()
+											setOpenMenuId(exam.id)
+										}}
 									>
 										<TableCell className='font-medium'>{exam.name}</TableCell>
 										<TableCell>-</TableCell>
@@ -204,7 +209,12 @@ const ExamsPage = (): React.ReactElement => {
 											className='text-right'
 											onClick={e => e.stopPropagation()}
 										>
-											<DropdownMenu>
+											<DropdownMenu
+												open={openMenuId === exam.id}
+												onOpenChange={open =>
+													setOpenMenuId(open ? exam.id : null)
+												}
+											>
 												<DropdownMenuTrigger asChild>
 													<Button variant='ghost' size='icon'>
 														<MoreHorizontal className='h-4 w-4' />

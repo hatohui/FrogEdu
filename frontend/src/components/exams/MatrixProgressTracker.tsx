@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { CardContent, CardTitle } from '@/components/ui/card'
 import { Progress } from '@/components/ui/progress'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -18,7 +18,6 @@ interface MatrixProgressTrackerProps {
 	topics: Topic[]
 	onRequirementClick?: (topicId: string, cognitiveLevel: CognitiveLevel) => void
 	interactive?: boolean
-	compact?: boolean
 }
 
 interface ProgressItem {
@@ -36,7 +35,6 @@ export const MatrixProgressTracker: React.FC<MatrixProgressTrackerProps> = ({
 	topics,
 	onRequirementClick,
 	interactive = false,
-	compact = false,
 }) => {
 	const progressData = useMemo(() => {
 		const data: ProgressItem[] = []
@@ -105,32 +103,25 @@ export const MatrixProgressTracker: React.FC<MatrixProgressTrackerProps> = ({
 	}
 
 	return (
-		<Card className={compact ? '' : ''}>
-			<CardHeader className={compact ? 'py-3 px-4' : ''}>
+		<div className='px-6'>
+			<div className='px-2 pb-2'>
 				<div className='flex items-center justify-between'>
-					<CardTitle
-						className={`flex items-center gap-2 ${compact ? 'text-sm font-medium' : ''}`}
-					>
+					<CardTitle className={`flex items-center gap-2`}>
 						<span>Matrix Progress</span>
 						{overallProgress === 100 && (
 							<CheckCircle className='h-5 w-5 text-primary' />
 						)}
 					</CardTitle>
 					<div className='text-sm font-medium'>
-						<span
-							className={`font-bold text-primary ${compact ? 'text-lg' : 'text-2xl'}`}
-						>
+						<span className={`font-bold text-primary `}>
 							{Math.round(overallProgress)}%
 						</span>
 						<span className='text-muted-foreground ml-1'>Complete</span>
 					</div>
 				</div>
-				<Progress
-					value={overallProgress}
-					className={`mt-4 ${compact ? 'h-2' : 'h-3'}`}
-				/>
-			</CardHeader>
-			<CardContent className={`space-y-3 ${compact ? 'pt-0' : ''}`}>
+				<Progress className='mb-2' value={overallProgress} />
+			</div>
+			<CardContent className='space-y-2 mt-2 p-0'>
 				{progressData.map((item, index) => {
 					const isComplete = item.created >= item.required
 					const isOver = item.created > item.required
@@ -150,7 +141,7 @@ export const MatrixProgressTracker: React.FC<MatrixProgressTrackerProps> = ({
 								}
 							}}
 						>
-							<div className='flex items-center justify-between mb-2'>
+							<div className='flex items-center justify-between mb-1.5'>
 								<div className='flex items-center gap-2'>
 									<span className='text-sm font-medium'>{item.topicName}</span>
 									<Badge
@@ -191,6 +182,6 @@ export const MatrixProgressTracker: React.FC<MatrixProgressTrackerProps> = ({
 					)
 				})}
 			</CardContent>
-		</Card>
+		</div>
 	)
 }

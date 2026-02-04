@@ -1,9 +1,11 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import subscriptionService from '@/services/subscription.service'
 import { toast } from 'sonner'
+import { useAuthStore } from '@/stores/authStore'
 
 export const useSubscription = () => {
 	const queryClient = useQueryClient()
+	const isAuthenticated = useAuthStore(state => state.isAuthenticated)
 
 	// Query for user's current subscription
 	const {
@@ -16,6 +18,7 @@ export const useSubscription = () => {
 		queryFn: () => subscriptionService.getMySubscription(),
 		staleTime: 5 * 60 * 1000, // 5 minutes
 		retry: 1,
+		enabled: isAuthenticated,
 	})
 
 	// Query for available subscription tiers
@@ -27,6 +30,7 @@ export const useSubscription = () => {
 		queryKey: ['subscription', 'tiers'],
 		queryFn: () => subscriptionService.getSubscriptionTiers(),
 		staleTime: 30 * 60 * 1000, // 30 minutes
+		enabled: isAuthenticated,
 	})
 
 	// Mutation for subscribing to Pro

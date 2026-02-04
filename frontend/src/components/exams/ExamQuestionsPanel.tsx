@@ -1,6 +1,6 @@
 import React from 'react'
-import { Trash2, AlertCircle, CheckCircle, Eye } from 'lucide-react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Trash2, AlertCircle, Eye } from 'lucide-react'
+import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { ScrollArea } from '@/components/ui/scroll-area'
@@ -81,7 +81,7 @@ export const ExamQuestionsPanel: React.FC<ExamQuestionsPanelProps> = ({
 
 	if (questions.length === 0) {
 		return (
-			<Card className='border-dashed'>
+			<Card>
 				<CardContent className='flex flex-col items-center justify-center py-8 text-center'>
 					<AlertCircle className='h-10 w-10 text-muted-foreground mb-3' />
 					<p className='text-sm font-medium mb-1'>No questions added yet</p>
@@ -94,15 +94,7 @@ export const ExamQuestionsPanel: React.FC<ExamQuestionsPanelProps> = ({
 	}
 
 	return (
-		<Card>
-			<CardHeader className='py-3 px-4'>
-				<div className='flex items-center justify-between'>
-					<CardTitle className='text-sm font-medium flex items-center gap-2'>
-						<CheckCircle className='h-4 w-4 text-primary' />
-						Exam Questions ({questions.length})
-					</CardTitle>
-				</div>
-			</CardHeader>
+		<>
 			<CardContent className='p-0'>
 				<ScrollArea className='h-[300px]'>
 					<div className='divide-y'>
@@ -112,9 +104,15 @@ export const ExamQuestionsPanel: React.FC<ExamQuestionsPanelProps> = ({
 							return (
 								<div
 									key={question.id}
-									className={`p-3 hover:bg-muted/50 transition-colors ${
+									className={`p-3 hover:bg-muted/50 rounded-lg mx-4 border-dashed border-accent border transition-colors ${
 										!inMatrix ? 'bg-yellow-50/50 dark:bg-yellow-900/10' : ''
 									}`}
+									onContextMenu={e => {
+										e.preventDefault()
+										if (onViewQuestion) {
+											onViewQuestion(question.id)
+										}
+									}}
 								>
 									<div className='flex items-start gap-3'>
 										<span className='flex-shrink-0 w-6 h-6 rounded-full bg-primary/10 text-primary text-xs font-medium flex items-center justify-center'>
@@ -226,7 +224,7 @@ export const ExamQuestionsPanel: React.FC<ExamQuestionsPanelProps> = ({
 					</div>
 				</ScrollArea>
 			</CardContent>
-		</Card>
+		</>
 	)
 }
 

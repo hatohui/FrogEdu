@@ -25,7 +25,7 @@ const MainLayout = ({
 
 	return (
 		<RoleGuard>
-			<div className='bg-gray-50 dark:bg-gray-900'>
+			<div className='bg-gray-50  dark:bg-gray-900'>
 				<Navigation />
 				<main className='flex-1'>{children}</main>
 			</div>

@@ -3,7 +3,7 @@ import { Sparkles, Loader2, Zap, SaveAll } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
-import { Slider } from '@/components/ui/slider'
+import { Input } from '@/components/ui/input'
 import { TopicSelector } from '@/components/exams/topic-selector'
 import { QuestionTypeSelector } from '@/components/exams/QuestionTypeSelector'
 import { CognitiveLevelSelector } from '@/components/exams/CognitiveLevelSelector'
@@ -93,10 +93,10 @@ export const AIGeneratorSection: React.FC<AIGeneratorSectionProps> = ({
 		<>
 			{/* Matrix Generation Card */}
 			{matrix && onGenerateMatrix && (
-				<Card className='border-amber-200 bg-gradient-to-br from-amber-50 to-orange-50'>
+				<Card>
 					<CardHeader>
-						<CardTitle className='flex items-center gap-2'>
-							<Zap className='h-5 w-5 text-amber-600' />
+						<CardTitle className='flex items-center gap-2 text-sm'>
+							<Zap className='h-4 w-4' />
 							Generate Entire Matrix
 						</CardTitle>
 					</CardHeader>
@@ -108,7 +108,7 @@ export const AIGeneratorSection: React.FC<AIGeneratorSectionProps> = ({
 						<Button
 							onClick={onGenerateMatrix}
 							disabled={isGenerating}
-							className='w-full bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700'
+							className='w-full'
 							size='lg'
 						>
 							{isGenerating ? (
@@ -130,8 +130,8 @@ export const AIGeneratorSection: React.FC<AIGeneratorSectionProps> = ({
 			{/* AI Generation Card */}
 			<Card>
 				<CardHeader>
-					<CardTitle className='flex items-center gap-2'>
-						<Sparkles className='h-5 w-5 text-amber-500' />
+					<CardTitle className='flex items-center gap-2 text-sm'>
+						<Sparkles className='h-4 w-4' />
 						AI Question Generator
 					</CardTitle>
 				</CardHeader>
@@ -166,14 +166,17 @@ export const AIGeneratorSection: React.FC<AIGeneratorSectionProps> = ({
 							/>
 						</div>
 						<div className='space-y-2'>
-							<Label>Quantity: {aiQuantity}</Label>
-							<Slider
-								value={[aiQuantity]}
-								onValueChange={([v]) => setAiQuantity(v)}
+							<Label>Quantity</Label>
+							<Input
+								type='number'
+								value={aiQuantity}
+								onChange={e =>
+									setAiQuantity(
+										Math.max(1, Math.min(10, Number(e.target.value) || 1))
+									)
+								}
 								min={1}
-								max={5}
-								step={1}
-								className='mt-2'
+								max={10}
 							/>
 						</div>
 					</div>
@@ -181,7 +184,7 @@ export const AIGeneratorSection: React.FC<AIGeneratorSectionProps> = ({
 					<Button
 						onClick={handleGenerate}
 						disabled={isGenerating || !selectedTopic}
-						className='w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600'
+						className='w-full'
 					>
 						{isGenerating ? (
 							<>
