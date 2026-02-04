@@ -8,7 +8,7 @@ from mangum import Mangum
 
 from app.api import router
 from app.config import get_settings
-from pathMiddleware import PathPrefixMiddleware
+from app.middleware import PathPrefixMiddleware
 
 # Configure logging for Lambda
 logging.basicConfig(
