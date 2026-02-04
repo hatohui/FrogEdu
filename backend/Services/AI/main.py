@@ -35,7 +35,7 @@ async def lifespan(app: FastAPI):
     logger.info("🔍 Registered routes:")
     for route in app.routes:
         if hasattr(route, 'methods') and hasattr(route, 'path'):
-            logger.info(f"   {list(route.methods)} {route.path}")
+            logger.info(f"   {list(route.methods)} {route.path}") # type: ignore
     logger.info("=" * 80)
     yield
     logger.info("📋 LIFESPAN SHUTDOWN")
@@ -124,7 +124,7 @@ async def not_found_handler(request: Request, exc):
     logger.error(f"   Available routes:")
     for route in app.routes:
         if hasattr(route, 'methods') and hasattr(route, 'path'):
-            logger.error(f"      {list(route.methods)} {route.path}")
+            logger.error(f"      {list(route.methods)} {route.path}") # type: ignore
     logger.error("=" * 80)
     return JSONResponse(
         status_code=404,

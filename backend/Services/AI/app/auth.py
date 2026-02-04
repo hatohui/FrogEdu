@@ -147,6 +147,7 @@ async def validate_token(
                 "verify_aud": False,  # Cognito doesn't always include audience
                 "verify_exp": True,
                 "verify_iss": True,
+                "verify_at_hash": False,  # Skip at_hash verification for ID tokens
             }
         )
         
