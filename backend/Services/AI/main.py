@@ -8,6 +8,7 @@ from mangum import Mangum
 
 from app.api import router
 from app.config import get_settings
+from pathMiddleware import PathPrefixMiddleware
 
 # Configure logging for Lambda
 logging.basicConfig(
@@ -37,6 +38,9 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Add path prefix middleware
+app.add_middleware(PathPrefixMiddleware)
 
 
 @app.middleware("http")
