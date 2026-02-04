@@ -91,7 +91,7 @@ export const useAuthStore = create<AuthState>()((set, get) => ({
 					return
 				}
 			} catch {
-				toast.error('Failed to initiate Google sign-in. Please try again.')
+				console.log('no user')
 			}
 
 			await signInWithRedirect({

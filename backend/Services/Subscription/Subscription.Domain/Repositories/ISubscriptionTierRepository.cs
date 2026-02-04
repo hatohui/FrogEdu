@@ -12,6 +12,9 @@ public interface ISubscriptionTierRepository
     Task<IReadOnlyList<SubscriptionTier>> GetAllActiveAsync(
         CancellationToken cancellationToken = default
     );
+    Task<IReadOnlyList<SubscriptionTier>> GetAllAsync(
+        CancellationToken cancellationToken = default
+    );
     Task<IReadOnlyList<SubscriptionTier>> GetByTargetRoleAsync(
         string targetRole,
         CancellationToken cancellationToken = default

@@ -22,6 +22,9 @@ public interface IUserSubscriptionRepository
         DateTime beforeDate,
         CancellationToken cancellationToken = default
     );
+    Task<IReadOnlyList<UserSubscription>> GetAllAsync(
+        CancellationToken cancellationToken = default
+    );
     Task AddAsync(UserSubscription subscription, CancellationToken cancellationToken = default);
     void Update(UserSubscription subscription);
     void Delete(UserSubscription subscription);

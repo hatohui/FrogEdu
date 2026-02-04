@@ -48,6 +48,7 @@ public sealed class GetUserSubscriptionQueryHandler
         {
             Id = subscription.Id,
             UserId = subscription.UserId,
+            SubscriptionTierId = subscription.SubscriptionTierId,
             PlanName = tier?.Name ?? "Unknown",
             StartDate = subscription.StartDate,
             EndDate = subscription.EndDate,

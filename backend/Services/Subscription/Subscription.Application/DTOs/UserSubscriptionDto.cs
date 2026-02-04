@@ -7,6 +7,7 @@ public sealed record UserSubscriptionDto
 {
     public Guid Id { get; init; }
     public Guid UserId { get; init; }
+    public Guid SubscriptionTierId { get; init; }
     public string PlanName { get; init; } = null!;
     public DateTime StartDate { get; init; }
     public DateTime EndDate { get; init; }

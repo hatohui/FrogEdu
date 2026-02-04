@@ -73,6 +73,16 @@ public class UserSubscriptionRepository : IUserSubscriptionRepository
             .ToListAsync(cancellationToken);
     }
 
+    public async Task<IReadOnlyList<UserSubscription>> GetAllAsync(
+        CancellationToken cancellationToken = default
+    )
+    {
+        return await _context
+            .UserSubscriptions.Include(us => us.Transactions)
+            .OrderByDescending(us => us.StartDate)
+            .ToListAsync(cancellationToken);
+    }
+
     public async Task AddAsync(
         UserSubscription subscription,
         CancellationToken cancellationToken = default

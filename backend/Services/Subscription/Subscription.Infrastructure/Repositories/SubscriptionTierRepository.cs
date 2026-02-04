@@ -46,6 +46,15 @@ public class SubscriptionTierRepository : ISubscriptionTierRepository
             .ToListAsync(cancellationToken);
     }
 
+    public async Task<IReadOnlyList<SubscriptionTier>> GetAllAsync(
+        CancellationToken cancellationToken = default
+    )
+    {
+        return await _context
+            .SubscriptionTiers.OrderBy(st => st.DurationInDays)
+            .ToListAsync(cancellationToken);
+    }
+
     public async Task<IReadOnlyList<SubscriptionTier>> GetByTargetRoleAsync(
         string targetRole,
         CancellationToken cancellationToken = default

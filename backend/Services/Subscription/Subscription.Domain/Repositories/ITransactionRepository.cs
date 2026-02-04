@@ -26,6 +26,7 @@ public interface ITransactionRepository
         PaymentProvider provider,
         CancellationToken cancellationToken = default
     );
+    Task<IReadOnlyList<Transaction>> GetAllAsync(CancellationToken cancellationToken = default);
     Task AddAsync(Transaction transaction, CancellationToken cancellationToken = default);
     void Update(Transaction transaction);
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);

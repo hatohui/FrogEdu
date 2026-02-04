@@ -83,6 +83,15 @@ public class TransactionRepository : ITransactionRepository
             .ToListAsync(cancellationToken);
     }
 
+    public async Task<IReadOnlyList<Transaction>> GetAllAsync(
+        CancellationToken cancellationToken = default
+    )
+    {
+        return await _context
+            .Transactions.OrderByDescending(t => t.CreatedAt)
+            .ToListAsync(cancellationToken);
+    }
+
     public async Task AddAsync(
         Transaction transaction,
         CancellationToken cancellationToken = default
