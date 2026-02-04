@@ -7,9 +7,6 @@ class Settings(BaseSettings):
     
     # Gemini API Configuration
     gemini_api_key: str
-    gemini_project_name: str
-    gemini_project_number: str
-    gemini_key_name: str
     
     # Application Configuration
     app_name: str = "FrogEdu AI Service"
