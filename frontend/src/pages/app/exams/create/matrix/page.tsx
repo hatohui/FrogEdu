@@ -1,11 +1,17 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useNavigate, useSearchParams } from 'react-router'
 import { ArrowLeft, Plus, Trash2, Save } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { TopicSelector } from '@/components/exams/topic-selector'
-import { useCreateMatrix, useExam, useTopics } from '@/hooks/useExams'
+import {
+	useCreateMatrix,
+	useUpdateMatrix,
+	useExam,
+	useTopics,
+	useMatrix,
+} from '@/hooks/useExams'
 import {
 	type MatrixTopicDto,
 	type MatrixRow,
@@ -19,6 +25,9 @@ const CreateMatrixPage = (): React.ReactElement => {
 
 	const { data: exam, isLoading: isLoadingExam } = useExam(examId ?? '')
 	const { data: topics = [] } = useTopics(exam?.subjectId ?? '')
+	const { data: existingMatrix, isLoading: isLoadingMatrix } = useMatrix(
+		examId ?? ''
+	)
 	const [matrixRows, setMatrixRows] = useState<MatrixRow[]>([
 		{
 			id: crypto.randomUUID(),
@@ -29,8 +38,69 @@ const CreateMatrixPage = (): React.ReactElement => {
 			analyze: 0,
 		},
 	])
+	const [isInitialized, setIsInitialized] = useState(false)
+
+	// Initialize matrix rows from existing matrix data
+	useEffect(() => {
+		if (isInitialized || isLoadingMatrix) return
+
+		if (
+			existingMatrix?.matrixTopics &&
+			existingMatrix.matrixTopics.length > 0
+		) {
+			// Group matrix topics by topicId
+			const topicMap = new Map<
+				string,
+				{ remember: number; understand: number; apply: number; analyze: number }
+			>()
+
+			existingMatrix.matrixTopics.forEach(topic => {
+				const existing = topicMap.get(topic.topicId) || {
+					remember: 0,
+					understand: 0,
+					apply: 0,
+					analyze: 0,
+				}
+
+				switch (topic.cognitiveLevel) {
+					case CognitiveLevel.Remember:
+						existing.remember = topic.quantity
+						break
+					case CognitiveLevel.Understand:
+						existing.understand = topic.quantity
+						break
+					case CognitiveLevel.Apply:
+						existing.apply = topic.quantity
+						break
+					case CognitiveLevel.Analyze:
+						existing.analyze = topic.quantity
+						break
+				}
+
+				topicMap.set(topic.topicId, existing)
+			})
+
+			// Convert to MatrixRow format
+			const rows: MatrixRow[] = Array.from(topicMap.entries()).map(
+				([topicId, levels]) => ({
+					id: crypto.randomUUID(),
+					topicId,
+					...levels,
+				})
+			)
+
+			if (rows.length > 0) {
+				setMatrixRows(rows)
+			}
+		}
+		setIsInitialized(true)
+	}, [existingMatrix, isLoadingMatrix, isInitialized])
 
 	const createMatrixMutation = useCreateMatrix()
+	const updateMatrixMutation = useUpdateMatrix()
+
+	// Check if we're editing an existing matrix
+	const isEditing = !!existingMatrix?.id
 
 	const addRow = () => {
 		setMatrixRows([
@@ -111,15 +181,28 @@ const CreateMatrixPage = (): React.ReactElement => {
 		})
 
 		try {
-			await createMatrixMutation.mutateAsync({
-				examId,
-				matrixTopics,
-			})
+			if (isEditing && existingMatrix?.id) {
+				// Update existing matrix
+				await updateMatrixMutation.mutateAsync({
+					matrixId: existingMatrix.id,
+					examId,
+					matrixTopics,
+				})
+			} else {
+				// Create new matrix
+				await createMatrixMutation.mutateAsync({
+					examId,
+					matrixTopics,
+				})
+			}
 
 			// Navigate to question bank
-			navigate(`/app/exams/${examId}/questions`)
+			navigate(`/app/exams/${examId}`)
 		} catch (error) {
-			console.error('Failed to create matrix:', error)
+			console.error(
+				`Failed to ${isEditing ? 'update' : 'create'} matrix:`,
+				error
+			)
 		}
 	}
 
@@ -129,7 +212,7 @@ const CreateMatrixPage = (): React.ReactElement => {
 	}
 
 	// Show loading state
-	if (isLoadingExam) {
+	if (isLoadingExam || isLoadingMatrix) {
 		return (
 			<div className='p-6 flex items-center justify-center min-h-[400px]'>
 				<div className='text-center'>
@@ -172,7 +255,9 @@ const CreateMatrixPage = (): React.ReactElement => {
 						<ArrowLeft className='h-5 w-5' />
 					</Button>
 					<div>
-						<h1 className='text-3xl font-bold'>Create Exam Matrix</h1>
+						<h1 className='text-3xl font-bold'>
+							{isEditing ? 'Edit' : 'Create'} Exam Matrix
+						</h1>
 						<p className='text-muted-foreground'>
 							Define question distribution by cognitive level
 						</p>
@@ -184,10 +269,18 @@ const CreateMatrixPage = (): React.ReactElement => {
 					</Button>
 					<Button
 						onClick={handleSave}
-						disabled={createMatrixMutation.isPending}
+						disabled={
+							createMatrixMutation.isPending ||
+							updateMatrixMutation.isPending ||
+							matrixRows.some(row => !row.topicId)
+						}
 					>
 						<Save className='h-4 w-4 mr-2' />
-						{createMatrixMutation.isPending ? 'Saving...' : 'Save & Continue'}
+						{createMatrixMutation.isPending || updateMatrixMutation.isPending
+							? 'Saving...'
+							: isEditing
+								? 'Update & Continue'
+								: 'Save & Continue'}
 					</Button>
 				</div>
 			</div>

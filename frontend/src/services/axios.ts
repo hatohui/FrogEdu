@@ -3,18 +3,14 @@ import { fetchAuthSession } from 'aws-amplify/auth'
 
 const ApiUrl = import.meta.env.VITE_API_URL
 
-// Create axios instance with /api prefix
-// Frontend calls: /users/health -> axios makes request to: {ApiUrl}/api/users/health
-// This matches the API Gateway routing pattern
 const axiosInstance = axios.create({
 	baseURL: `${ApiUrl}/api`,
-	timeout: 30000,
+	timeout: 90000,
 	headers: {
 		'Content-Type': 'application/json',
 	},
 })
 
-// Add request interceptor to attach Cognito JWT token
 axiosInstance.interceptors.request.use(
 	async config => {
 		try {

@@ -11,6 +11,17 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Skeleton } from '@/components/ui/skeleton'
 import {
+	AlertDialog,
+	AlertDialogAction,
+	AlertDialogCancel,
+	AlertDialogContent,
+	AlertDialogDescription,
+	AlertDialogFooter,
+	AlertDialogHeader,
+	AlertDialogTitle,
+	AlertDialogTrigger,
+} from '@/components/ui/alert-dialog'
+import {
 	Check,
 	Crown,
 	Zap,
@@ -18,6 +29,8 @@ import {
 	Brain,
 	Clock,
 	Sparkles,
+	XCircle,
+	AlertTriangle,
 } from 'lucide-react'
 import { useSubscription } from '@/hooks/useSubscription'
 
@@ -28,8 +41,11 @@ const SubscriptionPage = (): React.ReactElement => {
 		isLoading,
 		subscribeToPro,
 		isSubscribing,
+		cancelSubscription,
+		isCancelling,
 		isPro,
 		isFree,
+		isCancelled,
 	} = useSubscription()
 
 	const formatDate = (dateString?: string) => {
@@ -53,6 +69,14 @@ const SubscriptionPage = (): React.ReactElement => {
 			await subscribeToPro()
 		} catch (error) {
 			console.error('Failed to subscribe:', error)
+		}
+	}
+
+	const handleCancelSubscription = async () => {
+		try {
+			await cancelSubscription()
+		} catch (error) {
+			console.error('Failed to cancel subscription:', error)
 		}
 	}
 
@@ -89,7 +113,9 @@ const SubscriptionPage = (): React.ReactElement => {
 				className={
 					isPro
 						? 'border-2 border-amber-500 bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-950/20 dark:to-orange-950/20'
-						: ''
+						: isCancelled
+							? 'border-2 border-red-300 bg-gradient-to-br from-red-50 to-orange-50 dark:from-red-950/20 dark:to-orange-950/20'
+							: ''
 				}
 			>
 				<CardHeader>
@@ -97,20 +123,33 @@ const SubscriptionPage = (): React.ReactElement => {
 						<div>
 							<CardTitle className='flex items-center gap-2'>
 								Current Plan
-								{isPro && (
+								{isPro && !isCancelled && (
 									<Badge className='bg-gradient-to-r from-amber-500 to-orange-500 text-white'>
 										<Crown className='h-3 w-3 mr-1' />
 										Pro
 									</Badge>
 								)}
+								{isCancelled && (
+									<Badge variant='destructive'>
+										<XCircle className='h-3 w-3 mr-1' />
+										Cancelled
+									</Badge>
+								)}
 							</CardTitle>
 							<CardDescription>
-								{isPro
+								{isPro && !isCancelled
 									? 'You have access to all premium features'
-									: 'Upgrade to unlock premium features'}
+									: isCancelled
+										? 'Your subscription has been cancelled'
+										: 'Upgrade to unlock premium features'}
 							</CardDescription>
 						</div>
-						{isPro && <Crown className='h-12 w-12 text-amber-500' />}
+						{isPro && !isCancelled && (
+							<Crown className='h-12 w-12 text-amber-500' />
+						)}
+						{isCancelled && (
+							<AlertTriangle className='h-12 w-12 text-red-500' />
+						)}
 					</div>
 				</CardHeader>
 				<CardContent className='space-y-4'>
@@ -125,10 +164,22 @@ const SubscriptionPage = (): React.ReactElement => {
 							<p className='text-sm text-muted-foreground'>Status</p>
 							<div className='flex items-center gap-2'>
 								<Badge
-									variant={subscription?.isActive ? 'default' : 'secondary'}
-									className={subscription?.isActive ? 'bg-green-600' : ''}
+									variant={
+										isCancelled
+											? 'destructive'
+											: subscription?.isActive
+												? 'default'
+												: 'secondary'
+									}
+									className={
+										subscription?.isActive && !isCancelled ? 'bg-green-600' : ''
+									}
 								>
-									{subscription?.isActive ? 'Active' : 'Inactive'}
+									{isCancelled
+										? 'Cancelled'
+										: subscription?.isActive
+											? 'Active'
+											: 'Inactive'}
 								</Badge>
 							</div>
 						</div>
@@ -139,12 +190,85 @@ const SubscriptionPage = (): React.ReactElement => {
 									<p>{formatDate(subscription.startDate)}</p>
 								</div>
 								<div>
-									<p className='text-sm text-muted-foreground'>Expires</p>
+									<p className='text-sm text-muted-foreground'>
+										{isCancelled ? 'Access Until' : 'Expires'}
+									</p>
 									<p>{formatDate(subscription.endDate)}</p>
 								</div>
 							</>
 						)}
 					</div>
+
+					{/* Cancel Subscription Button */}
+					{isPro && !isCancelled && (
+						<div className='pt-4 border-t'>
+							<AlertDialog>
+								<AlertDialogTrigger asChild>
+									<Button
+										variant='outline'
+										className='text-red-600 hover:text-red-700 hover:bg-red-50'
+									>
+										<XCircle className='h-4 w-4 mr-2' />
+										Cancel Subscription
+									</Button>
+								</AlertDialogTrigger>
+								<AlertDialogContent>
+									<AlertDialogHeader>
+										<AlertDialogTitle>
+											Cancel your subscription?
+										</AlertDialogTitle>
+										<AlertDialogDescription className='space-y-2'>
+											<p>
+												Are you sure you want to cancel your Pro subscription?
+											</p>
+											<p>
+												You will continue to have access to Pro features until{' '}
+												<strong>{formatDate(subscription?.endDate)}</strong>.
+												After that, your account will be downgraded to the Free
+												plan.
+											</p>
+										</AlertDialogDescription>
+									</AlertDialogHeader>
+									<AlertDialogFooter>
+										<AlertDialogCancel>Keep Subscription</AlertDialogCancel>
+										<AlertDialogAction
+											onClick={handleCancelSubscription}
+											disabled={isCancelling}
+											className='bg-red-600 hover:bg-red-700'
+										>
+											{isCancelling ? 'Cancelling...' : 'Yes, Cancel'}
+										</AlertDialogAction>
+									</AlertDialogFooter>
+								</AlertDialogContent>
+							</AlertDialog>
+						</div>
+					)}
+
+					{/* Resubscribe option for cancelled subscriptions */}
+					{isCancelled && (
+						<div className='pt-4 border-t'>
+							<p className='text-sm text-muted-foreground mb-3'>
+								Changed your mind? You can resubscribe anytime.
+							</p>
+							<Button
+								onClick={handleSubscribe}
+								disabled={isSubscribing}
+								className='bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600'
+							>
+								{isSubscribing ? (
+									<>
+										<span className='animate-spin mr-2'>⏳</span>
+										Resubscribing...
+									</>
+								) : (
+									<>
+										<Crown className='h-4 w-4 mr-2' />
+										Resubscribe to Pro
+									</>
+								)}
+							</Button>
+						</div>
+					)}
 				</CardContent>
 			</Card>
 
@@ -273,8 +397,11 @@ const SubscriptionPage = (): React.ReactElement => {
 						<Zap className='h-5 w-5 text-blue-600 mt-0.5' />
 						<div>
 							<p className='font-medium text-blue-900 dark:text-blue-100'>
-								You can cancel your subscription at any time from your profile
-								settings.
+								{isPro && !isCancelled
+									? 'You can cancel your subscription at any time. Your access will continue until the end of your billing period.'
+									: isCancelled
+										? 'Your subscription has been cancelled but you still have access until the end of your billing period.'
+										: 'Upgrade to Pro to unlock all premium features including AI-powered exam generation and tutoring.'}
 							</p>
 						</div>
 					</div>

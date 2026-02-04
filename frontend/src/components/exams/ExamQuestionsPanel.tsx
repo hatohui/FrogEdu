@@ -1,6 +1,6 @@
 import React from 'react'
 import { Trash2, AlertCircle, Eye } from 'lucide-react'
-import { Card, CardContent } from '@/components/ui/card'
+import { CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { ScrollArea } from '@/components/ui/scroll-area'
@@ -81,7 +81,7 @@ export const ExamQuestionsPanel: React.FC<ExamQuestionsPanelProps> = ({
 
 	if (questions.length === 0) {
 		return (
-			<Card>
+			<div>
 				<CardContent className='flex flex-col items-center justify-center py-8 text-center'>
 					<AlertCircle className='h-10 w-10 text-muted-foreground mb-3' />
 					<p className='text-sm font-medium mb-1'>No questions added yet</p>
@@ -89,7 +89,7 @@ export const ExamQuestionsPanel: React.FC<ExamQuestionsPanelProps> = ({
 						Create questions or add from the question bank
 					</p>
 				</CardContent>
-			</Card>
+			</div>
 		)
 	}
 

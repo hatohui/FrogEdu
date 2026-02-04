@@ -14,6 +14,10 @@ public interface ITransactionRepository
         Guid subscriptionId,
         CancellationToken cancellationToken = default
     );
+    Task<IReadOnlyList<Transaction>> GetByUserIdAsync(
+        Guid userId,
+        CancellationToken cancellationToken = default
+    );
     Task<IReadOnlyList<Transaction>> GetByStatusAsync(
         PaymentStatus status,
         CancellationToken cancellationToken = default

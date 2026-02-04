@@ -1,6 +1,6 @@
 import React from 'react'
 import { NavLink } from 'react-router'
-import { User, CreditCard, Settings, Shield } from 'lucide-react'
+import { User, CreditCard, Settings, Shield, Receipt } from 'lucide-react'
 import { cn } from '@/utils/shadcn'
 import { Badge } from '@/components/ui/badge'
 import { useSubscription } from '@/hooks/useSubscription'
@@ -14,6 +14,7 @@ interface NavItem {
 const navItems: NavItem[] = [
 	{ to: '/profile', label: 'Profile', icon: User },
 	{ to: '/profile/subscription', label: 'Subscription', icon: CreditCard },
+	{ to: '/profile/transactions', label: 'Transactions', icon: Receipt },
 	{ to: '/profile/security', label: 'Security', icon: Shield },
 	{ to: '/profile/settings', label: 'Settings', icon: Settings },
 ]

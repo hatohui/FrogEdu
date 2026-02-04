@@ -40,6 +40,8 @@ export const useSubscription = () => {
 			toast.success(data.message || 'Successfully subscribed to Pro!')
 			// Invalidate subscription query to refetch
 			queryClient.invalidateQueries({ queryKey: ['subscription', 'me'] })
+			// Invalidate transactions to show new transaction
+			queryClient.invalidateQueries({ queryKey: ['transactions', 'me'] })
 			// Also invalidate user query to update subscription info
 			queryClient.invalidateQueries({ queryKey: ['currentUser'] })
 		},
@@ -48,14 +50,34 @@ export const useSubscription = () => {
 		},
 	})
 
+	// Mutation for cancelling subscription
+	const cancelSubscriptionMutation = useMutation({
+		mutationFn: () => subscriptionService.cancelSubscription(),
+		onSuccess: data => {
+			toast.success(data.message || 'Subscription cancelled successfully')
+			// Invalidate subscription query to refetch
+			queryClient.invalidateQueries({ queryKey: ['subscription', 'me'] })
+			// Also invalidate user query to update subscription info
+			queryClient.invalidateQueries({ queryKey: ['currentUser'] })
+		},
+		onError: (error: Error) => {
+			toast.error(error.message || 'Failed to cancel subscription')
+		},
+	})
+
 	const subscribeToPro = async () => {
 		return subscribeToProMutation.mutateAsync()
+	}
+
+	const cancelSubscription = async () => {
+		return cancelSubscriptionMutation.mutateAsync()
 	}
 
 	const isPro =
 		subscription?.isActive && subscription?.planName?.toLowerCase() === 'pro'
 	const isFree =
 		!subscription?.isActive || subscription?.planName?.toLowerCase() === 'free'
+	const isCancelled = subscription?.status?.toLowerCase() === 'cancelled'
 
 	return {
 		subscription,
@@ -67,8 +89,38 @@ export const useSubscription = () => {
 		tiersError,
 		subscribeToPro,
 		isSubscribing: subscribeToProMutation.isPending,
+		cancelSubscription,
+		isCancelling: cancelSubscriptionMutation.isPending,
 		isPro,
 		isFree,
+		isCancelled,
 		refetchSubscription,
+	}
+}
+
+/**
+ * Hook for fetching user's transaction history
+ */
+export const useTransactions = () => {
+	const isAuthenticated = useAuthStore(state => state.isAuthenticated)
+
+	const {
+		data: transactions,
+		isLoading,
+		error,
+		refetch,
+	} = useQuery({
+		queryKey: ['transactions', 'me'],
+		queryFn: () => subscriptionService.getMyTransactions(),
+		staleTime: 5 * 60 * 1000, // 5 minutes
+		retry: 1,
+		enabled: isAuthenticated,
+	})
+
+	return {
+		transactions: transactions ?? [],
+		isLoading,
+		error,
+		refetch,
 	}
 }

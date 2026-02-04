@@ -34,9 +34,9 @@ import {
 	SelectValue,
 } from '@/components/ui/select'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { useMe } from '@/hooks/auth/useMe'
 import { Textarea } from '@/components/ui/textarea'
+import UserAvatar from '@/components/common/UserAvatar'
 
 const SettingsPage = (): React.ReactElement => {
 	const { user } = useMe()
@@ -122,12 +122,7 @@ const SettingsPage = (): React.ReactElement => {
 						<CardContent className='space-y-6'>
 							{/* Avatar Section */}
 							<div className='flex items-center gap-4'>
-								<Avatar className='h-20 w-20'>
-									<AvatarFallback className='text-2xl'>
-										{user?.firstName?.[0]}
-										{user?.lastName?.[0]}
-									</AvatarFallback>
-								</Avatar>
+								<UserAvatar user={user} size='h-16 w-16' />
 								<div>
 									<Button variant='outline' size='sm'>
 										Change Avatar

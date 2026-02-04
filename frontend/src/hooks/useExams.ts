@@ -191,6 +191,35 @@ export function useCreateMatrix() {
 	})
 }
 
+export function useUpdateMatrix() {
+	const queryClient = useQueryClient()
+
+	return useMutation({
+		mutationFn: ({
+			matrixId,
+			matrixTopics,
+		}: {
+			matrixId: string
+			examId: string
+			matrixTopics: Array<{
+				topicId: string
+				cognitiveLevel: CognitiveLevel
+				quantity: number
+			}>
+		}) => examService.updateMatrix(matrixId, { matrixTopics }),
+		onSuccess: (_, variables) => {
+			queryClient.invalidateQueries({ queryKey: examKeys.lists() })
+			queryClient.invalidateQueries({
+				queryKey: examKeys.matrix(variables.examId),
+			})
+			toast.success('Matrix updated successfully!')
+		},
+		onError: (error: Error) => {
+			toast.error(`Failed to update matrix: ${error.message}`)
+		},
+	})
+}
+
 // ========== Questions ==========
 export function useQuestions(params?: {
 	topicId?: string

@@ -133,6 +133,19 @@ class AssessmentService {
 		return apiService.post(`${this.baseUrl}/matrices`, request)
 	}
 
+	async updateMatrix(
+		matrixId: string,
+		request: {
+			matrixTopics: Array<{
+				topicId: string
+				cognitiveLevel: CognitiveLevel
+				quantity: number
+			}>
+		}
+	): Promise<ApiResponse<void>> {
+		return apiService.put(`${this.baseUrl}/matrices/${matrixId}`, request)
+	}
+
 	async getMatrixByExamId(examId: string): Promise<
 		ApiResponse<{
 			id: string

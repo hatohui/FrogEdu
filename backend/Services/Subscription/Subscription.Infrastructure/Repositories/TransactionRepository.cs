@@ -45,6 +45,22 @@ public class TransactionRepository : ITransactionRepository
             .ToListAsync(cancellationToken);
     }
 
+    public async Task<IReadOnlyList<Transaction>> GetByUserIdAsync(
+        Guid userId,
+        CancellationToken cancellationToken = default
+    )
+    {
+        var subscriptionIds = await _context
+            .UserSubscriptions.Where(s => s.UserId == userId)
+            .Select(s => s.Id)
+            .ToListAsync(cancellationToken);
+
+        return await _context
+            .Transactions.Where(t => subscriptionIds.Contains(t.UserSubscriptionId))
+            .OrderByDescending(t => t.CreatedAt)
+            .ToListAsync(cancellationToken);
+    }
+
     public async Task<IReadOnlyList<Transaction>> GetByStatusAsync(
         PaymentStatus status,
         CancellationToken cancellationToken = default

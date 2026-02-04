@@ -28,5 +28,21 @@ export interface SubscriptionInfo {
 	hasActiveSubscription: boolean
 }
 
+export interface Transaction {
+	id: string
+	transactionCode: string
+	amount: number
+	currency: string
+	paymentProvider: string
+	paymentStatus: string
+	providerTransactionId: string | null
+	createdAt: string
+	userSubscriptionId: string
+	subscriptionPlanName: string | null
+}
+
 // Re-export response types for convenience
-export type { SubscribeToProResponse } from '@/types/dtos/subscriptions'
+export type {
+	SubscribeToProResponse,
+	CancelSubscriptionResponse,
+} from '@/types/dtos/subscriptions'

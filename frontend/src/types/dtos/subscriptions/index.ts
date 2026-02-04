@@ -1,1 +1,4 @@
-export type { SubscribeToProResponse } from './response'
+export type {
+	SubscribeToProResponse,
+	CancelSubscriptionResponse,
+} from './response'

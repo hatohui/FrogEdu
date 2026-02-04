@@ -1,8 +1,12 @@
 import type {
 	SubscriptionTier,
 	UserSubscription,
+	Transaction,
 } from '@/types/model/subscription'
-import type { SubscribeToProResponse } from '@/types/dtos/subscriptions'
+import type {
+	SubscribeToProResponse,
+	CancelSubscriptionResponse,
+} from '@/types/dtos/subscriptions'
 import axiosInstance from './axios'
 
 class SubscriptionService {
@@ -29,11 +33,31 @@ class SubscriptionService {
 	}
 
 	/**
+	 * Get current user's transaction history
+	 */
+	async getMyTransactions(): Promise<Transaction[]> {
+		const response = await axiosInstance.get<Transaction[]>(
+			`${this.baseUrl}/transactions/me`
+		)
+		return response.data
+	}
+
+	/**
 	 * Subscribe to Pro tier (mock - no payment required)
 	 */
 	async subscribeToPro(): Promise<SubscribeToProResponse> {
 		const response = await axiosInstance.post<SubscribeToProResponse>(
 			`${this.baseUrl}/subscribe/pro`
+		)
+		return response.data
+	}
+
+	/**
+	 * Cancel current subscription
+	 */
+	async cancelSubscription(): Promise<CancelSubscriptionResponse> {
+		const response = await axiosInstance.post<CancelSubscriptionResponse>(
+			`${this.baseUrl}/cancel`
 		)
 		return response.data
 	}
