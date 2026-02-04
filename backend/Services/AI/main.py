@@ -76,7 +76,7 @@ async def not_found_handler(request: Request, exc):
         content={"detail": "Not Found"}
     )
 
-app.include_router(router)
+app.include_router(router, prefix="/api/ai")
 
 
 @app.get("/", include_in_schema=False)
