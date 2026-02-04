@@ -17,7 +17,7 @@ from app.auth import TokenUser, get_current_user, get_subscribed_user
 
 logger = logging.getLogger(__name__)
 
-router = APIRouter(tags=["AI"], prefix="/api/ai")
+router = APIRouter(tags=["AI"])
 
 
 def get_gemini_service(
@@ -27,7 +27,7 @@ def get_gemini_service(
     return GeminiService(settings)
 
 
-@router.get("/health", response_model=HealthResponse)
+@router.get("/api/ai/health", response_model=HealthResponse)
 async def health_check(
     service: Annotated[GeminiService, Depends(get_gemini_service)],
     settings: Annotated[Settings, Depends(get_settings)]
@@ -45,7 +45,7 @@ async def health_check(
 
 
 @router.post(
-    "/questions/generate",
+    "/api/ai/questions/generate",
     response_model=GenerateQuestionsResponse,
     status_code=status.HTTP_201_CREATED
 )
@@ -92,7 +92,7 @@ async def generate_questions(
 
 
 @router.post(
-    "/questions/generate-single",
+    "/api/ai/questions/generate-single",
     response_model=Question,
     status_code=status.HTTP_201_CREATED
 )
@@ -135,7 +135,7 @@ async def generate_single_question(
         )
 
 
-@router.post("/tutor/chat", response_model=TutorChatResponse)
+@router.post("/api/ai/tutor/chat", response_model=TutorChatResponse)
 async def tutor_chat(
     request: TutorChatRequest,
     service: Annotated[GeminiService, Depends(get_gemini_service)],

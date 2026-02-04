@@ -121,5 +121,19 @@ async def test():
 
 # Lambda handler with Mangum
 logger.info("🔧 Creating Mangum handler...")
-handler = Mangum(app, lifespan="auto")
+mangum_handler = Mangum(app, lifespan="auto")
 logger.info("✅ Mangum handler created successfully")
+
+
+# Wrapper to handle path routing from API Gateway proxy integration
+async def handler(event, context):
+    """
+    Wrapper handler that ensures the full path is properly routed.
+    API Gateway proxy integration passes the full path in requestContext.resourcePath
+    """
+    logger.info(f"🔧 Lambda event path: {event.get('path')}")
+    logger.info(f"🔧 Lambda event rawPath: {event.get('rawPath')}")
+    logger.info(f"🔧 Lambda requestContext: {event.get('requestContext', {})}")
+    
+    # Call the Mangum handler
+    return await mangum_handler(event, context)
