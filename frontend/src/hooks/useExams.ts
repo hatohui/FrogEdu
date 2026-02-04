@@ -195,10 +195,7 @@ export function useUpdateMatrix() {
 	const queryClient = useQueryClient()
 
 	return useMutation({
-		mutationFn: ({
-			matrixId,
-			matrixTopics,
-		}: {
+		mutationFn: (params: {
 			matrixId: string
 			examId: string
 			matrixTopics: Array<{
@@ -206,7 +203,10 @@ export function useUpdateMatrix() {
 				cognitiveLevel: CognitiveLevel
 				quantity: number
 			}>
-		}) => examService.updateMatrix(matrixId, { matrixTopics }),
+		}) =>
+			examService.updateMatrix(params.matrixId, {
+				matrixTopics: params.matrixTopics,
+			}),
 		onSuccess: (_, variables) => {
 			queryClient.invalidateQueries({ queryKey: examKeys.lists() })
 			queryClient.invalidateQueries({

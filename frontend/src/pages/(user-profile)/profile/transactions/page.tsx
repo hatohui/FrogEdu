@@ -91,7 +91,7 @@ const TransactionsPage = (): React.ReactElement => {
 		}
 	}
 
-	const getProviderIcon = (provider: string) => {
+	const getProviderIcon = (_provider: string) => {
 		// Could add specific icons for Momo, VNPay, etc.
 		return <CreditCard className='h-4 w-4' />
 	}
