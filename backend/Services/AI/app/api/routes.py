@@ -17,8 +17,7 @@ from app.auth import TokenUser, get_current_user, get_subscribed_user
 
 logger = logging.getLogger(__name__)
 
-router = APIRouter(tags=["AI"], prefix="")
-
+router = APIRouter(tags=["AI"], prefix="/api/ai")
 
 def get_gemini_service(
     settings: Annotated[Settings, Depends(get_settings)]

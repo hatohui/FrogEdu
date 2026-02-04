@@ -23,11 +23,10 @@ app = FastAPI(
     title="FrogEdu AI Service",
     description="AI-powered question generation and tutoring service",
     version="1.0.0",
-    docs_url="/docs",
-    redoc_url="/redoc",
-    openapi_url="/openapi.json",
+    docs_url="/api/ai/docs",
+    redoc_url="/api/ai/redoc",
+    openapi_url="/api/ai/openapi.json",
 )
-
 
 # Configure CORS
 settings = get_settings()
@@ -76,15 +75,14 @@ async def not_found_handler(request: Request, exc):
         content={"detail": "Not Found"}
     )
 
-app.include_router(router, prefix="/api/ai")
-
+app.include_router(router)
 
 @app.get("/", include_in_schema=False)
 async def root():
     """Redirect root to API docs."""
     logger.info("🏠 Root endpoint hit, redirecting to docs")
-    return RedirectResponse(url="/docs")
+    return RedirectResponse(url="/api/ai/docs")
 
 
-handler = Mangum(app, lifespan="auto")
+handler = Mangum(app)
 logger.info("✅ Mangum handler created successfully")
