@@ -1,8 +1,11 @@
+using FrogEdu.Exam.Application.Commands.AddQuestionsToExam;
 using FrogEdu.Exam.Application.Commands.CreateExam;
 using FrogEdu.Exam.Application.Commands.DeleteExam;
+using FrogEdu.Exam.Application.Commands.RemoveQuestionFromExam;
 using FrogEdu.Exam.Application.Commands.UpdateExam;
 using FrogEdu.Exam.Application.DTOs;
 using FrogEdu.Exam.Application.Queries.GetExamById;
+using FrogEdu.Exam.Application.Queries.GetExamQuestions;
 using FrogEdu.Exam.Application.Queries.GetExams;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -100,6 +103,60 @@ public class ExamsController(IMediator mediator) : BaseController
     {
         var userId = GetAuthenticatedUserId();
         var command = new DeleteExamCommand(examId, userId);
+        await _mediator.Send(command, cancellationToken);
+        return NoContent();
+    }
+
+    // ========== Exam Questions Management ==========
+
+    [HttpGet("{examId:guid}/questions")]
+    [ProducesResponseType(typeof(GetExamQuestionsResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<GetExamQuestionsResponse>> GetExamQuestions(
+        [FromRoute] Guid examId,
+        CancellationToken cancellationToken
+    )
+    {
+        var userId = GetAuthenticatedUserId();
+        var query = new GetExamQuestionsQuery(examId, userId);
+        var response = await _mediator.Send(query, cancellationToken);
+        return Ok(response);
+    }
+
+    [HttpPost("{examId:guid}/questions")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> AddQuestionsToExam(
+        [FromRoute] Guid examId,
+        [FromBody] AddQuestionsToExamRequest request,
+        CancellationToken cancellationToken
+    )
+    {
+        var userId = GetAuthenticatedUserId();
+        var command = new AddQuestionsToExamCommand(examId, request.QuestionIds, userId);
+        await _mediator.Send(command, cancellationToken);
+        return NoContent();
+    }
+
+    [HttpDelete("{examId:guid}/questions/{questionId:guid}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> RemoveQuestionFromExam(
+        [FromRoute] Guid examId,
+        [FromRoute] Guid questionId,
+        CancellationToken cancellationToken
+    )
+    {
+        var userId = GetAuthenticatedUserId();
+        var command = new RemoveQuestionFromExamCommand(examId, questionId, userId);
         await _mediator.Send(command, cancellationToken);
         return NoContent();
     }
