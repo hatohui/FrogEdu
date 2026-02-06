@@ -31,20 +31,26 @@ import {
 } from '@/components/ui/select'
 import { Loader2 } from 'lucide-react'
 import { useCreateClass } from '@/hooks/useClasses'
-import { useSubjects } from '@/hooks/useExams'
 
 const createClassSchema = z.object({
 	name: z
 		.string()
 		.min(1, 'Class name is required')
-		.max(100, 'Name cannot exceed 100 characters'),
-	subject: z.string().max(50, 'Subject cannot exceed 50 characters').optional(),
+		.max(200, 'Name cannot exceed 200 characters'),
 	grade: z.string().min(1, 'Grade is required'),
 	description: z
 		.string()
-		.max(500, 'Description cannot exceed 500 characters')
-		.optional(),
-	maxStudents: z.string().optional(),
+		.min(1, 'Description is required')
+		.max(1000, 'Description cannot exceed 1000 characters'),
+	maxStudents: z
+		.string()
+		.min(1, 'Maximum students is required')
+		.refine(
+			val => !isNaN(Number(val)) && Number(val) > 0,
+			'Must be a positive number'
+		)
+		.refine(val => Number(val) <= 500, 'Cannot exceed 500 students'),
+	bannerUrl: z.string().url('Must be a valid URL').optional().or(z.literal('')),
 })
 
 type CreateClassFormData = z.infer<typeof createClassSchema>
@@ -58,31 +64,26 @@ const CreateClassModal: React.FC<CreateClassModalProps> = ({
 	open,
 	onOpenChange,
 }) => {
-	const [grade, setGrade] = React.useState<number | null>(null)
 	const createClass = useCreateClass()
-
-	const { data: subjects } = useSubjects(grade ?? 1)
 
 	const form = useForm<CreateClassFormData>({
 		resolver: zodResolver(createClassSchema),
 		defaultValues: {
 			name: '',
-			subject: '',
-			grade: '1',
+			grade: '10',
 			description: '',
-			maxStudents: '',
+			maxStudents: '30',
+			bannerUrl: '',
 		},
 	})
 
 	const onSubmit = async (data: CreateClassFormData) => {
 		await createClass.mutateAsync({
 			name: data.name,
-			subject: data.subject || undefined,
-			grade: parseInt(data.grade, 10),
-			description: data.description || undefined,
-			maxStudents: data.maxStudents
-				? parseInt(data.maxStudents, 10)
-				: undefined,
+			grade: data.grade,
+			description: data.description,
+			maxStudents: parseInt(data.maxStudents, 10),
+			bannerUrl: data.bannerUrl || undefined,
 		})
 		form.reset()
 		onOpenChange(false)
@@ -135,13 +136,9 @@ const CreateClassModal: React.FC<CreateClassModalProps> = ({
 												</SelectTrigger>
 											</FormControl>
 											<SelectContent>
-												{Array.from({ length: 5 }, (_, i) => i + 1).map(
+												{Array.from({ length: 12 }, (_, i) => i + 1).map(
 													grade => (
-														<SelectItem
-															key={grade}
-															onChange={() => setGrade(grade)}
-															value={grade.toString()}
-														>
+														<SelectItem key={grade} value={grade.toString()}>
 															Grade {grade}
 														</SelectItem>
 													)
@@ -155,25 +152,16 @@ const CreateClassModal: React.FC<CreateClassModalProps> = ({
 
 							<FormField
 								control={form.control}
-								name='subject'
-								disabled={!grade}
+								name='maxStudents'
 								render={({ field }) => (
 									<FormItem>
-										<FormLabel>Subject</FormLabel>
-										<Select onValueChange={field.onChange} value={field.value}>
-											<FormControl>
-												<SelectTrigger>
-													<SelectValue placeholder='Select subject' />
-												</SelectTrigger>
-											</FormControl>
-											<SelectContent>
-												{subjects?.map(subject => (
-													<SelectItem key={subject.id} value={subject.id}>
-														{subject.name}
-													</SelectItem>
-												))}
-											</SelectContent>
-										</Select>
+										<FormLabel>Maximum Students *</FormLabel>
+										<FormControl>
+											<Input type='number' placeholder='30' {...field} />
+										</FormControl>
+										<FormDescription>
+											Maximum number of students (1-500)
+										</FormDescription>
 										<FormMessage />
 									</FormItem>
 								)}
@@ -185,7 +173,7 @@ const CreateClassModal: React.FC<CreateClassModalProps> = ({
 							name='description'
 							render={({ field }) => (
 								<FormItem>
-									<FormLabel>Description</FormLabel>
+									<FormLabel>Description *</FormLabel>
 									<FormControl>
 										<Textarea
 											placeholder='Brief description of the class...'
@@ -200,20 +188,19 @@ const CreateClassModal: React.FC<CreateClassModalProps> = ({
 
 						<FormField
 							control={form.control}
-							name='maxStudents'
+							name='bannerUrl'
 							render={({ field }) => (
 								<FormItem>
-									<FormLabel>Maximum Students</FormLabel>
+									<FormLabel>Banner URL (Optional)</FormLabel>
 									<FormControl>
 										<Input
-											type='number'
-											placeholder='Leave empty for unlimited'
+											type='url'
+											placeholder='https://example.com/banner.jpg'
 											{...field}
-											value={field.value ?? ''}
 										/>
 									</FormControl>
 									<FormDescription>
-										Optional limit on the number of students who can join.
+										Optional banner image for the class
 									</FormDescription>
 									<FormMessage />
 								</FormItem>

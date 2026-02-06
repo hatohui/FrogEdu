@@ -51,7 +51,6 @@ public sealed class RemoveUserAvatarCommandHandler
             return deleteResult;
         }
 
-        // Update the user entity to remove avatar reference
         user.RemoveAvatar();
 
         _userRepository.Update(user);

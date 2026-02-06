@@ -20,10 +20,10 @@ export interface ClassDto {
 
 export interface CreateClassDto {
 	name: string
-	subject?: string
-	grade: number
-	description?: string
-	maxStudents?: number
+	description: string
+	grade: string
+	maxStudents: number
+	bannerUrl?: string
 }
 
 export interface JoinClassDto {
@@ -71,7 +71,14 @@ export interface DashboardStatsDto {
 
 export interface CreateClassResponse {
 	classId: string
+	name: string
+	grade: string
 	inviteCode: string
+	maxStudents: number
+	bannerUrl: string | null
+	isActive: boolean
+	teacherId: string
+	createdAt: string
 }
 
 export interface JoinClassResponse {

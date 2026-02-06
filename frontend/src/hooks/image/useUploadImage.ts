@@ -46,9 +46,25 @@ export const useUploadImage = () => {
 		[queryClient]
 	)
 
+	const handleAvatarDelete = useCallback(async () => {
+		setIsUploadingAvatar(true)
+		try {
+			await userService.deleteAvatar()
+			queryClient.invalidateQueries({ queryKey: ['currentUser'] })
+			setAvatarPreview(null)
+			toast.success('Avatar removed successfully')
+		} catch (error) {
+			toast.error('Failed to remove avatar')
+			console.error('Avatar delete error:', error)
+		} finally {
+			setIsUploadingAvatar(false)
+		}
+	}, [queryClient])
+
 	return {
 		avatarPreview,
 		isUploadingAvatar,
 		handleAvatarChange,
+		handleAvatarDelete,
 	}
 }

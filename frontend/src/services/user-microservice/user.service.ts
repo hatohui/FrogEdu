@@ -77,6 +77,10 @@ class UserService {
 		return publicUrl
 	}
 
+	async deleteAvatar(): Promise<void> {
+		await axiosInstance.delete(`${this.baseUrl}/me/avatar`)
+	}
+
 	async getProfile(): Promise<ApiResponse<GetMeResponse>> {
 		return apiService.get<GetMeResponse>(`${this.baseUrl}/profile`)
 	}

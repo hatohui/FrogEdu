@@ -20,7 +20,7 @@ import {
 	CardHeader,
 	CardTitle,
 } from '@/components/ui/card'
-import { Loader2, Camera, Check } from 'lucide-react'
+import { Loader2, Camera, Check, Trash2 } from 'lucide-react'
 import { toast } from 'sonner'
 import userService from '@/services/user-microservice/user.service'
 import type { UpdateProfileDto } from '@/types/dtos/users/user'
@@ -52,8 +52,12 @@ const ProfileForm = ({
 }: ProfileFormProps): React.JSX.Element => {
 	const queryClient = useQueryClient()
 	const [isVerifying, setIsVerifying] = useState(false)
-	const { avatarPreview, isUploadingAvatar, handleAvatarChange } =
-		useUploadImage()
+	const {
+		avatarPreview,
+		isUploadingAvatar,
+		handleAvatarChange,
+		handleAvatarDelete,
+	} = useUploadImage()
 
 	const form = useForm<ProfileFormValues>({
 		resolver: zodResolver(profileSchema),
@@ -137,6 +141,19 @@ const ProfileForm = ({
 						<p className='text-xs text-muted-foreground mt-1'>
 							JPG, PNG, GIF up to 5MB
 						</p>
+						{(user.avatarUrl || avatarPreview) && (
+							<Button
+								type='button'
+								variant='outline'
+								size='sm'
+								className='mt-2 text-destructive hover:bg-destructive/10'
+								onClick={handleAvatarDelete}
+								disabled={isUploadingAvatar}
+							>
+								<Trash2 className='h-4 w-4 mr-2' />
+								Remove Avatar
+							</Button>
+						)}
 					</div>
 				</div>
 
