@@ -22,7 +22,6 @@ export interface CreateClassDto {
 	name: string
 	subject?: string
 	grade: number
-	school?: string
 	description?: string
 	maxStudents?: number
 }

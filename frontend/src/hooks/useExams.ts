@@ -32,9 +32,10 @@ export const examKeys = {
 	examQuestions: (examId: string) => ['exams', examId, 'questions'] as const,
 }
 
-export function useSubjects(grade?: number) {
+export function useSubjects(grade?: number, enabled: boolean = true) {
 	return useQuery({
 		queryKey: examKeys.subjects(grade),
+		enabled: enabled,
 		queryFn: async () => {
 			const response = await examService.getSubjects(grade)
 			return response.data?.subjects || []
@@ -289,7 +290,6 @@ export function useDetachMatrixFromExam() {
 	})
 }
 
-// ========== Questions ==========
 export function useQuestions(params?: {
 	topicId?: string
 	cognitiveLevel?: CognitiveLevel

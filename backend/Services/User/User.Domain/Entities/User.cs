@@ -77,6 +77,13 @@ public sealed class User : AuditableSoftdeletableEntity
         AddDomainEvent(new UserAvatarUpdatedDomainEvent(Id, avatarUrl));
     }
 
+    public void RemoveAvatar()
+    {
+        AvatarUrl = null;
+        MarkAsUpdated();
+        AddDomainEvent(new UserAvatarRemovedDomainEvent(Id));
+    }
+
     public void VerifyEmail()
     {
         if (IsEmailVerified)

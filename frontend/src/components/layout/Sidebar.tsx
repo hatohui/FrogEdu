@@ -11,6 +11,7 @@ import {
 	ChevronRight,
 	LayoutDashboard,
 	Grid3x3,
+	Users,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
@@ -46,6 +47,11 @@ const navItems: NavItem[] = [
 		name: 'Exams',
 		href: '/app/exams',
 		icon: FileText,
+	},
+	{
+		name: 'Classes',
+		href: '/app/classes',
+		icon: Users,
 	},
 	{
 		name: 'Matrices',

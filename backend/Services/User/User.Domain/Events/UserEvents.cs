@@ -9,4 +9,6 @@ public sealed record UserProfileUpdatedDomainEvent(Guid UserId, string? FirstNam
 
 public sealed record UserAvatarUpdatedDomainEvent(Guid UserId, string AvatarUrl) : DomainEvent;
 
+public sealed record UserAvatarRemovedDomainEvent(Guid UserId) : DomainEvent;
+
 public sealed record UserLoggedInDomainEvent(Guid UserId, DateTime LoginTime) : DomainEvent;

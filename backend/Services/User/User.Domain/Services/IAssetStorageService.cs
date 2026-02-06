@@ -9,4 +9,6 @@ public interface IAssetStorageService
         Guid userId,
         CancellationToken cancellationToken = default
     );
+
+    Task DeleteAssetAsync(string assetUrl, CancellationToken cancellationToken = default);
 }

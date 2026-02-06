@@ -25,7 +25,6 @@ const CreateStandaloneMatrixPage = (): React.ReactElement => {
 	const navigate = useNavigate()
 	const createMatrixMutation = useCreateMatrix()
 
-	// Form state
 	const [name, setName] = useState('')
 	const [description, setDescription] = useState('')
 	const [grade, setGrade] = useState<number | null>(null)
@@ -41,7 +40,6 @@ const CreateStandaloneMatrixPage = (): React.ReactElement => {
 		},
 	])
 
-	// Fetch subjects based on grade
 	const { data: subjects = [] } = useSubjects(grade ?? undefined)
 	const { data: topics = [] } = useTopics(subjectId)
 
@@ -97,7 +95,6 @@ const CreateStandaloneMatrixPage = (): React.ReactElement => {
 			return
 		}
 
-		// Convert matrix rows to DTO format
 		const matrixTopics: MatrixTopicDto[] = []
 
 		matrixRows.forEach(row => {
@@ -190,26 +187,31 @@ const CreateStandaloneMatrixPage = (): React.ReactElement => {
 								onChange={e => setName(e.target.value)}
 							/>
 						</div>
-						<div className='space-y-2'>
+						<div className='space-y-2 w-full'>
 							<Label htmlFor='grade'>Grade *</Label>
-							<Select
-								value={grade?.toString() || ''}
-								onValueChange={value => {
-									setGrade(parseInt(value))
-									setSubjectId('') // Reset subject when grade changes
-								}}
-							>
-								<SelectTrigger>
-									<SelectValue placeholder='Select grade' />
-								</SelectTrigger>
-								<SelectContent>
-									{[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map(g => (
-										<SelectItem key={g} value={g.toString()}>
-											Grade {g}
-										</SelectItem>
-									))}
-								</SelectContent>
-							</Select>
+							<div className='w-full'>
+								<Select
+									value={grade?.toString() || ''}
+									onValueChange={value => {
+										setGrade(parseInt(value))
+										setSubjectId('')
+									}}
+								>
+									<div className='w-full'>
+										<SelectTrigger>
+											<SelectValue placeholder='Select grade' />
+										</SelectTrigger>
+
+										<SelectContent>
+											{Array.from({ length: 5 }, (_, i) => i + 1).map(g => (
+												<SelectItem key={g} value={g.toString()}>
+													Grade {g}
+												</SelectItem>
+											))}
+										</SelectContent>
+									</div>
+								</Select>
+							</div>
 						</div>
 					</div>
 

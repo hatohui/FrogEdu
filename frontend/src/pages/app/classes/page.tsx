@@ -1,15 +1,12 @@
 import React, { useState } from 'react'
 import { useMe } from '@/hooks/auth/useMe'
 import { useClasses } from '@/hooks/useClasses'
-import {
-	ClassCard,
-	CreateClassModal,
-	JoinClassForm,
-} from '@/components/classes'
+import { ClassCard, CreateClassModal } from '@/components/classes'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Plus, Users, Archive, UserPlus } from 'lucide-react'
+import JoinClassModal from '@/components/classes/JoinClassModal'
 
 const ClassesPage: React.FC = () => {
 	const { user } = useMe()
@@ -17,15 +14,16 @@ const ClassesPage: React.FC = () => {
 
 	const [showCreateModal, setShowCreateModal] = useState(false)
 	const [includeArchived, setIncludeArchived] = useState(false)
+	const [showJoinModal, setShowJoinModal] = useState(false)
 
-	const { data: classes, isLoading, error } = useClasses(includeArchived)
+	const { data: classes, isLoading } = useClasses(includeArchived)
 
 	const activeClasses = classes?.filter(c => !c.isArchived) || []
 	const archivedClasses = classes?.filter(c => c.isArchived) || []
 
 	if (isLoading) {
 		return (
-			<div className='p-6 space-y-6'>
+			<div className='p-6 space-y-6 max-w-7xl mx-auto'>
 				<div className='flex items-center justify-between'>
 					<Skeleton className='h-8 w-48' />
 					<Skeleton className='h-10 w-32' />
@@ -34,17 +32,6 @@ const ClassesPage: React.FC = () => {
 					{[1, 2, 3, 4, 5, 6].map(i => (
 						<Skeleton key={i} className='h-48' />
 					))}
-				</div>
-			</div>
-		)
-	}
-
-	if (error) {
-		return (
-			<div className='p-6'>
-				<div className='text-center py-12'>
-					<p className='text-destructive'>Failed to load classes</p>
-					<p className='text-sm text-muted-foreground mt-2'>{error.message}</p>
 				</div>
 			</div>
 		)
@@ -68,10 +55,16 @@ const ClassesPage: React.FC = () => {
 						Create Class
 					</Button>
 				)}
+				{!isTeacher && (
+					<div>
+						<Button onClick={() => setShowJoinModal(prev => !prev)}>
+							Join Class
+						</Button>
+					</div>
+				)}
 			</div>
 
 			{isTeacher ? (
-				/* Teacher view with tabs for active/archived */
 				<Tabs
 					defaultValue='active'
 					onValueChange={(value: string) =>
@@ -130,11 +123,6 @@ const ClassesPage: React.FC = () => {
 			) : (
 				/* Student view */
 				<div className='space-y-6'>
-					{/* Join class section for students */}
-					<div className='flex justify-center'>
-						<JoinClassForm />
-					</div>
-
 					{/* Enrolled classes */}
 					<div>
 						<h2 className='text-lg font-semibold mb-4'>Enrolled Classes</h2>
@@ -160,6 +148,8 @@ const ClassesPage: React.FC = () => {
 				open={showCreateModal}
 				onOpenChange={setShowCreateModal}
 			/>
+			{/* Join Class Modal */}
+			<JoinClassModal open={showJoinModal} onOpenChange={setShowJoinModal} />
 		</div>
 	)
 }

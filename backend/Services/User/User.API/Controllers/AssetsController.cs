@@ -6,22 +6,13 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FrogEdu.User.API.Controllers;
 
-/// <summary>
-/// Asset management endpoints for file uploads to R2
-/// </summary>
 [ApiController]
 [Route("assets")]
 [Tags("Assets")]
-public class AssetsController : ControllerBase
+public class AssetsController(IMediator mediator, ILogger<AssetsController> logger) : ControllerBase
 {
-    private readonly IMediator _mediator;
-    private readonly ILogger<AssetsController> _logger;
-
-    public AssetsController(IMediator mediator, ILogger<AssetsController> logger)
-    {
-        _mediator = mediator;
-        _logger = logger;
-    }
+    private readonly IMediator _mediator = mediator;
+    private readonly ILogger<AssetsController> _logger = logger;
 
     [HttpGet("sign-url")]
     [Authorize]
@@ -56,5 +47,11 @@ public class AssetsController : ControllerBase
         }
 
         return Ok(result.Value);
+    }
+
+    [HttpDelete("{assetId:guid}")]
+    public async Task<IActionResult> DeleteAsset(Guid assetId, CancellationToken cancellationToken)
+    {
+        return Ok(new { message = "DeleteAsset endpoint is not yet implemented." });
     }
 }

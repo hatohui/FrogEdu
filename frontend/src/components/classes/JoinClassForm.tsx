@@ -23,7 +23,7 @@ import {
 	InputOTPGroup,
 	InputOTPSlot,
 } from '@/components/ui/input-otp'
-import { Loader2, UserPlus } from 'lucide-react'
+import { Loader2, UserPlus, X } from 'lucide-react'
 import { useJoinClass } from '@/hooks/useClasses'
 
 const joinClassSchema = z.object({
@@ -60,6 +60,11 @@ const JoinClassForm: React.FC<JoinClassFormProps> = ({ onSuccess }) => {
 	return (
 		<Card className='w-full max-w-md'>
 			<CardHeader className='text-center'>
+				<div className='flex pointer-events-auto justify-end w-full'>
+					<Button size='sm' variant='outline' onClick={() => onSuccess?.()}>
+						<X className='h-4 w-4' />
+					</Button>
+				</div>
 				<div className='mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-primary/10'>
 					<UserPlus className='h-6 w-6 text-primary' />
 				</div>
@@ -105,7 +110,7 @@ const JoinClassForm: React.FC<JoinClassFormProps> = ({ onSuccess }) => {
 
 						<Button
 							type='submit'
-							className='w-full'
+							className='w-full pointer-events-auto'
 							disabled={!isComplete || joinClass.isPending}
 						>
 							{joinClass.isPending ? (

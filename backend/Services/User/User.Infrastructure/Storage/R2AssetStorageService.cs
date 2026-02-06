@@ -89,4 +89,20 @@ public class R2AssetStorageService : IAssetStorageService
             throw;
         }
     }
+
+    public async Task DeleteAssetAsync(string url, CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            var key = url.Replace($"https://{_publicEndpoint.TrimEnd('/')}/", "");
+            var deleteRequest = new DeleteObjectRequest { BucketName = _bucketName, Key = key };
+            await _s3Client.DeleteObjectAsync(deleteRequest, cancellationToken);
+            _logger.LogInformation("Deleted asset with key: {Key}", key);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to delete asset with URL: {Url}", url);
+            throw;
+        }
+    }
 }

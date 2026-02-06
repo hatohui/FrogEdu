@@ -31,6 +31,7 @@ import {
 } from '@/components/ui/select'
 import { Loader2 } from 'lucide-react'
 import { useCreateClass } from '@/hooks/useClasses'
+import { useSubjects } from '@/hooks/useExams'
 
 const createClassSchema = z.object({
 	name: z
@@ -39,10 +40,6 @@ const createClassSchema = z.object({
 		.max(100, 'Name cannot exceed 100 characters'),
 	subject: z.string().max(50, 'Subject cannot exceed 50 characters').optional(),
 	grade: z.string().min(1, 'Grade is required'),
-	school: z
-		.string()
-		.max(100, 'School name cannot exceed 100 characters')
-		.optional(),
 	description: z
 		.string()
 		.max(500, 'Description cannot exceed 500 characters')
@@ -57,28 +54,14 @@ interface CreateClassModalProps {
 	onOpenChange: (open: boolean) => void
 }
 
-const SUBJECTS = [
-	'Mathematics',
-	'English',
-	'Science',
-	'History',
-	'Geography',
-	'Physics',
-	'Chemistry',
-	'Biology',
-	'Literature',
-	'Art',
-	'Music',
-	'Physical Education',
-	'Computer Science',
-	'Other',
-]
-
 const CreateClassModal: React.FC<CreateClassModalProps> = ({
 	open,
 	onOpenChange,
 }) => {
+	const [grade, setGrade] = React.useState<number | null>(null)
 	const createClass = useCreateClass()
+
+	const { data: subjects } = useSubjects(grade ?? 1)
 
 	const form = useForm<CreateClassFormData>({
 		resolver: zodResolver(createClassSchema),
@@ -86,7 +69,6 @@ const CreateClassModal: React.FC<CreateClassModalProps> = ({
 			name: '',
 			subject: '',
 			grade: '1',
-			school: '',
 			description: '',
 			maxStudents: '',
 		},
@@ -97,7 +79,6 @@ const CreateClassModal: React.FC<CreateClassModalProps> = ({
 			name: data.name,
 			subject: data.subject || undefined,
 			grade: parseInt(data.grade, 10),
-			school: data.school || undefined,
 			description: data.description || undefined,
 			maxStudents: data.maxStudents
 				? parseInt(data.maxStudents, 10)
@@ -154,9 +135,13 @@ const CreateClassModal: React.FC<CreateClassModalProps> = ({
 												</SelectTrigger>
 											</FormControl>
 											<SelectContent>
-												{Array.from({ length: 12 }, (_, i) => i + 1).map(
+												{Array.from({ length: 5 }, (_, i) => i + 1).map(
 													grade => (
-														<SelectItem key={grade} value={grade.toString()}>
+														<SelectItem
+															key={grade}
+															onChange={() => setGrade(grade)}
+															value={grade.toString()}
+														>
 															Grade {grade}
 														</SelectItem>
 													)
@@ -171,6 +156,7 @@ const CreateClassModal: React.FC<CreateClassModalProps> = ({
 							<FormField
 								control={form.control}
 								name='subject'
+								disabled={!grade}
 								render={({ field }) => (
 									<FormItem>
 										<FormLabel>Subject</FormLabel>
@@ -181,9 +167,9 @@ const CreateClassModal: React.FC<CreateClassModalProps> = ({
 												</SelectTrigger>
 											</FormControl>
 											<SelectContent>
-												{SUBJECTS.map(subject => (
-													<SelectItem key={subject} value={subject}>
-														{subject}
+												{subjects?.map(subject => (
+													<SelectItem key={subject.id} value={subject.id}>
+														{subject.name}
 													</SelectItem>
 												))}
 											</SelectContent>
@@ -193,20 +179,6 @@ const CreateClassModal: React.FC<CreateClassModalProps> = ({
 								)}
 							/>
 						</div>
-
-						<FormField
-							control={form.control}
-							name='school'
-							render={({ field }) => (
-								<FormItem>
-									<FormLabel>School</FormLabel>
-									<FormControl>
-										<Input placeholder='e.g., Lincoln High School' {...field} />
-									</FormControl>
-									<FormMessage />
-								</FormItem>
-							)}
-						/>
 
 						<FormField
 							control={form.control}

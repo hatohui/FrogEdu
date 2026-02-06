@@ -13,11 +13,9 @@ public sealed class ClassRoom : AuditableEntity
     public string? BannerUrl { get; private set; }
     public bool IsActive { get; private set; }
     public Guid TeacherId { get; private set; }
-
-    private readonly List<ClassEnrollment> _enrollments = new();
+    private readonly List<ClassEnrollment> _enrollments = [];
     public IReadOnlyCollection<ClassEnrollment> Enrollments => _enrollments.AsReadOnly();
-
-    private readonly List<Assignment> _assignments = new();
+    private readonly List<Assignment> _assignments = [];
     public IReadOnlyCollection<Assignment> Assignments => _assignments.AsReadOnly();
 
     private ClassRoom() { }

@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using FrogEdu.User.Application.Commands.DeleteUser;
+using FrogEdu.User.Application.Commands.RemoveUserAvatar;
 using FrogEdu.User.Application.Commands.UpdateAvatar;
 using FrogEdu.User.Application.Commands.UpdateProfile;
 using FrogEdu.User.Application.Commands.UpdateUserRole;
@@ -196,5 +197,26 @@ public class UserController : ControllerBase
     private string? GetCognitoId()
     {
         return User.FindFirstValue(ClaimTypes.NameIdentifier) ?? User.FindFirstValue("sub");
+    }
+
+    [HttpDelete("me/avatar")]
+    [Authorize]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> DeleteUserAvatar(CancellationToken cancellationToken)
+    {
+        var cognitoId = GetCognitoId();
+        if (string.IsNullOrEmpty(cognitoId))
+            return Unauthorized();
+
+        var command = new RemoveUserAvatarCommand(cognitoId);
+        var result = await _mediator.Send(command, cancellationToken);
+
+        if (result.IsFailure)
+            return BadRequest(result.Error);
+
+        return NoContent();
     }
 }
