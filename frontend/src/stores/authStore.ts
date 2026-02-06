@@ -76,7 +76,6 @@ export const useAuthStore = create<AuthState>()((set, get) => ({
 					? error.message
 					: 'Failed to create account. Please try again.'
 			set({ error: message, isLoading: false })
-			throw error
 		}
 	},
 
