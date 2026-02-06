@@ -301,241 +301,241 @@
 		},
 		"auth": {
 			"login": {
-				"subtitle": "Nen tang giao duc cho hoc tap hien dai",
-				"or_continue_with": "Hoac tiep tuc voi",
-				"forgot_password": "Quen mat khau?",
-				"no_account": "Chua co tai khoan?",
-				"footer": "© {{year}} FrogEdu. Tat ca quyen duoc bao luu."
+				"subtitle": "Nền tảng giáo dục cho học tập hiện đại",
+				"or_continue_with": "Hoặc tiếp tục với",
+				"forgot_password": "Quên mật khẩu?",
+				"no_account": "Chưa có tài khoản?",
+				"footer": "© {{year}} FrogEdu. Tất cả quyền được bảo lưu."
 			},
 			"register": {
-				"subtitle": "Nen tang giao duc cho hoc tap hien dai",
-				"role_label": "Toi la",
-				"role_placeholder": "Chon vai tro",
-				"or_continue_with": "Hoac tiep tuc voi",
-				"have_account": "Da co tai khoan?",
-				"footer": "© {{year}} FrogEdu. Tat ca quyen duoc bao luu."
+				"subtitle": "Nền tảng giáo dục cho học tập hiện đại",
+				"role_label": "Tôi là",
+				"role_placeholder": "Chọn vai trò",
+				"or_continue_with": "Hoặc tiếp tục với",
+				"have_account": "Đã có tài khoản?",
+				"footer": "© {{year}} FrogEdu. Tất cả quyền được bảo lưu."
 			},
 			"forgot": {
-				"title": "Quen mat khau?",
-				"subtitle": "Dung lo! Nhap email va chung toi se gui huong dan dat lai.",
-				"check_email_title": "Kiem tra email cua ban",
-				"check_email_description": "Chung toi da gui lien ket dat lai mat khau toi",
-				"check_email_note": "Vui long kiem tra email va bam vao lien ket de dat lai mat khau. Lien ket se het han trong 1 gio."
+				"title": "Quên mật khẩu?",
+				"subtitle": "Đừng lo! Nhập email và chúng tôi sẽ gửi hướng dẫn đặt lại.",
+				"check_email_title": "Kiểm tra email của bạn",
+				"check_email_description": "Chúng tôi đã gửi liên kết đặt lại mật khẩu tới",
+				"check_email_note": "Vui lòng kiểm tra email và bấm vào liên kết để đặt lại mật khẩu. Liên kết sẽ hết hạn trong 1 giờ."
 			},
 			"reset": {
-				"title": "Dat lai mat khau",
-				"subtitle": "Nhap mat khau moi ben duoi",
-				"success_title": "Dat lai mat khau thanh cong!",
-				"success_description": "Mat khau cua ban da duoc dat lai. Ban co the dang nhap bang mat khau moi."
+				"title": "Đặt lại mật khẩu",
+				"subtitle": "Nhập mật khẩu mới bên dưới",
+				"success_title": "Đặt lại mật khẩu thành công!",
+				"success_description": "Mật khẩu của bạn đã được đặt lại. Bạn có thể đăng nhập bằng mật khẩu mới."
 			},
 			"confirm": {
-				"title": "Xac nhan email cua ban",
-				"subtitle": "Chung toi da gui ma xac minh toi",
-				"no_code": "Khong nhan duoc ma?"
+				"title": "Xác nhận email của bạn",
+				"subtitle": "Chúng tôi đã gửi mã xác minh tới",
+				"no_code": "Không nhận được mã?"
 			},
 			"verify": {
-				"no_token": "Khong co token xac minh",
-				"verifying_title": "Dang xac minh email cua ban",
-				"verifying_note": "Vui long cho...",
-				"success_title": "Email da duoc xac minh!",
-				"failed_title": "Xac minh that bai",
-				"success_description": "Email cua ban da duoc xac minh. Ban co the dang nhap vao tai khoan.",
-				"failed_description": "Khong the xac minh email. Vui long thu lai."
+				"no_token": "Không có token xác minh",
+				"verifying_title": "Đang xác minh email của bạn",
+				"verifying_note": "Vui lòng chờ...",
+				"success_title": "Email đã được xác minh!",
+				"failed_title": "Xác minh thất bại",
+				"success_description": "Email của bạn đã được xác minh. Bạn có thể đăng nhập vào tài khoản.",
+				"failed_description": "Không thể xác minh email. Vui lòng thử lại."
 			},
 			"select_role": {
-				"title": "Chao mung den voi FrogEdu!",
-				"subtitle": "Vui long chon vai tro de tiep tuc",
-				"teacher_description": "Tao va quan ly lop hoc, giao bai tap va theo doi tien do hoc sinh",
-				"student_description": "Tham gia lop hoc, hoan thanh bai tap va hoc voi tro ly AI",
-				"footer_note": "Ban co the doi vai tro sau trong cai dat",
-				"profile_setup_failed": "Khong the thiet lap ho so. Vui long thu lai."
+				"title": "Chào mừng đến với FrogEdu!",
+				"subtitle": "Vui lòng chọn vai trò để tiếp tục",
+				"teacher_description": "Tạo và quản lý lớp học, giao bài tập và theo dõi tiến độ học sinh",
+				"student_description": "Tham gia lớp học, hoàn thành bài tập và học với trợ lý AI",
+				"footer_note": "Bạn có thể đổi vai trò sau trong cài đặt",
+				"profile_setup_failed": "Không thể thiết lập hồ sơ. Vui lòng thử lại."
 			},
 			"subscription": {
-				"title": "Chon goi cua ban",
-				"subtitle": "Chao mung{{name}}! Chon goi dang ky de mo khoa toan bo tiem nang cua FrogEdu.",
-				"free_title": "Goi Mien phi",
-				"free_description": "Hoan hao de bat dau voi FrogEdu",
-				"pro_title": "Goi Pro",
-				"pro_description": "Danh cho giao vien muon nhieu hon",
-				"forever": "mai mai",
-				"footer_note": "Ban co the nang cap hoac thay doi goi bat cu luc nao trong cai dat tai khoan.",
+				"title": "Chọn gói của bạn",
+				"subtitle": "Chào mừng {{name}}! Chọn gói đăng ký để mở khóa toàn bộ tiềm năng của FrogEdu.",
+				"free_title": "Gói Miễn phí",
+				"free_description": "Hoàn hảo để bắt đầu với FrogEdu",
+				"pro_title": "Gói Pro",
+				"pro_description": "Dành cho giáo viên muốn nhiều hơn",
+				"forever": "mãi mãi",
+				"footer_note": "Bạn có thể nâng cấp hoặc thay đổi gói bất cứ lúc nào trong cài đặt tài khoản.",
 				"features": {
 					"free": {
-						"create_classes": "Tao toi da 3 lop hoc",
-						"basic_exam_generation": "Tao de thi co ban",
-						"ai_exams_limit": "5 de thi tao boi AI moi thang",
-						"digital_textbooks": "Truy cap sach giao khoa so",
-						"community_support": "Ho tro cong dong"
+						"create_classes": "Tạo tối đa 3 lớp học",
+						"basic_exam_generation": "Tạo đề thi cơ bản",
+						"ai_exams_limit": "5 đề thi tạo bởi AI mỗi tháng",
+						"digital_textbooks": "Truy cập sách giáo khoa số",
+						"community_support": "Hỗ trợ cộng đồng"
 					},
 					"pro": {
-						"unlimited_classes": "Khong gioi han lop hoc",
-						"advanced_exam_generation": "Tao de thi nang cao",
-						"unlimited_ai_exams": "Khong gioi han de thi AI",
-						"priority_features": "Uu tien truy cap tinh nang moi",
-						"advanced_analytics": "Phan tich va bao cao nang cao",
-						"export_formats": "Xuat de thi PDF/Word",
-						"priority_support": "Ho tro uu tien",
-						"custom_branding": "Tuy chon thuong hieu"
+						"unlimited_classes": "Không giới hạn lớp học",
+						"advanced_exam_generation": "Tạo đề thi nâng cao",
+						"unlimited_ai_exams": "Không giới hạn đề thi AI",
+						"priority_features": "Ưu tiên truy cập tính năng mới",
+						"advanced_analytics": "Phân tích và báo cáo nâng cao",
+						"export_formats": "Xuất đề thi PDF/Word",
+						"priority_support": "Hỗ trợ ưu tiên",
+						"custom_branding": "Tùy chọn thương hiệu"
 					}
 				}
 			},
 			"callback": {
-				"error_title": "Loi xac thuc",
-				"completing_sign_in": "Dang hoan tat dang nhap...",
-				"redirecting": "Dang chuyen huong..."
+				"error_title": "Lỗi xác thực",
+				"completing_sign_in": "Đang hoàn tất đăng nhập...",
+				"redirecting": "Đang chuyển hướng..."
 			}
 		},
 		"landing": {
 			"hero": {
-				"badge_ai": "AI ho tro",
-				"badge_curriculum": "Chuong trinh Viet Nam",
-				"title_prefix": "Chuyen doi giao duc voi",
-				"title_emphasis": "Hoc tap ho tro AI",
-				"subtitle": "FrogEdu ket hop tao de thi thong minh, gia su ca nhan hoa va sach giao khoa so toan dien de cach mang hoa giao duc tieu hoc Viet Nam.",
-				"primary_cta": "Bat dau day ngay",
-				"secondary_cta": "Toi da co tai khoan",
+				"badge_ai": "AI hỗ trợ",
+				"badge_curriculum": "Chương trình Việt Nam",
+				"title_prefix": "Chuyển đổi giáo dục với",
+				"title_emphasis": "Học tập hỗ trợ AI",
+				"subtitle": "FrogEdu kết hợp tạo đề thi thông minh, gia sư cá nhân hóa và sách giáo khoa số toàn diện để cách mạng hóa giáo dục tiểu học Việt Nam.",
+				"primary_cta": "Bắt đầu dạy ngay",
+				"secondary_cta": "Tôi đã có tài khoản",
 				"stats": {
-					"grade_levels": "Khoi lop",
-					"questions": "Cau hoi",
-					"powered": "Ho tro"
+					"grade_levels": "Khối lớp",
+					"questions": "Câu hỏi",
+					"powered": "Hỗ trợ"
 				}
 			},
 			"features": {
-				"title": "Tinh nang manh me",
-				"subtitle": "Moi thu ban can de tao, day va truyen cam hung",
+				"title": "Tính năng mạnh mẽ",
+				"subtitle": "Mọi thứ bạn cần để tạo, dạy và truyền cảm hứng",
 				"smart_exam": {
-					"tooltip": "Tao de can bang theo do kho",
-					"title": "Trinh tao de thi thong minh",
-					"description": "Dinh nghia ma tran de va tao bai kiem tra can bang",
+					"tooltip": "Tạo đề cân bằng theo độ khó",
+					"title": "Trình tạo đề thi thông minh",
+					"description": "Định nghĩa ma trận đề và tạo bài kiểm tra cân bằng",
 					"bullets": {
-						"by_difficulty": "Tao de theo muc do kho",
-						"auto_selection": "Tu dong chon cau hoi",
-						"pdf_export": "Xuat PDF len S3",
-						"manual_override": "Tuy chon chinh thu cong"
+						"by_difficulty": "Tạo đề theo mức độ khó",
+						"auto_selection": "Tự động chọn câu hỏi",
+						"pdf_export": "Xuất PDF lên S3",
+						"manual_override": "Tùy chọn chỉnh thủ công"
 					}
 				},
 				"ai_tutor": {
-					"tooltip": "Phuong phap Socrates voi phan hoi thong minh",
-					"title": "Gia su AI cho hoc sinh",
-					"description": "Doi thoai Socrates voi huong dan thong minh",
+					"tooltip": "Phương pháp Socrates với phản hồi thông minh",
+					"title": "Gia sư AI cho học sinh",
+					"description": "Đối thoại Socrates với hướng dẫn thông minh",
 					"bullets": {
-						"realtime_chat": "Phan hoi chat thoi gian thuc",
-						"socratic": "Phuong phap dat cau hoi Socrates",
-						"textbook_refs": "Tham chieu sach giao khoa",
-						"history": "Theo doi lich su hoi thoai"
+						"realtime_chat": "Phản hồi chat thời gian thực",
+						"socratic": "Phương pháp đặt câu hỏi Socrates",
+						"textbook_refs": "Tham chiếu sách giáo khoa",
+						"history": "Theo dõi lịch sử hội thoại"
 					}
 				},
 				"textbook": {
-					"tooltip": "Sach giao khoa Viet Nam lop 1-5",
-					"title": "Thu vien sach giao khoa so",
-					"description": "Noi dung chuong trinh Viet Nam toan dien",
+					"tooltip": "Sách giáo khoa Việt Nam lớp 1-5",
+					"title": "Thư viện sách giáo khoa số",
+					"description": "Nội dung chương trình Việt Nam toàn diện",
 					"bullets": {
-						"grade_textbooks": "Sach giao khoa lop 1-5",
-						"navigation": "Dieu huong theo chuong",
-						"assets": "Tai lieu bo tro",
-						"search": "Tim kiem toan van"
+						"grade_textbooks": "Sách giáo khoa lớp 1-5",
+						"navigation": "Điều hướng theo chương",
+						"assets": "Tài liệu bổ trợ",
+						"search": "Tìm kiếm toàn văn"
 					}
 				},
 				"class_management": {
-					"tooltip": "Quan ly hoc sinh va theo doi tien do",
-					"title": "Quan ly lop hoc",
-					"description": "To chuc hoc sinh va theo doi tien do",
+					"tooltip": "Quản lý học sinh và theo dõi tiến độ",
+					"title": "Quản lý lớp học",
+					"description": "Tổ chức học sinh và theo dõi tiến độ",
 					"bullets": {
-						"create": "Tao va quan ly lop hoc",
-						"enrollment": "Ma tham gia lop",
-						"progress": "Theo doi tien do",
-						"analytics": "Phan tich hieu suat"
+						"create": "Tạo và quản lý lớp học",
+						"enrollment": "Mã tham gia lớp",
+						"progress": "Theo dõi tiến độ",
+						"analytics": "Phân tích hiệu suất"
 					}
 				}
 			},
 			"benefits": {
-				"title": "Vi sao chon FrogEdu?",
-				"subtitle": "Duoc thiet ke boi giao vien, ho tro boi AI",
+				"title": "Vì sao chọn FrogEdu?",
+				"subtitle": "Được thiết kế bởi giáo viên, hỗ trợ bởi AI",
 				"save_time": {
-					"title": "Tiet kiem thoi gian",
-					"description": "Tao de thi toan dien trong vai phut, khong phai hang gio"
+					"title": "Tiết kiệm thời gian",
+					"description": "Tạo đề thi toàn diện trong vài phút, không phải hàng giờ"
 				},
 				"improve_learning": {
-					"title": "Cai thien hoc tap",
-					"description": "Gia su AI huong dan ca nhan hoa theo phuong phap Socrates"
+					"title": "Cải thiện học tập",
+					"description": "Gia sư AI hướng dẫn cá nhân hóa theo phương pháp Socrates"
 				},
 				"better_assessment": {
-					"title": "Danh gia tot hon",
-					"description": "De thi can bang voi tu dong chon cau hoi theo do kho"
+					"title": "Đánh giá tốt hơn",
+					"description": "Đề thi cân bằng với tự động chọn câu hỏi theo độ khó"
 				},
 				"student_engagement": {
-					"title": "Tang hung thu hoc tap",
-					"description": "Nen tang tuong tac giup hoc sinh hung thu va gan ket"
+					"title": "Tăng hứng thú học tập",
+					"description": "Nền tảng tương tác giúp học sinh hứng thú và gắn kết"
 				},
 				"data_driven": {
-					"title": "Quyet dinh dua tren du lieu",
-					"description": "Theo doi tien do va phat hien lo hong kien thuc"
+					"title": "Quyết định dựa trên dữ liệu",
+					"description": "Theo dõi tiến độ và phát hiện lỗ hổng kiến thức"
 				},
 				"vietnamese_curriculum": {
-					"title": "Chuong trinh Viet Nam",
-					"description": "Noi dung phu hop tieu chuan giao duc tieu hoc Viet Nam"
+					"title": "Chương trình Việt Nam",
+					"description": "Nội dung phù hợp tiêu chuẩn giáo dục tiểu học Việt Nam"
 				}
 			},
 			"about": {
-				"title": "Xay dung cho giao duc Viet Nam",
-				"subtitle": "FrogEdu duoc thiet ke rieng cho tieu hoc Viet Nam (Lop 1-5), ket hop cong nghe AI tien tien voi phuong phap giao duc da duoc kiem chung de tao nen nen tang truc quan ma giao vien va hoc sinh yeu thich.",
+				"title": "Xây dựng cho giáo dục Việt Nam",
+				"subtitle": "FrogEdu được thiết kế riêng cho tiểu học Việt Nam (Lớp 1-5), kết hợp công nghệ AI tiên tiến với phương pháp giáo dục đã được kiểm chứng để tạo nên nền tảng trực quan mà giáo viên và học sinh yêu thích.",
 				"stats": {
-					"curriculum": "Chuong trinh Viet Nam",
-					"support": "Ho tro AI san co",
-					"scalable": "Nen tang mo rong"
+					"curriculum": "Chương trình Việt Nam",
+					"support": "Hỗ trợ AI sẵn có",
+					"scalable": "Nền tảng mở rộng"
 				}
 			},
 			"cta": {
-				"title": "San sang chuyen doi lop hoc cua ban?",
-				"subtitle": "Tham gia cung giao vien tren khap Viet Nam su dung FrogEdu de tao bai danh gia thong minh hon va nang cao viec hoc cua hoc sinh",
-				"primary_cta": "Tao tai khoan mien phi"
+				"title": "Sẵn sàng chuyển đổi lớp học của bạn?",
+				"subtitle": "Tham gia cùng giáo viên trên khắp Việt Nam sử dụng FrogEdu để tạo bài đánh giá thông minh hơn và nâng cao việc học của học sinh",
+				"primary_cta": "Tạo tài khoản miễn phí"
 			},
 			"faq": {
-				"title": "Cau hoi thuong gap",
-				"subtitle": "Giai dap cac thac mac pho bien ve FrogEdu",
+				"title": "Câu hỏi thường gặp",
+				"subtitle": "Giải đáp các thắc mắc phổ biến về FrogEdu",
 				"q1": {
-					"question": "Trinh tao de thi thong minh hoat dong nhu the nao?",
-					"answer": "Trinh tao de thi thong minh su dung AI de phan tich ma tran de (phan bo do kho va pham vi chu de) va tu dong chon cau hoi tu ngan hang cau hoi rong lon. Ban luon co the chinh thu cong neu can."
+					"question": "Trình tạo đề thi thông minh hoạt động như thế nào?",
+					"answer": "Trình tạo đề thi thông minh sử dụng AI để phân tích ma trận đề (phân bố độ khó và phạm vi chủ đề) và tự động chọn câu hỏi từ ngân hàng câu hỏi rộng lớn. Bạn luôn có thể chỉnh thủ công nếu cần."
 				},
 				"q2": {
-					"question": "FrogEdu phu hop voi tat ca khoi lop khong?",
-					"answer": "Co! FrogEdu bao phu giao duc tieu hoc Viet Nam lop 1-5. Moi lop co noi dung va muc do kho phu hop voi tieu chuan chuong trinh."
+					"question": "FrogEdu phù hợp với tất cả khối lớp không?",
+					"answer": "Có! FrogEdu bao phủ giáo dục tiểu học Việt Nam lớp 1-5. Mỗi lớp có nội dung và mức độ khó phù hợp với tiêu chuẩn chương trình."
 				},
 				"q3": {
-					"question": "Toi co the xuat de thi o cac dinh dang khac nhau khong?",
-					"answer": "Hien tai, chung toi ho tro xuat PDF va DOCX. Tat ca tep duoc luu an toan tren AWS S3 va cung cap qua URL ky so de truy cap an toan."
+					"question": "Tôi có thể xuất đề thi ở các định dạng khác nhau không?",
+					"answer": "Hiện tại, chúng tôi hỗ trợ xuất PDF và DOCX. Tất cả tệp được lưu an toàn trên AWS S3 và cung cấp qua URL ký số để truy cập an toàn."
 				},
 				"q4": {
-					"question": "Gia su AI giup hoc sinh nhu the nao?",
-					"answer": "Gia su AI su dung phuong phap Socrates de huong dan hoc sinh giai bai ma khong tra loi truc tiep. Gia su tham chieu noi dung sach giao khoa lien quan va luu lich su hoi thoai de giao vien xem lai."
+					"question": "Gia sư AI giúp học sinh như thế nào?",
+					"answer": "Gia sư AI sử dụng phương pháp Socrates để hướng dẫn học sinh giải bài mà không trả lời trực tiếp. Gia sư tham chiếu nội dung sách giáo khoa liên quan và lưu lịch sử hội thoại để giáo viên xem lại."
 				},
 				"q5": {
-					"question": "Co ban dung thu mien phi khong?",
-					"answer": "Co! Chung toi co ban dung thu mien phi de ban trai nghiem tat ca tinh nang. Khong can the tin dung de bat dau. Dang ky ngay de bat dau chuyen doi lop hoc."
+					"question": "Có bản dùng thử miễn phí không?",
+					"answer": "Có! Chúng tôi có bản dùng thử miễn phí để bạn trải nghiệm tất cả tính năng. Không cần thẻ tín dụng để bắt đầu. Đăng ký ngay để bắt đầu chuyển đổi lớp học."
 				}
 			},
 			"newsletter": {
-				"title": "Cap nhat moi",
-				"subtitle": "Dang ky nhan ban tin de nhan meo, cap nhat va tai nguyen doc quyen cho giao vien"
+				"title": "Cập nhật mới",
+				"subtitle": "Đăng ký nhận bản tin để nhận mẹo, cập nhật và tài nguyên độc quyền cho giáo viên"
 			},
 			"footer": {
-				"product": "San pham",
-				"features": "Tinh nang",
-				"benefits": "Loi ich",
-				"pricing": "Bang gia",
-				"resources": "Tai nguyen",
-				"documentation": "Tai lieu",
+				"product": "Sản phẩm",
+				"features": "Tính năng",
+				"benefits": "Lợi ích",
+				"pricing": "Bảng giá",
+				"resources": "Tài nguyên",
+				"documentation": "Tài liệu",
 				"blog": "Blog",
-				"support": "Ho tro",
-				"company": "Cong ty",
-				"about": "Gioi thieu",
-				"contact": "Lien he",
-				"careers": "Tuyen dung",
-				"legal": "Phap ly",
-				"privacy": "Quyen rieng tu",
-				"terms": "Dieu khoan",
+				"support": "Hỗ trợ",
+				"company": "Công ty",
+				"about": "Giới thiệu",
+				"contact": "Liên hệ",
+				"careers": "Tuyển dụng",
+				"legal": "Pháp lý",
+				"privacy": "Quyền riêng tư",
+				"terms": "Điều khoản",
 				"cookies": "Cookie",
-				"copyright": "© 2026 FrogEdu. Tat ca quyen duoc bao luu.",
+				"copyright": "© 2026 FrogEdu. Tất cả quyền được bảo lưu.",
 				"twitter": "Twitter",
 				"facebook": "Facebook",
 				"linkedin": "LinkedIn"
@@ -543,52 +543,52 @@
 		},
 		"about": {
 			"hero": {
-				"badge_ai": "AI ho tro",
-				"badge_made_in": "San xuat tai Viet Nam",
-				"title_prefix": "Ve",
-				"subtitle": "FrogEdu la nen tang giao duc tien phong ho tro boi AI, duoc thiet ke rieng cho giao duc tieu hoc Viet Nam, ket hop cong nghe hien dai voi su xuat sac ve su pham."
+				"badge_ai": "AI hỗ trợ",
+				"badge_made_in": "Sản xuất tại Việt Nam",
+				"title_prefix": "Về",
+				"subtitle": "FrogEdu là nền tảng giáo dục tiên phong hỗ trợ bởi AI, được thiết kế riêng cho giáo dục tiểu học Việt Nam, kết hợp công nghệ hiện đại với sự xuất sắc về sư phạm."
 			},
 			"mission": {
-				"title": "Su menh cua chung toi",
-				"paragraph_one": "Chung toi tin rang moi dua tre deu xung dang co co hoi tiep can giao duc chat luong. Su menh cua chung toi la dan chu hoa viec hoc bang cach cung cap cho giao vien va hoc sinh cac cong cu AI manh me, giup hoc tap hap dan, ca nhan hoa va hieu qua hon.",
-				"paragraph_two": "Tap trung vao chuong trinh giao duc tieu hoc Viet Nam (Lop 1-5), chung toi dam bao nen tang phu hop voi tieu chuan quoc gia trong khi tich hop cac phuong phap giang day doi moi."
+				"title": "Sứ mệnh của chúng tôi",
+				"paragraph_one": "Chúng tôi tin rằng mọi đứa trẻ đều xứng đáng có cơ hội tiếp cận giáo dục chất lượng. Sứ mệnh của chúng tôi là dân chủ hóa việc học bằng cách cung cấp cho giáo viên và học sinh các công cụ AI mạnh mẽ, giúp học tập hấp dẫn, cá nhân hóa và hiệu quả hơn.",
+				"paragraph_two": "Tập trung vào chương trình giáo dục tiểu học Việt Nam (Lớp 1-5), chúng tôi đảm bảo nền tảng phù hợp với tiêu chuẩn quốc gia trong khi tích hợp các phương pháp giảng dạy đổi mới."
 			},
 			"stats": {
-				"grade_levels": "Khoi lop",
-				"questions": "Cau hoi",
-				"powered": "Ho tro",
-				"available": "San sang"
+				"grade_levels": "Khối lớp",
+				"questions": "Câu hỏi",
+				"powered": "Hỗ trợ",
+				"available": "Sẵn sàng"
 			},
 			"features": {
-				"title": "Nhung gi chung toi cung cap",
-				"subtitle": "Nen tang cung cap cong cu toan dien cho ca giao vien va hoc sinh",
+				"title": "Những gì chúng tôi cung cấp",
+				"subtitle": "Nền tảng cung cấp công cụ toàn diện cho cả giáo viên và học sinh",
 				"ai_exam": {
-					"title": "Tao de thi bang AI",
-					"description": "Tao de thi tuy chinh phu hop chuong trinh Viet Nam bang AI tien tien. Tao cau hoi trac nghiem, dien vao cho trong va tu luan ngay lap tuc."
+					"title": "Tạo đề thi bằng AI",
+					"description": "Tạo đề thi tùy chỉnh phù hợp chương trình Việt Nam bằng AI tiên tiến. Tạo câu hỏi trắc nghiệm, điền vào chỗ trống và tự luận ngay lập tức."
 				},
 				"class_management": {
-					"title": "Quan ly lop hoc",
-					"description": "Tao va quan ly lop hoc, giao bai tap, theo doi tien do hoc sinh va giao tiep voi hoc sinh tai mot noi."
+					"title": "Quản lý lớp học",
+					"description": "Tạo và quản lý lớp học, giao bài tập, theo dõi tiến độ học sinh và giao tiếp với học sinh tại một nơi."
 				},
 				"textbooks": {
-					"title": "Sach giao khoa so",
-					"description": "Truy cap sach giao khoa so cho giao duc tieu hoc Viet Nam voi noi dung tuong tac va tai lieu hoc tap."
+					"title": "Sách giáo khoa số",
+					"description": "Truy cập sách giáo khoa số cho giáo dục tiểu học Việt Nam với nội dung tương tác và tài liệu học tập."
 				}
 			},
 			"team": {
-				"title": "Doi ngu cua chung toi",
-				"subtitle": "FrogEdu duoc xay dung boi doi ngu day nhiet huyet gom giao vien, ky su va nha thiet ke, tin vao suc manh cong nghe de chuyen doi giao duc.",
-				"dedicated_title": "Doi ngu tan tam",
-				"dedicated_description": "Giao vien va ky su cung hop tac",
-				"made_in_title": "San xuat tai Viet Nam",
-				"made_in_description": "Xay dung voi giao duc Viet Nam trong tam"
+				"title": "Đội ngũ của chúng tôi",
+				"subtitle": "FrogEdu được xây dựng bởi đội ngũ đầy nhiệt huyết gồm giáo viên, kỹ sư và nhà thiết kế, tin vào sức mạnh công nghệ để chuyển đổi giáo dục.",
+				"dedicated_title": "Đội ngũ tận tâm",
+				"dedicated_description": "Giáo viên và kỹ sư cùng hợp tác",
+				"made_in_title": "Sản xuất tại Việt Nam",
+				"made_in_description": "Xây dựng với giáo dục Việt Nam trong tâm"
 			},
 			"contact": {
-				"title": "Lien he",
-				"subtitle": "Ban co cau hoi hoac muon tim hieu them ve FrogEdu?",
-				"location_label": "Dia diem",
-				"location_value": "Thanh pho Ho Chi Minh, Viet Nam",
-				"primary_cta": "Bat dau day ngay"
+				"title": "Liên hệ",
+				"subtitle": "Bạn có câu hỏi hoặc muốn tìm hiểu thêm về FrogEdu?",
+				"location_label": "Địa điểm",
+				"location_value": "Thành phố Hồ Chí Minh, Việt Nam",
+				"primary_cta": "Bắt đầu dạy ngay"
 			}
 		},
 		"classes": {
@@ -1254,10 +1254,10 @@
 	},
 	"exams": {
 		"cognitive_levels": {
-			"remember": "Remember",
-			"understand": "Understand",
-			"apply": "Apply",
-			"analyze": "Analyze"
+			"remember": "Nhận biết",
+			"understand": "Thông hiểu",
+			"apply": "Vận dụng",
+			"analyze": "Vận dụng cao"
 		},
 		"cognitive_levels_vi": {
 			"remember": "Nhận biết",
