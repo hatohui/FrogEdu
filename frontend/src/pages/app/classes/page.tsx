@@ -7,8 +7,10 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Plus, Users, Archive, UserPlus } from 'lucide-react'
 import JoinClassModal from '@/components/classes/JoinClassModal'
+import { useTranslation } from 'react-i18next'
 
 const ClassesPage: React.FC = () => {
+	const { t } = useTranslation()
 	const { user } = useMe()
 	const isTeacher = user?.role?.name === 'Teacher'
 
@@ -42,23 +44,25 @@ const ClassesPage: React.FC = () => {
 			{/* Header */}
 			<div className='flex items-center justify-between'>
 				<div>
-					<h1 className='text-3xl font-bold tracking-tight'>My Classes</h1>
+					<h1 className='text-3xl font-bold tracking-tight'>
+						{t('pages.classes.title')}
+					</h1>
 					<p className='text-muted-foreground mt-1'>
 						{isTeacher
-							? 'Manage your classes and students'
-							: 'View your enrolled classes'}
+							? t('pages.classes.subtitle_teacher')
+							: t('pages.classes.subtitle_student')}
 					</p>
 				</div>
 				{isTeacher && (
 					<Button onClick={() => setShowCreateModal(true)}>
 						<Plus className='h-4 w-4 mr-2' />
-						Create Class
+						{t('pages.classes.actions.create')}
 					</Button>
 				)}
 				{!isTeacher && (
 					<div>
 						<Button onClick={() => setShowJoinModal(prev => !prev)}>
-							Join Class
+							{t('pages.classes.actions.join')}
 						</Button>
 					</div>
 				)}
@@ -74,11 +78,15 @@ const ClassesPage: React.FC = () => {
 					<TabsList>
 						<TabsTrigger value='active' className='gap-2'>
 							<Users className='h-4 w-4' />
-							Active ({activeClasses.length})
+							{t('pages.classes.tabs.active', {
+								count: activeClasses.length,
+							})}
 						</TabsTrigger>
 						<TabsTrigger value='archived' className='gap-2'>
 							<Archive className='h-4 w-4' />
-							Archived ({archivedClasses.length})
+							{t('pages.classes.tabs.archived', {
+								count: archivedClasses.length,
+							})}
 						</TabsTrigger>
 					</TabsList>
 
@@ -105,7 +113,7 @@ const ClassesPage: React.FC = () => {
 						{archivedClasses.length === 0 ? (
 							<div className='text-center py-12 text-muted-foreground'>
 								<Archive className='h-12 w-12 mx-auto mb-4 opacity-50' />
-								<p>No archived classes</p>
+								<p>{t('pages.classes.archived_empty')}</p>
 							</div>
 						) : (
 							<div className='grid gap-4 md:grid-cols-2 lg:grid-cols-3'>
@@ -125,7 +133,9 @@ const ClassesPage: React.FC = () => {
 				<div className='space-y-6'>
 					{/* Enrolled classes */}
 					<div>
-						<h2 className='text-lg font-semibold mb-4'>Enrolled Classes</h2>
+						<h2 className='text-lg font-semibold mb-4'>
+							{t('pages.classes.sections.enrolled')}
+						</h2>
 						{activeClasses.length === 0 ? (
 							<EmptyClassesState isTeacher={false} />
 						) : (
@@ -162,28 +172,34 @@ interface EmptyClassesStateProps {
 const EmptyClassesState: React.FC<EmptyClassesStateProps> = ({
 	isTeacher,
 	onCreateClick,
-}) => (
-	<div className='text-center py-12 border-2 border-dashed rounded-lg'>
-		<div className='mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-muted'>
-			{isTeacher ? (
-				<Users className='h-8 w-8 text-muted-foreground' />
-			) : (
-				<UserPlus className='h-8 w-8 text-muted-foreground' />
+}) => {
+	const { t } = useTranslation()
+
+	return (
+		<div className='text-center py-12 border-2 border-dashed rounded-lg'>
+			<div className='mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-muted'>
+				{isTeacher ? (
+					<Users className='h-8 w-8 text-muted-foreground' />
+				) : (
+					<UserPlus className='h-8 w-8 text-muted-foreground' />
+				)}
+			</div>
+			<h3 className='text-lg font-semibold'>
+				{t('pages.classes.empty.title')}
+			</h3>
+			<p className='text-muted-foreground mt-2 max-w-sm mx-auto'>
+				{isTeacher
+					? t('pages.classes.empty.teacher_description')
+					: t('pages.classes.empty.student_description')}
+			</p>
+			{isTeacher && onCreateClick && (
+				<Button onClick={onCreateClick} className='mt-4'>
+					<Plus className='h-4 w-4 mr-2' />
+					{t('pages.classes.empty.create_first')}
+				</Button>
 			)}
 		</div>
-		<h3 className='text-lg font-semibold'>No classes yet</h3>
-		<p className='text-muted-foreground mt-2 max-w-sm mx-auto'>
-			{isTeacher
-				? 'Create your first class to start organizing your students and content.'
-				: 'Join a class using an invite code from your teacher.'}
-		</p>
-		{isTeacher && onCreateClick && (
-			<Button onClick={onCreateClick} className='mt-4'>
-				<Plus className='h-4 w-4 mr-2' />
-				Create Your First Class
-			</Button>
-		)}
-	</div>
-)
+	)
+}
 
 export default ClassesPage

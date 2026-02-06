@@ -28,78 +28,78 @@ import {
 	TooltipProvider,
 	TooltipTrigger,
 } from '@/components/ui/tooltip'
+import { useTranslation } from 'react-i18next'
 
 interface NavItem {
-	name: string
+	labelKey: string
 	href: string
 	icon: React.ComponentType<{ className?: string }>
 }
 
 const adminNavItems: NavItem[] = [
-import { useTranslation } from 'react-i18next'
 	{
-		name: 'Overview',
-	labelKey: string
+		labelKey: 'navigation.overview',
+		href: '/dashboard',
 		icon: LayoutDashboard,
 	},
 	{
-		name: 'Subjects',
+		labelKey: 'navigation.subjects',
 		href: '/dashboard/subjects',
 		icon: GraduationCap,
-		labelKey: 'navigation.overview',
+	},
 	{
-		name: 'Users',
+		labelKey: 'navigation.users',
 		href: '/dashboard/users',
 		icon: Users,
-		labelKey: 'navigation.subjects',
+	},
 	{
-		name: 'Analytics',
+		labelKey: 'navigation.analytics',
 		href: '/dashboard/analytics',
 		icon: BarChart3,
-		labelKey: 'navigation.users',
+	},
 	{
-		name: 'Settings',
+		labelKey: 'navigation.settings',
 		href: '/dashboard/settings',
 		icon: Settings,
-		labelKey: 'navigation.analytics',
+	},
 ]
 
 const appNavItems: NavItem[] = [
 	{
-		labelKey: 'navigation.settings',
+		labelKey: 'navigation.app_home',
 		href: '/app',
 		icon: Home,
 	},
 	{
-		name: 'My Classes',
+		labelKey: 'navigation.my_classes',
 		href: '/app/classes',
 		icon: Users,
-		labelKey: 'navigation.app_home',
+	},
 	{
-		name: 'Content Library',
+		labelKey: 'navigation.content_library',
 		href: '/app/content',
 		icon: BookOpen,
-		labelKey: 'navigation.my_classes',
+	},
 	{
-		name: 'Exams',
+		labelKey: 'navigation.exams',
 		href: '/app/exams',
 		icon: FileText,
-		labelKey: 'navigation.content_library',
+	},
 	{
-		name: 'Matrices',
+		labelKey: 'navigation.matrices',
 		href: '/app/matrices',
 		icon: Grid3x3,
-		labelKey: 'navigation.exams',
+	},
 	{
-		name: 'Profile',
+		labelKey: 'navigation.profile',
 		href: '/profile',
 		icon: User,
-		labelKey: 'navigation.matrices',
+	},
 ]
 
 interface AdminSidebarProps {
 	className?: string
-		labelKey: 'navigation.profile',
+	onClose?: () => void
 	collapsed?: boolean
 	onToggleCollapse?: () => void
 }
@@ -112,8 +112,8 @@ const AdminSidebar = ({
 }: AdminSidebarProps): React.ReactElement => {
 	const location = useLocation()
 	const { user: me, signOut } = useMe()
-
 	const { t } = useTranslation()
+
 	const handleSignOut = async () => {
 		await signOut()
 		if (onClose) onClose()
@@ -163,11 +163,11 @@ const AdminSidebar = ({
 						{!collapsed && (
 							<div className='flex flex-col'>
 								<span className='font-bold text-lg text-sidebar-foreground'>
-									FrogEdu
 									{t('common.app_name')}
+								</span>
 								<span className='text-xs text-sidebar-foreground/60'>
-									Admin Dashboard
 									{t('common.admin_dashboard')}
+								</span>
 							</div>
 						)}
 					</Link>
@@ -189,9 +189,11 @@ const AdminSidebar = ({
 							) : (
 								<ChevronLeft className='h-4 w-4' />
 							)}
-							{!collapsed && <span className='ml-2'>Collapse</span>}
-						</Button>
+							{!collapsed && (
 								<span className='ml-2'>{t('actions.collapse')}</span>
+							)}
+						</Button>
+					</div>
 				)}
 
 				{/* Admin Navigation Section */}
@@ -201,10 +203,10 @@ const AdminSidebar = ({
 							<div className='px-4 mb-2'>
 								<div className='flex items-center gap-2 text-xs font-semibold text-muted-foreground uppercase tracking-wide'>
 									<Shield className='h-3 w-3' />
-									<span>Admin Panel</span>
+									<span>{t('navigation.admin_panel')}</span>
 								</div>
 							</div>
-									<span>{t('navigation.admin_panel')}</span>
+						)}
 
 						{adminNavItems.map(item => {
 							const isActive =
@@ -212,10 +214,10 @@ const AdminSidebar = ({
 								(item.href !== '/dashboard' &&
 									location.pathname.startsWith(item.href))
 							const Icon = item.icon
+							const label = t(item.labelKey)
 
 							const linkContent = (
 								<Link
-							const label = t(item.labelKey)
 									key={item.href}
 									to={item.href}
 									onClick={onClose}
@@ -228,18 +230,18 @@ const AdminSidebar = ({
 									)}
 								>
 									<Icon className='h-5 w-5 flex-shrink-0' />
-									{!collapsed && <span>{item.name}</span>}
+									{!collapsed && <span>{label}</span>}
 								</Link>
 							)
-									{!collapsed && <span>{label}</span>}
+
 							return collapsed ? (
 								<Tooltip key={item.href}>
 									<TooltipTrigger asChild>{linkContent}</TooltipTrigger>
 									<TooltipContent side='right'>
-										<p>{item.name}</p>
+										<p>{label}</p>
 									</TooltipContent>
 								</Tooltip>
-										<p>{label}</p>
+							) : (
 								linkContent
 							)
 						})}
@@ -253,10 +255,10 @@ const AdminSidebar = ({
 							<div className='px-4 mb-2'>
 								<div className='flex items-center gap-2 text-xs font-semibold text-muted-foreground uppercase tracking-wide'>
 									<Home className='h-3 w-3' />
-									<span>Quick Access</span>
+									<span>{t('navigation.quick_access')}</span>
 								</div>
 							</div>
-									<span>{t('navigation.quick_access')}</span>
+						)}
 
 						{appNavItems.map(item => {
 							const isActive =
@@ -264,10 +266,10 @@ const AdminSidebar = ({
 								(item.href !== '/app' &&
 									location.pathname.startsWith(item.href))
 							const Icon = item.icon
+							const label = t(item.labelKey)
 
 							const linkContent = (
 								<Link
-							const label = t(item.labelKey)
 									key={item.href}
 									to={item.href}
 									onClick={onClose}
@@ -280,18 +282,18 @@ const AdminSidebar = ({
 									)}
 								>
 									<Icon className='h-5 w-5 flex-shrink-0' />
-									{!collapsed && <span>{item.name}</span>}
+									{!collapsed && <span>{label}</span>}
 								</Link>
 							)
-									{!collapsed && <span>{label}</span>}
+
 							return collapsed ? (
 								<Tooltip key={item.href}>
 									<TooltipTrigger asChild>{linkContent}</TooltipTrigger>
 									<TooltipContent side='right'>
-										<p>{item.name}</p>
+										<p>{label}</p>
 									</TooltipContent>
 								</Tooltip>
-										<p>{label}</p>
+							) : (
 								linkContent
 							)
 						})}
@@ -311,13 +313,13 @@ const AdminSidebar = ({
 										{me
 											? [me.firstName, me.lastName].filter(Boolean).join(' ') ||
 												me.email
-										{me
-											? [me.firstName, me.lastName].filter(Boolean).join(' ') ||
-												me.email
-											: t('roles.admin')}
+											: t('roles.administrator')}
+									</p>
+									<p className='text-xs text-sidebar-foreground/60 truncate'>
+										{me?.role?.name || t('roles.administrator')}
 									</p>
 								</div>
-										{me?.role?.name || t('roles.administrator')}
+							</div>
 
 							<Button
 								variant='outline'
@@ -325,10 +327,10 @@ const AdminSidebar = ({
 								onClick={handleSignOut}
 							>
 								<LogOut className='h-4 w-4' />
-								<span>Sign Out</span>
+								<span>{t('actions.sign_out')}</span>
 							</Button>
 						</>
-								<span>{t('actions.sign_out')}</span>
+					) : (
 						<>
 							<Tooltip>
 								<TooltipTrigger asChild>
@@ -341,10 +343,10 @@ const AdminSidebar = ({
 										{me
 											? [me.firstName, me.lastName].filter(Boolean).join(' ') ||
 												me.email
-											: 'Admin'}
+											: t('roles.administrator')}
 									</p>
 									<p className='text-xs text-muted-foreground'>
-										{me?.role?.name || 'Administrator'}
+										{me?.role?.name || t('roles.administrator')}
 									</p>
 								</TooltipContent>
 							</Tooltip>
@@ -360,10 +362,10 @@ const AdminSidebar = ({
 									</Button>
 								</TooltipTrigger>
 								<TooltipContent side='right'>
-									<p>Sign Out</p>
+									<p>{t('actions.sign_out')}</p>
 								</TooltipContent>
 							</Tooltip>
-									<p>{t('actions.sign_out')}</p>
+						</>
 					)}
 				</div>
 			</aside>

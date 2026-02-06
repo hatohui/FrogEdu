@@ -14,6 +14,7 @@ import {
 	SelectValue,
 } from '@/components/ui/select'
 import { QuestionType, QUESTION_TYPE_CONFIGS } from '@/types/model/exam-service'
+import { useTranslation } from 'react-i18next'
 
 interface QuestionTypeSelectorProps {
 	value: QuestionType
@@ -49,7 +50,10 @@ export const QuestionTypeSelector: React.FC<QuestionTypeSelectorProps> = ({
 	onValueChange,
 	disabled = false,
 }) => {
+	const { t } = useTranslation()
 	const config = QUESTION_TYPE_CONFIGS[value]
+	const resolvedLabel =
+		config?.label ?? t('components.exams.question_type.select_placeholder')
 
 	return (
 		<Select
@@ -61,7 +65,7 @@ export const QuestionTypeSelector: React.FC<QuestionTypeSelectorProps> = ({
 				<SelectValue>
 					<div className='flex items-center gap-2'>
 						{getQuestionTypeIcon(value)}
-						<span>{config?.label ?? 'Select type'}</span>
+						<span>{resolvedLabel}</span>
 					</div>
 				</SelectValue>
 			</SelectTrigger>
@@ -71,9 +75,11 @@ export const QuestionTypeSelector: React.FC<QuestionTypeSelectorProps> = ({
 					<div className='flex items-center gap-2'>
 						<ToggleLeft className='h-4 w-4' />
 						<div>
-							<div className='font-medium'>True/False</div>
+							<div className='font-medium'>
+								{t('exams.question_types.true_false')}
+							</div>
 							<div className='text-xs text-muted-foreground'>
-								Statement is correct or wrong
+								{t('components.exams.question_type.descriptions.true_false')}
 							</div>
 						</div>
 					</div>
@@ -84,9 +90,11 @@ export const QuestionTypeSelector: React.FC<QuestionTypeSelectorProps> = ({
 					<div className='flex items-center gap-2'>
 						<Circle className='h-4 w-4' />
 						<div>
-							<div className='font-medium'>Select (Single Choice)</div>
+							<div className='font-medium'>
+								{t('components.exams.question_type.labels.single_choice')}
+							</div>
 							<div className='text-xs text-muted-foreground'>
-								Select ONE correct answer
+								{t('components.exams.question_type.descriptions.single_choice')}
 							</div>
 						</div>
 					</div>
@@ -97,9 +105,13 @@ export const QuestionTypeSelector: React.FC<QuestionTypeSelectorProps> = ({
 					<div className='flex items-center gap-2'>
 						<CheckSquare className='h-4 w-4' />
 						<div>
-							<div className='font-medium'>Multiple Choices</div>
+							<div className='font-medium'>
+								{t('components.exams.question_type.labels.multiple_choice')}
+							</div>
 							<div className='text-xs text-muted-foreground'>
-								Select ONE or MORE correct answers
+								{t(
+									'components.exams.question_type.descriptions.multiple_choice'
+								)}
 							</div>
 						</div>
 					</div>
@@ -110,9 +122,11 @@ export const QuestionTypeSelector: React.FC<QuestionTypeSelectorProps> = ({
 					<div className='flex items-center gap-2'>
 						<FileText className='h-4 w-4' />
 						<div>
-							<div className='font-medium'>Essay</div>
+							<div className='font-medium'>
+								{t('exams.question_types.essay')}
+							</div>
 							<div className='text-xs text-muted-foreground'>
-								Open-ended, AI or self graded
+								{t('components.exams.question_type.descriptions.essay')}
 							</div>
 						</div>
 					</div>
@@ -123,9 +137,11 @@ export const QuestionTypeSelector: React.FC<QuestionTypeSelectorProps> = ({
 					<div className='flex items-center gap-2'>
 						<PenTool className='h-4 w-4' />
 						<div>
-							<div className='font-medium'>Fill in the Blank</div>
+							<div className='font-medium'>
+								{t('exams.question_types.fill_in_blank')}
+							</div>
 							<div className='text-xs text-muted-foreground'>
-								Type exact word/phrase to match
+								{t('components.exams.question_type.descriptions.fill_blank')}
 							</div>
 						</div>
 					</div>

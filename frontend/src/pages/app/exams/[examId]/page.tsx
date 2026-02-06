@@ -59,8 +59,10 @@ import {
 import { useConfirm } from '@/hooks/useConfirm'
 import { ConfirmDialog } from '@/components/common/ConfirmDialog'
 import { ExamDetailSkeleton } from '@/components/common/skeletons'
+import { useTranslation } from 'react-i18next'
 
 const ExamDetailPage = (): React.ReactElement => {
+	const { t } = useTranslation()
 	const navigate = useNavigate()
 	const { examId } = useParams<{ examId: string }>()
 	const [isPublishDialogOpen, setIsPublishDialogOpen] = useState(false)
@@ -94,7 +96,7 @@ const ExamDetailPage = (): React.ReactElement => {
 		if (!examId) return
 
 		if (questions.length === 0) {
-			alert('Cannot publish an exam with no questions')
+			alert(t('pages.exams.detail.publish.no_questions'))
 			return
 		}
 
@@ -120,10 +122,9 @@ const ExamDetailPage = (): React.ReactElement => {
 		if (!examId) return
 
 		const confirmed = await confirm({
-			title: 'Remove Question',
-			description:
-				'Are you sure you want to remove this question from the exam?',
-			confirmText: 'Remove',
+			title: t('pages.exams.detail.questions.remove_title'),
+			description: t('pages.exams.detail.questions.remove_description'),
+			confirmText: t('pages.exams.detail.questions.remove_confirm'),
 			variant: 'destructive',
 		})
 
@@ -140,10 +141,9 @@ const ExamDetailPage = (): React.ReactElement => {
 		if (!examId) return
 
 		const confirmed = await confirm({
-			title: 'Detach Matrix',
-			description:
-				'Are you sure you want to detach this matrix from the exam? The matrix will still be available for other exams.',
-			confirmText: 'Detach',
+			title: t('pages.exams.detail.matrix.detach_title'),
+			description: t('pages.exams.detail.matrix.detach_description'),
+			confirmText: t('pages.exams.detail.matrix.detach_confirm'),
 			variant: 'destructive',
 		})
 
@@ -174,15 +174,15 @@ const ExamDetailPage = (): React.ReactElement => {
 	const getCognitiveLevelLabel = (level: CognitiveLevel) => {
 		switch (level) {
 			case CognitiveLevel.Remember:
-				return 'Remember'
+				return t('exams.cognitive_levels.remember')
 			case CognitiveLevel.Understand:
-				return 'Understand'
+				return t('exams.cognitive_levels.understand')
 			case CognitiveLevel.Apply:
-				return 'Apply'
+				return t('exams.cognitive_levels.apply')
 			case CognitiveLevel.Analyze:
-				return 'Analyze'
+				return t('exams.cognitive_levels.analyze')
 			default:
-				return 'Unknown'
+				return t('common.unknown')
 		}
 	}
 
@@ -204,15 +204,15 @@ const ExamDetailPage = (): React.ReactElement => {
 	const getQuestionTypeLabel = (type: QuestionType) => {
 		switch (type) {
 			case QuestionType.MultipleChoice:
-				return 'Multiple Choice'
+				return t('exams.question_types.multiple_choice')
 			case QuestionType.TrueFalse:
-				return 'True/False'
+				return t('exams.question_types.true_false')
 			case QuestionType.Essay:
-				return 'Essay'
+				return t('exams.question_types.essay')
 			case QuestionType.FillInTheBlank:
-				return 'Fill in the Blank'
+				return t('exams.question_types.fill_in_blank')
 			default:
-				return 'Unknown'
+				return t('common.unknown')
 		}
 	}
 
@@ -224,10 +224,12 @@ const ExamDetailPage = (): React.ReactElement => {
 		return (
 			<div className='p-6 space-y-6 max-w-7xl mx-auto'>
 				<div className='text-center py-12'>
-					<p className='text-muted-foreground mb-4'>Exam not found</p>
+					<p className='text-muted-foreground mb-4'>
+						{t('pages.exams.detail.not_found')}
+					</p>
 					<Button onClick={() => navigate('/app/exams')}>
 						<ArrowLeft className='h-4 w-4 mr-2' />
-						Back to Exams
+						{t('pages.exams.detail.back_to_exams')}
 					</Button>
 				</div>
 			</div>
@@ -255,17 +257,20 @@ const ExamDetailPage = (): React.ReactElement => {
 								{exam.isDraft ? (
 									<Badge variant='secondary'>
 										<BookOpen className='h-3 w-3 mr-1' />
-										Draft
+										{t('pages.exams.list.status.draft')}
 									</Badge>
 								) : (
 									<Badge variant='default'>
 										<CheckCircle className='h-3 w-3 mr-1' />
-										Active
+										{t('pages.exams.list.status.active')}
 									</Badge>
 								)}
 							</div>
 							<p className='text-muted-foreground'>
-								{questions.length} questions • {totalPoints} points total
+								{t('pages.exams.detail.summary', {
+									count: questions.length,
+									points: totalPoints,
+								})}
 							</p>
 						</div>
 					</div>
@@ -275,20 +280,20 @@ const ExamDetailPage = (): React.ReactElement => {
 							onClick={() => navigate(`/app/exams/${examId}/preview`)}
 						>
 							<FileText className='h-4 w-4 mr-2' />
-							Preview
+							{t('pages.exams.detail.actions.preview')}
 						</Button>
 						<Button
 							variant='outline'
 							onClick={() => navigate(`/app/exams/${examId}/edit`)}
 						>
 							<Settings className='h-4 w-4 mr-2' />
-							Edit
+							{t('pages.exams.detail.actions.edit')}
 						</Button>
 						<DropdownMenu>
 							<DropdownMenuTrigger asChild>
 								<Button variant='outline'>
 									<Download className='h-4 w-4 mr-2' />
-									Export
+									{t('pages.exams.detail.actions.export')}
 								</Button>
 							</DropdownMenuTrigger>
 							<DropdownMenuContent>
@@ -297,7 +302,9 @@ const ExamDetailPage = (): React.ReactElement => {
 									disabled={exportToPdf.isPending}
 								>
 									<FileText className='h-4 w-4 mr-2' />
-									{exportToPdf.isPending ? 'Exporting PDF...' : 'Export as PDF'}
+									{exportToPdf.isPending
+										? t('pages.exams.detail.actions.exporting_pdf')
+										: t('pages.exams.detail.actions.export_pdf')}
 								</DropdownMenuItem>
 								<DropdownMenuItem
 									onClick={handleExportExcel}
@@ -305,8 +312,8 @@ const ExamDetailPage = (): React.ReactElement => {
 								>
 									<FileText className='h-4 w-4 mr-2' />
 									{exportToExcel.isPending
-										? 'Exporting Excel...'
-										: 'Export as Excel'}
+										? t('pages.exams.detail.actions.exporting_excel')
+										: t('pages.exams.detail.actions.export_excel')}
 								</DropdownMenuItem>
 							</DropdownMenuContent>
 						</DropdownMenu>
@@ -318,15 +325,16 @@ const ExamDetailPage = (): React.ReactElement => {
 								<DialogTrigger asChild>
 									<Button disabled={questions.length === 0}>
 										<Send className='h-4 w-4 mr-2' />
-										Publish Exam
+										{t('pages.exams.detail.actions.publish')}
 									</Button>
 								</DialogTrigger>
 								<DialogContent>
 									<DialogHeader>
-										<DialogTitle>Publish Exam</DialogTitle>
+										<DialogTitle>
+											{t('pages.exams.detail.publish.title')}
+										</DialogTitle>
 										<DialogDescription>
-											Are you sure you want to publish this exam? Students will
-											be able to access it after publishing.
+											{t('pages.exams.detail.publish.description')}
 										</DialogDescription>
 									</DialogHeader>
 									<DialogFooter>
@@ -334,15 +342,15 @@ const ExamDetailPage = (): React.ReactElement => {
 											variant='outline'
 											onClick={() => setIsPublishDialogOpen(false)}
 										>
-											Cancel
+											{t('common.cancel')}
 										</Button>
 										<Button
 											onClick={handlePublish}
 											disabled={publishExamMutation.isPending}
 										>
 											{publishExamMutation.isPending
-												? 'Publishing...'
-												: 'Publish'}
+												? t('pages.exams.detail.publish.publishing')
+												: t('pages.exams.detail.publish.confirm')}
 										</Button>
 									</DialogFooter>
 								</DialogContent>
@@ -354,33 +362,43 @@ const ExamDetailPage = (): React.ReactElement => {
 				{/* Exam Details */}
 				<Card>
 					<CardHeader>
-						<CardTitle>Exam Information</CardTitle>
+						<CardTitle>{t('pages.exams.detail.info.title')}</CardTitle>
 					</CardHeader>
 					<CardContent className='space-y-4'>
 						<div className='grid grid-cols-2 gap-4'>
 							<div>
 								<p className='text-sm text-muted-foreground mb-1'>
-									Description
+									{t('pages.exams.detail.info.description')}
 								</p>
 								<p className='font-medium'>{exam.description}</p>
 							</div>
 							<div>
-								<p className='text-sm text-muted-foreground mb-1'>Subject</p>
+								<p className='text-sm text-muted-foreground mb-1'>
+									{t('pages.exams.detail.info.subject')}
+								</p>
 								<p className='font-medium'>
 									{subjects.find(s => s.id === exam.subjectId)?.name ||
-										'Unknown Subject'}
+										t('pages.exams.detail.info.subject_unknown')}
 								</p>
 							</div>
 						</div>
 
 						<div className='grid grid-cols-2 gap-4'>
 							<div>
-								<p className='text-sm text-muted-foreground'>Grade</p>
-								<p className='font-medium'>Grade {exam.grade}</p>
+								<p className='text-sm text-muted-foreground'>
+									{t('pages.exams.detail.info.grade')}
+								</p>
+								<p className='font-medium'>
+									{t('pages.exams.detail.info.grade_value', {
+										grade: exam.grade,
+									})}
+								</p>
 							</div>
 
 							<div>
-								<p className='text-sm text-muted-foreground'>Created</p>
+								<p className='text-sm text-muted-foreground'>
+									{t('pages.exams.detail.info.created')}
+								</p>
 								<p className='font-medium'>
 									{new Date(exam.createdAt).toLocaleDateString()}
 								</p>
@@ -393,9 +411,9 @@ const ExamDetailPage = (): React.ReactElement => {
 				<Card>
 					<CardHeader className='flex flex-row items-center justify-between'>
 						<div>
-							<CardTitle>Exam Matrix</CardTitle>
+							<CardTitle>{t('pages.exams.detail.matrix.title')}</CardTitle>
 							<p className='text-sm text-muted-foreground mt-1'>
-								Define question distribution by topic and cognitive level
+								{t('pages.exams.detail.matrix.subtitle')}
 							</p>
 						</div>
 						{matrix ? (
@@ -407,7 +425,7 @@ const ExamDetailPage = (): React.ReactElement => {
 									}
 								>
 									<Edit className='h-4 w-4 mr-2' />
-									Edit Matrix
+									{t('pages.exams.detail.matrix.edit')}
 								</Button>
 								<Button
 									variant='outline'
@@ -416,7 +434,9 @@ const ExamDetailPage = (): React.ReactElement => {
 									className='text-destructive hover:text-destructive'
 								>
 									<Trash2 className='h-4 w-4 mr-2' />
-									{detachMatrixMutation.isPending ? 'Detaching...' : 'Detach'}
+									{detachMatrixMutation.isPending
+										? t('pages.exams.detail.matrix.detaching')
+										: t('pages.exams.detail.matrix.detach')}
 								</Button>
 							</div>
 						) : (
@@ -426,7 +446,7 @@ const ExamDetailPage = (): React.ReactElement => {
 								}
 							>
 								<Plus className='h-4 w-4 mr-2' />
-								Create Matrix
+								{t('pages.exams.detail.matrix.create')}
 							</Button>
 						)}
 					</CardHeader>
@@ -437,14 +457,20 @@ const ExamDetailPage = (): React.ReactElement => {
 									<div className='flex items-center gap-2'>
 										<Grid3x3 className='h-5 w-5 text-primary' />
 										<div>
-											<p className='font-medium'>Matrix Configured</p>
+											<p className='font-medium'>
+												{t('pages.exams.detail.matrix.configured')}
+											</p>
 											<p className='text-sm text-muted-foreground'>
-												{matrix.matrixTopics.length} topic-level combinations
+												{t('pages.exams.detail.matrix.summary', {
+													count: matrix.matrixTopics.length,
+												})}
 											</p>
 										</div>
 									</div>
 									<Badge variant='default'>
-										{matrix.totalQuestionCount} questions total
+										{t('pages.exams.detail.matrix.total_questions', {
+											count: matrix.totalQuestionCount,
+										})}
 									</Badge>
 								</div>
 
@@ -458,21 +484,26 @@ const ExamDetailPage = (): React.ReactElement => {
 											>
 												<div className='flex items-center gap-3'>
 													<span className='text-sm font-medium'>
-														{topic?.title || 'Unknown Topic'}
+														{topic?.title ||
+															t('pages.exams.detail.matrix.topic_unknown')}
 													</span>
 													<Badge variant='outline'>
 														{getCognitiveLevelLabel(mt.cognitiveLevel)}
 													</Badge>
 												</div>
 												<span className='text-sm text-muted-foreground'>
-													{mt.quantity} questions
+													{t('pages.exams.detail.matrix.quantity', {
+														count: mt.quantity,
+													})}
 												</span>
 											</div>
 										)
 									})}
 									{matrix.matrixTopics.length > 5 && (
 										<p className='text-sm text-muted-foreground text-center py-2'>
-											+ {matrix.matrixTopics.length - 5} more combinations
+											{t('pages.exams.detail.matrix.more_combinations', {
+												count: matrix.matrixTopics.length - 5,
+											})}
 										</p>
 									)}
 								</div>
@@ -481,8 +512,7 @@ const ExamDetailPage = (): React.ReactElement => {
 							<div className='text-center py-8'>
 								<Grid3x3 className='h-12 w-12 text-muted-foreground mx-auto mb-4' />
 								<p className='text-sm text-muted-foreground mb-4'>
-									No matrix configured yet. Create a new matrix or attach an
-									existing one.
+									{t('pages.exams.detail.matrix.empty')}
 								</p>
 								<div className='flex gap-2 justify-center'>
 									<Button
@@ -491,13 +521,13 @@ const ExamDetailPage = (): React.ReactElement => {
 										}
 									>
 										<Plus className='h-4 w-4 mr-2' />
-										Create Matrix
+										{t('pages.exams.detail.matrix.create')}
 									</Button>
 									<Button
 										variant='outline'
 										onClick={() => setIsAttachMatrixDialogOpen(true)}
 									>
-										Attach Existing Matrix
+										{t('pages.exams.detail.matrix.attach_existing')}
 									</Button>
 								</div>
 							</div>
@@ -508,13 +538,17 @@ const ExamDetailPage = (): React.ReactElement => {
 				{/* Questions List */}
 				<Card>
 					<CardHeader className='flex flex-row items-center justify-between'>
-						<CardTitle>Questions ({questions.length})</CardTitle>
+						<CardTitle>
+							{t('pages.exams.detail.questions.title', {
+								count: questions.length,
+							})}
+						</CardTitle>
 						<Button
 							variant='outline'
 							onClick={() => navigate(`/app/exams/${examId}/questions/create`)}
 						>
 							<Plus className='h-4 w-4 mr-2' />
-							Add Questions
+							{t('pages.exams.detail.questions.add')}
 						</Button>
 					</CardHeader>
 					<CardContent>
@@ -523,11 +557,21 @@ const ExamDetailPage = (): React.ReactElement => {
 								<TableHeader>
 									<TableRow>
 										<TableHead className='w-12'>#</TableHead>
-										<TableHead className='w-[50%]'>Question</TableHead>
-										<TableHead>Type</TableHead>
-										<TableHead>Level</TableHead>
-										<TableHead>Points</TableHead>
-										<TableHead className='text-right'>Actions</TableHead>
+										<TableHead className='w-[50%]'>
+											{t('pages.exams.detail.questions.table.question')}
+										</TableHead>
+										<TableHead>
+											{t('pages.exams.detail.questions.table.type')}
+										</TableHead>
+										<TableHead>
+											{t('pages.exams.detail.questions.table.level')}
+										</TableHead>
+										<TableHead>
+											{t('pages.exams.detail.questions.table.points')}
+										</TableHead>
+										<TableHead className='text-right'>
+											{t('pages.exams.detail.questions.table.actions')}
+										</TableHead>
 									</TableRow>
 								</TableHeader>
 								<TableBody>
@@ -592,7 +636,7 @@ const ExamDetailPage = (): React.ReactElement => {
 							<div className='text-center py-12'>
 								<BookOpen className='h-12 w-12 mx-auto text-muted-foreground mb-4' />
 								<p className='text-muted-foreground mb-4'>
-									No questions added yet
+									{t('pages.exams.detail.questions.empty')}
 								</p>
 								<Button
 									onClick={() =>
@@ -600,7 +644,7 @@ const ExamDetailPage = (): React.ReactElement => {
 									}
 								>
 									<Plus className='h-4 w-4 mr-2' />
-									Add Questions
+									{t('pages.exams.detail.questions.add')}
 								</Button>
 							</div>
 						)}
@@ -624,21 +668,24 @@ const ExamDetailPage = (): React.ReactElement => {
 			>
 				<DialogContent>
 					<DialogHeader>
-						<DialogTitle>Attach Existing Matrix</DialogTitle>
+						<DialogTitle>
+							{t('pages.exams.detail.matrix.attach_title')}
+						</DialogTitle>
 						<DialogDescription>
-							Select a matrix to attach to this exam. The matrix must match the
-							exam's subject and grade.
+							{t('pages.exams.detail.matrix.attach_description')}
 						</DialogDescription>
 					</DialogHeader>
 					<div className='space-y-4 py-4'>
 						{matrices.length === 0 ? (
 							<p className='text-sm text-muted-foreground text-center py-4'>
-								No matrices available. Create a new matrix first.
+								{t('pages.exams.detail.matrix.attach_empty')}
 							</p>
 						) : (
 							<>
 								<Input
-									placeholder='Search matrices...'
+									placeholder={t(
+										'pages.exams.detail.matrix.search_placeholder'
+									)}
 									value={matrixSearchQuery}
 									onChange={e => setMatrixSearchQuery(e.target.value)}
 									className='w-full'
@@ -679,7 +726,9 @@ const ExamDetailPage = (): React.ReactElement => {
 														)}
 													</div>
 													<Badge variant='outline' className='shrink-0'>
-														{matrix.totalQuestionCount} questions
+														{t('pages.exams.detail.matrix.quantity', {
+															count: matrix.totalQuestionCount,
+														})}
 													</Badge>
 												</div>
 											</div>
@@ -698,8 +747,8 @@ const ExamDetailPage = (): React.ReactElement => {
 									).length === 0 && (
 										<p className='text-sm text-muted-foreground text-center py-4'>
 											{matrixSearchQuery
-												? 'No matrices found matching your search.'
-												: "No compatible matrices found. The matrix must match the exam's subject and grade."}
+												? t('pages.exams.detail.matrix.search_empty')
+												: t('pages.exams.detail.matrix.attach_incompatible')}
 										</p>
 									)}
 								</div>
@@ -715,15 +764,15 @@ const ExamDetailPage = (): React.ReactElement => {
 								setMatrixSearchQuery('')
 							}}
 						>
-							Cancel
+							{t('common.cancel')}
 						</Button>
 						<Button
 							onClick={handleAttachMatrix}
 							disabled={!selectedMatrixId || attachMatrixMutation.isPending}
 						>
 							{attachMatrixMutation.isPending
-								? 'Attaching...'
-								: 'Attach Matrix'}
+								? t('pages.exams.detail.matrix.attaching')
+								: t('pages.exams.detail.matrix.attach')}
 						</Button>
 					</DialogFooter>
 				</DialogContent>

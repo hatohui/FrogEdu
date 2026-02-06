@@ -10,8 +10,10 @@ import {
 	useExportExamToPdf,
 	useExportExamToExcel,
 } from '@/hooks/useExams'
+import { useTranslation } from 'react-i18next'
 
 const ExamPreviewPage = (): React.ReactElement => {
+	const { t } = useTranslation()
 	const navigate = useNavigate()
 	const { examId } = useParams<{ examId: string }>()
 
@@ -30,9 +32,11 @@ const ExamPreviewPage = (): React.ReactElement => {
 	if (!preview) {
 		return (
 			<div className='flex h-screen flex-col items-center justify-center'>
-				<p className='text-muted-foreground'>Exam preview not found</p>
+				<p className='text-muted-foreground'>
+					{t('pages.exams.preview.not_found')}
+				</p>
 				<Button onClick={() => navigate('/app/exams')} className='mt-4'>
-					Back to Exams
+					{t('pages.exams.preview.back_to_exams')}
 				</Button>
 			</div>
 		)
@@ -60,7 +64,7 @@ const ExamPreviewPage = (): React.ReactElement => {
 					className='gap-2'
 				>
 					<ArrowLeft className='h-4 w-4' />
-					Back to Exam
+					{t('pages.exams.preview.back_to_exam')}
 				</Button>
 
 				<div className='flex gap-2'>
@@ -75,7 +79,9 @@ const ExamPreviewPage = (): React.ReactElement => {
 						) : (
 							<FileText className='h-4 w-4' />
 						)}
-						Export to PDF
+						{exportToPdf.isPending
+							? t('pages.exams.preview.exporting_pdf')
+							: t('pages.exams.preview.export_pdf')}
 					</Button>
 					<Button
 						variant='outline'
@@ -88,7 +94,9 @@ const ExamPreviewPage = (): React.ReactElement => {
 						) : (
 							<FileSpreadsheet className='h-4 w-4' />
 						)}
-						Export to Excel
+						{exportToExcel.isPending
+							? t('pages.exams.preview.exporting_excel')
+							: t('pages.exams.preview.export_excel')}
 					</Button>
 				</div>
 			</div>
@@ -101,19 +109,27 @@ const ExamPreviewPage = (): React.ReactElement => {
 				<CardContent className='space-y-4'>
 					<div className='grid grid-cols-2 gap-4 md:grid-cols-4'>
 						<div>
-							<p className='text-sm text-muted-foreground'>Subject</p>
+							<p className='text-sm text-muted-foreground'>
+								{t('pages.exams.preview.subject')}
+							</p>
 							<p className='font-medium'>{preview.subjectName}</p>
 						</div>
 						<div>
-							<p className='text-sm text-muted-foreground'>Grade</p>
+							<p className='text-sm text-muted-foreground'>
+								{t('pages.exams.preview.grade')}
+							</p>
 							<p className='font-medium'>{preview.grade}</p>
 						</div>
 						<div>
-							<p className='text-sm text-muted-foreground'>Questions</p>
+							<p className='text-sm text-muted-foreground'>
+								{t('pages.exams.preview.questions')}
+							</p>
 							<p className='font-medium'>{preview.questionCount}</p>
 						</div>
 						<div>
-							<p className='text-sm text-muted-foreground'>Total Points</p>
+							<p className='text-sm text-muted-foreground'>
+								{t('pages.exams.preview.total_points')}
+							</p>
 							<p className='font-medium'>{preview.totalPoints}</p>
 						</div>
 					</div>
@@ -123,7 +139,7 @@ const ExamPreviewPage = (): React.ReactElement => {
 							<Separator />
 							<div>
 								<p className='text-sm font-medium text-muted-foreground'>
-									Description
+									{t('pages.exams.preview.description')}
 								</p>
 								<p className='mt-2'>{preview.description}</p>
 							</div>
@@ -134,7 +150,9 @@ const ExamPreviewPage = (): React.ReactElement => {
 
 			{/* Questions */}
 			<div className='space-y-6'>
-				<h2 className='text-2xl font-bold'>Questions</h2>
+				<h2 className='text-2xl font-bold'>
+					{t('pages.exams.preview.questions_title')}
+				</h2>
 
 				{preview.questions.map(question => (
 					<Card key={question.questionNumber} className='overflow-hidden'>
@@ -143,7 +161,9 @@ const ExamPreviewPage = (): React.ReactElement => {
 								<div className='flex-1'>
 									<div className='flex items-center gap-2'>
 										<span className='font-bold'>
-											Question {question.questionNumber}.
+											{t('pages.exams.preview.question_number', {
+												number: question.questionNumber,
+											})}
 										</span>
 										<span>{question.content}</span>
 									</div>
@@ -153,7 +173,7 @@ const ExamPreviewPage = (): React.ReactElement => {
 									</div>
 								</div>
 								<Badge variant='default' className='ml-4'>
-									{question.point} pts
+									{t('pages.exams.preview.points', { count: question.point })}
 								</Badge>
 							</div>
 						</CardHeader>
@@ -172,7 +192,7 @@ const ExamPreviewPage = (): React.ReactElement => {
 										<span className='flex-1'>{answer.content}</span>
 										{answer.isCorrect && (
 											<Badge variant='default' className='bg-green-600'>
-												Correct
+												{t('pages.exams.preview.correct')}
 											</Badge>
 										)}
 									</div>

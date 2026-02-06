@@ -18,6 +18,7 @@ import {
 import { cn } from '@/utils/cn'
 import { Badge } from '@/components/ui/badge'
 import type { Topic } from '@/types/model/exam-service'
+import { useTranslation } from 'react-i18next'
 
 interface TopicSelectorProps {
 	topics: Topic[]
@@ -31,10 +32,13 @@ export const TopicSelector: React.FC<TopicSelectorProps> = ({
 	topics,
 	value,
 	onValueChange,
-	placeholder = 'Select topic',
+	placeholder,
 	disabled = false,
 }) => {
+	const { t } = useTranslation()
 	const [open, setOpen] = useState(false)
+	const resolvedPlaceholder =
+		placeholder ?? t('exams.topic_selector.placeholder')
 
 	const { curriculumTopics, userTopics } = useMemo(() => {
 		const curriculum = topics.filter(topic => topic.isCurriculum)
@@ -62,26 +66,28 @@ export const TopicSelector: React.FC<TopicSelectorProps> = ({
 							<span className='truncate'>{selectedTopic.title}</span>
 							{selectedTopic.isCurriculum && (
 								<Badge variant='secondary' className='ml-auto shrink-0'>
-									Curriculum
+									{t('exams.topic_selector.curriculum_badge')}
 								</Badge>
 							)}
 						</div>
 					) : (
-						placeholder
+						resolvedPlaceholder
 					)}
 					<ChevronsUpDown className='ml-2 h-4 w-4 shrink-0 opacity-50' />
 				</Button>
 			</PopoverTrigger>
 			<PopoverContent className='w-[500px] p-0' align='start'>
 				<Command>
-					<CommandInput placeholder='Search topics...' />
+					<CommandInput
+						placeholder={t('exams.topic_selector.search_placeholder')}
+					/>
 					<CommandList>
-						<CommandEmpty>No topic found.</CommandEmpty>
+						<CommandEmpty>{t('exams.topic_selector.empty')}</CommandEmpty>
 
 						{/* Curriculum Topics */}
 						{curriculumTopics.length > 0 && (
 							<>
-								<CommandGroup heading='In Curriculum'>
+								<CommandGroup heading={t('exams.topic_selector.in_curriculum')}>
 									{curriculumTopics.map(topic => (
 										<CommandItem
 											key={topic.id}
@@ -114,7 +120,9 @@ export const TopicSelector: React.FC<TopicSelectorProps> = ({
 
 						{/* User-Created Topics */}
 						{userTopics.length > 0 && (
-							<CommandGroup heading='Created By Users'>
+							<CommandGroup
+								heading={t('exams.topic_selector.created_by_users')}
+							>
 								{userTopics.map(topic => (
 									<CommandItem
 										key={topic.id}
@@ -139,7 +147,7 @@ export const TopicSelector: React.FC<TopicSelectorProps> = ({
 											)}
 										</div>
 										<Badge variant='outline' className='ml-2'>
-											Custom
+											{t('exams.topic_selector.custom_badge')}
 										</Badge>
 									</CommandItem>
 								))}

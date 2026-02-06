@@ -25,26 +25,31 @@ import {
 } from '@/components/ui/input-otp'
 import { Loader2, UserPlus, X } from 'lucide-react'
 import { useJoinClass } from '@/hooks/useClasses'
+import { useTranslation } from 'react-i18next'
+import type { TFunction } from 'i18next'
 
-const joinClassSchema = z.object({
-	inviteCode: z
-		.string()
-		.length(6, 'Invite code must be exactly 6 characters')
-		.regex(/^[A-Z0-9]+$/i, 'Invite code can only contain letters and numbers'),
-})
+const joinClassSchema = (t: TFunction) =>
+	z.object({
+		inviteCode: z
+			.string()
+			.length(6, t('forms.classes.validation.invite_length'))
+			.regex(/^[A-Z0-9]+$/i, t('forms.classes.validation.invite_format')),
+	})
 
-type JoinClassFormData = z.infer<typeof joinClassSchema>
+type JoinClassFormData = z.infer<ReturnType<typeof joinClassSchema>>
 
 interface JoinClassFormProps {
 	onSuccess?: () => void
 }
 
 const JoinClassForm: React.FC<JoinClassFormProps> = ({ onSuccess }) => {
+	const { t } = useTranslation()
 	const joinClass = useJoinClass()
 	const [isComplete, setIsComplete] = useState(false)
+	const schema = React.useMemo(() => joinClassSchema(t), [t])
 
 	const form = useForm<JoinClassFormData>({
-		resolver: zodResolver(joinClassSchema),
+		resolver: zodResolver(schema),
 		defaultValues: {
 			inviteCode: '',
 		},
@@ -68,10 +73,8 @@ const JoinClassForm: React.FC<JoinClassFormProps> = ({ onSuccess }) => {
 				<div className='mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-primary/10'>
 					<UserPlus className='h-6 w-6 text-primary' />
 				</div>
-				<CardTitle>Join a Class</CardTitle>
-				<CardDescription>
-					Enter the 6-character invite code provided by your teacher
-				</CardDescription>
+				<CardTitle>{t('pages.classes.join.title')}</CardTitle>
+				<CardDescription>{t('pages.classes.join.subtitle')}</CardDescription>
 			</CardHeader>
 			<CardContent>
 				<Form {...form}>
@@ -101,7 +104,7 @@ const JoinClassForm: React.FC<JoinClassFormProps> = ({ onSuccess }) => {
 										</InputOTP>
 									</FormControl>
 									<FormDescription className='text-center mt-2'>
-										The code is case-insensitive
+										{t('pages.classes.join.case_insensitive')}
 									</FormDescription>
 									<FormMessage />
 								</FormItem>
@@ -116,10 +119,10 @@ const JoinClassForm: React.FC<JoinClassFormProps> = ({ onSuccess }) => {
 							{joinClass.isPending ? (
 								<>
 									<Loader2 className='mr-2 h-4 w-4 animate-spin' />
-									Joining...
+									{t('pages.classes.join.actions.joining')}
 								</>
 							) : (
-								'Join Class'
+								t('pages.classes.join.actions.join')
 							)}
 						</Button>
 					</form>

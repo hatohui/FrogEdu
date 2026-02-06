@@ -63,8 +63,10 @@ import { Badge } from '@/components/ui/badge'
 import { useNavigate } from 'react-router'
 import type { Exam } from '@/types/model/exam-service'
 import type { CreateExamRequest } from '@/types/dtos/exams'
+import { useTranslation } from 'react-i18next'
 
 const ExamsPage = (): React.ReactElement => {
+	const { t } = useTranslation()
 	const navigate = useNavigate()
 	const [filter, setFilter] = useState<'all' | 'draft' | 'published'>('all')
 	const [editingExam, setEditingExam] = useState<Exam | null>(null)
@@ -131,15 +133,15 @@ const ExamsPage = (): React.ReactElement => {
 				<div className='space-y-2'>
 					<h1 className='text-3xl font-bold tracking-tight flex items-center space-x-2'>
 						<FileText className='h-8 w-8' />
-						<span>Exams</span>
+						<span>{t('pages.exams.list.title')}</span>
 					</h1>
 					<p className='text-muted-foreground'>
-						Create and manage your assessments
+						{t('pages.exams.list.subtitle')}
 					</p>
 				</div>
 				<Button onClick={handleCreateExam} size='lg'>
 					<Plus className='h-5 w-5 mr-2' />
-					New Exam
+					{t('pages.exams.list.actions.new')}
 				</Button>
 			</div>
 
@@ -149,26 +151,26 @@ const ExamsPage = (): React.ReactElement => {
 					variant={filter === 'all' ? 'default' : 'outline'}
 					onClick={() => setFilter('all')}
 				>
-					All Exams
+					{t('pages.exams.list.filters.all')}
 				</Button>
 				<Button
 					variant={filter === 'draft' ? 'default' : 'outline'}
 					onClick={() => setFilter('draft')}
 				>
-					Drafts
+					{t('pages.exams.list.filters.draft')}
 				</Button>
 				<Button
 					variant={filter === 'published' ? 'default' : 'outline'}
 					onClick={() => setFilter('published')}
 				>
-					Published
+					{t('pages.exams.list.filters.published')}
 				</Button>
 			</div>
 
 			{/* Exams Table */}
 			<Card>
 				<CardHeader>
-					<CardTitle>Your Exams</CardTitle>
+					<CardTitle>{t('pages.exams.list.table.title')}</CardTitle>
 				</CardHeader>
 				<CardContent>
 					{isLoading ? (
@@ -177,12 +179,14 @@ const ExamsPage = (): React.ReactElement => {
 						<Table>
 							<TableHeader>
 								<TableRow>
-									<TableHead>Name</TableHead>
-									<TableHead>Subject</TableHead>
-									<TableHead>Grade</TableHead>
-									<TableHead>Status</TableHead>
-									<TableHead>Created</TableHead>
-									<TableHead className='text-right'>Actions</TableHead>
+									<TableHead>{t('pages.exams.list.table.name')}</TableHead>
+									<TableHead>{t('pages.exams.list.table.subject')}</TableHead>
+									<TableHead>{t('pages.exams.list.table.grade')}</TableHead>
+									<TableHead>{t('pages.exams.list.table.status')}</TableHead>
+									<TableHead>{t('pages.exams.list.table.created')}</TableHead>
+									<TableHead className='text-right'>
+										{t('pages.exams.list.table.actions')}
+									</TableHead>
 								</TableRow>
 							</TableHeader>
 							<TableBody>
@@ -203,12 +207,12 @@ const ExamsPage = (): React.ReactElement => {
 											{exam.isDraft ? (
 												<Badge variant='secondary'>
 													<BookOpen className='h-3 w-3 mr-1' />
-													Draft
+													{t('pages.exams.list.status.draft')}
 												</Badge>
 											) : (
 												<Badge variant='default'>
 													<CheckCircle2 className='h-3 w-3 mr-1' />
-													Active
+													{t('pages.exams.list.status.active')}
 												</Badge>
 											)}
 										</TableCell>
@@ -235,20 +239,20 @@ const ExamsPage = (): React.ReactElement => {
 														onClick={() => navigate(`/app/exams/${exam.id}`)}
 													>
 														<Eye className='h-4 w-4 mr-2' />
-														View
+														{t('pages.exams.list.actions.view')}
 													</DropdownMenuItem>
 													<DropdownMenuItem
 														onClick={() => openEditDialog(exam)}
 													>
 														<Pencil className='h-4 w-4 mr-2' />
-														Edit
+														{t('pages.exams.list.actions.edit')}
 													</DropdownMenuItem>
 													<DropdownMenuItem
 														onClick={() => setDeletingExam(exam)}
 														className='text-destructive'
 													>
 														<Trash2 className='h-4 w-4 mr-2' />
-														Delete
+														{t('pages.exams.list.actions.delete')}
 													</DropdownMenuItem>
 												</DropdownMenuContent>
 											</DropdownMenu>
@@ -260,10 +264,12 @@ const ExamsPage = (): React.ReactElement => {
 					) : (
 						<div className='text-center py-12'>
 							<FileText className='h-12 w-12 mx-auto text-muted-foreground mb-4' />
-							<p className='text-muted-foreground mb-4'>No exams found</p>
+							<p className='text-muted-foreground mb-4'>
+								{t('pages.exams.list.empty.title')}
+							</p>
 							<Button onClick={handleCreateExam}>
 								<Plus className='h-4 w-4 mr-2' />
-								Create Your First Exam
+								{t('pages.exams.list.empty.action')}
 							</Button>
 						</div>
 					)}
@@ -277,36 +283,44 @@ const ExamsPage = (): React.ReactElement => {
 			>
 				<DialogContent>
 					<DialogHeader>
-						<DialogTitle>Edit Exam</DialogTitle>
+						<DialogTitle>{t('pages.exams.list.edit.title')}</DialogTitle>
 						<DialogDescription>
-							Update the exam information below.
+							{t('pages.exams.list.edit.description')}
 						</DialogDescription>
 					</DialogHeader>
 					<div className='space-y-4 py-4'>
 						<div className='space-y-2'>
-							<Label htmlFor='name'>Name</Label>
+							<Label htmlFor='name'>
+								{t('pages.exams.list.edit.fields.name')}
+							</Label>
 							<Input
 								id='name'
 								value={formData.name}
 								onChange={e =>
 									setFormData({ ...formData, name: e.target.value })
 								}
-								placeholder='Exam name'
+								placeholder={t('pages.exams.list.edit.placeholders.name')}
 							/>
 						</div>
 						<div className='space-y-2'>
-							<Label htmlFor='description'>Description</Label>
+							<Label htmlFor='description'>
+								{t('pages.exams.list.edit.fields.description')}
+							</Label>
 							<Input
 								id='description'
 								value={formData.description}
 								onChange={e =>
 									setFormData({ ...formData, description: e.target.value })
 								}
-								placeholder='Exam description'
+								placeholder={t(
+									'pages.exams.list.edit.placeholders.description'
+								)}
 							/>
 						</div>
 						<div className='space-y-2'>
-							<Label htmlFor='grade'>Grade</Label>
+							<Label htmlFor='grade'>
+								{t('pages.exams.list.edit.fields.grade')}
+							</Label>
 							<Select
 								value={formData.grade?.toString()}
 								onValueChange={value =>
@@ -319,14 +333,16 @@ const ExamsPage = (): React.ReactElement => {
 								<SelectContent>
 									{[1, 2, 3, 4, 5].map(grade => (
 										<SelectItem key={grade} value={grade.toString()}>
-											Grade {grade}
+											{t('pages.exams.list.edit.grade_option', { grade })}
 										</SelectItem>
 									))}
 								</SelectContent>
 							</Select>
 						</div>
 						<div className='space-y-2'>
-							<Label htmlFor='subject'>Subject</Label>
+							<Label htmlFor='subject'>
+								{t('pages.exams.list.edit.fields.subject')}
+							</Label>
 							<Select
 								value={formData.subjectId || undefined}
 								onValueChange={value =>
@@ -334,7 +350,11 @@ const ExamsPage = (): React.ReactElement => {
 								}
 							>
 								<SelectTrigger id='subject'>
-									<SelectValue placeholder='Select a subject' />
+									<SelectValue
+										placeholder={t(
+											'pages.exams.list.edit.placeholders.subject'
+										)}
+									/>
 								</SelectTrigger>
 								<SelectContent>
 									{subjects?.map(subject => (
@@ -348,13 +368,13 @@ const ExamsPage = (): React.ReactElement => {
 					</div>
 					<DialogFooter>
 						<Button variant='outline' onClick={() => setEditingExam(null)}>
-							Cancel
+							{t('common.cancel')}
 						</Button>
 						<Button
 							onClick={handleUpdate}
 							disabled={updateExam.isPending || !formData.name}
 						>
-							Update
+							{t('pages.exams.list.edit.actions.update')}
 						</Button>
 					</DialogFooter>
 				</DialogContent>
@@ -367,20 +387,23 @@ const ExamsPage = (): React.ReactElement => {
 			>
 				<AlertDialogContent>
 					<AlertDialogHeader>
-						<AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+						<AlertDialogTitle>
+							{t('pages.exams.list.delete.title')}
+						</AlertDialogTitle>
 						<AlertDialogDescription>
-							This will permanently delete the exam &quot;{deletingExam?.name}
-							&quot;. This action cannot be undone.
+							{t('pages.exams.list.delete.description', {
+								name: deletingExam?.name,
+							})}
 						</AlertDialogDescription>
 					</AlertDialogHeader>
 					<AlertDialogFooter>
-						<AlertDialogCancel>Cancel</AlertDialogCancel>
+						<AlertDialogCancel>{t('common.cancel')}</AlertDialogCancel>
 						<AlertDialogAction
 							onClick={handleDelete}
 							disabled={deleteExam.isPending}
 							className='bg-destructive text-destructive-foreground hover:bg-destructive/90'
 						>
-							Delete
+							{t('pages.exams.list.actions.delete')}
 						</AlertDialogAction>
 					</AlertDialogFooter>
 				</AlertDialogContent>

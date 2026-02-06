@@ -25,31 +25,36 @@ import {
 } from '@/components/ui/select'
 import { useNavigate } from 'react-router'
 import { useCreateExam, useSubjects } from '@/hooks/useExams'
+import { useTranslation } from 'react-i18next'
+import type { TFunction } from 'i18next'
 
-const examSchema = z.object({
-	name: z
-		.string()
-		.min(3, 'Exam name must be at least 3 characters')
-		.max(200, 'Exam name cannot exceed 200 characters'),
-	description: z
-		.string()
-		.min(10, 'Description must be at least 10 characters')
-		.max(1000, 'Description cannot exceed 1000 characters'),
-	grade: z
-		.number()
-		.int()
-		.min(1, 'Grade must be between 1 and 5')
-		.max(5, 'Grade must be between 1 and 5'),
-	subjectId: z.string().min(1, 'Subject is required'),
-})
+const examSchema = (t: TFunction) =>
+	z.object({
+		name: z
+			.string()
+			.min(3, t('forms.exams.validation.name_min'))
+			.max(200, t('forms.exams.validation.name_max')),
+		description: z
+			.string()
+			.min(10, t('forms.exams.validation.description_min'))
+			.max(1000, t('forms.exams.validation.description_max')),
+		grade: z
+			.number()
+			.int()
+			.min(1, t('forms.exams.validation.grade_range'))
+			.max(5, t('forms.exams.validation.grade_range')),
+		subjectId: z.string().min(1, t('forms.exams.validation.subject_required')),
+	})
 
-type ExamFormData = z.infer<typeof examSchema>
+type ExamFormData = z.infer<ReturnType<typeof examSchema>>
 
 const CreateExamPage = (): React.ReactElement => {
+	const { t } = useTranslation()
 	const navigate = useNavigate()
+	const schema = React.useMemo(() => examSchema(t), [t])
 
 	const form = useForm<ExamFormData>({
-		resolver: zodResolver(examSchema),
+		resolver: zodResolver(schema),
 		defaultValues: {
 			name: '',
 			description: '',
@@ -91,8 +96,12 @@ const CreateExamPage = (): React.ReactElement => {
 					<ArrowLeft className='h-5 w-5' />
 				</Button>
 				<div>
-					<h1 className='text-3xl font-bold'>Create New Exam</h1>
-					<p className='text-muted-foreground'>Define basic exam information</p>
+					<h1 className='text-3xl font-bold'>
+						{t('pages.exams.create.title')}
+					</h1>
+					<p className='text-muted-foreground'>
+						{t('pages.exams.create.subtitle')}
+					</p>
 				</div>
 			</div>
 
@@ -101,7 +110,7 @@ const CreateExamPage = (): React.ReactElement => {
 				<form onSubmit={form.handleSubmit(onSubmit)} className='space-y-6'>
 					<Card>
 						<CardHeader>
-							<CardTitle>Exam Information</CardTitle>
+							<CardTitle>{t('pages.exams.create.form.title')}</CardTitle>
 						</CardHeader>
 						<CardContent className='space-y-4'>
 							<FormField
@@ -109,16 +118,23 @@ const CreateExamPage = (): React.ReactElement => {
 								name='name'
 								render={({ field }) => (
 									<FormItem>
-										<FormLabel>Exam Name *</FormLabel>
+										<FormLabel>
+											{t('pages.exams.create.form.fields.name')}
+										</FormLabel>
 										<FormControl>
 											<Input
-												placeholder='Mid-term Math Exam'
+												placeholder={t(
+													'pages.exams.create.form.placeholders.name'
+												)}
 												{...field}
 												maxLength={200}
 											/>
 										</FormControl>
 										<FormDescription>
-											{field.value.length}/200 characters
+											{t('pages.exams.create.form.char_count', {
+												count: field.value.length,
+												max: 200,
+											})}
 										</FormDescription>
 										<FormMessage />
 									</FormItem>
@@ -130,17 +146,24 @@ const CreateExamPage = (): React.ReactElement => {
 								name='description'
 								render={({ field }) => (
 									<FormItem>
-										<FormLabel>Description *</FormLabel>
+										<FormLabel>
+											{t('pages.exams.create.form.fields.description')}
+										</FormLabel>
 										<FormControl>
 											<Textarea
-												placeholder='Describe the exam content and objectives...'
+												placeholder={t(
+													'pages.exams.create.form.placeholders.description'
+												)}
 												{...field}
 												maxLength={1000}
 												rows={4}
 											/>
 										</FormControl>
 										<FormDescription>
-											{field.value.length}/1000 characters
+											{t('pages.exams.create.form.char_count', {
+												count: field.value.length,
+												max: 1000,
+											})}
 										</FormDescription>
 										<FormMessage />
 									</FormItem>
@@ -152,21 +175,29 @@ const CreateExamPage = (): React.ReactElement => {
 								name='grade'
 								render={({ field }) => (
 									<FormItem>
-										<FormLabel>Grade *</FormLabel>
+										<FormLabel>
+											{t('pages.exams.create.form.fields.grade')}
+										</FormLabel>
 										<Select
 											onValueChange={value => field.onChange(Number(value))}
 											value={String(field.value)}
 										>
 											<FormControl>
 												<SelectTrigger>
-													<SelectValue placeholder='Select grade' />
+													<SelectValue
+														placeholder={t(
+															'pages.exams.create.form.placeholders.grade'
+														)}
+													/>
 												</SelectTrigger>
 											</FormControl>
 											<SelectContent>
 												{Array.from({ length: 5 }, (_, i) => i + 1).map(
 													grade => (
 														<SelectItem key={grade} value={String(grade)}>
-															{grade}
+															{t('pages.exams.create.form.grade_option', {
+																grade,
+															})}
 														</SelectItem>
 													)
 												)}
@@ -182,20 +213,26 @@ const CreateExamPage = (): React.ReactElement => {
 								name='subjectId'
 								render={({ field }) => (
 									<FormItem>
-										<FormLabel>Subject *</FormLabel>
+										<FormLabel>
+											{t('pages.exams.create.form.fields.subject')}
+										</FormLabel>
 										<Select
 											onValueChange={value => field.onChange(value)}
 											value={field.value}
 										>
 											<FormControl>
 												<SelectTrigger>
-													<SelectValue placeholder='Select subject' />
+													<SelectValue
+														placeholder={t(
+															'pages.exams.create.form.placeholders.subject'
+														)}
+													/>
 												</SelectTrigger>
 											</FormControl>
 											<SelectContent>
 												{!subjects || subjects.length === 0 ? (
 													<SelectItem value='_none' disabled>
-														Select a grade first
+														{t('pages.exams.create.form.no_subjects')}
 													</SelectItem>
 												) : (
 													subjects.map(subject => (
@@ -220,11 +257,13 @@ const CreateExamPage = (): React.ReactElement => {
 							onClick={() => navigate('/app/exams')}
 						>
 							<ArrowLeft className='h-4 w-4 mr-2' />
-							Cancel
+							{t('common.cancel')}
 						</Button>
 
 						<Button type='submit' disabled={createExamMutation.isPending}>
-							{createExamMutation.isPending ? 'Creating...' : 'Create Exam'}
+							{createExamMutation.isPending
+								? t('pages.exams.create.actions.creating')
+								: t('pages.exams.create.actions.create')}
 						</Button>
 					</div>
 				</form>

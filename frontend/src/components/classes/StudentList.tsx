@@ -11,6 +11,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { format } from 'date-fns'
 import type { ClassMemberDto } from '@/services/class-microservice/class.service'
+import { useTranslation } from 'react-i18next'
 
 interface StudentListProps {
 	members: ClassMemberDto[]
@@ -21,6 +22,8 @@ const StudentList: React.FC<StudentListProps> = ({
 	members,
 	showRole = true,
 }) => {
+	const { t } = useTranslation()
+
 	const getInitials = (name: string) => {
 		return name
 			.split(' ')
@@ -39,7 +42,9 @@ const StudentList: React.FC<StudentListProps> = ({
 			{teachers.length > 0 && (
 				<div>
 					<h3 className='text-sm font-medium text-muted-foreground mb-3'>
-						Teachers ({teachers.length})
+						{t('pages.classes.roster.teachers', {
+							count: teachers.length,
+						})}
 					</h3>
 					<div className='flex flex-wrap gap-3'>
 						{teachers.map(teacher => (
@@ -56,7 +61,7 @@ const StudentList: React.FC<StudentListProps> = ({
 								<div>
 									<p className='text-sm font-medium'>{teacher.name}</p>
 									<Badge variant='secondary' className='text-xs'>
-										Teacher
+										{t('pages.classes.roster.teacher_badge')}
 									</Badge>
 								</div>
 							</div>
@@ -68,12 +73,14 @@ const StudentList: React.FC<StudentListProps> = ({
 			{/* Students section */}
 			<div>
 				<h3 className='text-sm font-medium text-muted-foreground mb-3'>
-					Students ({students.length})
+					{t('pages.classes.roster.students', { count: students.length })}
 				</h3>
 				{students.length === 0 ? (
 					<div className='text-center py-8 text-muted-foreground'>
-						<p>No students enrolled yet.</p>
-						<p className='text-sm'>Share the invite code to add students.</p>
+						<p>{t('pages.classes.roster.empty_title')}</p>
+						<p className='text-sm'>
+							{t('pages.classes.roster.empty_subtitle')}
+						</p>
 					</div>
 				) : (
 					<div className='rounded-md border'>
@@ -81,9 +88,15 @@ const StudentList: React.FC<StudentListProps> = ({
 							<TableHeader>
 								<TableRow>
 									<TableHead className='w-[50px]'></TableHead>
-									<TableHead>Name</TableHead>
-									{showRole && <TableHead>Role</TableHead>}
-									<TableHead>Joined</TableHead>
+									<TableHead>{t('pages.classes.roster.table.name')}</TableHead>
+									{showRole && (
+										<TableHead>
+											{t('pages.classes.roster.table.role')}
+										</TableHead>
+									)}
+									<TableHead>
+										{t('pages.classes.roster.table.joined')}
+									</TableHead>
 								</TableRow>
 							</TableHeader>
 							<TableBody>

@@ -11,6 +11,7 @@ import { AIQuestionPreview } from '@/components/exams/AIQuestionPreview'
 import { QuestionType, CognitiveLevel } from '@/types/model/exam-service'
 import type { AIGeneratedQuestion } from '@/types/model/ai-service'
 import type { Topic, Exam, Matrix } from '@/types/model/exam-service'
+import { useTranslation } from 'react-i18next'
 
 interface AIGeneratorSectionProps {
 	exam: Exam | undefined
@@ -68,6 +69,7 @@ export const AIGeneratorSection: React.FC<AIGeneratorSectionProps> = ({
 	isSaving,
 	isSavingAll = false,
 }) => {
+	const { t } = useTranslation()
 	const [aiQuantity, setAiQuantity] = useState(1)
 
 	const handleGenerate = async () => {
@@ -97,13 +99,12 @@ export const AIGeneratorSection: React.FC<AIGeneratorSectionProps> = ({
 					<CardHeader>
 						<CardTitle className='flex items-center gap-2 text-sm'>
 							<Zap className='h-4 w-4' />
-							Generate Entire Matrix
+							{t('pages.exams.questions.ai.matrix_title')}
 						</CardTitle>
 					</CardHeader>
 					<CardContent>
 						<p className='text-sm text-muted-foreground mb-4'>
-							Generate all remaining questions needed to complete the exam
-							matrix in one go.
+							{t('pages.exams.questions.ai.matrix_description')}
 						</p>
 						<Button
 							onClick={onGenerateMatrix}
@@ -114,12 +115,12 @@ export const AIGeneratorSection: React.FC<AIGeneratorSectionProps> = ({
 							{isGenerating ? (
 								<>
 									<Loader2 className='h-4 w-4 mr-2 animate-spin' />
-									Generating Matrix...
+									{t('pages.exams.questions.ai.matrix_generating')}
 								</>
 							) : (
 								<>
 									<Zap className='h-4 w-4 mr-2' />
-									Generate All Matrix Questions
+									{t('pages.exams.questions.ai.matrix_generate')}
 								</>
 							)}
 						</Button>
@@ -132,23 +133,23 @@ export const AIGeneratorSection: React.FC<AIGeneratorSectionProps> = ({
 				<CardHeader>
 					<CardTitle className='flex items-center gap-2 text-sm'>
 						<Sparkles className='h-4 w-4' />
-						AI Question Generator
+						{t('pages.exams.questions.ai.title')}
 					</CardTitle>
 				</CardHeader>
 				<CardContent className='space-y-4'>
 					{/* Topic and Question Type */}
 					<div className='grid grid-cols-2 gap-4'>
 						<div className='space-y-2'>
-							<Label>Topic *</Label>
+							<Label>{t('pages.exams.questions.ai.fields.topic')}</Label>
 							<TopicSelector
 								topics={topics}
 								value={selectedTopic}
 								onValueChange={onTopicChange}
-								placeholder='Select a topic...'
+								placeholder={t('pages.exams.questions.ai.placeholders.topic')}
 							/>
 						</div>
 						<div className='space-y-2'>
-							<Label>Question Type</Label>
+							<Label>{t('pages.exams.questions.ai.fields.type')}</Label>
 							<QuestionTypeSelector
 								value={questionType}
 								onValueChange={onQuestionTypeChange}
@@ -159,14 +160,16 @@ export const AIGeneratorSection: React.FC<AIGeneratorSectionProps> = ({
 					{/* Cognitive Level and Quantity */}
 					<div className='grid grid-cols-2 gap-4'>
 						<div className='space-y-2'>
-							<Label>Cognitive Level</Label>
+							<Label>
+								{t('pages.exams.questions.ai.fields.cognitive_level')}
+							</Label>
 							<CognitiveLevelSelector
 								value={cognitiveLevel}
 								onValueChange={onCognitiveLevelChange}
 							/>
 						</div>
 						<div className='space-y-2'>
-							<Label>Quantity</Label>
+							<Label>{t('pages.exams.questions.ai.fields.quantity')}</Label>
 							<Input
 								type='number'
 								value={aiQuantity}
@@ -189,12 +192,12 @@ export const AIGeneratorSection: React.FC<AIGeneratorSectionProps> = ({
 						{isGenerating ? (
 							<>
 								<Loader2 className='h-4 w-4 mr-2 animate-spin' />
-								Generating...
+								{t('pages.exams.questions.ai.generating')}
 							</>
 						) : (
 							<>
 								<Sparkles className='h-4 w-4 mr-2' />
-								Generate {aiQuantity} Question{aiQuantity > 1 ? 's' : ''}
+								{t('pages.exams.questions.ai.generate', { count: aiQuantity })}
 							</>
 						)}
 					</Button>
@@ -206,7 +209,9 @@ export const AIGeneratorSection: React.FC<AIGeneratorSectionProps> = ({
 				<Card>
 					<CardHeader className='flex flex-row items-center justify-between'>
 						<CardTitle>
-							Generated Questions ({generatedQuestions.length})
+							{t('pages.exams.questions.ai.generated_title', {
+								count: generatedQuestions.length,
+							})}
 						</CardTitle>
 						<div className='flex gap-2'>
 							{onSaveAllQuestions && generatedQuestions.length > 1 && (
@@ -219,12 +224,14 @@ export const AIGeneratorSection: React.FC<AIGeneratorSectionProps> = ({
 									{isSavingAll ? (
 										<>
 											<Loader2 className='h-4 w-4 mr-2 animate-spin' />
-											Saving All...
+											{t('pages.exams.questions.ai.saving_all')}
 										</>
 									) : (
 										<>
 											<SaveAll className='h-4 w-4 mr-2' />
-											Save All ({generatedQuestions.length})
+											{t('pages.exams.questions.ai.save_all', {
+												count: generatedQuestions.length,
+											})}
 										</>
 									)}
 								</Button>
@@ -235,7 +242,7 @@ export const AIGeneratorSection: React.FC<AIGeneratorSectionProps> = ({
 								onClick={onClearAll}
 								disabled={isSavingAll}
 							>
-								Clear All
+								{t('pages.exams.questions.ai.clear_all')}
 							</Button>
 						</div>
 					</CardHeader>

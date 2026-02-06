@@ -24,6 +24,7 @@ import type {
 	Topic,
 } from '@/types/model/exam-service'
 import { CognitiveLevel } from '@/types/model/exam-service'
+import { useTranslation } from 'react-i18next'
 
 interface MatrixProgressTrackerProps {
 	matrix: Matrix
@@ -61,6 +62,7 @@ export const MatrixProgressTracker: React.FC<MatrixProgressTrackerProps> = ({
 	isExportingExcel = false,
 	isDeleting = false,
 }) => {
+	const { t } = useTranslation()
 	const progressData = useMemo(() => {
 		const data: ProgressItem[] = []
 
@@ -72,7 +74,7 @@ export const MatrixProgressTracker: React.FC<MatrixProgressTrackerProps> = ({
 
 			data.push({
 				topicId: mt.topicId,
-				topicName: topic?.title || 'Unknown Topic',
+				topicName: topic?.title || t('common.unknown'),
 				cognitiveLevel: mt.cognitiveLevel,
 				required: mt.quantity,
 				created: createdCount,
@@ -98,15 +100,15 @@ export const MatrixProgressTracker: React.FC<MatrixProgressTrackerProps> = ({
 	const getCognitiveLevelLabel = (level: CognitiveLevel) => {
 		switch (level) {
 			case CognitiveLevel.Remember:
-				return 'Remember'
+				return t('exams.cognitive_levels.remember')
 			case CognitiveLevel.Understand:
-				return 'Understand'
+				return t('exams.cognitive_levels.understand')
 			case CognitiveLevel.Apply:
-				return 'Apply'
+				return t('exams.cognitive_levels.apply')
 			case CognitiveLevel.Analyze:
-				return 'Analyze'
+				return t('exams.cognitive_levels.analyze')
 			default:
-				return 'Unknown'
+				return t('common.unknown')
 		}
 	}
 
@@ -135,14 +137,14 @@ export const MatrixProgressTracker: React.FC<MatrixProgressTrackerProps> = ({
 					<div className='space-y-1'>
 						<div className='flex items-center gap-2'>
 							<h3 className='text-base font-semibold tracking-tight'>
-								Matrix Progress
+								{t('components.exams.matrix_progress.title')}
 							</h3>
 							{overallProgress === 100 && (
 								<CheckCircle className='h-4 w-4 text-primary' />
 							)}
 						</div>
 						<p className='text-sm text-muted-foreground'>
-							Track your exam question distribution progress
+							{t('components.exams.matrix_progress.subtitle')}
 						</p>
 					</div>
 
@@ -158,7 +160,9 @@ export const MatrixProgressTracker: React.FC<MatrixProgressTrackerProps> = ({
 												disabled={isExportingPdf || isExportingExcel}
 											>
 												<Download className='h-3.5 w-3.5 mr-1.5' />
-												<span className='text-xs'>Export</span>
+												<span className='text-xs'>
+													{t('components.exams.matrix_progress.actions.export')}
+												</span>
 											</Button>
 										</DropdownMenuTrigger>
 										<DropdownMenuContent align='end'>
@@ -169,8 +173,12 @@ export const MatrixProgressTracker: React.FC<MatrixProgressTrackerProps> = ({
 												>
 													<FileText className='h-4 w-4 mr-2' />
 													{isExportingPdf
-														? 'Exporting PDF...'
-														: 'Export as PDF'}
+														? t(
+																'components.exams.matrix_progress.actions.exporting_pdf'
+															)
+														: t(
+																'components.exams.matrix_progress.actions.export_pdf'
+															)}
 												</DropdownMenuItem>
 											)}
 											{onExportExcel && (
@@ -180,8 +188,12 @@ export const MatrixProgressTracker: React.FC<MatrixProgressTrackerProps> = ({
 												>
 													<FileText className='h-4 w-4 mr-2' />
 													{isExportingExcel
-														? 'Exporting Excel...'
-														: 'Export as Excel'}
+														? t(
+																'components.exams.matrix_progress.actions.exporting_excel'
+															)
+														: t(
+																'components.exams.matrix_progress.actions.export_excel'
+															)}
 												</DropdownMenuItem>
 											)}
 										</DropdownMenuContent>
@@ -197,7 +209,9 @@ export const MatrixProgressTracker: React.FC<MatrixProgressTrackerProps> = ({
 									>
 										<Trash2 className='h-3.5 w-3.5 mr-1.5' />
 										<span className='text-xs'>
-											{isDeleting ? 'Deleting...' : 'Delete'}
+											{isDeleting
+												? t('components.exams.matrix_progress.actions.deleting')
+												: t('components.exams.matrix_progress.actions.delete')}
 										</span>
 									</Button>
 								)}
@@ -210,13 +224,15 @@ export const MatrixProgressTracker: React.FC<MatrixProgressTrackerProps> = ({
 				<div className='space-y-2'>
 					<div className='flex items-center justify-between'>
 						<span className='text-xs font-medium text-muted-foreground uppercase tracking-wider'>
-							Overall Progress
+							{t('components.exams.matrix_progress.overall')}
 						</span>
 						<div className='flex items-baseline gap-1'>
 							<span className='text-lg font-bold text-primary'>
 								{Math.round(overallProgress)}%
 							</span>
-							<span className='text-xs text-muted-foreground'>Complete</span>
+							<span className='text-xs text-muted-foreground'>
+								{t('components.exams.matrix_progress.complete')}
+							</span>
 						</div>
 					</div>
 					<Progress className='h-2' value={overallProgress} />

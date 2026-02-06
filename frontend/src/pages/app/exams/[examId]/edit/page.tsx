@@ -26,34 +26,38 @@ import {
 } from '@/components/ui/select'
 import { useNavigate, useParams } from 'react-router'
 import { useUpdateExam, useExam, useSubjects } from '@/hooks/useExams'
+import { useTranslation } from 'react-i18next'
+import type { TFunction } from 'i18next'
 
-const examSchema = z.object({
-	name: z
-		.string()
-		.min(3, 'Exam name must be at least 3 characters')
-		.max(200, 'Exam name cannot exceed 200 characters'),
-	description: z
-		.string()
-		.min(10, 'Description must be at least 10 characters')
-		.max(1000, 'Description cannot exceed 1000 characters'),
-	grade: z
-		.number()
-		.int()
-		.min(1, 'Grade must be between 1 and 5')
-		.max(5, 'Grade must be between 1 and 5'),
-	subjectId: z.string().min(1, 'Subject is required'),
-})
+const examSchema = (t: TFunction) =>
+	z.object({
+		name: z
+			.string()
+			.min(3, t('forms.exams.validation.name_min'))
+			.max(200, t('forms.exams.validation.name_max')),
+		description: z
+			.string()
+			.min(10, t('forms.exams.validation.description_min'))
+			.max(1000, t('forms.exams.validation.description_max')),
+		grade: z
+			.number()
+			.int()
+			.min(1, t('forms.exams.validation.grade_range'))
+			.max(5, t('forms.exams.validation.grade_range')),
+		subjectId: z.string().min(1, t('forms.exams.validation.subject_required')),
+	})
 
-type ExamFormData = z.infer<typeof examSchema>
+type ExamFormData = z.infer<ReturnType<typeof examSchema>>
 
 const EditExamPage = (): React.ReactElement => {
+	const { t } = useTranslation()
 	const navigate = useNavigate()
 	const { examId } = useParams<{ examId: string }>()
 
 	const { data: exam, isLoading: isLoadingExam } = useExam(examId ?? '')
 
 	const form = useForm<ExamFormData>({
-		resolver: zodResolver(examSchema),
+		resolver: zodResolver(React.useMemo(() => examSchema(t), [t])),
 		defaultValues: {
 			name: '',
 			description: '',
@@ -101,10 +105,12 @@ const EditExamPage = (): React.ReactElement => {
 		return (
 			<div className='p-6 space-y-6 max-w-4xl mx-auto'>
 				<div className='text-center py-12'>
-					<p className='text-muted-foreground mb-4'>Exam not found</p>
+					<p className='text-muted-foreground mb-4'>
+						{t('pages.exams.edit.not_found')}
+					</p>
 					<Button onClick={() => navigate('/app/exams')}>
 						<ArrowLeft className='h-4 w-4 mr-2' />
-						Back to Exams
+						{t('pages.exams.edit.back_to_exams')}
 					</Button>
 				</div>
 			</div>
@@ -123,8 +129,10 @@ const EditExamPage = (): React.ReactElement => {
 					<ArrowLeft className='h-5 w-5' />
 				</Button>
 				<div>
-					<h1 className='text-3xl font-bold'>Edit Exam</h1>
-					<p className='text-muted-foreground'>Update exam information</p>
+					<h1 className='text-3xl font-bold'>{t('pages.exams.edit.title')}</h1>
+					<p className='text-muted-foreground'>
+						{t('pages.exams.edit.subtitle')}
+					</p>
 				</div>
 			</div>
 
@@ -133,7 +141,7 @@ const EditExamPage = (): React.ReactElement => {
 				<form onSubmit={form.handleSubmit(onSubmit)}>
 					<Card>
 						<CardHeader>
-							<CardTitle>Exam Details</CardTitle>
+							<CardTitle>{t('pages.exams.edit.form.title')}</CardTitle>
 						</CardHeader>
 						<CardContent className='space-y-6'>
 							{/* Exam Name */}
@@ -142,16 +150,20 @@ const EditExamPage = (): React.ReactElement => {
 								name='name'
 								render={({ field }) => (
 									<FormItem>
-										<FormLabel>Exam Name</FormLabel>
+										<FormLabel>
+											{t('pages.exams.edit.form.fields.name')}
+										</FormLabel>
 										<FormControl>
 											<Input
-												placeholder='Enter exam name'
+												placeholder={t(
+													'pages.exams.edit.form.placeholders.name'
+												)}
 												{...field}
 												disabled={updateExamMutation.isPending}
 											/>
 										</FormControl>
 										<FormDescription>
-											A clear and descriptive name for the exam
+											{t('pages.exams.edit.form.help.name')}
 										</FormDescription>
 										<FormMessage />
 									</FormItem>
@@ -164,17 +176,21 @@ const EditExamPage = (): React.ReactElement => {
 								name='description'
 								render={({ field }) => (
 									<FormItem>
-										<FormLabel>Description</FormLabel>
+										<FormLabel>
+											{t('pages.exams.edit.form.fields.description')}
+										</FormLabel>
 										<FormControl>
 											<Textarea
-												placeholder='Enter exam description'
+												placeholder={t(
+													'pages.exams.edit.form.placeholders.description'
+												)}
 												className='min-h-[100px]'
 												{...field}
 												disabled={updateExamMutation.isPending}
 											/>
 										</FormControl>
 										<FormDescription>
-											Describe what this exam covers
+											{t('pages.exams.edit.form.help.description')}
 										</FormDescription>
 										<FormMessage />
 									</FormItem>
@@ -187,7 +203,9 @@ const EditExamPage = (): React.ReactElement => {
 								name='grade'
 								render={({ field }) => (
 									<FormItem>
-										<FormLabel>Grade</FormLabel>
+										<FormLabel>
+											{t('pages.exams.edit.form.fields.grade')}
+										</FormLabel>
 										<Select
 											onValueChange={value => field.onChange(parseInt(value))}
 											value={field.value.toString()}
@@ -195,13 +213,19 @@ const EditExamPage = (): React.ReactElement => {
 										>
 											<FormControl>
 												<SelectTrigger>
-													<SelectValue placeholder='Select grade' />
+													<SelectValue
+														placeholder={t(
+															'pages.exams.edit.form.placeholders.grade'
+														)}
+													/>
 												</SelectTrigger>
 											</FormControl>
 											<SelectContent>
 												{[1, 2, 3, 4, 5].map(grade => (
 													<SelectItem key={grade} value={grade.toString()}>
-														Grade {grade}
+														{t('pages.exams.edit.form.grade_option', {
+															grade,
+														})}
 													</SelectItem>
 												))}
 											</SelectContent>
@@ -220,7 +244,9 @@ const EditExamPage = (): React.ReactElement => {
 								name='subjectId'
 								render={({ field }) => (
 									<FormItem>
-										<FormLabel>Subject</FormLabel>
+										<FormLabel>
+											{t('pages.exams.edit.form.fields.subject')}
+										</FormLabel>
 										<Select
 											onValueChange={field.onChange}
 											value={field.value}
@@ -230,7 +256,11 @@ const EditExamPage = (): React.ReactElement => {
 										>
 											<FormControl>
 												<SelectTrigger>
-													<SelectValue placeholder='Select subject' />
+													<SelectValue
+														placeholder={t(
+															'pages.exams.edit.form.placeholders.subject'
+														)}
+													/>
 												</SelectTrigger>
 											</FormControl>
 											<SelectContent>
@@ -257,11 +287,13 @@ const EditExamPage = (): React.ReactElement => {
 									onClick={() => navigate(`/app/exams/${examId}`)}
 									disabled={updateExamMutation.isPending}
 								>
-									Cancel
+									{t('common.cancel')}
 								</Button>
 								<Button type='submit' disabled={updateExamMutation.isPending}>
 									<Save className='h-4 w-4 mr-2' />
-									{updateExamMutation.isPending ? 'Saving...' : 'Save Changes'}
+									{updateExamMutation.isPending
+										? t('pages.exams.edit.actions.saving')
+										: t('pages.exams.edit.actions.save')}
 								</Button>
 							</div>
 						</CardContent>

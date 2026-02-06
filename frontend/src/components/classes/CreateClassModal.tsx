@@ -31,29 +31,39 @@ import {
 } from '@/components/ui/select'
 import { Loader2 } from 'lucide-react'
 import { useCreateClass } from '@/hooks/useClasses'
+import { useTranslation } from 'react-i18next'
+import type { TFunction } from 'i18next'
 
-const createClassSchema = z.object({
-	name: z
-		.string()
-		.min(1, 'Class name is required')
-		.max(200, 'Name cannot exceed 200 characters'),
-	grade: z.string().min(1, 'Grade is required'),
-	description: z
-		.string()
-		.min(1, 'Description is required')
-		.max(1000, 'Description cannot exceed 1000 characters'),
-	maxStudents: z
-		.string()
-		.min(1, 'Maximum students is required')
-		.refine(
-			val => !isNaN(Number(val)) && Number(val) > 0,
-			'Must be a positive number'
-		)
-		.refine(val => Number(val) <= 500, 'Cannot exceed 500 students'),
-	bannerUrl: z.string().url('Must be a valid URL').optional().or(z.literal('')),
-})
+const createClassSchema = (t: TFunction) =>
+	z.object({
+		name: z
+			.string()
+			.min(1, t('forms.classes.validation.name_required'))
+			.max(200, t('forms.classes.validation.name_max')),
+		grade: z.string().min(1, t('forms.classes.validation.grade_required')),
+		description: z
+			.string()
+			.min(1, t('forms.classes.validation.description_required'))
+			.max(1000, t('forms.classes.validation.description_max')),
+		maxStudents: z
+			.string()
+			.min(1, t('forms.classes.validation.max_students_required'))
+			.refine(
+				val => !isNaN(Number(val)) && Number(val) > 0,
+				t('forms.classes.validation.max_students_positive')
+			)
+			.refine(
+				val => Number(val) <= 500,
+				t('forms.classes.validation.max_students_limit')
+			),
+		bannerUrl: z
+			.string()
+			.url(t('forms.classes.validation.banner_url_invalid'))
+			.optional()
+			.or(z.literal('')),
+	})
 
-type CreateClassFormData = z.infer<typeof createClassSchema>
+type CreateClassFormData = z.infer<ReturnType<typeof createClassSchema>>
 
 interface CreateClassModalProps {
 	open: boolean
@@ -64,10 +74,12 @@ const CreateClassModal: React.FC<CreateClassModalProps> = ({
 	open,
 	onOpenChange,
 }) => {
+	const { t } = useTranslation()
 	const createClass = useCreateClass()
+	const schema = React.useMemo(() => createClassSchema(t), [t])
 
 	const form = useForm<CreateClassFormData>({
-		resolver: zodResolver(createClassSchema),
+		resolver: zodResolver(schema),
 		defaultValues: {
 			name: '',
 			grade: '10',
@@ -93,10 +105,9 @@ const CreateClassModal: React.FC<CreateClassModalProps> = ({
 		<Dialog open={open} onOpenChange={onOpenChange}>
 			<DialogContent className='sm:max-w-[500px]'>
 				<DialogHeader>
-					<DialogTitle>Create New Class</DialogTitle>
+					<DialogTitle>{t('pages.classes.create_modal.title')}</DialogTitle>
 					<DialogDescription>
-						Create a new class and get an invite code to share with your
-						students.
+						{t('pages.classes.create_modal.description')}
 					</DialogDescription>
 				</DialogHeader>
 
@@ -107,10 +118,14 @@ const CreateClassModal: React.FC<CreateClassModalProps> = ({
 							name='name'
 							render={({ field }) => (
 								<FormItem>
-									<FormLabel>Class Name *</FormLabel>
+									<FormLabel>
+										{t('pages.classes.create_modal.fields.name')}
+									</FormLabel>
 									<FormControl>
 										<Input
-											placeholder='e.g., Math 101 - Fall 2026'
+											placeholder={t(
+												'pages.classes.create_modal.placeholders.name'
+											)}
 											{...field}
 										/>
 									</FormControl>
@@ -125,21 +140,29 @@ const CreateClassModal: React.FC<CreateClassModalProps> = ({
 								name='grade'
 								render={({ field }) => (
 									<FormItem>
-										<FormLabel>Grade Level *</FormLabel>
+										<FormLabel>
+											{t('pages.classes.create_modal.fields.grade')}
+										</FormLabel>
 										<Select
 											onValueChange={field.onChange}
 											defaultValue={field.value}
 										>
 											<FormControl>
 												<SelectTrigger>
-													<SelectValue placeholder='Select grade' />
+													<SelectValue
+														placeholder={t(
+															'pages.classes.create_modal.placeholders.grade'
+														)}
+													/>
 												</SelectTrigger>
 											</FormControl>
 											<SelectContent>
 												{Array.from({ length: 12 }, (_, i) => i + 1).map(
 													grade => (
 														<SelectItem key={grade} value={grade.toString()}>
-															Grade {grade}
+															{t('pages.classes.create_modal.grade_option', {
+																grade,
+															})}
 														</SelectItem>
 													)
 												)}
@@ -155,12 +178,20 @@ const CreateClassModal: React.FC<CreateClassModalProps> = ({
 								name='maxStudents'
 								render={({ field }) => (
 									<FormItem>
-										<FormLabel>Maximum Students *</FormLabel>
+										<FormLabel>
+											{t('pages.classes.create_modal.fields.max_students')}
+										</FormLabel>
 										<FormControl>
-											<Input type='number' placeholder='30' {...field} />
+											<Input
+												type='number'
+												placeholder={t(
+													'pages.classes.create_modal.placeholders.max_students'
+												)}
+												{...field}
+											/>
 										</FormControl>
 										<FormDescription>
-											Maximum number of students (1-500)
+											{t('pages.classes.create_modal.help.max_students')}
 										</FormDescription>
 										<FormMessage />
 									</FormItem>
@@ -173,10 +204,14 @@ const CreateClassModal: React.FC<CreateClassModalProps> = ({
 							name='description'
 							render={({ field }) => (
 								<FormItem>
-									<FormLabel>Description *</FormLabel>
+									<FormLabel>
+										{t('pages.classes.create_modal.fields.description')}
+									</FormLabel>
 									<FormControl>
 										<Textarea
-											placeholder='Brief description of the class...'
+											placeholder={t(
+												'pages.classes.create_modal.placeholders.description'
+											)}
 											className='resize-none'
 											{...field}
 										/>
@@ -191,16 +226,20 @@ const CreateClassModal: React.FC<CreateClassModalProps> = ({
 							name='bannerUrl'
 							render={({ field }) => (
 								<FormItem>
-									<FormLabel>Banner URL (Optional)</FormLabel>
+									<FormLabel>
+										{t('pages.classes.create_modal.fields.banner_url')}
+									</FormLabel>
 									<FormControl>
 										<Input
 											type='url'
-											placeholder='https://example.com/banner.jpg'
+											placeholder={t(
+												'pages.classes.create_modal.placeholders.banner_url'
+											)}
 											{...field}
 										/>
 									</FormControl>
 									<FormDescription>
-										Optional banner image for the class
+										{t('pages.classes.create_modal.help.banner_url')}
 									</FormDescription>
 									<FormMessage />
 								</FormItem>
@@ -213,13 +252,13 @@ const CreateClassModal: React.FC<CreateClassModalProps> = ({
 								variant='outline'
 								onClick={() => onOpenChange(false)}
 							>
-								Cancel
+								{t('common.cancel')}
 							</Button>
 							<Button type='submit' disabled={createClass.isPending}>
 								{createClass.isPending && (
 									<Loader2 className='mr-2 h-4 w-4 animate-spin' />
 								)}
-								Create Class
+								{t('pages.classes.create_modal.actions.create')}
 							</Button>
 						</DialogFooter>
 					</form>

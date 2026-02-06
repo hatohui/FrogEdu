@@ -66,6 +66,7 @@ import {
 	filterQuestionsForMatrix,
 } from '@/utils/matrixValidation'
 import { Input } from '@/components/ui/input'
+import { useTranslation } from 'react-i18next'
 
 type CreationMode = 'manual' | 'ai'
 type MainTab = 'create' | 'bank'
@@ -75,6 +76,7 @@ type MainTab = 'create' | 'bank'
  * Supports manual creation, AI generation, and adding from question bank
  */
 const CreateQuestionPage = (): React.ReactElement => {
+	const { t } = useTranslation()
 	const navigate = useNavigate()
 	const { examId } = useParams<{ examId: string }>()
 	const { data: exam } = useExam(examId ?? '')
@@ -183,11 +185,11 @@ const CreateQuestionPage = (): React.ReactElement => {
 			if (creationMode === 'manual') {
 				form.setValue('topicId', topicId)
 				form.setValue('cognitiveLevel', cognitiveLevel)
-				toast.info('Form pre-filled with matrix requirement')
+				toast.info(t('pages.exams.questions.toast.prefill_manual'))
 			} else if (creationMode === 'ai') {
 				setSelectedAiTopic(topicId)
 				setAiCognitiveLevel(cognitiveLevel)
-				toast.info('AI form pre-filled with matrix requirement')
+				toast.info(t('pages.exams.questions.toast.prefill_ai'))
 			}
 			setMainTab('create')
 		},
@@ -208,10 +210,9 @@ const CreateQuestionPage = (): React.ReactElement => {
 
 			if (wouldExceed) {
 				const proceed = await confirm({
-					title: 'Matrix Limit Exceeded',
-					description:
-						'This question exceeds the matrix requirements for this topic and cognitive level. Do you want to add it anyway?',
-					confirmText: 'Add Anyway',
+					title: t('pages.exams.questions.matrix_limit.title'),
+					description: t('pages.exams.questions.matrix_limit.description'),
+					confirmText: t('pages.exams.questions.matrix_limit.confirm'),
 					variant: 'default',
 				})
 				if (!proceed) return
@@ -245,7 +246,7 @@ const CreateQuestionPage = (): React.ReactElement => {
 
 			// Reset form for creating another question
 			resetForm()
-			toast.success('Question created and added to exam!')
+			toast.success(t('pages.exams.questions.toast.created'))
 		} catch (error) {
 			console.error('Failed to create question:', error)
 		}
@@ -267,20 +268,18 @@ const CreateQuestionPage = (): React.ReactElement => {
 		// Use question's own topicId first (from AI generation), then fall back to selectedAiTopic
 		const topicId = question.topicId || selectedAiTopic
 		if (!topicId) {
-			toast.error(
-				'This question has no topic associated. Please select a topic first.'
-			)
+			toast.error(t('pages.exams.questions.toast.no_topic'))
 			return
 		}
 
 		// Validate answers
 		if (!question.answers || question.answers.length < 2) {
-			toast.error('Question must have at least 2 answers')
+			toast.error(t('pages.exams.questions.toast.min_answers'))
 			return
 		}
 
 		if (!question.answers.some(a => a.isCorrect)) {
-			toast.error('Question must have at least one correct answer')
+			toast.error(t('pages.exams.questions.toast.min_correct'))
 			return
 		}
 
@@ -305,15 +304,17 @@ const CreateQuestionPage = (): React.ReactElement => {
 				await examService.addQuestionsToExam(examId, [result.data.id])
 				refetchExamQuestions()
 				removeGeneratedQuestion(index)
-				toast.success('AI question saved and added to exam!')
+				toast.success(t('pages.exams.questions.toast.ai_saved'))
 			} else {
 				console.error('No question ID returned:', result)
-				toast.error('Failed to save question: No ID returned')
+				toast.error(t('pages.exams.questions.toast.no_id'))
 			}
 		} catch (error) {
 			console.error('Failed to save AI question:', error)
 			toast.error(
-				`Failed to save question: ${error instanceof Error ? error.message : 'Unknown error'}`
+				t('pages.exams.questions.toast.save_failed', {
+					reason: error instanceof Error ? error.message : t('common.unknown'),
+				})
 			)
 		}
 	}
@@ -331,7 +332,9 @@ const CreateQuestionPage = (): React.ReactElement => {
 		)
 		if (questionsWithoutTopic.length > 0) {
 			toast.error(
-				`${questionsWithoutTopic.length} question(s) have no topic. Please generate questions with a topic selected.`
+				t('pages.exams.questions.toast.ai_missing_topic', {
+					count: questionsWithoutTopic.length,
+				})
 			)
 			return
 		}
@@ -399,14 +402,18 @@ const CreateQuestionPage = (): React.ReactElement => {
 			}
 
 			if (savedCount > 0) {
-				toast.success(`Saved ${savedCount} question(s) to exam!`)
+				toast.success(
+					t('pages.exams.questions.toast.saved_count', { count: savedCount })
+				)
 			}
 			if (failedCount > 0) {
-				toast.warning(`${failedCount} question(s) failed to save`)
+				toast.warning(
+					t('pages.exams.questions.toast.failed_count', { count: failedCount })
+				)
 			}
 		} catch (error) {
 			console.error('Failed to save all questions:', error)
-			toast.error('Failed to save questions')
+			toast.error(t('pages.exams.questions.toast.save_all_failed'))
 		} finally {
 			setIsSavingAll(false)
 		}
@@ -417,7 +424,7 @@ const CreateQuestionPage = (): React.ReactElement => {
 		if (!examId || !exam || !matrix) return
 
 		if (!isPro) {
-			toast.error('Pro subscription required for AI matrix generation')
+			toast.error(t('pages.exams.questions.toast.pro_required'))
 			return
 		}
 
@@ -452,7 +459,7 @@ const CreateQuestionPage = (): React.ReactElement => {
 		}
 
 		if (matrixTopics.length === 0) {
-			toast.info('Matrix is already complete!')
+			toast.info(t('pages.exams.questions.toast.matrix_complete'))
 			return
 		}
 
@@ -466,12 +473,14 @@ const CreateQuestionPage = (): React.ReactElement => {
 
 			if (result?.questions) {
 				toast.success(
-					`Generated ${result.questions.length} questions for the matrix!`
+					t('pages.exams.questions.toast.matrix_generated', {
+						count: result.questions.length,
+					})
 				)
 			}
 		} catch (error) {
 			console.error('Failed to generate matrix questions:', error)
-			toast.error('Failed to generate matrix questions')
+			toast.error(t('pages.exams.questions.toast.matrix_failed'))
 		}
 	}, [
 		examId,
@@ -526,16 +535,15 @@ const CreateQuestionPage = (): React.ReactElement => {
 		if (!matrix?.id) return
 
 		const confirmed = await confirm({
-			title: 'Delete Matrix',
-			description:
-				'Are you sure you want to delete this exam matrix? This action cannot be undone.',
-			confirmText: 'Delete',
+			title: t('pages.exams.questions.delete_matrix.title'),
+			description: t('pages.exams.questions.delete_matrix.description'),
+			confirmText: t('pages.exams.questions.delete_matrix.confirm'),
 			variant: 'destructive',
 		})
 
 		if (confirmed) {
 			await deleteMatrixMutation.mutateAsync(matrix.id)
-			toast.success('Matrix deleted successfully')
+			toast.success(t('pages.exams.questions.toast.matrix_deleted'))
 		}
 	}
 
@@ -552,9 +560,13 @@ const CreateQuestionPage = (): React.ReactElement => {
 						<ArrowLeft className='h-5 w-5' />
 					</Button>
 					<div>
-						<h1 className='text-3xl font-bold'>Manage Questions</h1>
+						<h1 className='text-3xl font-bold'>
+							{t('pages.exams.questions.title')}
+						</h1>
 						<p className='text-muted-foreground'>
-							Add questions to your exam {exam?.name ? `- ${exam.name}` : ''}
+							{t('pages.exams.questions.subtitle', {
+								name: exam?.name ? `- ${exam.name}` : '',
+							})}
 						</p>
 					</div>
 				</div>
@@ -564,7 +576,7 @@ const CreateQuestionPage = (): React.ReactElement => {
 						className='text-sm'
 					>
 						{matrixValidation.totalFulfilled} / {matrixValidation.totalRequired}{' '}
-						questions
+						{t('pages.exams.questions.matrix_progress_label')}
 					</Badge>
 				)}
 			</div>
@@ -574,11 +586,11 @@ const CreateQuestionPage = (): React.ReactElement => {
 				<TabsList className='grid w-full max-w-md grid-cols-2'>
 					<TabsTrigger value='create' className='flex items-center gap-2'>
 						<Plus className='h-4 w-4' />
-						Create from Scratch
+						{t('pages.exams.questions.tabs.create')}
 					</TabsTrigger>
 					<TabsTrigger value='bank' className='flex items-center gap-2'>
 						<Library className='h-4 w-4' />
-						Add from Bank
+						{t('pages.exams.questions.tabs.bank')}
 					</TabsTrigger>
 				</TabsList>
 
@@ -590,7 +602,9 @@ const CreateQuestionPage = (): React.ReactElement => {
 							<Card>
 								<CardContent className='px-6'>
 									<div className='flex items-center gap-4'>
-										<span className='text-sm font-medium'>Creation Mode:</span>
+										<span className='text-sm font-medium'>
+											{t('pages.exams.questions.creation_mode.label')}
+										</span>
 										<RadioGroup
 											value={creationMode}
 											onValueChange={v => setCreationMode(v as CreationMode)}
@@ -603,7 +617,7 @@ const CreateQuestionPage = (): React.ReactElement => {
 													className='flex items-center gap-2 cursor-pointer'
 												>
 													<PenLine className='h-4 w-4' />
-													Manual
+													{t('pages.exams.questions.creation_mode.manual')}
 												</Label>
 											</div>
 											<div className='flex items-center space-x-2'>
@@ -613,15 +627,17 @@ const CreateQuestionPage = (): React.ReactElement => {
 													className={`flex items-center gap-2 cursor-pointer ${!isPro ? 'opacity-50' : ''}`}
 												>
 													<Sparkles className='h-4 w-4' />
-													AI Generate
+													{t('pages.exams.questions.creation_mode.ai')}
 													{isPro ? (
 														<Badge className='bg-gradient-to-r from-amber-500 to-orange-500 text-white text-xs'>
 															<Crown className='h-3 w-3 mr-1' />
-															Pro
+															{t('pages.exams.questions.creation_mode.pro')}
 														</Badge>
 													) : (
 														<Badge variant='secondary' className='text-xs'>
-															Pro Required
+															{t(
+																'pages.exams.questions.creation_mode.pro_required'
+															)}
 														</Badge>
 													)}
 												</Label>
@@ -682,7 +698,7 @@ const CreateQuestionPage = (): React.ReactElement => {
 												variant='outline'
 												onClick={resetForm}
 											>
-												Clear
+												{t('pages.exams.questions.actions.clear')}
 											</Button>
 											<Button
 												type='submit'
@@ -691,12 +707,12 @@ const CreateQuestionPage = (): React.ReactElement => {
 												{createQuestionMutation.isPending ? (
 													<>
 														<Loader2 className='h-4 w-4 mr-2 animate-spin' />
-														Saving...
+														{t('pages.exams.questions.actions.saving')}
 													</>
 												) : (
 													<>
 														<Save className='h-4 w-4 mr-2' />
-														Save & Add to Exam
+														{t('pages.exams.questions.actions.save_add')}
 													</>
 												)}
 											</Button>
@@ -712,13 +728,14 @@ const CreateQuestionPage = (): React.ReactElement => {
 								<CardHeader>
 									<CardTitle className='flex items-center gap-2 text-sm'>
 										<Library className='h-4 w-4' />
-										Question Bank
+										{t('pages.exams.questions.bank.title')}
 									</CardTitle>
 									<p className='text-xs text-muted-foreground mt-1'>
-										Select questions from your question bank to add to this
-										exam.
-										{matrix &&
-											' Questions are filtered to match your matrix requirements.'}
+										{t('pages.exams.questions.bank.subtitle', {
+											matrix: matrix
+												? t('pages.exams.questions.bank.matrix_hint')
+												: '',
+										})}
 									</p>
 								</CardHeader>
 								<CardContent className='space-y-4'>
@@ -726,7 +743,7 @@ const CreateQuestionPage = (): React.ReactElement => {
 									{matrix && (
 										<div className='flex items-center gap-2 mb-4'>
 											<span className='text-sm text-muted-foreground'>
-												View:
+												{t('pages.exams.questions.bank.view_label')}
 											</span>
 											<div className='flex gap-1 bg-muted p-1 rounded-md'>
 												<Button
@@ -735,7 +752,7 @@ const CreateQuestionPage = (): React.ReactElement => {
 													onClick={() => setBankViewMode('all')}
 													className='h-8'
 												>
-													All Questions
+													{t('pages.exams.questions.bank.view_all')}
 												</Button>
 												<Button
 													variant={
@@ -745,7 +762,7 @@ const CreateQuestionPage = (): React.ReactElement => {
 													onClick={() => setBankViewMode('matrix')}
 													className='h-8'
 												>
-													Matrix Only
+													{t('pages.exams.questions.bank.view_matrix')}
 												</Button>
 											</div>
 										</div>
@@ -755,7 +772,9 @@ const CreateQuestionPage = (): React.ReactElement => {
 									<div className='flex items-center gap-4'>
 										<div className='flex-1'>
 											<Input
-												placeholder='Search questions...'
+												placeholder={t(
+													'pages.exams.questions.bank.search_placeholder'
+												)}
 												value={bankSearchQuery}
 												onChange={e => setBankSearchQuery(e.target.value)}
 											/>
@@ -765,21 +784,27 @@ const CreateQuestionPage = (): React.ReactElement => {
 											onValueChange={setBankFilterLevel}
 										>
 											<SelectTrigger className='w-[180px]'>
-												<SelectValue placeholder='Cognitive Level' />
+												<SelectValue
+													placeholder={t(
+														'pages.exams.questions.bank.filters.level'
+													)}
+												/>
 											</SelectTrigger>
 											<SelectContent>
-												<SelectItem value='all'>All Levels</SelectItem>
+												<SelectItem value='all'>
+													{t('pages.exams.questions.bank.filters.all_levels')}
+												</SelectItem>
 												<SelectItem value={String(CognitiveLevel.Remember)}>
-													Remember
+													{t('exams.cognitive_levels.remember')}
 												</SelectItem>
 												<SelectItem value={String(CognitiveLevel.Understand)}>
-													Understand
+													{t('exams.cognitive_levels.understand')}
 												</SelectItem>
 												<SelectItem value={String(CognitiveLevel.Apply)}>
-													Apply
+													{t('exams.cognitive_levels.apply')}
 												</SelectItem>
 												<SelectItem value={String(CognitiveLevel.Analyze)}>
-													Analyze
+													{t('exams.cognitive_levels.analyze')}
 												</SelectItem>
 											</SelectContent>
 										</Select>
@@ -788,10 +813,16 @@ const CreateQuestionPage = (): React.ReactElement => {
 											onValueChange={setBankFilterTopic}
 										>
 											<SelectTrigger className='w-[180px]'>
-												<SelectValue placeholder='Topic' />
+												<SelectValue
+													placeholder={t(
+														'pages.exams.questions.bank.filters.topic'
+													)}
+												/>
 											</SelectTrigger>
 											<SelectContent>
-												<SelectItem value='all'>All Topics</SelectItem>
+												<SelectItem value='all'>
+													{t('pages.exams.questions.bank.filters.all_topics')}
+												</SelectItem>
 												{topics.map(topic => (
 													<SelectItem key={topic.id} value={topic.id}>
 														{topic.title}
@@ -832,7 +863,7 @@ const CreateQuestionPage = (): React.ReactElement => {
 												if (isLoadingQuestions) {
 													return (
 														<div className='text-center py-8 text-muted-foreground'>
-															Loading questions...
+															{t('pages.exams.questions.bank.loading')}
 														</div>
 													)
 												}
@@ -840,7 +871,7 @@ const CreateQuestionPage = (): React.ReactElement => {
 												if (filtered.length === 0) {
 													return (
 														<div className='text-center py-8 text-muted-foreground'>
-															No questions found
+															{t('pages.exams.questions.bank.empty')}
 														</div>
 													)
 												}
@@ -871,10 +902,12 @@ const CreateQuestionPage = (): React.ReactElement => {
 															<div className='flex items-center gap-2 flex-wrap'>
 																<Badge variant='outline' className='text-xs'>
 																	{topics.find(t => t.id === question.topicId)
-																		?.title || 'Unknown'}
+																		?.title || t('common.unknown')}
 																</Badge>
 																<span className='text-xs text-muted-foreground'>
-																	{question.point} pts
+																	{t('pages.exams.questions.bank.points', {
+																		count: question.point,
+																	})}
 																</span>
 															</div>
 														</div>
@@ -887,7 +920,9 @@ const CreateQuestionPage = (): React.ReactElement => {
 									{/* Add Button */}
 									<div className='flex justify-between items-center'>
 										<p className='text-sm text-muted-foreground'>
-											{selectedBankQuestions.size} question(s) selected
+											{t('pages.exams.questions.bank.selected_count', {
+												count: selectedBankQuestions.size,
+											})}
 										</p>
 										<Button
 											onClick={async () => {
@@ -904,12 +939,12 @@ const CreateQuestionPage = (): React.ReactElement => {
 											{addQuestionsMutation.isPending ? (
 												<>
 													<Loader2 className='h-4 w-4 mr-2 animate-spin' />
-													Adding...
+													{t('pages.exams.questions.bank.adding')}
 												</>
 											) : (
 												<>
 													<Plus className='h-4 w-4 mr-2' />
-													Add Selected to Exam
+													{t('pages.exams.questions.bank.add_selected')}
 												</>
 											)}
 										</Button>
@@ -925,7 +960,9 @@ const CreateQuestionPage = (): React.ReactElement => {
 						<Card>
 							<CardHeader>
 								<CardTitle className='text-sm font-medium'>
-									Questions in this Exam ({existingQuestions.length})
+									{t('pages.exams.questions.sidebar.questions_title', {
+										count: existingQuestions.length,
+									})}
 								</CardTitle>
 							</CardHeader>
 							<ExamQuestionsPanel
@@ -948,10 +985,10 @@ const CreateQuestionPage = (): React.ReactElement => {
 										</div>
 										<div className='flex-1 space-y-1'>
 											<h3 className='text-base font-semibold tracking-tight'>
-												Matrix Requirements
+												{t('pages.exams.questions.sidebar.matrix_title')}
 											</h3>
 											<p className='text-sm text-muted-foreground'>
-												Click any requirement to pre-fill the form
+												{t('pages.exams.questions.sidebar.matrix_hint')}
 											</p>
 										</div>
 									</div>

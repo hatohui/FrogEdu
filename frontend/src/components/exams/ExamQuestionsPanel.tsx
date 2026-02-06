@@ -22,10 +22,8 @@ import {
 	TooltipTrigger,
 } from '@/components/ui/tooltip'
 import type { Question, Topic, Matrix } from '@/types/model/exam-service'
-import {
-	CognitiveLevel,
-	getCognitiveLevelLabel,
-} from '@/types/model/exam-service'
+import { CognitiveLevel } from '@/types/model/exam-service'
+import { useTranslation } from 'react-i18next'
 
 interface ExamQuestionsPanelProps {
 	questions: Question[]
@@ -47,9 +45,10 @@ export const ExamQuestionsPanel: React.FC<ExamQuestionsPanelProps> = ({
 	onViewQuestion,
 	isRemoving = false,
 }) => {
+	const { t } = useTranslation()
 	const getTopicName = (topicId: string) => {
 		const topic = topics.find(t => t.id === topicId)
-		return topic?.title || 'Unknown Topic'
+		return topic?.title || t('common.unknown')
 	}
 
 	const getCognitiveLevelVariant = (
@@ -69,6 +68,21 @@ export const ExamQuestionsPanel: React.FC<ExamQuestionsPanelProps> = ({
 		}
 	}
 
+	const getLevelLabel = (level: CognitiveLevel) => {
+		switch (level) {
+			case CognitiveLevel.Remember:
+				return t('exams.cognitive_levels.remember')
+			case CognitiveLevel.Understand:
+				return t('exams.cognitive_levels.understand')
+			case CognitiveLevel.Apply:
+				return t('exams.cognitive_levels.apply')
+			case CognitiveLevel.Analyze:
+				return t('exams.cognitive_levels.analyze')
+			default:
+				return t('common.unknown')
+		}
+	}
+
 	// Check if question matches matrix requirement
 	const isQuestionInMatrix = (question: Question): boolean => {
 		if (!matrix) return true
@@ -84,9 +98,11 @@ export const ExamQuestionsPanel: React.FC<ExamQuestionsPanelProps> = ({
 			<div>
 				<CardContent className='flex flex-col items-center justify-center py-8 text-center'>
 					<AlertCircle className='h-10 w-10 text-muted-foreground mb-3' />
-					<p className='text-sm font-medium mb-1'>No questions added yet</p>
+					<p className='text-sm font-medium mb-1'>
+						{t('components.exams.questions_panel.empty_title')}
+					</p>
 					<p className='text-xs text-muted-foreground'>
-						Create questions or add from the question bank
+						{t('components.exams.questions_panel.empty_subtitle')}
 					</p>
 				</CardContent>
 			</div>
@@ -132,10 +148,12 @@ export const ExamQuestionsPanel: React.FC<ExamQuestionsPanelProps> = ({
 													)}
 													className='text-xs'
 												>
-													{getCognitiveLevelLabel(question.cognitiveLevel)}
+													{getLevelLabel(question.cognitiveLevel)}
 												</Badge>
 												<span className='text-xs text-muted-foreground'>
-													{question.point} pts
+													{t('components.exams.questions_panel.points', {
+														count: question.point,
+													})}
 												</span>
 												{!inMatrix && (
 													<TooltipProvider>
@@ -145,13 +163,16 @@ export const ExamQuestionsPanel: React.FC<ExamQuestionsPanelProps> = ({
 																	variant='outline'
 																	className='text-xs text-yellow-600 border-yellow-400'
 																>
-																	Not in matrix
+																	{t(
+																		'components.exams.questions_panel.not_in_matrix'
+																	)}
 																</Badge>
 															</TooltipTrigger>
 															<TooltipContent>
 																<p>
-																	This question doesn't match any matrix
-																	requirement
+																	{t(
+																		'components.exams.questions_panel.not_in_matrix_hint'
+																	)}
 																</p>
 															</TooltipContent>
 														</Tooltip>
@@ -173,7 +194,9 @@ export const ExamQuestionsPanel: React.FC<ExamQuestionsPanelProps> = ({
 																<Eye className='h-4 w-4' />
 															</Button>
 														</TooltipTrigger>
-														<TooltipContent>View question</TooltipContent>
+														<TooltipContent>
+															{t('components.exams.questions_panel.view')}
+														</TooltipContent>
 													</Tooltip>
 												</TooltipProvider>
 											)}
@@ -192,26 +215,35 @@ export const ExamQuestionsPanel: React.FC<ExamQuestionsPanelProps> = ({
 																</Button>
 															</AlertDialogTrigger>
 														</TooltipTrigger>
-														<TooltipContent>Remove from exam</TooltipContent>
+														<TooltipContent>
+															{t('components.exams.questions_panel.remove')}
+														</TooltipContent>
 													</Tooltip>
 												</TooltipProvider>
 												<AlertDialogContent>
 													<AlertDialogHeader>
 														<AlertDialogTitle>
-															Remove question?
+															{t(
+																'components.exams.questions_panel.remove_title'
+															)}
 														</AlertDialogTitle>
 														<AlertDialogDescription>
-															This will remove the question from this exam only.
-															The question will remain in the question bank.
+															{t(
+																'components.exams.questions_panel.remove_description'
+															)}
 														</AlertDialogDescription>
 													</AlertDialogHeader>
 													<AlertDialogFooter>
-														<AlertDialogCancel>Cancel</AlertDialogCancel>
+														<AlertDialogCancel>
+															{t('common.cancel')}
+														</AlertDialogCancel>
 														<AlertDialogAction
 															onClick={() => onRemoveQuestion(question.id)}
 															className='bg-destructive hover:bg-destructive/90'
 														>
-															Remove
+															{t(
+																'components.exams.questions_panel.remove_confirm'
+															)}
 														</AlertDialogAction>
 													</AlertDialogFooter>
 												</AlertDialogContent>

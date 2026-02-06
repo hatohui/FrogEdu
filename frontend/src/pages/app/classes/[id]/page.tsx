@@ -26,8 +26,10 @@ import {
 } from 'lucide-react'
 import { format } from 'date-fns'
 import { toast } from 'sonner'
+import { useTranslation } from 'react-i18next'
 
 const ClassDetailPage: React.FC = () => {
+	const { t } = useTranslation()
 	const { id } = useParams<{ id: string }>()
 	const navigate = useNavigate()
 	const { user } = useMe()
@@ -42,7 +44,7 @@ const ClassDetailPage: React.FC = () => {
 	const copyInviteCode = () => {
 		if (classDetails?.inviteCode) {
 			navigator.clipboard.writeText(classDetails.inviteCode)
-			toast.success('Invite code copied to clipboard!')
+			toast.success(t('pages.classes.detail.invite_copied'))
 		}
 	}
 
@@ -73,11 +75,11 @@ const ClassDetailPage: React.FC = () => {
 			<div className='p-6'>
 				<Button variant='ghost' onClick={() => navigate(-1)} className='mb-4'>
 					<ArrowLeft className='h-4 w-4 mr-2' />
-					Back
+					{t('pages.classes.detail.back')}
 				</Button>
 				<div className='text-center py-12'>
 					<p className='text-destructive'>
-						{error?.message || 'Class not found'}
+						{error?.message || t('pages.classes.detail.not_found')}
 					</p>
 				</div>
 			</div>
@@ -98,7 +100,7 @@ const ClassDetailPage: React.FC = () => {
 			<Link to='/dashboard/classes'>
 				<Button variant='ghost' className='gap-2'>
 					<ArrowLeft className='h-4 w-4' />
-					Back to Classes
+					{t('pages.classes.detail.back_to_classes')}
 				</Button>
 			</Link>
 
@@ -110,7 +112,9 @@ const ClassDetailPage: React.FC = () => {
 							{classDetails.name}
 						</h1>
 						{classDetails.isArchived && (
-							<Badge variant='secondary'>Archived</Badge>
+							<Badge variant='secondary'>
+								{t('pages.classes.detail.archived')}
+							</Badge>
 						)}
 					</div>
 					{classDetails.description && (
@@ -125,7 +129,7 @@ const ClassDetailPage: React.FC = () => {
 				{/* Class info */}
 				<Card className='lg:col-span-2'>
 					<CardHeader>
-						<CardTitle>Class Information</CardTitle>
+						<CardTitle>{t('pages.classes.detail.info_title')}</CardTitle>
 					</CardHeader>
 					<CardContent className='space-y-4'>
 						<div className='grid gap-4 sm:grid-cols-2'>
@@ -134,9 +138,12 @@ const ClassDetailPage: React.FC = () => {
 									<BookOpen className='h-5 w-5 text-primary' />
 								</div>
 								<div>
-									<p className='text-sm text-muted-foreground'>Subject</p>
+									<p className='text-sm text-muted-foreground'>
+										{t('pages.classes.detail.subject')}
+									</p>
 									<p className='font-medium'>
-										{classDetails.subject || 'Not specified'}
+										{classDetails.subject ||
+											t('pages.classes.detail.not_specified')}
 									</p>
 								</div>
 							</div>
@@ -146,8 +153,14 @@ const ClassDetailPage: React.FC = () => {
 									<Users className='h-5 w-5 text-primary' />
 								</div>
 								<div>
-									<p className='text-sm text-muted-foreground'>Grade Level</p>
-									<p className='font-medium'>Grade {classDetails.grade}</p>
+									<p className='text-sm text-muted-foreground'>
+										{t('pages.classes.detail.grade_level')}
+									</p>
+									<p className='font-medium'>
+										{t('pages.classes.detail.grade_label', {
+											grade: classDetails.grade,
+										})}
+									</p>
 								</div>
 							</div>
 
@@ -157,7 +170,9 @@ const ClassDetailPage: React.FC = () => {
 										<Building className='h-5 w-5 text-primary' />
 									</div>
 									<div>
-										<p className='text-sm text-muted-foreground'>School</p>
+										<p className='text-sm text-muted-foreground'>
+											{t('pages.classes.detail.school')}
+										</p>
 										<p className='font-medium'>{classDetails.school}</p>
 									</div>
 								</div>
@@ -168,7 +183,9 @@ const ClassDetailPage: React.FC = () => {
 									<Calendar className='h-5 w-5 text-primary' />
 								</div>
 								<div>
-									<p className='text-sm text-muted-foreground'>Created</p>
+									<p className='text-sm text-muted-foreground'>
+										{t('pages.classes.detail.created')}
+									</p>
 									<p className='font-medium'>
 										{format(new Date(classDetails.createdAt), 'MMM d, yyyy')}
 									</p>
@@ -180,13 +197,18 @@ const ClassDetailPage: React.FC = () => {
 
 						<div className='flex items-center justify-between'>
 							<div>
-								<p className='text-sm text-muted-foreground'>Teacher</p>
+								<p className='text-sm text-muted-foreground'>
+									{t('pages.classes.detail.teacher')}
+								</p>
 								<p className='font-medium'>
-									{classDetails.teacherName || 'Unknown'}
+									{classDetails.teacherName ||
+										t('pages.classes.detail.teacher_unknown')}
 								</p>
 							</div>
 							<div className='text-right'>
-								<p className='text-sm text-muted-foreground'>Students</p>
+								<p className='text-sm text-muted-foreground'>
+									{t('pages.classes.detail.students')}
+								</p>
 								<p className='font-medium'>
 									{studentCount}
 									{classDetails.maxStudents && ` / ${classDetails.maxStudents}`}
@@ -200,9 +222,11 @@ const ClassDetailPage: React.FC = () => {
 				{isTeacher && classDetails.inviteCode && (
 					<Card>
 						<CardHeader>
-							<CardTitle className='text-lg'>Invite Code</CardTitle>
+							<CardTitle className='text-lg'>
+								{t('pages.classes.detail.invite_title')}
+							</CardTitle>
 							<CardDescription>
-								Share this code with students to join
+								{t('pages.classes.detail.invite_description')}
 							</CardDescription>
 						</CardHeader>
 						<CardContent className='space-y-4'>
@@ -218,10 +242,12 @@ const ClassDetailPage: React.FC = () => {
 							<div className='flex items-center gap-2 text-sm'>
 								<Clock className='h-4 w-4 text-muted-foreground' />
 								{isCodeExpired ? (
-									<span className='text-destructive'>Code has expired</span>
+									<span className='text-destructive'>
+										{t('pages.classes.detail.code_expired')}
+									</span>
 								) : (
 									<span className='text-muted-foreground'>
-										Expires{' '}
+										{t('pages.classes.detail.expires')}{' '}
 										{format(
 											new Date(classDetails.inviteCodeExpiresAt!),
 											'MMM d, yyyy'
@@ -241,7 +267,7 @@ const ClassDetailPage: React.FC = () => {
 								) : (
 									<RefreshCw className='h-4 w-4 mr-2' />
 								)}
-								Regenerate Code
+								{t('pages.classes.detail.regenerate')}
 							</Button>
 						</CardContent>
 					</Card>
@@ -251,8 +277,10 @@ const ClassDetailPage: React.FC = () => {
 			{/* Class roster */}
 			<Card>
 				<CardHeader>
-					<CardTitle>Class Roster</CardTitle>
-					<CardDescription>All members enrolled in this class</CardDescription>
+					<CardTitle>{t('pages.classes.detail.roster_title')}</CardTitle>
+					<CardDescription>
+						{t('pages.classes.detail.roster_description')}
+					</CardDescription>
 				</CardHeader>
 				<CardContent>
 					<StudentList members={classDetails.members} showRole={isTeacher} />

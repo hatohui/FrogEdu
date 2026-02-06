@@ -12,6 +12,7 @@ import { Button } from '@/components/ui/button'
 import { Users, BookOpen, ChevronRight, Copy, Clock } from 'lucide-react'
 import { toast } from 'sonner'
 import type { ClassDto } from '@/services/class-microservice/class.service'
+import { useTranslation } from 'react-i18next'
 
 interface ClassCardProps {
 	classData: ClassDto
@@ -22,12 +23,14 @@ const ClassCard: React.FC<ClassCardProps> = ({
 	classData,
 	isTeacher = false,
 }) => {
+	const { t } = useTranslation()
+
 	const copyInviteCode = (e: React.MouseEvent) => {
 		e.preventDefault()
 		e.stopPropagation()
 		if (classData.inviteCode) {
 			navigator.clipboard.writeText(classData.inviteCode)
-			toast.success('Invite code copied to clipboard!')
+			toast.success(t('pages.classes.detail.invite_copied'))
 		}
 	}
 
@@ -57,7 +60,9 @@ const ClassCard: React.FC<ClassCardProps> = ({
 							variant={classData.isArchived ? 'secondary' : 'default'}
 							className='ml-2'
 						>
-							Grade {classData.grade}
+							{t('pages.classes.card.grade_badge', {
+								grade: classData.grade,
+							})}
 						</Badge>
 					</div>
 				</CardHeader>
@@ -66,16 +71,20 @@ const ClassCard: React.FC<ClassCardProps> = ({
 					<div className='flex items-center text-sm text-muted-foreground'>
 						<Users className='h-4 w-4 mr-2' />
 						<span>
-							{classData.studentCount} student
-							{classData.studentCount !== 1 ? 's' : ''}
-							{classData.maxStudents && ` / ${classData.maxStudents} max`}
+							{classData.studentCount} {t('pages.classes.card.students_label')}
+							{classData.maxStudents &&
+								t('pages.classes.card.max_suffix', {
+									max: classData.maxStudents,
+								})}
 						</span>
 					</div>
 
 					{/* Teacher info */}
 					{!isTeacher && classData.teacherName && (
 						<div className='text-sm text-muted-foreground'>
-							Teacher: {classData.teacherName}
+							{t('pages.classes.card.teacher_label', {
+								name: classData.teacherName,
+							})}
 						</div>
 					)}
 
@@ -84,7 +93,7 @@ const ClassCard: React.FC<ClassCardProps> = ({
 						<div className='flex items-center justify-between bg-muted rounded-md p-2'>
 							<div className='flex items-center gap-2'>
 								<span className='text-xs text-muted-foreground'>
-									Invite Code:
+									{t('pages.classes.card.invite_label')}
 								</span>
 								<code className='font-mono font-semibold tracking-widest'>
 									{classData.inviteCode}
@@ -92,7 +101,7 @@ const ClassCard: React.FC<ClassCardProps> = ({
 								{isCodeExpired && (
 									<Badge variant='destructive' className='text-xs'>
 										<Clock className='h-3 w-3 mr-1' />
-										Expired
+										{t('pages.classes.card.expired')}
 									</Badge>
 								)}
 							</div>
@@ -121,7 +130,7 @@ const ClassCard: React.FC<ClassCardProps> = ({
 							size='sm'
 							className='text-muted-foreground group-hover:text-primary'
 						>
-							View Details
+							{t('pages.classes.card.view_details')}
 							<ChevronRight className='h-4 w-4 ml-1' />
 						</Button>
 					</div>

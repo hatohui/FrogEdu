@@ -11,6 +11,7 @@ import {
 	CognitiveLevel,
 	COGNITIVE_LEVEL_LABELS,
 } from '@/types/model/exam-service'
+import { useTranslation } from 'react-i18next'
 
 interface CognitiveLevelSelectorProps {
 	value: CognitiveLevel
@@ -37,42 +38,6 @@ function getCognitiveLevelIcon(level: CognitiveLevel) {
 }
 
 /**
- * Get Vietnamese label for cognitive level
- */
-function getCognitiveLevelVietnamese(level: CognitiveLevel): string {
-	switch (level) {
-		case CognitiveLevel.Remember:
-			return 'Nhận biết'
-		case CognitiveLevel.Understand:
-			return 'Thông hiểu'
-		case CognitiveLevel.Apply:
-			return 'Vận dụng'
-		case CognitiveLevel.Analyze:
-			return 'Vận dụng cao'
-		default:
-			return ''
-	}
-}
-
-/**
- * Get description for cognitive level based on Bloom's Taxonomy
- */
-function getCognitiveLevelDescription(level: CognitiveLevel): string {
-	switch (level) {
-		case CognitiveLevel.Remember:
-			return 'Recall facts and basic concepts'
-		case CognitiveLevel.Understand:
-			return 'Explain ideas or concepts'
-		case CognitiveLevel.Apply:
-			return 'Use information in new situations'
-		case CognitiveLevel.Analyze:
-			return 'Draw connections among ideas'
-		default:
-			return ''
-	}
-}
-
-/**
  * Cognitive level selector based on Bloom's Taxonomy (4 levels)
  */
 export const CognitiveLevelSelector: React.FC<CognitiveLevelSelectorProps> = ({
@@ -80,6 +45,7 @@ export const CognitiveLevelSelector: React.FC<CognitiveLevelSelectorProps> = ({
 	onValueChange,
 	disabled = false,
 }) => {
+	const { t } = useTranslation()
 	return (
 		<Select
 			value={String(value)}
@@ -90,7 +56,9 @@ export const CognitiveLevelSelector: React.FC<CognitiveLevelSelectorProps> = ({
 				<SelectValue>
 					<div className='flex items-center gap-2'>
 						{getCognitiveLevelIcon(value)}
-						<span>{COGNITIVE_LEVEL_LABELS[value]}</span>
+						<span>
+							{t(`exams.cognitive_levels.${COGNITIVE_LEVEL_LABELS[value]}`)}
+						</span>
 					</div>
 				</SelectValue>
 			</SelectTrigger>
@@ -101,13 +69,13 @@ export const CognitiveLevelSelector: React.FC<CognitiveLevelSelectorProps> = ({
 						<Brain className='h-4 w-4 text-blue-500' />
 						<div>
 							<div className='font-medium'>
-								Remember{' '}
+								{t('exams.cognitive_levels.remember')}{' '}
 								<span className='text-muted-foreground'>
-									({getCognitiveLevelVietnamese(CognitiveLevel.Remember)})
+									({t('exams.cognitive_levels_vi.remember')})
 								</span>
 							</div>
 							<div className='text-xs text-muted-foreground'>
-								{getCognitiveLevelDescription(CognitiveLevel.Remember)}
+								{t('components.exams.cognitive_level.descriptions.remember')}
 							</div>
 						</div>
 					</div>
@@ -119,13 +87,13 @@ export const CognitiveLevelSelector: React.FC<CognitiveLevelSelectorProps> = ({
 						<Lightbulb className='h-4 w-4 text-green-500' />
 						<div>
 							<div className='font-medium'>
-								Understand{' '}
+								{t('exams.cognitive_levels.understand')}{' '}
 								<span className='text-muted-foreground'>
-									({getCognitiveLevelVietnamese(CognitiveLevel.Understand)})
+									({t('exams.cognitive_levels_vi.understand')})
 								</span>
 							</div>
 							<div className='text-xs text-muted-foreground'>
-								{getCognitiveLevelDescription(CognitiveLevel.Understand)}
+								{t('components.exams.cognitive_level.descriptions.understand')}
 							</div>
 						</div>
 					</div>
@@ -137,13 +105,13 @@ export const CognitiveLevelSelector: React.FC<CognitiveLevelSelectorProps> = ({
 						<Wrench className='h-4 w-4 text-amber-500' />
 						<div>
 							<div className='font-medium'>
-								Apply{' '}
+								{t('exams.cognitive_levels.apply')}{' '}
 								<span className='text-muted-foreground'>
-									({getCognitiveLevelVietnamese(CognitiveLevel.Apply)})
+									({t('exams.cognitive_levels_vi.apply')})
 								</span>
 							</div>
 							<div className='text-xs text-muted-foreground'>
-								{getCognitiveLevelDescription(CognitiveLevel.Apply)}
+								{t('components.exams.cognitive_level.descriptions.apply')}
 							</div>
 						</div>
 					</div>
@@ -155,13 +123,13 @@ export const CognitiveLevelSelector: React.FC<CognitiveLevelSelectorProps> = ({
 						<Search className='h-4 w-4 text-purple-500' />
 						<div>
 							<div className='font-medium'>
-								Analyze{' '}
+								{t('exams.cognitive_levels.analyze')}{' '}
 								<span className='text-muted-foreground'>
-									({getCognitiveLevelVietnamese(CognitiveLevel.Analyze)})
+									({t('exams.cognitive_levels_vi.analyze')})
 								</span>
 							</div>
 							<div className='text-xs text-muted-foreground'>
-								{getCognitiveLevelDescription(CognitiveLevel.Analyze)}
+								{t('components.exams.cognitive_level.descriptions.analyze')}
 							</div>
 						</div>
 					</div>

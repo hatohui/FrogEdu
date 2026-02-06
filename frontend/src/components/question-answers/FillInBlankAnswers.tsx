@@ -13,6 +13,7 @@ import {
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import type { AnswerFieldProps } from './types'
+import { useTranslation } from 'react-i18next'
 
 /**
  * Fill in the Blank question answer component
@@ -26,6 +27,7 @@ export const FillInBlankAnswers: React.FC<AnswerFieldProps> = ({
 	remove,
 	disabled = false,
 }) => {
+	const { t } = useTranslation()
 	const handleAddAnswer = () => {
 		append({ content: '', isCorrect: true, explanation: '' })
 	}
@@ -34,16 +36,13 @@ export const FillInBlankAnswers: React.FC<AnswerFieldProps> = ({
 		<div className='space-y-4'>
 			<div className='bg-amber-50 dark:bg-amber-950 border border-amber-200 dark:border-amber-800 rounded-lg p-4'>
 				<p className='text-sm text-amber-700 dark:text-amber-300'>
-					<strong>Fill in the Blank:</strong> Use underscores (_____) in your
-					question to indicate where the blank is. Add all acceptable answers
-					below - the student must type the <strong>exact word/phrase</strong>{' '}
-					to be correct.
+					{t('pages.exams.questions.answers.fill_blank.tip')}
 				</p>
 			</div>
 
 			<div className='flex items-center justify-between'>
 				<p className='text-sm text-muted-foreground'>
-					Add acceptable answers (alternative spellings, synonyms)
+					{t('pages.exams.questions.answers.fill_blank.hint')}
 				</p>
 				<Button
 					type='button'
@@ -53,7 +52,7 @@ export const FillInBlankAnswers: React.FC<AnswerFieldProps> = ({
 					disabled={disabled || fields.length >= 5}
 				>
 					<Plus className='h-4 w-4 mr-2' />
-					Add Alternative
+					{t('pages.exams.questions.answers.fill_blank.add_alternative')}
 				</Button>
 			</div>
 
@@ -73,17 +72,30 @@ export const FillInBlankAnswers: React.FC<AnswerFieldProps> = ({
 										<FormItem>
 											<FormLabel>
 												{index === 0
-													? 'Correct Answer *'
-													: `Alternative Answer ${index}`}
+													? t(
+															'pages.exams.questions.answers.fill_blank.correct_label'
+														)
+													: t(
+															'pages.exams.questions.answers.fill_blank.alternative_label',
+															{
+																index,
+															}
+														)}
 											</FormLabel>
 											<FormDescription>
 												{index === 0
-													? 'The primary correct answer (exact match required)'
-													: 'Alternative acceptable answer'}
+													? t(
+															'pages.exams.questions.answers.fill_blank.correct_help'
+														)
+													: t(
+															'pages.exams.questions.answers.fill_blank.alternative_help'
+														)}
 											</FormDescription>
 											<FormControl>
 												<Input
-													placeholder='Enter the correct word/phrase...'
+													placeholder={t(
+														'pages.exams.questions.answers.fill_blank.correct_placeholder'
+													)}
 													disabled={disabled}
 													{...field}
 												/>
@@ -100,11 +112,15 @@ export const FillInBlankAnswers: React.FC<AnswerFieldProps> = ({
 										render={({ field }) => (
 											<FormItem>
 												<FormLabel className='text-sm text-muted-foreground'>
-													Explanation (Optional)
+													{t(
+														'pages.exams.questions.answers.common.explanation_label'
+													)}
 												</FormLabel>
 												<FormControl>
 													<Textarea
-														placeholder='Explain why this is the correct answer...'
+														placeholder={t(
+															'pages.exams.questions.answers.fill_blank.explanation_placeholder'
+														)}
 														rows={2}
 														disabled={disabled}
 														{...field}
@@ -124,7 +140,9 @@ export const FillInBlankAnswers: React.FC<AnswerFieldProps> = ({
 									size='icon'
 									onClick={() => remove(index)}
 									disabled={disabled}
-									title='Remove alternative answer'
+									title={t(
+										'pages.exams.questions.answers.fill_blank.remove_alternative'
+									)}
 								>
 									<Trash2 className='h-4 w-4 text-destructive' />
 								</Button>

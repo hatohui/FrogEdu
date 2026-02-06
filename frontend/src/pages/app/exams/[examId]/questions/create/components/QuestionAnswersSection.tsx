@@ -7,7 +7,7 @@ import { AlertCircle } from 'lucide-react'
 import type { UseFormReturn, UseFieldArrayReturn } from 'react-hook-form'
 import type { QuestionFormData } from '@/hooks/useQuestionForm'
 import { QuestionAnswersRenderer } from '@/components/question-answers'
-import { getAnswersSectionTitle } from '@/components/question-answers/QuestionAnswersRenderer'
+import { useTranslation } from 'react-i18next'
 
 interface QuestionAnswersSectionProps {
 	form: UseFormReturn<QuestionFormData>
@@ -32,17 +32,34 @@ export const QuestionAnswersSection: React.FC<QuestionAnswersSectionProps> = ({
 	append,
 	remove,
 }) => {
+	const { t } = useTranslation()
 	const answersError = form.formState.errors.answers
+	const answersTitle = (() => {
+		switch (questionType) {
+			case QuestionType.TrueFalse:
+				return t('pages.exams.questions.answers.title.true_false')
+			case QuestionType.MultipleChoice:
+				return t('pages.exams.questions.answers.title.single_choice')
+			case QuestionType.MultipleAnswer:
+				return t('pages.exams.questions.answers.title.multiple_choice')
+			case QuestionType.Essay:
+				return t('pages.exams.questions.answers.title.essay')
+			case QuestionType.FillInTheBlank:
+				return t('pages.exams.questions.answers.title.fill_blank')
+			default:
+				return t('pages.exams.questions.answers.title.default')
+		}
+	})()
 
 	return (
 		<Card>
 			<CardHeader>
-				<CardTitle>{getAnswersSectionTitle(questionType)}</CardTitle>
+				<CardTitle>{answersTitle}</CardTitle>
 				<p className='text-sm text-muted-foreground mt-2'>
 					{questionType === QuestionType.Essay ||
 					questionType === QuestionType.FillInTheBlank
-						? 'You must mark at least one answer as correct'
-						: 'You must mark at least one answer as correct (minimum 2 answers required)'}
+						? t('pages.exams.questions.answers.hint_simple')
+						: t('pages.exams.questions.answers.hint_multiple')}
 				</p>
 			</CardHeader>
 			<CardContent className='space-y-4'>

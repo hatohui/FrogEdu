@@ -27,7 +27,8 @@
 		"logo_alt": "Logo FrogEdu",
 		"never": "Chưa bao giờ",
 		"loading": "Đang tải...",
-		"days": "ngày"
+		"days": "ngày",
+		"unknown": "Không rõ"
 	},
 	"navigation": {
 		"home": "Trang chủ",
@@ -206,6 +207,31 @@
 				"last_name_required": "Họ là bắt buộc",
 				"passwords_match": "Mật khẩu không khớp",
 				"code_length": "Mã xác minh phải gồm 6 chữ số"
+			}
+		},
+		"classes": {
+			"validation": {
+				"name_required": "Tên lớp học là bắt buộc",
+				"name_max": "Tên lớp học không được vượt quá 200 ký tự",
+				"grade_required": "Khối lớp là bắt buộc",
+				"description_required": "Mô tả là bắt buộc",
+				"description_max": "Mô tả không được vượt quá 1000 ký tự",
+				"max_students_required": "Số học sinh tối đa là bắt buộc",
+				"max_students_positive": "Số học sinh tối đa phải là số dương",
+				"max_students_limit": "Số học sinh tối đa không vượt quá 100",
+				"banner_url_invalid": "Vui lòng nhập URL ảnh bìa hợp lệ",
+				"invite_length": "Mã mời phải có 6 ký tự",
+				"invite_format": "Mã mời chỉ được chứa chữ cái và số"
+			}
+		},
+		"exams": {
+			"validation": {
+				"name_min": "Tên bài thi phải có ít nhất 3 ký tự",
+				"name_max": "Tên bài thi không được vượt quá 200 ký tự",
+				"description_min": "Mô tả phải có ít nhất 10 ký tự",
+				"description_max": "Mô tả không được vượt quá 1000 ký tự",
+				"grade_range": "Khối lớp phải từ 1 đến 5",
+				"subject_required": "Môn học là bắt buộc"
 			}
 		}
 	},
@@ -564,6 +590,530 @@
 				"location_value": "Thanh pho Ho Chi Minh, Viet Nam",
 				"primary_cta": "Bat dau day ngay"
 			}
+		},
+		"classes": {
+			"title": "Lớp học",
+			"subtitle_teacher": "Quản lý lớp học và học sinh.",
+			"subtitle_student": "Xem các lớp học đã tham gia.",
+			"empty": {
+				"title": "Chưa có lớp học",
+				"teacher_description": "Tạo lớp học đầu tiên để bắt đầu.",
+				"student_description": "Tham gia lớp bằng mã mời để bắt đầu.",
+				"create_first": "Tạo lớp học đầu tiên"
+			},
+			"actions": {
+				"create": "Tạo lớp học",
+				"join": "Tham gia lớp"
+			},
+			"tabs": {
+				"active": "Đang hoạt động ({{count}})",
+				"archived": "Đã lưu trữ ({{count}})"
+			},
+			"archived_empty": "Không có lớp học lưu trữ.",
+			"sections": {
+				"enrolled": "Lớp đã tham gia"
+			},
+			"detail": {
+				"invite_copied": "Đã sao chép mã mời",
+				"back": "Quay lại",
+				"not_found": "Không tìm thấy lớp",
+				"back_to_classes": "Quay lại lớp học",
+				"archived": "Đã lưu trữ",
+				"info_title": "Thông tin lớp học",
+				"subject": "Môn học",
+				"not_specified": "Chưa xác định",
+				"grade_level": "Khối lớp",
+				"grade_label": "Khối {{grade}}",
+				"school": "Trường",
+				"created": "Ngày tạo",
+				"teacher": "Giáo viên",
+				"teacher_unknown": "Không rõ giáo viên",
+				"students": "Học sinh",
+				"invite_title": "Mời học sinh",
+				"invite_description": "Chia sẻ mã này để học sinh tham gia lớp.",
+				"code_expired": "Mã mời đã hết hạn",
+				"expires": "Hết hạn",
+				"regenerate": "Tạo lại mã",
+				"roster_title": "Danh sách lớp",
+				"roster_description": "Học sinh trong lớp này"
+			},
+			"card": {
+				"grade_badge": "Khối {{grade}}",
+				"students_label": "học sinh",
+				"max_suffix": " / tối đa {{max}}",
+				"teacher_label": "Giáo viên: {{name}}",
+				"invite_label": "Mã mời",
+				"expired": "Hết hạn",
+				"view_details": "Xem chi tiết"
+			},
+			"create_modal": {
+				"title": "Tạo lớp học",
+				"description": "Thiết lập lớp học mới cho học sinh.",
+				"fields": {
+					"name": "Tên lớp",
+					"grade": "Khối lớp",
+					"max_students": "Số học sinh tối đa",
+					"description": "Mô tả",
+					"banner_url": "URL ảnh bìa"
+				},
+				"placeholders": {
+					"name": "VD: Toán lớp 4",
+					"grade": "Chọn khối",
+					"max_students": "30",
+					"description": "Thêm mô tả ngắn",
+					"banner_url": "https://example.com/banner.jpg"
+				},
+				"grade_option": "Khối {{grade}}",
+				"help": {
+					"max_students": "Để trống nếu không giới hạn.",
+					"banner_url": "URL ảnh bìa lớp học (tùy chọn)."
+				},
+				"actions": {
+					"create": "Tạo lớp học"
+				}
+			},
+			"join": {
+				"title": "Tham gia lớp",
+				"subtitle": "Nhập mã mời để tham gia lớp.",
+				"case_insensitive": "Mã mời không phân biệt chữ hoa/thường.",
+				"actions": {
+					"joining": "Đang tham gia...",
+					"join": "Tham gia lớp"
+				}
+			},
+			"roster": {
+				"teachers": "Giáo viên ({{count}})",
+				"teacher_badge": "Giáo viên",
+				"students": "Học sinh ({{count}})",
+				"empty_title": "Chưa có học sinh",
+				"empty_subtitle": "Chia sẻ mã mời để thêm học sinh.",
+				"table": {
+					"name": "Tên",
+					"role": "Vai trò",
+					"joined": "Ngày tham gia"
+				}
+			}
+		},
+		"exams": {
+			"list": {
+				"title": "Bài thi",
+				"subtitle": "Quản lý bài thi của bạn.",
+				"actions": {
+					"new": "Bài thi mới",
+					"view": "Xem",
+					"edit": "Chỉnh sửa",
+					"delete": "Xóa"
+				},
+				"filters": {
+					"all": "Tất cả",
+					"draft": "Nháp",
+					"published": "Đã phát hành"
+				},
+				"table": {
+					"title": "Tất cả bài thi",
+					"name": "Tên",
+					"subject": "Môn học",
+					"grade": "Khối",
+					"status": "Trạng thái",
+					"created": "Ngày tạo",
+					"actions": "Thao tác"
+				},
+				"status": {
+					"draft": "Nháp",
+					"active": "Đã phát hành"
+				},
+				"empty": {
+					"title": "Chưa có bài thi",
+					"action": "Tạo bài thi đầu tiên"
+				},
+				"edit": {
+					"title": "Chỉnh sửa bài thi",
+					"description": "Cập nhật thông tin bài thi.",
+					"fields": {
+						"name": "Tên bài thi",
+						"description": "Mô tả",
+						"grade": "Khối",
+						"subject": "Môn học"
+					},
+					"placeholders": {
+						"name": "Nhập tên bài thi",
+						"description": "Mô tả ngắn",
+						"subject": "Chọn môn học"
+					},
+					"grade_option": "Khối {{grade}}",
+					"actions": {
+						"update": "Cập nhật bài thi"
+					}
+				},
+				"delete": {
+					"title": "Xóa bài thi?",
+					"description": "Thao tác này sẽ xóa vĩnh viễn bài thi."
+				}
+			},
+			"create": {
+				"title": "Tạo bài thi",
+				"subtitle": "Thiết lập thông tin cho bài thi mới.",
+				"form": {
+					"title": "Thông tin bài thi",
+					"fields": {
+						"name": "Tên bài thi",
+						"description": "Mô tả",
+						"grade": "Khối",
+						"subject": "Môn học"
+					},
+					"placeholders": {
+						"name": "Nhập tên bài thi",
+						"description": "Mô tả ngắn",
+						"grade": "Chọn khối",
+						"subject": "Chọn môn học"
+					},
+					"grade_option": "Khối {{grade}}",
+					"no_subjects": "Không có môn học",
+					"char_count": "{{count}} / {{max}} ký tự"
+				},
+				"actions": {
+					"create": "Tạo bài thi",
+					"creating": "Đang tạo..."
+				}
+			},
+			"matrix": {
+				"title_create": "Tạo ma trận",
+				"title_edit": "Chỉnh sửa ma trận",
+				"subtitle": "Xác định cấu trúc bài thi theo chủ đề và mức độ.",
+				"back_to_exams": "Quay lại bài thi",
+				"default_exam": "Bài thi chưa đặt tên",
+				"loading_exam": "Đang tải bài thi...",
+				"not_found": "Không tìm thấy bài thi",
+				"auto_name": "Ma trận {{exam}}",
+				"auto_description": "Ma trận tự động cho bài thi này.",
+				"table": {
+					"title": "Bảng ma trận",
+					"topic": "Chủ đề",
+					"select_topic": "Chọn chủ đề",
+					"total": "Tổng",
+					"total_questions": "Tổng số câu hỏi"
+				},
+				"actions": {
+					"add_row": "Thêm dòng",
+					"save_continue": "Lưu và tiếp tục",
+					"update_continue": "Cập nhật và tiếp tục",
+					"skip": "Bỏ qua",
+					"saving": "Đang lưu..."
+				},
+				"about": {
+					"title": "Về ma trận",
+					"description": "Cân bằng câu hỏi theo chủ đề và mức độ nhận thức.",
+					"levels_title": "Mức độ nhận thức",
+					"levels": {
+						"remember": "Nhận biết",
+						"understand": "Thông hiểu",
+						"apply": "Vận dụng",
+						"analyze": "Vận dụng cao"
+					}
+				}
+			},
+			"detail": {
+				"not_found": "Không tìm thấy bài thi",
+				"back_to_exams": "Quay lại bài thi",
+				"summary": "{{count}} câu hỏi - {{points}} điểm",
+				"actions": {
+					"preview": "Xem trước",
+					"edit": "Chỉnh sửa",
+					"export": "Xuất",
+					"export_pdf": "Xuất PDF",
+					"exporting_pdf": "Đang xuất PDF...",
+					"export_excel": "Xuất Excel",
+					"exporting_excel": "Đang xuất Excel...",
+					"publish": "Phát hành"
+				},
+				"publish": {
+					"title": "Phát hành bài thi?",
+					"description": "Bài thi sẽ được chia sẻ cho học sinh.",
+					"confirm": "Phát hành",
+					"publishing": "Đang phát hành...",
+					"no_questions": "Thêm ít nhất một câu hỏi trước khi phát hành."
+				},
+				"info": {
+					"title": "Thông tin bài thi",
+					"description": "Chi tiết về bài thi",
+					"subject": "Môn học",
+					"subject_unknown": "Không rõ môn học",
+					"grade": "Khối",
+					"grade_value": "Khối {{grade}}",
+					"created": "Ngày tạo"
+				},
+				"matrix": {
+					"title": "Ma trận bài thi",
+					"subtitle": "Phân bổ câu hỏi theo chủ đề và mức độ.",
+					"edit": "Chỉnh sửa ma trận",
+					"create": "Tạo ma trận",
+					"configured": "Đã cấu hình ma trận",
+					"summary": "{{count}} yêu cầu",
+					"total_questions": "{{count}} câu hỏi",
+					"topic_unknown": "Không rõ chủ đề",
+					"quantity": "{{count}} câu hỏi",
+					"more_combinations": "+{{count}} kết hợp khác",
+					"empty": "Chưa gắn ma trận.",
+					"attach_existing": "Gắn ma trận có sẵn",
+					"attach_title": "Gắn ma trận",
+					"attach_description": "Chọn ma trận để gắn vào bài thi.",
+					"attach_empty": "Không có ma trận.",
+					"search_placeholder": "Tìm ma trận...",
+					"search_empty": "Không tìm thấy ma trận.",
+					"attach_incompatible": "Ma trận không tương thích.",
+					"attach": "Gắn ma trận",
+					"attaching": "Đang gắn...",
+					"detach_title": "Gỡ ma trận?",
+					"detach_description": "Ma trận sẽ bị gỡ khỏi bài thi.",
+					"detach_confirm": "Gỡ",
+					"detach": "Gỡ ma trận",
+					"detaching": "Đang gỡ..."
+				},
+				"questions": {
+					"title": "Câu hỏi ({{count}})",
+					"add": "Thêm câu hỏi",
+					"empty": "Chưa có câu hỏi.",
+					"table": {
+						"question": "Câu hỏi",
+						"type": "Loại",
+						"level": "Mức độ",
+						"points": "Điểm",
+						"actions": "Thao tác"
+					},
+					"remove_title": "Xóa câu hỏi?",
+					"remove_description": "Hành động này sẽ xóa câu hỏi khỏi bài thi.",
+					"remove_confirm": "Xóa"
+				}
+			},
+			"edit": {
+				"title": "Chỉnh sửa bài thi",
+				"subtitle": "Cập nhật thông tin bài thi.",
+				"not_found": "Không tìm thấy bài thi",
+				"back_to_exams": "Quay lại bài thi",
+				"form": {
+					"title": "Thông tin bài thi",
+					"fields": {
+						"name": "Tên bài thi",
+						"description": "Mô tả",
+						"grade": "Khối",
+						"subject": "Môn học"
+					},
+					"placeholders": {
+						"name": "Nhập tên bài thi",
+						"description": "Mô tả ngắn",
+						"grade": "Chọn khối",
+						"subject": "Chọn môn học"
+					},
+					"help": {
+						"name": "Ngắn gọn và dễ hiểu.",
+						"description": "Mô tả ngắn về bài thi."
+					},
+					"grade_option": "Khối {{grade}}"
+				},
+				"actions": {
+					"save": "Lưu thay đổi",
+					"saving": "Đang lưu..."
+				}
+			},
+			"preview": {
+				"not_found": "Không tìm thấy bài thi",
+				"back_to_exams": "Quay lại bài thi",
+				"back_to_exam": "Quay lại bài thi",
+				"export_pdf": "Xuất PDF",
+				"exporting_pdf": "Đang xuất PDF...",
+				"export_excel": "Xuất Excel",
+				"exporting_excel": "Đang xuất Excel...",
+				"subject": "Môn học",
+				"grade": "Khối",
+				"questions": "Câu hỏi",
+				"total_points": "Tổng điểm",
+				"description": "Mô tả",
+				"questions_title": "Câu hỏi",
+				"question_number": "Câu {{number}}",
+				"points": "{{count}} điểm",
+				"correct": "Đúng"
+			},
+			"questions": {
+				"title": "Câu hỏi",
+				"subtitle": "Câu hỏi cho bài thi {{name}}",
+				"matrix_progress_label": "Tiến độ ma trận",
+				"tabs": {
+					"create": "Tạo câu hỏi",
+					"bank": "Ngân hàng câu hỏi"
+				},
+				"creation_mode": {
+					"label": "Chế độ tạo",
+					"manual": "Thủ công",
+					"ai": "AI",
+					"pro": "Pro",
+					"pro_required": "Yêu cầu Pro"
+				},
+				"actions": {
+					"clear": "Xóa",
+					"saving": "Đang lưu...",
+					"save_add": "Lưu và thêm câu hỏi"
+				},
+				"bank": {
+					"title": "Ngân hàng câu hỏi",
+					"subtitle": "Duyệt câu hỏi {{matrix}}",
+					"matrix_hint": "theo ma trận",
+					"view_label": "Xem",
+					"view_all": "Tất cả",
+					"view_matrix": "Ma trận",
+					"search_placeholder": "Tìm kiếm câu hỏi...",
+					"filters": {
+						"level": "Mức độ",
+						"all_levels": "Tất cả mức độ",
+						"topic": "Chủ đề",
+						"all_topics": "Tất cả chủ đề"
+					},
+					"loading": "Đang tải câu hỏi...",
+					"empty": "Không tìm thấy câu hỏi.",
+					"points": "{{count}} điểm",
+					"selected_count": "Đã chọn: {{count}}",
+					"adding": "Đang thêm...",
+					"add_selected": "Thêm đã chọn"
+				},
+				"sidebar": {
+					"questions_title": "Câu hỏi ({{count}})",
+					"matrix_title": "Yêu cầu ma trận",
+					"matrix_hint": "Nhấp vào yêu cầu để thêm câu hỏi."
+				},
+				"matrix_limit": {
+					"title": "Đã đủ theo ma trận",
+					"description": "Bạn đã đủ số câu hỏi yêu cầu cho ma trận này.",
+					"confirm": "Đã hiểu"
+				},
+				"delete_matrix": {
+					"title": "Xóa ma trận?",
+					"description": "Thao tác này sẽ xóa ma trận vĩnh viễn.",
+					"confirm": "Xóa"
+				},
+				"form": {
+					"title": "Chi tiết câu hỏi",
+					"fields": {
+						"content": "Nội dung câu hỏi",
+						"type": "Loại câu hỏi",
+						"cognitive_level": "Mức độ nhận thức",
+						"points": "Điểm",
+						"topic": "Chủ đề",
+						"public": "Câu hỏi công khai",
+						"media": "Tệp đính kèm"
+					},
+					"placeholders": {
+						"content": "Nhập nội dung câu hỏi...",
+						"topic": "Tìm và chọn chủ đề..."
+					},
+					"help": {
+						"topic": "Chọn chủ đề phù hợp nhất với câu hỏi.",
+						"public": "Cho phép người khác sử dụng câu hỏi này."
+					},
+					"actions": {
+						"upload": "Tải lên",
+						"uploading": "Đang tải..."
+					},
+					"media_uploaded": "Đã tải lên: {{url}}"
+				},
+				"answers": {
+					"title": {
+						"true_false": "Câu trả lời Đúng/Sai",
+						"single_choice": "Câu trả lời một lựa chọn",
+						"multiple_choice": "Câu trả lời nhiều lựa chọn",
+						"essay": "Câu trả lời tự luận",
+						"fill_blank": "Câu trả lời điền khuyết",
+						"default": "Câu trả lời"
+					},
+					"hint_simple": "Chọn đáp án đúng.",
+					"hint_multiple": "Chọn tất cả đáp án đúng.",
+					"common": {
+						"explanation_label": "Giải thích (tùy chọn)",
+						"explanation_placeholder": "Giải thích vì sao đáp án đúng.",
+						"remove_answer": "Xóa đáp án",
+						"min_two": "Cần ít nhất hai đáp án."
+					},
+					"select": {
+						"hint": "Chọn đúng một đáp án.",
+						"add_option": "Thêm lựa chọn",
+						"answer_label": "Đáp án {{index}}",
+						"answer_placeholder": "Nhập nội dung đáp án"
+					},
+					"multiple_choice": {
+						"hint": "Chọn một hoặc nhiều đáp án đúng.",
+						"add_option": "Thêm lựa chọn",
+						"answer_label": "Đáp án {{index}}",
+						"answer_placeholder": "Nhập nội dung đáp án"
+					},
+					"fill_blank": {
+						"tip": "Dùng [blank] trong câu hỏi để chỉ chỗ trống.",
+						"hint": "Cung cấp đáp án đúng và các đáp án chấp nhận được.",
+						"add_alternative": "Thêm đáp án khác",
+						"correct_label": "Đáp án đúng",
+						"alternative_label": "Đáp án khác {{index}}",
+						"correct_help": "Đây là đáp án chính xác.",
+						"alternative_help": "Các biến thể chấp nhận được.",
+						"correct_placeholder": "Nhập đáp án đúng",
+						"explanation_placeholder": "Giải thích đáp án đúng (tùy chọn)",
+						"remove_alternative": "Xóa đáp án khác"
+					},
+					"true_false": {
+						"hint": "Đánh dấu phương án đúng.",
+						"option_true": "Đúng",
+						"option_false": "Sai",
+						"explanation_placeholder": "Giải thích vì sao {{option}} là đúng."
+					},
+					"essay": {
+						"tip": "Cung cấp rubric hoặc hướng dẫn chấm.",
+						"rubric_label": "Rubric / Hướng dẫn",
+						"rubric_help": "Mô tả cách chấm điểm.",
+						"rubric_placeholder": "Nhập tiêu chí chấm...",
+						"sample_label": "Bài mẫu (tùy chọn)",
+						"sample_help": "Ví dụ về một câu trả lời tốt.",
+						"sample_placeholder": "Nhập bài mẫu..."
+					}
+				},
+				"toast": {
+					"prefill_manual": "Đã chuyển sang chế độ thủ công.",
+					"prefill_ai": "Đã chuyển sang chế độ AI.",
+					"created": "Đã tạo câu hỏi.",
+					"no_topic": "Vui lòng chọn chủ đề.",
+					"min_answers": "Cần ít nhất hai đáp án.",
+					"min_correct": "Chọn ít nhất một đáp án đúng.",
+					"ai_saved": "Đã lưu câu hỏi AI.",
+					"no_id": "Thiếu ID câu hỏi.",
+					"save_failed": "Lưu câu hỏi thất bại. {{message}}",
+					"ai_missing_topic": "Không tìm thấy chủ đề cho {{topic}}.",
+					"saved_count": "Đã lưu {{count}} câu hỏi.",
+					"failed_count": "Lưu thất bại {{count}} câu hỏi.",
+					"save_all_failed": "Lưu tất cả câu hỏi thất bại.",
+					"pro_required": "Cần gói Pro để dùng AI.",
+					"matrix_complete": "Đã hoàn thành yêu cầu ma trận.",
+					"matrix_generated": "Đã tạo ma trận với {{count}} câu hỏi.",
+					"matrix_failed": "Tạo ma trận thất bại.",
+					"matrix_deleted": "Đã xóa ma trận."
+				},
+				"ai": {
+					"matrix_title": "Tạo câu hỏi theo ma trận",
+					"matrix_description": "Tự động tạo câu hỏi dựa trên ma trận.",
+					"matrix_generating": "Đang tạo ma trận...",
+					"matrix_generate": "Tạo từ ma trận",
+					"title": "Trình tạo câu hỏi AI",
+					"fields": {
+						"topic": "Chủ đề",
+						"type": "Loại câu hỏi",
+						"cognitive_level": "Mức độ nhận thức",
+						"quantity": "Số lượng"
+					},
+					"placeholders": {
+						"topic": "Chọn chủ đề"
+					},
+					"generating": "Đang tạo...",
+					"generate": "Tạo {{count}} câu hỏi",
+					"generated_title": "Câu hỏi đã tạo ({{count}})",
+					"save_all": "Lưu tất cả ({{count}})",
+					"saving_all": "Đang lưu tất cả...",
+					"clear_all": "Xóa tất cả"
+				}
+			}
 		}
 	},
 	"timezones": {
@@ -647,6 +1197,88 @@
 			"undo_description": "Bạn có thể hoàn tác hành động này",
 			"undo": "Hoàn tác",
 			"action_undone": "Đã hoàn tác"
+		}
+	},
+	"components": {
+		"exams": {
+			"cognitive_level": {
+				"descriptions": {
+					"remember": "Nhớ lại sự kiện và khái niệm cơ bản",
+					"understand": "Giải thích ý tưởng hoặc khái niệm",
+					"apply": "Vận dụng thông tin trong tình huống mới",
+					"analyze": "Liên hệ và phân tích các ý tưởng"
+				}
+			},
+			"matrix_progress": {
+				"title": "Tiến độ ma trận",
+				"subtitle": "Theo dõi tiến độ tạo câu hỏi theo chủ đề và mức độ",
+				"actions": {
+					"export": "Xuất",
+					"export_pdf": "Xuất PDF",
+					"exporting_pdf": "Đang xuất PDF...",
+					"export_excel": "Xuất Excel",
+					"exporting_excel": "Đang xuất Excel...",
+					"delete": "Xóa",
+					"deleting": "Đang xóa..."
+				},
+				"overall": "Tổng quan",
+				"complete": "Hoàn thành"
+			},
+			"question_type": {
+				"select_placeholder": "Chọn loại câu hỏi",
+				"labels": {
+					"single_choice": "Một lựa chọn",
+					"multiple_choice": "Nhiều lựa chọn"
+				},
+				"descriptions": {
+					"true_false": "Chọn phương án đúng",
+					"single_choice": "Chọn đúng một đáp án",
+					"multiple_choice": "Chọn một hoặc nhiều đáp án đúng",
+					"essay": "Trả lời bằng bài viết",
+					"fill_blank": "Điền vào chỗ trống"
+				}
+			},
+			"questions_panel": {
+				"empty_title": "Chưa có câu hỏi",
+				"empty_subtitle": "Thêm câu hỏi để bắt đầu tạo bài thi",
+				"points": "{{count}} điểm",
+				"not_in_matrix": "Không trong ma trận",
+				"not_in_matrix_hint": "Câu hỏi này không phù hợp với yêu cầu ma trận.",
+				"view": "Xem",
+				"remove": "Xóa",
+				"remove_title": "Xóa câu hỏi?",
+				"remove_description": "Hành động này sẽ xóa câu hỏi khỏi bài thi.",
+				"remove_confirm": "Xóa"
+			}
+		}
+	},
+	"exams": {
+		"cognitive_levels": {
+			"remember": "Remember",
+			"understand": "Understand",
+			"apply": "Apply",
+			"analyze": "Analyze"
+		},
+		"cognitive_levels_vi": {
+			"remember": "Nhận biết",
+			"understand": "Thông hiểu",
+			"apply": "Vận dụng",
+			"analyze": "Vận dụng cao"
+		},
+		"question_types": {
+			"multiple_choice": "Trắc nghiệm",
+			"true_false": "Đúng/Sai",
+			"essay": "Tự luận",
+			"fill_in_blank": "Điền vào chỗ trống"
+		},
+		"topic_selector": {
+			"placeholder": "Chọn chủ đề",
+			"search_placeholder": "Tìm kiếm chủ đề...",
+			"empty": "Không tìm thấy chủ đề.",
+			"in_curriculum": "Theo chương trình",
+			"created_by_users": "Do người dùng tạo",
+			"curriculum_badge": "Chương trình",
+			"custom_badge": "Tùy chỉnh"
 		}
 	}
 }

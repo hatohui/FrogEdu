@@ -9,6 +9,7 @@ import {
 } from '@/components/ui/form'
 import { Textarea } from '@/components/ui/textarea'
 import type { AnswerFieldProps } from './types'
+import { useTranslation } from 'react-i18next'
 
 /**
  * Essay question answer component
@@ -21,13 +22,12 @@ export const EssayAnswer: React.FC<
 		'append' | 'remove' | 'fields' | 'onCorrectAnswerChange'
 	>
 > = ({ control, disabled = false }) => {
+	const { t } = useTranslation()
 	return (
 		<div className='space-y-4'>
 			<div className='bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 rounded-lg p-4'>
 				<p className='text-sm text-blue-700 dark:text-blue-300'>
-					<strong>Essay questions</strong> are open-ended and will be graded
-					based on content accuracy and relevance. You can set grading rubric
-					below to guide the evaluation.
+					{t('pages.exams.questions.answers.essay.tip')}
 				</p>
 			</div>
 
@@ -38,18 +38,17 @@ export const EssayAnswer: React.FC<
 						name='answers.0.content'
 						render={({ field }) => (
 							<FormItem>
-								<FormLabel>Grading Rubric / Expected Points *</FormLabel>
+								<FormLabel>
+									{t('pages.exams.questions.answers.essay.rubric_label')}
+								</FormLabel>
 								<FormDescription>
-									Describe what a good answer should include. This will be used
-									for grading.
+									{t('pages.exams.questions.answers.essay.rubric_help')}
 								</FormDescription>
 								<FormControl>
 									<Textarea
-										placeholder={`Example:
-                      • Key points to cover (40%)
-                      • Logical structure and argumentation (30%)
-                      • Supporting examples or evidence (20%)
-                      • Language clarity and grammar (10%)`}
+										placeholder={t(
+											'pages.exams.questions.answers.essay.rubric_placeholder'
+										)}
 										rows={6}
 										disabled={disabled}
 										{...field}
@@ -65,14 +64,16 @@ export const EssayAnswer: React.FC<
 						render={({ field }) => (
 							<FormItem>
 								<FormLabel className='text-sm text-muted-foreground'>
-									Sample Answer (Optional)
+									{t('pages.exams.questions.answers.essay.sample_label')}
 								</FormLabel>
 								<FormDescription>
-									Provide a sample answer for reference
+									{t('pages.exams.questions.answers.essay.sample_help')}
 								</FormDescription>
 								<FormControl>
 									<Textarea
-										placeholder='Write a sample high-quality answer here...'
+										placeholder={t(
+											'pages.exams.questions.answers.essay.sample_placeholder'
+										)}
 										rows={4}
 										disabled={disabled}
 										{...field}

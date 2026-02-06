@@ -13,6 +13,7 @@ import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Checkbox } from '@/components/ui/checkbox'
 import type { AnswerFieldProps } from './types'
+import { useTranslation } from 'react-i18next'
 
 /**
  * Multiple Choice question answer component
@@ -26,6 +27,7 @@ export const MultipleChoiceAnswers: React.FC<AnswerFieldProps> = ({
 	onCorrectAnswerChange,
 	disabled = false,
 }) => {
+	const { t } = useTranslation()
 	const handleAddAnswer = () => {
 		append({ content: '', isCorrect: false, explanation: '' })
 	}
@@ -34,7 +36,7 @@ export const MultipleChoiceAnswers: React.FC<AnswerFieldProps> = ({
 		<div className='space-y-4'>
 			<div className='flex items-center justify-between'>
 				<p className='text-sm text-muted-foreground'>
-					Add answer options. Select ONE or MORE correct answers.
+					{t('pages.exams.questions.answers.multiple_choice.hint')}
 				</p>
 				<Button
 					type='button'
@@ -44,7 +46,7 @@ export const MultipleChoiceAnswers: React.FC<AnswerFieldProps> = ({
 					disabled={disabled || fields.length >= 8}
 				>
 					<Plus className='h-4 w-4 mr-2' />
-					Add Option
+					{t('pages.exams.questions.answers.multiple_choice.add_option')}
 				</Button>
 			</div>
 
@@ -81,10 +83,19 @@ export const MultipleChoiceAnswers: React.FC<AnswerFieldProps> = ({
 									name={`answers.${index}.content`}
 									render={({ field }) => (
 										<FormItem>
-											<FormLabel>Answer {index + 1} *</FormLabel>
+											<FormLabel>
+												{t(
+													'pages.exams.questions.answers.multiple_choice.answer_label',
+													{
+														index: index + 1,
+													}
+												)}
+											</FormLabel>
 											<FormControl>
 												<Input
-													placeholder='Enter answer option...'
+													placeholder={t(
+														'pages.exams.questions.answers.multiple_choice.answer_placeholder'
+													)}
 													disabled={disabled}
 													{...field}
 												/>
@@ -100,11 +111,15 @@ export const MultipleChoiceAnswers: React.FC<AnswerFieldProps> = ({
 									render={({ field }) => (
 										<FormItem>
 											<FormLabel className='text-sm text-muted-foreground'>
-												Explanation (Optional)
+												{t(
+													'pages.exams.questions.answers.common.explanation_label'
+												)}
 											</FormLabel>
 											<FormControl>
 												<Textarea
-													placeholder='Explain why this answer is correct/incorrect...'
+													placeholder={t(
+														'pages.exams.questions.answers.common.explanation_placeholder'
+													)}
 													rows={2}
 													disabled={disabled}
 													{...field}
@@ -123,7 +138,9 @@ export const MultipleChoiceAnswers: React.FC<AnswerFieldProps> = ({
 									size='icon'
 									onClick={() => remove(index)}
 									disabled={disabled}
-									title='Remove answer'
+									title={t(
+										'pages.exams.questions.answers.common.remove_answer'
+									)}
 								>
 									<Trash2 className='h-4 w-4 text-destructive' />
 								</Button>
@@ -135,7 +152,7 @@ export const MultipleChoiceAnswers: React.FC<AnswerFieldProps> = ({
 
 			{fields.length < 2 && (
 				<p className='text-sm text-destructive'>
-					At least 2 answer options are required
+					{t('pages.exams.questions.answers.common.min_two')}
 				</p>
 			)}
 		</div>

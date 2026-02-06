@@ -20,6 +20,7 @@ import { useMediaUpload } from '@/hooks/image/useMediaUpload'
 import type { UseFormReturn } from 'react-hook-form'
 import type { QuestionFormData } from '@/hooks/useQuestionForm'
 import type { Topic } from '@/types/model/exam-service'
+import { useTranslation } from 'react-i18next'
 
 interface QuestionFormFieldsProps {
 	form: UseFormReturn<QuestionFormData>
@@ -33,6 +34,7 @@ export const QuestionFormFields: React.FC<QuestionFormFieldsProps> = ({
 	form,
 	topics,
 }) => {
+	const { t } = useTranslation()
 	const {
 		isUploading,
 		preview: mediaPreview,
@@ -57,7 +59,7 @@ export const QuestionFormFields: React.FC<QuestionFormFieldsProps> = ({
 	return (
 		<Card>
 			<CardHeader>
-				<CardTitle>Question Details</CardTitle>
+				<CardTitle>{t('pages.exams.questions.form.title')}</CardTitle>
 			</CardHeader>
 			<CardContent className='space-y-4'>
 				{/* Question Content */}
@@ -66,10 +68,14 @@ export const QuestionFormFields: React.FC<QuestionFormFieldsProps> = ({
 					name='content'
 					render={({ field }) => (
 						<FormItem>
-							<FormLabel>Question Content *</FormLabel>
+							<FormLabel>
+								{t('pages.exams.questions.form.fields.content')}
+							</FormLabel>
 							<FormControl>
 								<Textarea
-									placeholder='Enter your question here...'
+									placeholder={t(
+										'pages.exams.questions.form.placeholders.content'
+									)}
 									rows={4}
 									{...field}
 								/>
@@ -86,7 +92,9 @@ export const QuestionFormFields: React.FC<QuestionFormFieldsProps> = ({
 						name='type'
 						render={({ field }) => (
 							<FormItem>
-								<FormLabel>Question Type *</FormLabel>
+								<FormLabel>
+									{t('pages.exams.questions.form.fields.type')}
+								</FormLabel>
 								<FormControl>
 									<QuestionTypeSelector
 										value={field.value}
@@ -103,7 +111,9 @@ export const QuestionFormFields: React.FC<QuestionFormFieldsProps> = ({
 						name='cognitiveLevel'
 						render={({ field }) => (
 							<FormItem>
-								<FormLabel>Cognitive Level *</FormLabel>
+								<FormLabel>
+									{t('pages.exams.questions.form.fields.cognitive_level')}
+								</FormLabel>
 								<FormControl>
 									<CognitiveLevelSelector
 										value={field.value}
@@ -123,7 +133,9 @@ export const QuestionFormFields: React.FC<QuestionFormFieldsProps> = ({
 						name='point'
 						render={({ field }) => (
 							<FormItem>
-								<FormLabel>Points *</FormLabel>
+								<FormLabel>
+									{t('pages.exams.questions.form.fields.points')}
+								</FormLabel>
 								<FormControl>
 									<Input
 										type='number'
@@ -142,17 +154,21 @@ export const QuestionFormFields: React.FC<QuestionFormFieldsProps> = ({
 						name='topicId'
 						render={({ field }) => (
 							<FormItem>
-								<FormLabel>Topic *</FormLabel>
+								<FormLabel>
+									{t('pages.exams.questions.form.fields.topic')}
+								</FormLabel>
 								<FormControl>
 									<TopicSelector
 										topics={topics}
 										value={field.value}
 										onValueChange={field.onChange}
-										placeholder='Search and select a topic...'
+										placeholder={t(
+											'pages.exams.questions.form.placeholders.topic'
+										)}
 									/>
 								</FormControl>
 								<FormDescription>
-									Search by topic name or number (e.g., 1.1, 2.3)
+									{t('pages.exams.questions.form.help.topic')}
 								</FormDescription>
 								<FormMessage />
 							</FormItem>
@@ -173,9 +189,11 @@ export const QuestionFormFields: React.FC<QuestionFormFieldsProps> = ({
 								/>
 							</FormControl>
 							<div className='space-y-1 leading-none'>
-								<FormLabel>Make this question public</FormLabel>
+								<FormLabel>
+									{t('pages.exams.questions.form.fields.public')}
+								</FormLabel>
 								<FormDescription>
-									Public questions can be used by other teachers
+									{t('pages.exams.questions.form.help.public')}
 								</FormDescription>
 							</div>
 						</FormItem>
@@ -184,7 +202,7 @@ export const QuestionFormFields: React.FC<QuestionFormFieldsProps> = ({
 
 				{/* Media Upload */}
 				<div className='space-y-2'>
-					<FormLabel>Media (Optional)</FormLabel>
+					<FormLabel>{t('pages.exams.questions.form.fields.media')}</FormLabel>
 					<div className='flex gap-2'>
 						<Input
 							type='file'
@@ -194,7 +212,9 @@ export const QuestionFormFields: React.FC<QuestionFormFieldsProps> = ({
 						/>
 						<Button type='button' variant='outline' disabled={isUploading}>
 							<Upload className='h-4 w-4 mr-2' />
-							{isUploading ? 'Uploading...' : 'Upload'}
+							{isUploading
+								? t('pages.exams.questions.form.actions.uploading')
+								: t('pages.exams.questions.form.actions.upload')}
 						</Button>
 					</div>
 					{mediaPreview && (
@@ -220,7 +240,9 @@ export const QuestionFormFields: React.FC<QuestionFormFieldsProps> = ({
 					)}
 					{form.watch('mediaUrl') && !mediaPreview && (
 						<p className='text-sm text-muted-foreground'>
-							File uploaded: {form.watch('mediaUrl')}
+							{t('pages.exams.questions.form.media_uploaded', {
+								url: form.watch('mediaUrl'),
+							})}
 						</p>
 					)}
 				</div>

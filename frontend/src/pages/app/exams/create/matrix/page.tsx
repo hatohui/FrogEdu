@@ -18,8 +18,10 @@ import {
 	type MatrixRow,
 	CognitiveLevel,
 } from '@/types/model/exam-service'
+import { useTranslation } from 'react-i18next'
 
 const CreateMatrixPage = (): React.ReactElement => {
+	const { t } = useTranslation()
 	const navigate = useNavigate()
 	const [searchParams] = useSearchParams()
 	const examId = searchParams.get('examId')
@@ -201,8 +203,10 @@ const CreateMatrixPage = (): React.ReactElement => {
 			} else {
 				// Create new matrix and attach to exam
 				const response = await createMatrixMutation.mutateAsync({
-					name: `Matrix for ${exam?.name || 'Exam'}`,
-					description: `Auto-generated matrix for exam`,
+					name: t('pages.exams.matrix.auto_name', {
+						exam: exam?.name || t('pages.exams.matrix.default_exam'),
+					}),
+					description: t('pages.exams.matrix.auto_description'),
 					subjectId: exam?.subjectId || '',
 					grade: exam?.grade || 1,
 					matrixTopics,
@@ -237,7 +241,9 @@ const CreateMatrixPage = (): React.ReactElement => {
 		return (
 			<div className='p-6 flex items-center justify-center min-h-[400px]'>
 				<div className='text-center'>
-					<div className='text-lg font-medium'>Loading exam details...</div>
+					<div className='text-lg font-medium'>
+						{t('pages.exams.matrix.loading_exam')}
+					</div>
 				</div>
 			</div>
 		)
@@ -249,14 +255,14 @@ const CreateMatrixPage = (): React.ReactElement => {
 			<div className='p-6 flex items-center justify-center min-h-[400px]'>
 				<div className='text-center'>
 					<div className='text-lg font-medium text-destructive'>
-						Exam not found
+						{t('pages.exams.matrix.not_found')}
 					</div>
 					<Button
 						onClick={() => navigate('/app/exams')}
 						variant='outline'
 						className='mt-4'
 					>
-						Back to Exams
+						{t('pages.exams.matrix.back_to_exams')}
 					</Button>
 				</div>
 			</div>
@@ -277,16 +283,18 @@ const CreateMatrixPage = (): React.ReactElement => {
 					</Button>
 					<div>
 						<h1 className='text-3xl font-bold'>
-							{isEditing ? 'Edit' : 'Create'} Exam Matrix
+							{isEditing
+								? t('pages.exams.matrix.title_edit')
+								: t('pages.exams.matrix.title_create')}
 						</h1>
 						<p className='text-muted-foreground'>
-							Define question distribution by cognitive level
+							{t('pages.exams.matrix.subtitle')}
 						</p>
 					</div>
 				</div>
 				<div className='flex gap-2'>
 					<Button variant='outline' onClick={handleSkip}>
-						Skip Matrix
+						{t('pages.exams.matrix.actions.skip')}
 					</Button>
 					<Button
 						onClick={handleSave}
@@ -298,10 +306,10 @@ const CreateMatrixPage = (): React.ReactElement => {
 					>
 						<Save className='h-4 w-4 mr-2' />
 						{createMatrixMutation.isPending || updateMatrixMutation.isPending
-							? 'Saving...'
+							? t('pages.exams.matrix.actions.saving')
 							: isEditing
-								? 'Update & Continue'
-								: 'Save & Continue'}
+								? t('pages.exams.matrix.actions.update_continue')
+								: t('pages.exams.matrix.actions.save_continue')}
 					</Button>
 				</div>
 			</div>
@@ -309,23 +317,21 @@ const CreateMatrixPage = (): React.ReactElement => {
 			{/* Info Card */}
 			<Card>
 				<CardHeader>
-					<CardTitle>About the Matrix</CardTitle>
+					<CardTitle>{t('pages.exams.matrix.about.title')}</CardTitle>
 				</CardHeader>
 				<CardContent className='space-y-4'>
 					<p className='text-sm text-muted-foreground mb-4'>
-						The matrix defines how many questions of each cognitive level should
-						be included in your exam. This follows Bloom&apos;s Taxonomy for
-						balanced assessment.
+						{t('pages.exams.matrix.about.description')}
 					</p>
 					<div className='bg-muted p-4 rounded-lg'>
 						<div className='text-sm font-medium mb-2'>
-							Bloom&apos;s Taxonomy Cognitive Levels:
+							{t('pages.exams.matrix.about.levels_title')}
 						</div>
 						<ul className='text-sm text-muted-foreground space-y-1'>
-							<li>• Remember: Recall facts and basic concepts</li>
-							<li>• Understand: Explain ideas or concepts</li>
-							<li>• Apply: Use information in new situations</li>
-							<li>• Analyze: Draw connections among ideas</li>
+							<li>{t('pages.exams.matrix.about.levels.remember')}</li>
+							<li>{t('pages.exams.matrix.about.levels.understand')}</li>
+							<li>{t('pages.exams.matrix.about.levels.apply')}</li>
+							<li>{t('pages.exams.matrix.about.levels.analyze')}</li>
 						</ul>
 					</div>
 				</CardContent>
@@ -334,22 +340,34 @@ const CreateMatrixPage = (): React.ReactElement => {
 			{/* Matrix Table */}
 			<Card>
 				<CardHeader className='flex flex-row items-center justify-between'>
-					<CardTitle>Question Distribution Matrix</CardTitle>
+					<CardTitle>{t('pages.exams.matrix.table.title')}</CardTitle>
 					<Button onClick={addRow} size='sm' variant='outline'>
 						<Plus className='h-4 w-4 mr-2' />
-						Add Row
+						{t('pages.exams.matrix.actions.add_row')}
 					</Button>
 				</CardHeader>
 				<CardContent>
 					<div className='space-y-4'>
 						{/* Header */}
 						<div className='grid grid-cols-10 gap-2 font-semibold text-xs pb-2 border-b'>
-							<div className='col-span-4'>Topic</div>
-							<div className='col-span-1 text-center'>Remember</div>
-							<div className='col-span-1 text-center'>Understand</div>
-							<div className='col-span-1 text-center'>Apply</div>
-							<div className='col-span-1 text-center'>Analyze</div>
-							<div className='col-span-1 text-center'>Total</div>
+							<div className='col-span-4'>
+								{t('pages.exams.matrix.table.topic')}
+							</div>
+							<div className='col-span-1 text-center'>
+								{t('exams.cognitive_levels.remember')}
+							</div>
+							<div className='col-span-1 text-center'>
+								{t('exams.cognitive_levels.understand')}
+							</div>
+							<div className='col-span-1 text-center'>
+								{t('exams.cognitive_levels.apply')}
+							</div>
+							<div className='col-span-1 text-center'>
+								{t('exams.cognitive_levels.analyze')}
+							</div>
+							<div className='col-span-1 text-center'>
+								{t('pages.exams.matrix.table.total')}
+							</div>
 							<div className='col-span-1'></div>
 						</div>
 
@@ -369,7 +387,7 @@ const CreateMatrixPage = (): React.ReactElement => {
 											onValueChange={value =>
 												updateRow(row.id, 'topicId', value)
 											}
-											placeholder='Select topic'
+											placeholder={t('pages.exams.matrix.table.select_topic')}
 										/>
 									</div>
 									<div className='col-span-1'>
@@ -435,7 +453,9 @@ const CreateMatrixPage = (): React.ReactElement => {
 
 						{/* Total */}
 						<div className='pt-4 border-t flex justify-between items-center'>
-							<div className='text-sm font-medium'>Total Questions:</div>
+							<div className='text-sm font-medium'>
+								{t('pages.exams.matrix.table.total_questions')}
+							</div>
 							<div className='text-2xl font-bold'>{calculateTotal()}</div>
 						</div>
 					</div>

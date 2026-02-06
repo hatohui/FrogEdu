@@ -9,6 +9,7 @@ import {
 import { Checkbox } from '@/components/ui/checkbox'
 import { Textarea } from '@/components/ui/textarea'
 import type { AnswerFieldProps } from './types'
+import { useTranslation } from 'react-i18next'
 
 /**
  * True/False question answer component
@@ -21,10 +22,11 @@ export const TrueFalseAnswers: React.FC<AnswerFieldProps> = ({
 	onCorrectAnswerChange,
 	disabled = false,
 }) => {
+	const { t } = useTranslation()
 	return (
 		<div className='space-y-4'>
 			<p className='text-sm text-muted-foreground'>
-				Select which answer is correct for this True/False statement
+				{t('pages.exams.questions.answers.true_false.hint')}
 			</p>
 			{fields.map((field, index) => (
 				<Card key={field.id} className='border-2'>
@@ -45,7 +47,13 @@ export const TrueFalseAnswers: React.FC<AnswerFieldProps> = ({
 											/>
 										</FormControl>
 										<FormLabel className='!mt-0 font-medium text-lg'>
-											{index === 0 ? 'A (True)' : 'B (False)'}
+											{index === 0
+												? t(
+														'pages.exams.questions.answers.true_false.option_true'
+													)
+												: t(
+														'pages.exams.questions.answers.true_false.option_false'
+													)}
 										</FormLabel>
 									</FormItem>
 								)}
@@ -58,11 +66,25 @@ export const TrueFalseAnswers: React.FC<AnswerFieldProps> = ({
 							render={({ field }) => (
 								<FormItem className='mt-4'>
 									<FormLabel className='text-sm text-muted-foreground'>
-										Explanation (Optional)
+										{t(
+											'pages.exams.questions.answers.common.explanation_label'
+										)}
 									</FormLabel>
 									<FormControl>
 										<Textarea
-											placeholder={`Explain why ${index === 0 ? 'A (True)' : 'B (False)'} is correct or incorrect...`}
+											placeholder={t(
+												'pages.exams.questions.answers.true_false.explanation_placeholder',
+												{
+													option:
+														index === 0
+															? t(
+																	'pages.exams.questions.answers.true_false.option_true'
+																)
+															: t(
+																	'pages.exams.questions.answers.true_false.option_false'
+																),
+												}
+											)}
 											rows={2}
 											disabled={disabled}
 											{...field}

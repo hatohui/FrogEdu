@@ -27,7 +27,8 @@
 		"logo_alt": "FrogEdu Logo",
 		"never": "Never",
 		"loading": "Loading...",
-		"days": "days"
+		"days": "days",
+		"unknown": "Unknown"
 	},
 	"navigation": {
 		"home": "Home",
@@ -207,6 +208,113 @@
 				"passwords_match": "Passwords do not match",
 				"code_length": "Verification code must be 6 digits"
 			}
+		},
+		"classes": {
+			"validation": {
+				"name_required": "Class name is required",
+				"name_max": "Class name must not exceed 200 characters",
+				"grade_required": "Grade is required",
+				"description_required": "Description is required",
+				"description_max": "Description must not exceed 1000 characters",
+				"max_students_required": "Max students is required",
+				"max_students_positive": "Max students must be a positive number",
+				"max_students_limit": "Max students must be 100 or fewer",
+				"banner_url_invalid": "Please enter a valid banner URL",
+				"invite_length": "Invite code must be 6 characters",
+				"invite_format": "Invite code must contain only letters and numbers"
+			}
+		},
+		"exams": {
+			"validation": {
+				"name_min": "Exam name must be at least 3 characters",
+				"name_max": "Exam name must not exceed 200 characters",
+				"description_min": "Description must be at least 10 characters",
+				"description_max": "Description must not exceed 1000 characters",
+				"grade_range": "Grade must be between 1 and 5",
+				"subject_required": "Subject is required"
+			}
+		}
+	},
+	"components": {
+		"exams": {
+			"cognitive_level": {
+				"descriptions": {
+					"remember": "Recall facts and basic concepts",
+					"understand": "Explain ideas or concepts",
+					"apply": "Use information in new situations",
+					"analyze": "Draw connections among ideas"
+				}
+			},
+			"matrix_progress": {
+				"title": "Matrix progress",
+				"subtitle": "Track question creation progress by topic and level",
+				"actions": {
+					"export": "Export",
+					"export_pdf": "Export PDF",
+					"exporting_pdf": "Exporting PDF...",
+					"export_excel": "Export Excel",
+					"exporting_excel": "Exporting Excel...",
+					"delete": "Delete",
+					"deleting": "Deleting..."
+				},
+				"overall": "Overall",
+				"complete": "Complete"
+			},
+			"question_type": {
+				"select_placeholder": "Select question type",
+				"labels": {
+					"single_choice": "Single choice",
+					"multiple_choice": "Multiple choice"
+				},
+				"descriptions": {
+					"true_false": "Select the correct option",
+					"single_choice": "Choose exactly one correct answer",
+					"multiple_choice": "Choose one or more correct answers",
+					"essay": "Answer with a written response",
+					"fill_blank": "Fill in the missing word or phrase"
+				}
+			},
+			"questions_panel": {
+				"empty_title": "No questions yet",
+				"empty_subtitle": "Add questions to start building your exam",
+				"points": "{{count}} pts",
+				"not_in_matrix": "Not in matrix",
+				"not_in_matrix_hint": "This question does not match the matrix requirements.",
+				"view": "View",
+				"remove": "Remove",
+				"remove_title": "Remove question?",
+				"remove_description": "This will remove the question from the exam.",
+				"remove_confirm": "Remove"
+			}
+		}
+	},
+	"exams": {
+		"cognitive_levels": {
+			"remember": "Remember",
+			"understand": "Understand",
+			"apply": "Apply",
+			"analyze": "Analyze"
+		},
+		"cognitive_levels_vi": {
+			"remember": "Nhan biet",
+			"understand": "Thong hieu",
+			"apply": "Van dung",
+			"analyze": "Van dung cao"
+		},
+		"question_types": {
+			"multiple_choice": "Multiple Choice",
+			"true_false": "True/False",
+			"essay": "Essay",
+			"fill_in_blank": "Fill in the Blank"
+		},
+		"topic_selector": {
+			"placeholder": "Select a topic",
+			"search_placeholder": "Search topics...",
+			"empty": "No topics found.",
+			"in_curriculum": "In curriculum",
+			"created_by_users": "Created by users",
+			"curriculum_badge": "Curriculum",
+			"custom_badge": "Custom"
 		}
 	},
 	"pages": {
@@ -272,6 +380,530 @@
 			"notifications_description": "Configure notification preferences",
 			"language": "Language",
 			"language_description": "Set your preferred language"
+		},
+		"classes": {
+			"title": "Classes",
+			"subtitle_teacher": "Manage your classes and students.",
+			"subtitle_student": "View your enrolled classes.",
+			"empty": {
+				"title": "No classes yet",
+				"teacher_description": "Create your first class to get started.",
+				"student_description": "Join a class with an invite code to get started.",
+				"create_first": "Create your first class"
+			},
+			"actions": {
+				"create": "Create class",
+				"join": "Join class"
+			},
+			"tabs": {
+				"active": "Active ({{count}})",
+				"archived": "Archived ({{count}})"
+			},
+			"archived_empty": "No archived classes.",
+			"sections": {
+				"enrolled": "Enrolled classes"
+			},
+			"detail": {
+				"invite_copied": "Invite code copied",
+				"back": "Back",
+				"not_found": "Class not found",
+				"back_to_classes": "Back to classes",
+				"archived": "Archived",
+				"info_title": "Class information",
+				"subject": "Subject",
+				"not_specified": "Not specified",
+				"grade_level": "Grade level",
+				"grade_label": "Grade {{grade}}",
+				"school": "School",
+				"created": "Created",
+				"teacher": "Teacher",
+				"teacher_unknown": "Unknown teacher",
+				"students": "Students",
+				"invite_title": "Invite students",
+				"invite_description": "Share this code so students can join your class.",
+				"code_expired": "Invite code expired",
+				"expires": "Expires",
+				"regenerate": "Regenerate code",
+				"roster_title": "Class roster",
+				"roster_description": "Students enrolled in this class"
+			},
+			"card": {
+				"grade_badge": "Grade {{grade}}",
+				"students_label": "students",
+				"max_suffix": " / {{max}} max",
+				"teacher_label": "Teacher: {{name}}",
+				"invite_label": "Invite code",
+				"expired": "Expired",
+				"view_details": "View details"
+			},
+			"create_modal": {
+				"title": "Create class",
+				"description": "Set up a new class for your students.",
+				"fields": {
+					"name": "Class name",
+					"grade": "Grade",
+					"max_students": "Max students",
+					"description": "Description",
+					"banner_url": "Banner image URL"
+				},
+				"placeholders": {
+					"name": "e.g. Grade 4 Math",
+					"grade": "Select grade",
+					"max_students": "30",
+					"description": "Add a short description",
+					"banner_url": "https://example.com/banner.jpg"
+				},
+				"grade_option": "Grade {{grade}}",
+				"help": {
+					"max_students": "Leave empty for no limit.",
+					"banner_url": "Optional image URL for the class banner."
+				},
+				"actions": {
+					"create": "Create class"
+				}
+			},
+			"join": {
+				"title": "Join a class",
+				"subtitle": "Enter an invite code to join the class.",
+				"case_insensitive": "Invite codes are not case-sensitive.",
+				"actions": {
+					"joining": "Joining...",
+					"join": "Join class"
+				}
+			},
+			"roster": {
+				"teachers": "Teachers ({{count}})",
+				"teacher_badge": "Teacher",
+				"students": "Students ({{count}})",
+				"empty_title": "No students yet",
+				"empty_subtitle": "Share the invite code to enroll students.",
+				"table": {
+					"name": "Name",
+					"role": "Role",
+					"joined": "Joined"
+				}
+			}
+		},
+		"exams": {
+			"list": {
+				"title": "Exams",
+				"subtitle": "Manage your exams in one place.",
+				"actions": {
+					"new": "New exam",
+					"view": "View",
+					"edit": "Edit",
+					"delete": "Delete"
+				},
+				"filters": {
+					"all": "All",
+					"draft": "Draft",
+					"published": "Published"
+				},
+				"table": {
+					"title": "All exams",
+					"name": "Name",
+					"subject": "Subject",
+					"grade": "Grade",
+					"status": "Status",
+					"created": "Created",
+					"actions": "Actions"
+				},
+				"status": {
+					"draft": "Draft",
+					"active": "Published"
+				},
+				"empty": {
+					"title": "No exams yet",
+					"action": "Create your first exam"
+				},
+				"edit": {
+					"title": "Edit exam",
+					"description": "Update exam details.",
+					"fields": {
+						"name": "Exam name",
+						"description": "Description",
+						"grade": "Grade",
+						"subject": "Subject"
+					},
+					"placeholders": {
+						"name": "Enter exam name",
+						"description": "Short description",
+						"subject": "Select subject"
+					},
+					"grade_option": "Grade {{grade}}",
+					"actions": {
+						"update": "Update exam"
+					}
+				},
+				"delete": {
+					"title": "Delete exam?",
+					"description": "This will permanently delete the exam."
+				}
+			},
+			"create": {
+				"title": "Create exam",
+				"subtitle": "Set up the details for your new exam.",
+				"form": {
+					"title": "Exam details",
+					"fields": {
+						"name": "Exam name",
+						"description": "Description",
+						"grade": "Grade",
+						"subject": "Subject"
+					},
+					"placeholders": {
+						"name": "Enter exam name",
+						"description": "Short description",
+						"grade": "Select grade",
+						"subject": "Select subject"
+					},
+					"grade_option": "Grade {{grade}}",
+					"no_subjects": "No subjects available",
+					"char_count": "{{count}} / {{max}} characters"
+				},
+				"actions": {
+					"create": "Create exam",
+					"creating": "Creating..."
+				}
+			},
+			"matrix": {
+				"title_create": "Create matrix",
+				"title_edit": "Edit matrix",
+				"subtitle": "Define the exam blueprint by topic and cognitive level.",
+				"back_to_exams": "Back to exams",
+				"default_exam": "Untitled exam",
+				"loading_exam": "Loading exam...",
+				"not_found": "Exam not found",
+				"auto_name": "{{exam}} Matrix",
+				"auto_description": "Auto-generated matrix for this exam.",
+				"table": {
+					"title": "Matrix table",
+					"topic": "Topic",
+					"select_topic": "Select a topic",
+					"total": "Total",
+					"total_questions": "Total questions"
+				},
+				"actions": {
+					"add_row": "Add row",
+					"save_continue": "Save and continue",
+					"update_continue": "Update and continue",
+					"skip": "Skip for now",
+					"saving": "Saving..."
+				},
+				"about": {
+					"title": "About the matrix",
+					"description": "Balance questions across topics and cognitive levels.",
+					"levels_title": "Cognitive levels",
+					"levels": {
+						"remember": "Remember",
+						"understand": "Understand",
+						"apply": "Apply",
+						"analyze": "Analyze"
+					}
+				}
+			},
+			"detail": {
+				"not_found": "Exam not found",
+				"back_to_exams": "Back to exams",
+				"summary": "{{count}} questions - {{points}} points",
+				"actions": {
+					"preview": "Preview",
+					"edit": "Edit",
+					"export": "Export",
+					"export_pdf": "Export PDF",
+					"exporting_pdf": "Exporting PDF...",
+					"export_excel": "Export Excel",
+					"exporting_excel": "Exporting Excel...",
+					"publish": "Publish"
+				},
+				"publish": {
+					"title": "Publish exam?",
+					"description": "This will make the exam available to students.",
+					"confirm": "Publish",
+					"publishing": "Publishing...",
+					"no_questions": "Add at least one question before publishing."
+				},
+				"info": {
+					"title": "Exam information",
+					"description": "Details about this exam",
+					"subject": "Subject",
+					"subject_unknown": "Unknown subject",
+					"grade": "Grade",
+					"grade_value": "Grade {{grade}}",
+					"created": "Created"
+				},
+				"matrix": {
+					"title": "Exam matrix",
+					"subtitle": "Define question distribution by topic and level.",
+					"edit": "Edit matrix",
+					"create": "Create matrix",
+					"configured": "Matrix configured",
+					"summary": "{{count}} requirements",
+					"total_questions": "{{count}} total questions",
+					"topic_unknown": "Unknown topic",
+					"quantity": "{{count}} questions",
+					"more_combinations": "+{{count}} more combinations",
+					"empty": "No matrix attached yet.",
+					"attach_existing": "Attach existing matrix",
+					"attach_title": "Attach a matrix",
+					"attach_description": "Select a matrix to attach to this exam.",
+					"attach_empty": "No matrices available.",
+					"search_placeholder": "Search matrices...",
+					"search_empty": "No matrices found.",
+					"attach_incompatible": "Selected matrix is not compatible.",
+					"attach": "Attach matrix",
+					"attaching": "Attaching...",
+					"detach_title": "Detach matrix?",
+					"detach_description": "This will remove the matrix from the exam.",
+					"detach_confirm": "Detach",
+					"detach": "Detach matrix",
+					"detaching": "Detaching..."
+				},
+				"questions": {
+					"title": "Questions ({{count}})",
+					"add": "Add question",
+					"empty": "No questions yet.",
+					"table": {
+						"question": "Question",
+						"type": "Type",
+						"level": "Level",
+						"points": "Points",
+						"actions": "Actions"
+					},
+					"remove_title": "Remove question?",
+					"remove_description": "This will remove the question from the exam.",
+					"remove_confirm": "Remove"
+				}
+			},
+			"edit": {
+				"title": "Edit exam",
+				"subtitle": "Update your exam details.",
+				"not_found": "Exam not found",
+				"back_to_exams": "Back to exams",
+				"form": {
+					"title": "Exam details",
+					"fields": {
+						"name": "Exam name",
+						"description": "Description",
+						"grade": "Grade",
+						"subject": "Subject"
+					},
+					"placeholders": {
+						"name": "Enter exam name",
+						"description": "Short description",
+						"grade": "Select grade",
+						"subject": "Select subject"
+					},
+					"help": {
+						"name": "Keep it short and descriptive.",
+						"description": "Provide a brief overview of the exam."
+					},
+					"grade_option": "Grade {{grade}}"
+				},
+				"actions": {
+					"save": "Save changes",
+					"saving": "Saving..."
+				}
+			},
+			"preview": {
+				"not_found": "Exam not found",
+				"back_to_exams": "Back to exams",
+				"back_to_exam": "Back to exam",
+				"export_pdf": "Export PDF",
+				"exporting_pdf": "Exporting PDF...",
+				"export_excel": "Export Excel",
+				"exporting_excel": "Exporting Excel...",
+				"subject": "Subject",
+				"grade": "Grade",
+				"questions": "Questions",
+				"total_points": "Total points",
+				"description": "Description",
+				"questions_title": "Questions",
+				"question_number": "Question {{number}}",
+				"points": "{{count}} points",
+				"correct": "Correct"
+			},
+			"questions": {
+				"title": "Questions",
+				"subtitle": "Questions for this exam {{name}}",
+				"matrix_progress_label": "Matrix progress",
+				"tabs": {
+					"create": "Create question",
+					"bank": "Question bank"
+				},
+				"creation_mode": {
+					"label": "Creation mode",
+					"manual": "Manual",
+					"ai": "AI-assisted",
+					"pro": "Pro",
+					"pro_required": "Pro required"
+				},
+				"actions": {
+					"clear": "Clear",
+					"saving": "Saving...",
+					"save_add": "Save and add another"
+				},
+				"bank": {
+					"title": "Question bank",
+					"subtitle": "Browse questions {{matrix}}",
+					"matrix_hint": "matching the matrix",
+					"view_label": "View",
+					"view_all": "All",
+					"view_matrix": "Matrix",
+					"search_placeholder": "Search questions...",
+					"filters": {
+						"level": "Level",
+						"all_levels": "All levels",
+						"topic": "Topic",
+						"all_topics": "All topics"
+					},
+					"loading": "Loading questions...",
+					"empty": "No questions found.",
+					"points": "{{count}} pts",
+					"selected_count": "Selected: {{count}}",
+					"adding": "Adding...",
+					"add_selected": "Add selected"
+				},
+				"sidebar": {
+					"questions_title": "Questions ({{count}})",
+					"matrix_title": "Matrix requirements",
+					"matrix_hint": "Click a requirement to add questions."
+				},
+				"matrix_limit": {
+					"title": "Matrix limit reached",
+					"description": "You have reached the required number of questions for this matrix.",
+					"confirm": "Got it"
+				},
+				"delete_matrix": {
+					"title": "Delete matrix?",
+					"description": "This will remove the matrix permanently.",
+					"confirm": "Delete"
+				},
+				"form": {
+					"title": "Question details",
+					"fields": {
+						"content": "Question content",
+						"type": "Question type",
+						"cognitive_level": "Cognitive level",
+						"points": "Points",
+						"topic": "Topic",
+						"public": "Public question",
+						"media": "Media"
+					},
+					"placeholders": {
+						"content": "Enter question content...",
+						"topic": "Search and select a topic..."
+					},
+					"help": {
+						"topic": "Select the topic that best matches this question.",
+						"public": "Make this question available to others."
+					},
+					"actions": {
+						"upload": "Upload",
+						"uploading": "Uploading..."
+					},
+					"media_uploaded": "Media uploaded: {{url}}"
+				},
+				"answers": {
+					"title": {
+						"true_false": "True/False answers",
+						"single_choice": "Single choice answers",
+						"multiple_choice": "Multiple choice answers",
+						"essay": "Essay response",
+						"fill_blank": "Fill in the blank answers",
+						"default": "Answers"
+					},
+					"hint_simple": "Select the correct answer.",
+					"hint_multiple": "Select all correct answers.",
+					"common": {
+						"explanation_label": "Explanation (optional)",
+						"explanation_placeholder": "Explain why this answer is correct.",
+						"remove_answer": "Remove answer",
+						"min_two": "Add at least two answers."
+					},
+					"select": {
+						"hint": "Choose exactly one correct answer.",
+						"add_option": "Add option",
+						"answer_label": "Answer {{index}}",
+						"answer_placeholder": "Enter answer option"
+					},
+					"multiple_choice": {
+						"hint": "Choose one or more correct answers.",
+						"add_option": "Add option",
+						"answer_label": "Answer {{index}}",
+						"answer_placeholder": "Enter answer option"
+					},
+					"fill_blank": {
+						"tip": "Use [blank] in the question to indicate the missing word.",
+						"hint": "Provide the correct answer and alternative acceptable answers.",
+						"add_alternative": "Add alternative",
+						"correct_label": "Correct answer",
+						"alternative_label": "Alternative answer {{index}}",
+						"correct_help": "This is the expected answer.",
+						"alternative_help": "Other acceptable variations.",
+						"correct_placeholder": "Enter the correct answer",
+						"explanation_placeholder": "Explain the correct answer (optional)",
+						"remove_alternative": "Remove alternative"
+					},
+					"true_false": {
+						"hint": "Mark the correct option.",
+						"option_true": "True",
+						"option_false": "False",
+						"explanation_placeholder": "Explain why {{option}} is correct."
+					},
+					"essay": {
+						"tip": "Provide a rubric or guidance for grading.",
+						"rubric_label": "Rubric / Guidelines",
+						"rubric_help": "Describe how the answer should be graded.",
+						"rubric_placeholder": "Enter grading criteria...",
+						"sample_label": "Sample answer (optional)",
+						"sample_help": "Provide an example of a good answer.",
+						"sample_placeholder": "Enter a sample answer..."
+					}
+				},
+				"toast": {
+					"prefill_manual": "Switched to manual mode.",
+					"prefill_ai": "Switched to AI mode.",
+					"created": "Question created.",
+					"no_topic": "Please select a topic.",
+					"min_answers": "Add at least two answers.",
+					"min_correct": "Select at least one correct answer.",
+					"ai_saved": "AI question saved.",
+					"no_id": "Question ID missing.",
+					"save_failed": "Failed to save question. {{message}}",
+					"ai_missing_topic": "No topic found for {{topic}}.",
+					"saved_count": "Saved {{count}} questions.",
+					"failed_count": "Failed to save {{count}} questions.",
+					"save_all_failed": "Failed to save all questions.",
+					"pro_required": "Pro plan required for AI generation.",
+					"matrix_complete": "Matrix requirements are complete.",
+					"matrix_generated": "Matrix generated with {{count}} questions.",
+					"matrix_failed": "Failed to generate matrix.",
+					"matrix_deleted": "Matrix deleted."
+				},
+				"ai": {
+					"matrix_title": "Generate matrix questions",
+					"matrix_description": "Automatically generate questions based on the matrix.",
+					"matrix_generating": "Generating matrix...",
+					"matrix_generate": "Generate from matrix",
+					"title": "AI question generator",
+					"fields": {
+						"topic": "Topic",
+						"type": "Question type",
+						"cognitive_level": "Cognitive level",
+						"quantity": "Quantity"
+					},
+					"placeholders": {
+						"topic": "Select a topic"
+					},
+					"generating": "Generating...",
+					"generate": "Generate {{count}} questions",
+					"generated_title": "Generated questions ({{count}})",
+					"save_all": "Save all ({{count}})",
+					"saving_all": "Saving all...",
+					"clear_all": "Clear all"
+				}
+			}
 		},
 		"auth": {
 			"login": {
