@@ -37,9 +37,13 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useMe } from '@/hooks/auth/useMe'
 import { Textarea } from '@/components/ui/textarea'
 import UserAvatar from '@/components/common/UserAvatar'
+import { useTranslation } from 'react-i18next'
+import { useLanguage } from '@/config/i18n'
 
 const SettingsPage = (): React.ReactElement => {
 	const { user } = useMe()
+	const { t } = useTranslation()
+	const { lang, setLanguage } = useLanguage()
 	const [showPassword, setShowPassword] = useState(false)
 	const [showNewPassword, setShowNewPassword] = useState(false)
 	const [showConfirmPassword, setShowConfirmPassword] = useState(false)
@@ -51,9 +55,12 @@ const SettingsPage = (): React.ReactElement => {
 	const [classUpdates, setClassUpdates] = useState(true)
 	const [marketingEmails, setMarketingEmails] = useState(false)
 	const [twoFactorEnabled, setTwoFactorEnabled] = useState(false)
-	const [language, setLanguage] = useState('en')
 	const [theme, setTheme] = useState('system')
 	const [timezone, setTimezone] = useState('UTC')
+
+	const handleLanguageChange = (value: string) => {
+		void setLanguage(value)
+	}
 
 	const handleSaveProfile = () => {
 		console.log('Saving profile...')
@@ -84,29 +91,29 @@ const SettingsPage = (): React.ReactElement => {
 		<div className='space-y-6 p-6 max-w-3xl mx-auto'>
 			{/* Header */}
 			<div>
-				<h1 className='text-3xl font-bold tracking-tight'>Settings</h1>
-				<p className='text-muted-foreground'>
-					Manage your account settings and preferences
-				</p>
+				<h1 className='text-3xl font-bold tracking-tight'>
+					{t('pages.settings.title')}
+				</h1>
+				<p className='text-muted-foreground'>{t('pages.settings.subtitle')}</p>
 			</div>
 
 			<Tabs defaultValue='profile' className='space-y-4'>
 				<TabsList>
 					<TabsTrigger value='profile'>
 						<User className='mr-2 h-4 w-4' />
-						Profile
+						{t('pages.settings.tabs.profile')}
 					</TabsTrigger>
 					<TabsTrigger value='security'>
 						<Shield className='mr-2 h-4 w-4' />
-						Security
+						{t('pages.settings.tabs.security')}
 					</TabsTrigger>
 					<TabsTrigger value='notifications'>
 						<Bell className='mr-2 h-4 w-4' />
-						Notifications
+						{t('pages.settings.tabs.notifications')}
 					</TabsTrigger>
 					<TabsTrigger value='appearance'>
 						<Palette className='mr-2 h-4 w-4' />
-						Appearance
+						{t('pages.settings.tabs.appearance')}
 					</TabsTrigger>
 				</TabsList>
 
@@ -114,9 +121,9 @@ const SettingsPage = (): React.ReactElement => {
 				<TabsContent value='profile' className='space-y-4'>
 					<Card>
 						<CardHeader>
-							<CardTitle>Profile Information</CardTitle>
+							<CardTitle>{t('pages.settings.profile_information')}</CardTitle>
 							<CardDescription>
-								Update your personal information and public profile
+								{t('pages.settings.profile_description')}
 							</CardDescription>
 						</CardHeader>
 						<CardContent className='space-y-6'>
@@ -125,10 +132,10 @@ const SettingsPage = (): React.ReactElement => {
 								<UserAvatar user={user} size='h-16 w-16' />
 								<div>
 									<Button variant='outline' size='sm'>
-										Change Avatar
+										{t('actions.change_avatar')}
 									</Button>
 									<p className='text-sm text-muted-foreground mt-2'>
-										JPG, PNG or GIF. Max size 2MB.
+										{t('pages.settings.avatar_limit')}
 									</p>
 								</div>
 							</div>
@@ -138,43 +145,47 @@ const SettingsPage = (): React.ReactElement => {
 							{/* Personal Information */}
 							<div className='grid gap-4 md:grid-cols-2'>
 								<div className='space-y-2'>
-									<Label htmlFor='firstName'>First Name</Label>
+									<Label htmlFor='firstName'>{t('labels.first_name')}</Label>
 									<Input
 										id='firstName'
 										defaultValue={user?.firstName}
-										placeholder='Enter your first name'
+										placeholder={t('placeholders.first_name_full')}
 									/>
 								</div>
 								<div className='space-y-2'>
-									<Label htmlFor='lastName'>Last Name</Label>
+									<Label htmlFor='lastName'>{t('labels.last_name')}</Label>
 									<Input
 										id='lastName'
 										defaultValue={user?.lastName}
-										placeholder='Enter your last name'
+										placeholder={t('placeholders.last_name_full')}
 									/>
 								</div>
 							</div>
 
 							<div className='space-y-2'>
-								<Label htmlFor='email'>Email Address</Label>
+								<Label htmlFor='email'>{t('labels.email_address')}</Label>
 								<Input
 									id='email'
 									type='email'
 									defaultValue={user?.email}
-									placeholder='Enter your email'
+									placeholder={t('placeholders.email')}
 								/>
 							</div>
 
 							<div className='space-y-2'>
-								<Label htmlFor='phone'>Phone Number</Label>
-								<Input id='phone' type='tel' placeholder='+1 (555) 123-4567' />
+								<Label htmlFor='phone'>{t('labels.phone_number')}</Label>
+								<Input
+									id='phone'
+									type='tel'
+									placeholder={t('placeholders.phone_number')}
+								/>
 							</div>
 
 							<div className='space-y-2'>
-								<Label htmlFor='bio'>Bio</Label>
+								<Label htmlFor='bio'>{t('labels.bio')}</Label>
 								<Textarea
 									id='bio'
-									placeholder='Tell us about yourself'
+									placeholder={t('placeholders.bio')}
 									rows={4}
 								/>
 							</div>
@@ -182,7 +193,7 @@ const SettingsPage = (): React.ReactElement => {
 							<div className='flex justify-end'>
 								<Button onClick={handleSaveProfile}>
 									<Save className='mr-2 h-4 w-4' />
-									Save Changes
+									{t('actions.save_changes')}
 								</Button>
 							</div>
 						</CardContent>
@@ -190,47 +201,47 @@ const SettingsPage = (): React.ReactElement => {
 
 					<Card>
 						<CardHeader>
-							<CardTitle>Preferences</CardTitle>
+							<CardTitle>{t('pages.settings.preferences')}</CardTitle>
 							<CardDescription>
-								Configure your language and timezone preferences
+								{t('pages.settings.preferences_description')}
 							</CardDescription>
 						</CardHeader>
 						<CardContent className='space-y-4'>
 							<div className='space-y-2'>
-								<Label htmlFor='language'>Language</Label>
-								<Select value={language} onValueChange={setLanguage}>
+								<Label htmlFor='language'>{t('labels.language')}</Label>
+								<Select value={lang} onValueChange={handleLanguageChange}>
 									<SelectTrigger>
 										<Globe className='mr-2 h-4 w-4' />
 										<SelectValue />
 									</SelectTrigger>
 									<SelectContent>
-										<SelectItem value='en'>English</SelectItem>
-										<SelectItem value='vi'>Tiếng Việt</SelectItem>
-										<SelectItem value='es'>Español</SelectItem>
-										<SelectItem value='fr'>Français</SelectItem>
+										<SelectItem value='en'>{t('languages.english')}</SelectItem>
+										<SelectItem value='vi'>
+											{t('languages.vietnamese')}
+										</SelectItem>
 									</SelectContent>
 								</Select>
 							</div>
 
 							<div className='space-y-2'>
-								<Label htmlFor='timezone'>Timezone</Label>
+								<Label htmlFor='timezone'>{t('labels.timezone')}</Label>
 								<Select value={timezone} onValueChange={setTimezone}>
 									<SelectTrigger>
 										<SelectValue />
 									</SelectTrigger>
 									<SelectContent>
-										<SelectItem value='UTC'>UTC (GMT+0)</SelectItem>
+										<SelectItem value='UTC'>{t('timezones.utc')}</SelectItem>
 										<SelectItem value='America/New_York'>
-											Eastern Time (GMT-5)
+											{t('timezones.eastern')}
 										</SelectItem>
 										<SelectItem value='America/Los_Angeles'>
-											Pacific Time (GMT-8)
+											{t('timezones.pacific')}
 										</SelectItem>
 										<SelectItem value='Asia/Ho_Chi_Minh'>
-											Ho Chi Minh (GMT+7)
+											{t('timezones.hcm')}
 										</SelectItem>
 										<SelectItem value='Europe/London'>
-											London (GMT+0)
+											{t('timezones.london')}
 										</SelectItem>
 									</SelectContent>
 								</Select>
@@ -239,7 +250,7 @@ const SettingsPage = (): React.ReactElement => {
 							<div className='flex justify-end'>
 								<Button onClick={handleSaveProfile}>
 									<Save className='mr-2 h-4 w-4' />
-									Save Preferences
+									{t('actions.save_preferences')}
 								</Button>
 							</div>
 						</CardContent>
@@ -250,19 +261,21 @@ const SettingsPage = (): React.ReactElement => {
 				<TabsContent value='security' className='space-y-4'>
 					<Card>
 						<CardHeader>
-							<CardTitle>Change Password</CardTitle>
+							<CardTitle>{t('pages.settings.change_password')}</CardTitle>
 							<CardDescription>
-								Ensure your account is using a strong password
+								{t('pages.settings.change_password_description')}
 							</CardDescription>
 						</CardHeader>
 						<CardContent className='space-y-4'>
 							<div className='space-y-2'>
-								<Label htmlFor='currentPassword'>Current Password</Label>
+								<Label htmlFor='currentPassword'>
+									{t('labels.current_password')}
+								</Label>
 								<div className='relative'>
 									<Input
 										id='currentPassword'
 										type={showPassword ? 'text' : 'password'}
-										placeholder='Enter current password'
+										placeholder={t('placeholders.current_password')}
 									/>
 									<Button
 										variant='ghost'
@@ -280,12 +293,12 @@ const SettingsPage = (): React.ReactElement => {
 							</div>
 
 							<div className='space-y-2'>
-								<Label htmlFor='newPassword'>New Password</Label>
+								<Label htmlFor='newPassword'>{t('labels.new_password')}</Label>
 								<div className='relative'>
 									<Input
 										id='newPassword'
 										type={showNewPassword ? 'text' : 'password'}
-										placeholder='Enter new password'
+										placeholder={t('placeholders.new_password')}
 									/>
 									<Button
 										variant='ghost'
@@ -303,12 +316,14 @@ const SettingsPage = (): React.ReactElement => {
 							</div>
 
 							<div className='space-y-2'>
-								<Label htmlFor='confirmPassword'>Confirm New Password</Label>
+								<Label htmlFor='confirmPassword'>
+									{t('labels.confirm_new_password')}
+								</Label>
 								<div className='relative'>
 									<Input
 										id='confirmPassword'
 										type={showConfirmPassword ? 'text' : 'password'}
-										placeholder='Confirm new password'
+										placeholder={t('placeholders.confirm_new_password')}
 									/>
 									<Button
 										variant='ghost'
@@ -328,7 +343,7 @@ const SettingsPage = (): React.ReactElement => {
 							<div className='flex justify-end'>
 								<Button onClick={handleChangePassword}>
 									<Lock className='mr-2 h-4 w-4' />
-									Change Password
+									{t('actions.change_password')}
 								</Button>
 							</div>
 						</CardContent>
@@ -336,9 +351,9 @@ const SettingsPage = (): React.ReactElement => {
 
 					<Card>
 						<CardHeader>
-							<CardTitle>Two-Factor Authentication</CardTitle>
+							<CardTitle>{t('pages.settings.two_factor')}</CardTitle>
 							<CardDescription>
-								Add an extra layer of security to your account
+								{t('pages.settings.two_factor_description')}
 							</CardDescription>
 						</CardHeader>
 						<CardContent className='space-y-4'>
@@ -346,10 +361,12 @@ const SettingsPage = (): React.ReactElement => {
 								<div className='space-y-1'>
 									<div className='flex items-center gap-2'>
 										<Smartphone className='h-4 w-4' />
-										<p className='font-medium'>Authenticator App</p>
+										<p className='font-medium'>
+											{t('labels.authenticator_app')}
+										</p>
 									</div>
 									<p className='text-sm text-muted-foreground'>
-										Use an authenticator app to generate verification codes
+										{t('pages.settings.authenticator_description')}
 									</p>
 								</div>
 								<Switch
@@ -360,28 +377,32 @@ const SettingsPage = (): React.ReactElement => {
 
 							{twoFactorEnabled && (
 								<div className='rounded-lg border p-4 space-y-3'>
-									<p className='text-sm font-medium'>Setup Authenticator App</p>
+									<p className='text-sm font-medium'>
+										{t('pages.settings.authenticator_setup_title')}
+									</p>
 									<p className='text-sm text-muted-foreground'>
-										Scan the QR code below with your authenticator app
+										{t('pages.settings.authenticator_setup_description')}
 									</p>
 									<div className='flex justify-center py-4'>
 										<div className='h-48 w-48 bg-muted rounded-lg flex items-center justify-center'>
 											<p className='text-sm text-muted-foreground'>
-												QR Code Placeholder
+												{t('pages.settings.qr_placeholder')}
 											</p>
 										</div>
 									</div>
 									<div className='space-y-2'>
-										<Label htmlFor='verificationCode'>Verification Code</Label>
+										<Label htmlFor='verificationCode'>
+											{t('labels.verification_code')}
+										</Label>
 										<Input
 											id='verificationCode'
-											placeholder='Enter 6-digit code'
+											placeholder={t('placeholders.verification_code')}
 											maxLength={6}
 										/>
 									</div>
 									<Button className='w-full' onClick={handleEnable2FA}>
 										<Key className='mr-2 h-4 w-4' />
-										Enable Two-Factor Authentication
+										{t('actions.enable_two_factor')}
 									</Button>
 								</div>
 							)}
@@ -390,23 +411,25 @@ const SettingsPage = (): React.ReactElement => {
 
 					<Card>
 						<CardHeader>
-							<CardTitle>Active Sessions</CardTitle>
+							<CardTitle>{t('pages.settings.active_sessions')}</CardTitle>
 							<CardDescription>
-								Manage your active sessions across devices
+								{t('pages.settings.active_sessions_description')}
 							</CardDescription>
 						</CardHeader>
 						<CardContent className='space-y-4'>
 							<div className='rounded-lg border p-4'>
 								<div className='flex items-center justify-between'>
 									<div className='space-y-1'>
-										<p className='font-medium'>Current Session</p>
+										<p className='font-medium'>{t('labels.current_session')}</p>
 										<p className='text-sm text-muted-foreground'>
-											Windows • Chrome • Ho Chi Minh, Vietnam
+											{t('pages.settings.session_location')}
 										</p>
-										<p className='text-xs text-muted-foreground'>Active now</p>
+										<p className='text-xs text-muted-foreground'>
+											{t('pages.settings.active_now')}
+										</p>
 									</div>
 									<Badge variant='outline' className='text-green-600'>
-										Active
+										{t('badges.active')}
 									</Badge>
 								</div>
 							</div>
@@ -414,7 +437,7 @@ const SettingsPage = (): React.ReactElement => {
 							<div className='flex justify-end'>
 								<Button variant='outline'>
 									<RefreshCw className='mr-2 h-4 w-4' />
-									Revoke All Other Sessions
+									{t('actions.revoke_sessions')}
 								</Button>
 							</div>
 						</CardContent>
@@ -425,9 +448,9 @@ const SettingsPage = (): React.ReactElement => {
 				<TabsContent value='notifications' className='space-y-4'>
 					<Card>
 						<CardHeader>
-							<CardTitle>Email Notifications</CardTitle>
+							<CardTitle>{t('pages.settings.email_notifications')}</CardTitle>
 							<CardDescription>
-								Choose what emails you want to receive
+								{t('pages.settings.email_notifications_description')}
 							</CardDescription>
 						</CardHeader>
 						<CardContent className='space-y-4'>
@@ -435,10 +458,12 @@ const SettingsPage = (): React.ReactElement => {
 								<div className='space-y-1'>
 									<div className='flex items-center gap-2'>
 										<Mail className='h-4 w-4' />
-										<p className='font-medium'>Email Notifications</p>
+										<p className='font-medium'>
+											{t('labels.email_notifications')}
+										</p>
 									</div>
 									<p className='text-sm text-muted-foreground'>
-										Receive email updates about your activity
+										{t('pages.settings.email_activity_updates')}
 									</p>
 								</div>
 								<Switch
@@ -451,9 +476,9 @@ const SettingsPage = (): React.ReactElement => {
 
 							<div className='flex items-center justify-between'>
 								<div className='space-y-1'>
-									<p className='font-medium'>Exam Reminders</p>
+									<p className='font-medium'>{t('labels.exam_reminders')}</p>
 									<p className='text-sm text-muted-foreground'>
-										Get notified about upcoming exams
+										{t('pages.settings.exam_reminders_description')}
 									</p>
 								</div>
 								<Switch
@@ -465,9 +490,9 @@ const SettingsPage = (): React.ReactElement => {
 
 							<div className='flex items-center justify-between'>
 								<div className='space-y-1'>
-									<p className='font-medium'>Class Updates</p>
+									<p className='font-medium'>{t('labels.class_updates')}</p>
 									<p className='text-sm text-muted-foreground'>
-										Updates about classes you're enrolled in
+										{t('pages.settings.class_updates_description')}
 									</p>
 								</div>
 								<Switch
@@ -479,9 +504,9 @@ const SettingsPage = (): React.ReactElement => {
 
 							<div className='flex items-center justify-between'>
 								<div className='space-y-1'>
-									<p className='font-medium'>Marketing Emails</p>
+									<p className='font-medium'>{t('labels.marketing_emails')}</p>
 									<p className='text-sm text-muted-foreground'>
-										News, updates, and special offers
+										{t('pages.settings.marketing_emails_description')}
 									</p>
 								</div>
 								<Switch
@@ -495,9 +520,9 @@ const SettingsPage = (): React.ReactElement => {
 
 					<Card>
 						<CardHeader>
-							<CardTitle>Push Notifications</CardTitle>
+							<CardTitle>{t('pages.settings.push_notifications')}</CardTitle>
 							<CardDescription>
-								Manage your push notification preferences
+								{t('pages.settings.push_notifications_description')}
 							</CardDescription>
 						</CardHeader>
 						<CardContent className='space-y-4'>
@@ -505,10 +530,12 @@ const SettingsPage = (): React.ReactElement => {
 								<div className='space-y-1'>
 									<div className='flex items-center gap-2'>
 										<Bell className='h-4 w-4' />
-										<p className='font-medium'>Push Notifications</p>
+										<p className='font-medium'>
+											{t('labels.push_notifications')}
+										</p>
 									</div>
 									<p className='text-sm text-muted-foreground'>
-										Receive push notifications on your devices
+										{t('pages.settings.push_notifications_devices')}
 									</p>
 								</div>
 								<Switch
@@ -522,7 +549,7 @@ const SettingsPage = (): React.ReactElement => {
 					<div className='flex justify-end'>
 						<Button onClick={handleSaveNotifications}>
 							<Save className='mr-2 h-4 w-4' />
-							Save Preferences
+							{t('actions.save_preferences')}
 						</Button>
 					</div>
 				</TabsContent>
@@ -531,25 +558,29 @@ const SettingsPage = (): React.ReactElement => {
 				<TabsContent value='appearance' className='space-y-4'>
 					<Card>
 						<CardHeader>
-							<CardTitle>Theme</CardTitle>
-							<CardDescription>Choose how FrogEdu looks to you</CardDescription>
+							<CardTitle>{t('pages.settings.theme')}</CardTitle>
+							<CardDescription>
+								{t('pages.settings.theme_description')}
+							</CardDescription>
 						</CardHeader>
 						<CardContent className='space-y-4'>
 							<div className='space-y-2'>
-								<Label>Theme Mode</Label>
+								<Label>{t('labels.theme_mode')}</Label>
 								<Select value={theme} onValueChange={setTheme}>
 									<SelectTrigger>
 										<Palette className='mr-2 h-4 w-4' />
 										<SelectValue />
 									</SelectTrigger>
 									<SelectContent>
-										<SelectItem value='light'>Light</SelectItem>
-										<SelectItem value='dark'>Dark</SelectItem>
-										<SelectItem value='system'>System</SelectItem>
+										<SelectItem value='light'>{t('options.light')}</SelectItem>
+										<SelectItem value='dark'>{t('options.dark')}</SelectItem>
+										<SelectItem value='system'>
+											{t('options.system')}
+										</SelectItem>
 									</SelectContent>
 								</Select>
 								<p className='text-sm text-muted-foreground'>
-									Select the theme for the dashboard
+									{t('pages.settings.theme_hint')}
 								</p>
 							</div>
 						</CardContent>
@@ -557,17 +588,17 @@ const SettingsPage = (): React.ReactElement => {
 
 					<Card>
 						<CardHeader>
-							<CardTitle>Display Preferences</CardTitle>
+							<CardTitle>{t('pages.settings.display_preferences')}</CardTitle>
 							<CardDescription>
-								Customize your viewing experience
+								{t('pages.settings.display_preferences_description')}
 							</CardDescription>
 						</CardHeader>
 						<CardContent className='space-y-4'>
 							<div className='flex items-center justify-between'>
 								<div className='space-y-1'>
-									<p className='font-medium'>Compact Mode</p>
+									<p className='font-medium'>{t('labels.compact_mode')}</p>
 									<p className='text-sm text-muted-foreground'>
-										Display more content in less space
+										{t('pages.settings.compact_mode_description')}
 									</p>
 								</div>
 								<Switch />
@@ -575,9 +606,9 @@ const SettingsPage = (): React.ReactElement => {
 
 							<div className='flex items-center justify-between'>
 								<div className='space-y-1'>
-									<p className='font-medium'>Show Animations</p>
+									<p className='font-medium'>{t('labels.show_animations')}</p>
 									<p className='text-sm text-muted-foreground'>
-										Enable smooth transitions and animations
+										{t('pages.settings.show_animations_description')}
 									</p>
 								</div>
 								<Switch defaultChecked />
@@ -588,7 +619,7 @@ const SettingsPage = (): React.ReactElement => {
 					<div className='flex justify-end'>
 						<Button onClick={handleSaveAppearance}>
 							<Save className='mr-2 h-4 w-4' />
-							Save Preferences
+							{t('actions.save_preferences')}
 						</Button>
 					</div>
 				</TabsContent>

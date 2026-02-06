@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import { useForm, type SubmitHandler } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
@@ -24,20 +24,30 @@ import {
 	FormMessage,
 } from '@/components/ui/form'
 import { toast } from 'sonner'
+import { useTranslation } from 'react-i18next'
 
-const confirmEmailSchema = z.object({
-	code: z.string().min(6, { message: 'Verification code must be 6 digits' }),
-})
-
-type ConfirmEmailFormValues = z.infer<typeof confirmEmailSchema>
+type ConfirmEmailFormValues = {
+	code: string
+}
 
 const ConfirmEmailPage = (): React.JSX.Element => {
 	const navigate = useNavigate()
+	const { t } = useTranslation()
 	const [searchParams] = useSearchParams()
 	const email = searchParams.get('email')
 	const [isLoading, setIsLoading] = React.useState(false)
 	const [error, setError] = React.useState<string | null>(null)
 	const [isResending, setIsResending] = React.useState(false)
+
+	const confirmEmailSchema = useMemo(
+		() =>
+			z.object({
+				code: z
+					.string()
+					.min(6, { message: t('forms.auth.validation.code_length') }),
+			}),
+		[t]
+	)
 
 	const form = useForm<ConfirmEmailFormValues>({
 		resolver: zodResolver(confirmEmailSchema),
@@ -66,13 +76,13 @@ const ConfirmEmailPage = (): React.JSX.Element => {
 
 			console.log(result)
 
-			toast.success('Email confirmed successfully! Please sign in.')
+			toast.success(t('messages.email_confirmed_success'))
 			navigate('/login')
 		} catch (err) {
 			const message =
 				err instanceof Error
 					? err.message
-					: 'Failed to confirm email. Please try again.'
+					: t('messages.email_confirmed_failed')
 			setError(message)
 			toast.error(message)
 		} finally {
@@ -88,12 +98,12 @@ const ConfirmEmailPage = (): React.JSX.Element => {
 
 		try {
 			await resendSignUpCode({ username: email })
-			toast.success('Verification code resent to your email')
+			toast.success(t('messages.verification_code_resent'))
 		} catch (err) {
 			const message =
 				err instanceof Error
 					? err.message
-					: 'Failed to resend code. Please try again.'
+					: t('messages.verification_code_resend_failed')
 			setError(message)
 			toast.error(message)
 		} finally {
@@ -127,10 +137,10 @@ const ConfirmEmailPage = (): React.JSX.Element => {
 						</div>
 					</div>
 					<CardTitle className='text-3xl font-bold'>
-						Confirm Your Email
+						{t('pages.auth.confirm.title')}
 					</CardTitle>
 					<CardDescription className='text-base'>
-						We've sent a verification code to{' '}
+						{t('pages.auth.confirm.subtitle')}{' '}
 						<span className='font-semibold'>{email}</span>
 					</CardDescription>
 				</CardHeader>
@@ -142,11 +152,11 @@ const ConfirmEmailPage = (): React.JSX.Element => {
 								name='code'
 								render={({ field }) => (
 									<FormItem>
-										<FormLabel>Verification Code</FormLabel>
+										<FormLabel>{t('labels.verification_code')}</FormLabel>
 										<FormControl>
 											<Input
 												type='text'
-												placeholder='Enter 6-digit code'
+												placeholder={t('placeholders.verification_code')}
 												maxLength={6}
 												{...field}
 											/>
@@ -164,10 +174,10 @@ const ConfirmEmailPage = (): React.JSX.Element => {
 								{isLoading ? (
 									<>
 										<Loader2 className='mr-2 h-4 w-4 animate-spin' />
-										Confirming...
+										{t('actions.confirming')}
 									</>
 								) : (
-									'Confirm Email'
+									t('actions.confirm_email')
 								)}
 							</Button>
 						</form>
@@ -175,7 +185,7 @@ const ConfirmEmailPage = (): React.JSX.Element => {
 				</CardContent>
 				<CardFooter className='flex flex-col space-y-2'>
 					<div className='text-sm text-gray-600 dark:text-gray-400 text-center'>
-						Didn't receive the code?
+						{t('pages.auth.confirm.no_code')}
 					</div>
 					<Button
 						variant='outline'
@@ -186,10 +196,10 @@ const ConfirmEmailPage = (): React.JSX.Element => {
 						{isResending ? (
 							<>
 								<Loader2 className='mr-2 h-4 w-4 animate-spin' />
-								Resending...
+								{t('actions.resending')}
 							</>
 						) : (
-							'Resend Code'
+							t('actions.resend_code')
 						)}
 					</Button>
 				</CardFooter>

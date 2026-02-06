@@ -4,19 +4,28 @@ import { User, CreditCard, Settings, Shield, Receipt } from 'lucide-react'
 import { cn } from '@/utils/shadcn'
 import { Badge } from '@/components/ui/badge'
 import { useSubscription } from '@/hooks/useSubscription'
+import { useTranslation } from 'react-i18next'
 
 interface NavItem {
 	to: string
-	label: string
+	labelKey: string
 	icon: React.ElementType
 }
 
 const navItems: NavItem[] = [
-	{ to: '/profile', label: 'Profile', icon: User },
-	{ to: '/profile/subscription', label: 'Subscription', icon: CreditCard },
-	{ to: '/profile/transactions', label: 'Transactions', icon: Receipt },
-	{ to: '/profile/security', label: 'Security', icon: Shield },
-	{ to: '/profile/settings', label: 'Settings', icon: Settings },
+	{ to: '/profile', labelKey: 'navigation.profile', icon: User },
+	{
+		to: '/profile/subscription',
+		labelKey: 'navigation.subscription',
+		icon: CreditCard,
+	},
+	{
+		to: '/profile/transactions',
+		labelKey: 'navigation.transactions',
+		icon: Receipt,
+	},
+	{ to: '/profile/security', labelKey: 'navigation.security', icon: Shield },
+	{ to: '/profile/settings', labelKey: 'navigation.settings', icon: Settings },
 ]
 
 const UserProfileLayout = ({
@@ -25,6 +34,7 @@ const UserProfileLayout = ({
 	children: React.ReactNode
 }): React.ReactElement => {
 	const { isPro } = useSubscription()
+	const { t } = useTranslation()
 
 	return (
 		<div className='min-h-[calc(100vh-4rem)] flex'>
@@ -46,10 +56,10 @@ const UserProfileLayout = ({
 							}
 						>
 							<item.icon className='h-5 w-5' />
-							<span className='flex-1'>{item.label}</span>
-							{item.label === 'Subscription' && isPro && (
+							<span className='flex-1'>{t(item.labelKey)}</span>
+							{item.labelKey === 'navigation.subscription' && isPro && (
 								<Badge className='bg-gradient-to-r from-amber-500 to-orange-500 text-white text-xs px-1.5 py-0'>
-									Pro
+									{t('badges.pro')}
 								</Badge>
 							)}
 						</NavLink>

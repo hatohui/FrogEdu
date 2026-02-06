@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import { useForm, type SubmitHandler } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
@@ -23,18 +23,28 @@ import {
 } from '@/components/ui/form'
 import { toast } from 'sonner'
 import authService from '@/services/user-microservice/auth.service'
+import { useTranslation } from 'react-i18next'
 
-const forgotPasswordSchema = z.object({
-	email: z.string().email({ message: 'Please enter a valid email address' }),
-})
-
-type ForgotPasswordFormValues = z.infer<typeof forgotPasswordSchema>
+type ForgotPasswordFormValues = {
+	email: string
+}
 
 const ForgotPasswordPage = (): React.JSX.Element => {
 	const navigate = useNavigate()
+	const { t } = useTranslation()
 	const [isLoading, setIsLoading] = React.useState(false)
 	const [isSuccess, setIsSuccess] = React.useState(false)
 	const [submittedEmail, setSubmittedEmail] = React.useState('')
+
+	const forgotPasswordSchema = useMemo(
+		() =>
+			z.object({
+				email: z
+					.string()
+					.email({ message: t('forms.auth.validation.email_invalid') }),
+			}),
+		[t]
+	)
 
 	const form = useForm<ForgotPasswordFormValues>({
 		resolver: zodResolver(forgotPasswordSchema),
@@ -51,17 +61,17 @@ const ForgotPasswordPage = (): React.JSX.Element => {
 			if (response.success) {
 				setSubmittedEmail(data.email)
 				setIsSuccess(true)
-				toast.success('Password reset email sent successfully')
+				toast.success(t('messages.reset_email_sent'))
 			} else {
 				const message =
-					response.error?.detail || 'Failed to send password reset email'
+					response.error?.detail || t('messages.reset_email_failed')
 				toast.error(message)
 			}
 		} catch (err: unknown) {
 			const message =
 				err instanceof Error
 					? err.message
-					: 'Failed to send password reset email. Please try again.'
+					: t('messages.reset_email_failed_generic')
 			toast.error(message)
 		} finally {
 			setIsLoading(false)
@@ -79,17 +89,16 @@ const ForgotPasswordPage = (): React.JSX.Element => {
 							</div>
 						</div>
 						<CardTitle className='text-2xl font-bold'>
-							Check Your Email
+							{t('pages.auth.forgot.check_email_title')}
 						</CardTitle>
 						<CardDescription className='text-base'>
-							We've sent a password reset link to{' '}
+							{t('pages.auth.forgot.check_email_description')}{' '}
 							<span className='font-semibold'>{submittedEmail}</span>
 						</CardDescription>
 					</CardHeader>
 					<CardContent className='space-y-4'>
 						<p className='text-sm text-gray-600 dark:text-gray-400 text-center'>
-							Please check your email and click on the link to reset your
-							password. The link will expire in 1 hour.
+							{t('pages.auth.forgot.check_email_note')}
 						</p>
 						<div className='space-y-2'>
 							<Button
@@ -97,7 +106,7 @@ const ForgotPasswordPage = (): React.JSX.Element => {
 								onClick={() => navigate('/login')}
 								size='lg'
 							>
-								Back to Login
+								{t('actions.back_to_login')}
 							</Button>
 							<Button
 								variant='outline'
@@ -108,7 +117,7 @@ const ForgotPasswordPage = (): React.JSX.Element => {
 								}}
 								size='lg'
 							>
-								Resend Email
+								{t('actions.resend_email')}
 							</Button>
 						</div>
 					</CardContent>
@@ -134,9 +143,11 @@ const ForgotPasswordPage = (): React.JSX.Element => {
 							<Mail className='w-12 h-12 text-green-600 dark:text-green-400' />
 						</div>
 					</div>
-					<CardTitle className='text-3xl font-bold'>Forgot Password?</CardTitle>
+					<CardTitle className='text-3xl font-bold'>
+						{t('pages.auth.forgot.title')}
+					</CardTitle>
 					<CardDescription className='text-base'>
-						No worries! Enter your email and we'll send you reset instructions.
+						{t('pages.auth.forgot.subtitle')}
 					</CardDescription>
 				</CardHeader>
 				<CardContent>
@@ -147,11 +158,11 @@ const ForgotPasswordPage = (): React.JSX.Element => {
 								name='email'
 								render={({ field }) => (
 									<FormItem>
-										<FormLabel>Email</FormLabel>
+										<FormLabel>{t('labels.email')}</FormLabel>
 										<FormControl>
 											<Input
 												type='email'
-												placeholder='Enter your email address'
+												placeholder={t('placeholders.email')}
 												{...field}
 											/>
 										</FormControl>
@@ -164,10 +175,10 @@ const ForgotPasswordPage = (): React.JSX.Element => {
 								{isLoading ? (
 									<>
 										<Loader2 className='mr-2 h-4 w-4 animate-spin' />
-										Sending...
+										{t('actions.sending')}
 									</>
 								) : (
-									'Send Reset Link'
+									t('actions.send_reset_link')
 								)}
 							</Button>
 						</form>
@@ -179,7 +190,7 @@ const ForgotPasswordPage = (): React.JSX.Element => {
 							className='text-sm'
 							onClick={() => navigate('/login')}
 						>
-							Back to Login
+							{t('actions.back_to_login')}
 						</Button>
 					</div>
 				</CardContent>

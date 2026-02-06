@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import { useForm, type SubmitHandler } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
@@ -32,43 +32,66 @@ import {
 	SelectValue,
 } from '@/components/ui/select'
 import { useNavigate } from 'react-router'
+import { useTranslation } from 'react-i18next'
 
-const registerSchema = z
-	.object({
-		email: z.string().email({ message: 'Please enter a valid email address' }),
-		password: z
-			.string()
-			.min(8, { message: 'Password must be at least 8 characters' })
-			.regex(/[A-Z]/, {
-				message: 'Password must contain at least one uppercase letter',
-			})
-			.regex(/[a-z]/, {
-				message: 'Password must contain at least one lowercase letter',
-			})
-			.regex(/[0-9]/, { message: 'Password must contain at least one number' })
-			.regex(/[^A-Za-z0-9]/, {
-				message: 'Password must contain at least one special character',
-			}),
-		confirmPassword: z.string(),
-		role: z.enum(['Teacher', 'Student'], {
-			message: 'Please select your role',
-		}),
-		firstName: z.string().min(1, { message: 'First name is required' }),
-		lastName: z.string().min(1, { message: 'Last name is required' }),
-	})
-	.refine(data => data.password === data.confirmPassword, {
-		message: 'Passwords do not match',
-		path: ['confirmPassword'],
-	})
-
-type RegisterFormValues = z.infer<typeof registerSchema>
+type RegisterFormValues = {
+	email: string
+	password: string
+	confirmPassword: string
+	role: 'Teacher' | 'Student'
+	firstName: string
+	lastName: string
+}
 
 const RegisterPage = (): React.JSX.Element => {
 	const navigate = useNavigate()
+	const { t } = useTranslation()
 	const { register, isLoading, error, clearError } = useRegister()
 	const signInWithGoogle = useAuthStore(state => state.signInWithGoogle)
 	const [showPassword, setShowPassword] = React.useState(false)
 	const [showConfirmPassword, setShowConfirmPassword] = React.useState(false)
+
+	const registerSchema = useMemo(
+		() =>
+			z
+				.object({
+					email: z
+						.string()
+						.email({ message: t('forms.auth.validation.email_invalid') }),
+					password: z
+						.string()
+						.min(8, { message: t('forms.auth.validation.password_min') })
+						.regex(/[A-Z]/, {
+							message: t('forms.auth.validation.password_uppercase'),
+						})
+						.regex(/[a-z]/, {
+							message: t('forms.auth.validation.password_lowercase'),
+						})
+						.regex(/[0-9]/, {
+							message: t('forms.auth.validation.password_number'),
+						})
+						.regex(/[^A-Za-z0-9]/, {
+							message: t('forms.auth.validation.password_special'),
+						}),
+					confirmPassword: z.string(),
+					role: z.enum(['Teacher', 'Student'], {
+						message: t('forms.auth.validation.role_required'),
+					}),
+					firstName: z
+						.string()
+						.min(1, {
+							message: t('forms.auth.validation.first_name_required'),
+						}),
+					lastName: z
+						.string()
+						.min(1, { message: t('forms.auth.validation.last_name_required') }),
+				})
+				.refine(data => data.password === data.confirmPassword, {
+					message: t('forms.auth.validation.passwords_match'),
+					path: ['confirmPassword'],
+				}),
+		[t]
+	)
 
 	const form = useForm<RegisterFormValues>({
 		resolver: zodResolver(registerSchema),
@@ -110,11 +133,17 @@ const RegisterPage = (): React.JSX.Element => {
 				<Card className='w-full max-w-md shadow-xl'>
 					<CardHeader className='space-y-1 text-center'>
 						<div className='flex justify-center mb-4'>
-							<img src='/frog.png' alt='FrogEdu logo' className='w-20 h-20' />
+							<img
+								src='/frog.png'
+								alt={t('common.logo_alt')}
+								className='w-20 h-20'
+							/>
 						</div>
-						<CardTitle className='text-3xl font-bold'>FrogEdu</CardTitle>
+						<CardTitle className='text-3xl font-bold'>
+							{t('common.app_name')}
+						</CardTitle>
 						<CardDescription className='text-base'>
-							Educational Platform for Modern Learning
+							{t('pages.auth.register.subtitle')}
 						</CardDescription>
 					</CardHeader>
 					<CardContent>
@@ -129,9 +158,12 @@ const RegisterPage = (): React.JSX.Element => {
 										name='firstName'
 										render={({ field }) => (
 											<FormItem>
-												<FormLabel>First Name</FormLabel>
+												<FormLabel>{t('labels.first_name')}</FormLabel>
 												<FormControl>
-													<Input placeholder='John' {...field} />
+													<Input
+														placeholder={t('placeholders.first_name')}
+														{...field}
+													/>
 												</FormControl>
 												<FormMessage />
 											</FormItem>
@@ -142,9 +174,12 @@ const RegisterPage = (): React.JSX.Element => {
 										name='lastName'
 										render={({ field }) => (
 											<FormItem>
-												<FormLabel>Last Name</FormLabel>
+												<FormLabel>{t('labels.last_name')}</FormLabel>
 												<FormControl>
-													<Input placeholder='Doe' {...field} />
+													<Input
+														placeholder={t('placeholders.last_name')}
+														{...field}
+													/>
 												</FormControl>
 												<FormMessage />
 											</FormItem>
@@ -157,11 +192,11 @@ const RegisterPage = (): React.JSX.Element => {
 									name='email'
 									render={({ field }) => (
 										<FormItem>
-											<FormLabel>Email</FormLabel>
+											<FormLabel>{t('labels.email')}</FormLabel>
 											<FormControl>
 												<Input
 													type='email'
-													placeholder='Enter your Email'
+													placeholder={t('placeholders.email')}
 													{...field}
 												/>
 											</FormControl>
@@ -175,19 +210,29 @@ const RegisterPage = (): React.JSX.Element => {
 									name='role'
 									render={({ field }) => (
 										<FormItem>
-											<FormLabel>I am a</FormLabel>
+											<FormLabel>
+												{t('pages.auth.register.role_label')}
+											</FormLabel>
 											<Select
 												onValueChange={field.onChange}
 												defaultValue={field.value}
 											>
 												<FormControl>
 													<SelectTrigger>
-														<SelectValue placeholder='Select your role' />
+														<SelectValue
+															placeholder={t(
+																'pages.auth.register.role_placeholder'
+															)}
+														/>
 													</SelectTrigger>
 												</FormControl>
 												<SelectContent>
-													<SelectItem value='Teacher'>Teacher</SelectItem>
-													<SelectItem value='Student'>Student</SelectItem>
+													<SelectItem value='Teacher'>
+														{t('roles.teacher')}
+													</SelectItem>
+													<SelectItem value='Student'>
+														{t('roles.student')}
+													</SelectItem>
 												</SelectContent>
 											</Select>
 											<FormMessage />
@@ -200,12 +245,12 @@ const RegisterPage = (): React.JSX.Element => {
 									name='password'
 									render={({ field }) => (
 										<FormItem>
-											<FormLabel>Password</FormLabel>
+											<FormLabel>{t('labels.password')}</FormLabel>
 											<FormControl>
 												<div className='relative'>
 													<Input
 														type={showPassword ? 'text' : 'password'}
-														placeholder='Enter your Password'
+														placeholder={t('placeholders.password')}
 														{...field}
 														className='pr-10'
 													/>
@@ -234,12 +279,12 @@ const RegisterPage = (): React.JSX.Element => {
 									name='confirmPassword'
 									render={({ field }) => (
 										<FormItem>
-											<FormLabel>Confirm Password</FormLabel>
+											<FormLabel>{t('labels.confirm_password')}</FormLabel>
 											<FormControl>
 												<div className='relative'>
 													<Input
 														type={showConfirmPassword ? 'text' : 'password'}
-														placeholder='Confirm your Password'
+														placeholder={t('placeholders.confirm_password')}
 														{...field}
 														className='pr-10'
 													/>
@@ -279,10 +324,12 @@ const RegisterPage = (): React.JSX.Element => {
 									{isLoading ? (
 										<div className='flex items-center justify-center gap-2'>
 											<Loader2 className='h-4 w-4 animate-spin' />
-											<span>Creating account...</span>
+											<span>{t('actions.creating_account')}</span>
 										</div>
 									) : (
-										<span className='font-medium'>Create Account</span>
+										<span className='font-medium'>
+											{t('actions.create_account')}
+										</span>
 									)}
 								</Button>
 
@@ -292,7 +339,7 @@ const RegisterPage = (): React.JSX.Element => {
 									</div>
 									<div className='relative flex justify-center text-xs uppercase'>
 										<span className='bg-background px-2 text-muted-foreground'>
-											Or continue with
+											{t('pages.auth.register.or_continue_with')}
 										</span>
 									</div>
 								</div>
@@ -331,7 +378,9 @@ const RegisterPage = (): React.JSX.Element => {
 										</svg>
 									)}
 									<span className='font-medium'>
-										{isLoading ? 'Signing up...' : 'Sign up with Google'}
+										{isLoading
+											? t('actions.signing_up')
+											: t('actions.sign_up_google')}
 									</span>
 								</Button>
 							</form>
@@ -339,17 +388,19 @@ const RegisterPage = (): React.JSX.Element => {
 					</CardContent>
 					<CardFooter className='flex flex-col space-y-2'>
 						<div className='text-sm text-center text-muted-foreground'>
-							Already have an account?{' '}
+							{t('pages.auth.register.have_account')}{' '}
 							<Button
 								variant='link'
 								className='p-0 h-auto font-semibold text-green-700 dark:text-green-400'
 								onClick={() => navigate('/login')}
 							>
-								Sign In
+								{t('actions.sign_in')}
 							</Button>
 						</div>
 						<p className='text-xs text-center text-muted-foreground'>
-							© {new Date().getFullYear()} FrogEdu. All Rights Reserved.
+							{t('pages.auth.register.footer', {
+								year: new Date().getFullYear(),
+							})}
 						</p>
 					</CardFooter>
 				</Card>

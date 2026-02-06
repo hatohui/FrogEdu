@@ -36,36 +36,37 @@ interface NavItem {
 }
 
 const adminNavItems: NavItem[] = [
+import { useTranslation } from 'react-i18next'
 	{
 		name: 'Overview',
-		href: '/dashboard',
+	labelKey: string
 		icon: LayoutDashboard,
 	},
 	{
 		name: 'Subjects',
 		href: '/dashboard/subjects',
 		icon: GraduationCap,
-	},
+		labelKey: 'navigation.overview',
 	{
 		name: 'Users',
 		href: '/dashboard/users',
 		icon: Users,
-	},
+		labelKey: 'navigation.subjects',
 	{
 		name: 'Analytics',
 		href: '/dashboard/analytics',
 		icon: BarChart3,
-	},
+		labelKey: 'navigation.users',
 	{
 		name: 'Settings',
 		href: '/dashboard/settings',
 		icon: Settings,
-	},
+		labelKey: 'navigation.analytics',
 ]
 
 const appNavItems: NavItem[] = [
 	{
-		name: 'App Home',
+		labelKey: 'navigation.settings',
 		href: '/app',
 		icon: Home,
 	},
@@ -73,32 +74,32 @@ const appNavItems: NavItem[] = [
 		name: 'My Classes',
 		href: '/app/classes',
 		icon: Users,
-	},
+		labelKey: 'navigation.app_home',
 	{
 		name: 'Content Library',
 		href: '/app/content',
 		icon: BookOpen,
-	},
+		labelKey: 'navigation.my_classes',
 	{
 		name: 'Exams',
 		href: '/app/exams',
 		icon: FileText,
-	},
+		labelKey: 'navigation.content_library',
 	{
 		name: 'Matrices',
 		href: '/app/matrices',
 		icon: Grid3x3,
-	},
+		labelKey: 'navigation.exams',
 	{
 		name: 'Profile',
 		href: '/profile',
 		icon: User,
-	},
+		labelKey: 'navigation.matrices',
 ]
 
 interface AdminSidebarProps {
 	className?: string
-	onClose?: () => void
+		labelKey: 'navigation.profile',
 	collapsed?: boolean
 	onToggleCollapse?: () => void
 }
@@ -112,6 +113,7 @@ const AdminSidebar = ({
 	const location = useLocation()
 	const { user: me, signOut } = useMe()
 
+	const { t } = useTranslation()
 	const handleSignOut = async () => {
 		await signOut()
 		if (onClose) onClose()
@@ -154,7 +156,7 @@ const AdminSidebar = ({
 						<div className='w-10 h-10 rounded-lg bg-primary flex items-center justify-center text-primary-foreground font-bold text-xl transition-transform group-hover:scale-105'>
 							<img
 								src='/frog.png'
-								alt='FrogEdu Logo'
+								alt={t('common.logo_alt')}
 								className='w-full h-full object-contain'
 							/>
 						</div>
@@ -162,10 +164,10 @@ const AdminSidebar = ({
 							<div className='flex flex-col'>
 								<span className='font-bold text-lg text-sidebar-foreground'>
 									FrogEdu
-								</span>
+									{t('common.app_name')}
 								<span className='text-xs text-sidebar-foreground/60'>
 									Admin Dashboard
-								</span>
+									{t('common.admin_dashboard')}
 							</div>
 						)}
 					</Link>
@@ -189,7 +191,7 @@ const AdminSidebar = ({
 							)}
 							{!collapsed && <span className='ml-2'>Collapse</span>}
 						</Button>
-					</div>
+								<span className='ml-2'>{t('actions.collapse')}</span>
 				)}
 
 				{/* Admin Navigation Section */}
@@ -202,7 +204,7 @@ const AdminSidebar = ({
 									<span>Admin Panel</span>
 								</div>
 							</div>
-						)}
+									<span>{t('navigation.admin_panel')}</span>
 
 						{adminNavItems.map(item => {
 							const isActive =
@@ -213,6 +215,7 @@ const AdminSidebar = ({
 
 							const linkContent = (
 								<Link
+							const label = t(item.labelKey)
 									key={item.href}
 									to={item.href}
 									onClick={onClose}
@@ -228,7 +231,7 @@ const AdminSidebar = ({
 									{!collapsed && <span>{item.name}</span>}
 								</Link>
 							)
-
+									{!collapsed && <span>{label}</span>}
 							return collapsed ? (
 								<Tooltip key={item.href}>
 									<TooltipTrigger asChild>{linkContent}</TooltipTrigger>
@@ -236,7 +239,7 @@ const AdminSidebar = ({
 										<p>{item.name}</p>
 									</TooltipContent>
 								</Tooltip>
-							) : (
+										<p>{label}</p>
 								linkContent
 							)
 						})}
@@ -253,7 +256,7 @@ const AdminSidebar = ({
 									<span>Quick Access</span>
 								</div>
 							</div>
-						)}
+									<span>{t('navigation.quick_access')}</span>
 
 						{appNavItems.map(item => {
 							const isActive =
@@ -264,6 +267,7 @@ const AdminSidebar = ({
 
 							const linkContent = (
 								<Link
+							const label = t(item.labelKey)
 									key={item.href}
 									to={item.href}
 									onClick={onClose}
@@ -279,7 +283,7 @@ const AdminSidebar = ({
 									{!collapsed && <span>{item.name}</span>}
 								</Link>
 							)
-
+									{!collapsed && <span>{label}</span>}
 							return collapsed ? (
 								<Tooltip key={item.href}>
 									<TooltipTrigger asChild>{linkContent}</TooltipTrigger>
@@ -287,7 +291,7 @@ const AdminSidebar = ({
 										<p>{item.name}</p>
 									</TooltipContent>
 								</Tooltip>
-							) : (
+										<p>{label}</p>
 								linkContent
 							)
 						})}
@@ -307,13 +311,13 @@ const AdminSidebar = ({
 										{me
 											? [me.firstName, me.lastName].filter(Boolean).join(' ') ||
 												me.email
-											: 'Admin'}
-									</p>
-									<p className='text-xs text-sidebar-foreground/60 truncate'>
-										{me?.role?.name || 'Administrator'}
+										{me
+											? [me.firstName, me.lastName].filter(Boolean).join(' ') ||
+												me.email
+											: t('roles.admin')}
 									</p>
 								</div>
-							</div>
+										{me?.role?.name || t('roles.administrator')}
 
 							<Button
 								variant='outline'
@@ -324,7 +328,7 @@ const AdminSidebar = ({
 								<span>Sign Out</span>
 							</Button>
 						</>
-					) : (
+								<span>{t('actions.sign_out')}</span>
 						<>
 							<Tooltip>
 								<TooltipTrigger asChild>
@@ -359,7 +363,7 @@ const AdminSidebar = ({
 									<p>Sign Out</p>
 								</TooltipContent>
 							</Tooltip>
-						</>
+									<p>{t('actions.sign_out')}</p>
 					)}
 				</div>
 			</aside>

@@ -5,13 +5,16 @@ import { Skeleton } from '@/components/ui/skeleton'
 import ProfileForm from '@/components/common/ProfileForm'
 import { Badge } from '@/components/ui/badge'
 import { useMe } from '@/hooks/auth/useMe'
+import { useTranslation } from 'react-i18next'
 
 const ProfilePage = (): React.ReactElement => {
 	const { user, isLoading, error } = useMe()
+	const { t, i18n } = useTranslation()
+	const locale = i18n.language === 'vi' ? 'vi-VN' : 'en-US'
 
 	const formatDate = (dateString?: string) => {
-		if (!dateString) return 'Never'
-		return new Date(dateString).toLocaleDateString('vi-VN')
+		if (!dateString) return t('common.never')
+		return new Date(dateString).toLocaleDateString(locale)
 	}
 
 	if (isLoading) {
@@ -29,23 +32,21 @@ const ProfilePage = (): React.ReactElement => {
 				<div className='space-y-2'>
 					<h1 className='text-3xl font-bold tracking-tight flex items-center space-x-2'>
 						<User className='h-8 w-8' />
-						<span>My Profile</span>
+						<span>{t('pages.profile.title')}</span>
 					</h1>
-					<p className='text-muted-foreground'>
-						Manage your account settings and preferences.
-					</p>
+					<p className='text-muted-foreground'>{t('pages.profile.subtitle')}</p>
 				</div>
 
 				<Card>
 					<CardHeader>
-						<CardTitle>Profile Information</CardTitle>
+						<CardTitle>{t('pages.profile.profile_information')}</CardTitle>
 					</CardHeader>
 					<CardContent className='space-y-4'>
 						<div className='flex items-center space-x-4'>
 							<div>
-								<h3 className='text-xl font-semibold'>User</h3>
+								<h3 className='text-xl font-semibold'>{t('roles.user')}</h3>
 								<p className='text-sm text-muted-foreground'>
-									Unable to load profile from server
+									{t('pages.profile.unable_to_load')}
 								</p>
 							</div>
 						</div>
@@ -61,7 +62,7 @@ const ProfilePage = (): React.ReactElement => {
 			<div className='space-y-2'>
 				<h1 className='text-3xl font-bold tracking-tight flex items-center space-x-2'>
 					<User className='h-8 w-8' />
-					<span>My Profile</span>
+					<span>{t('pages.profile.title')}</span>
 				</h1>
 			</div>
 
@@ -73,7 +74,7 @@ const ProfilePage = (): React.ReactElement => {
 				<CardHeader>
 					<CardTitle className='flex items-center gap-2'>
 						<Shield className='h-5 w-5' />
-						Account Information
+						{t('pages.profile.account_information')}
 					</CardTitle>
 				</CardHeader>
 				<CardContent className='space-y-4'>
@@ -81,15 +82,19 @@ const ProfilePage = (): React.ReactElement => {
 						<div className='flex items-center gap-3'>
 							<Mail className='h-5 w-5 text-muted-foreground' />
 							<div>
-								<p className='text-sm text-muted-foreground'>Email Status</p>
+								<p className='text-sm text-muted-foreground'>
+									{t('pages.profile.email_status')}
+								</p>
 								<div className='flex items-center gap-2'>
 									<span>{user.email}</span>
 									{user.isEmailVerified ? (
 										<Badge variant='default' className='bg-green-600'>
-											Verified
+											{t('badges.verified')}
 										</Badge>
 									) : (
-										<Badge variant='destructive'>Not Verified</Badge>
+										<Badge variant='destructive'>
+											{t('badges.not_verified')}
+										</Badge>
 									)}
 								</div>
 							</div>
@@ -97,19 +102,29 @@ const ProfilePage = (): React.ReactElement => {
 						<div className='flex items-center gap-3'>
 							<Clock className='h-5 w-5 text-muted-foreground' />
 							<div>
-								<p className='text-sm text-muted-foreground'>Member Since</p>
+								<p className='text-sm text-muted-foreground'>
+									{t('pages.profile.member_since')}
+								</p>
 								<p>{formatDate(user.createdAt)}</p>
 							</div>
 						</div>
 					</div>
 					<div className='grid gap-4 sm:grid-cols-2'>
 						<div>
-							<p className='text-sm text-muted-foreground'>Account Created</p>
+							<p className='text-sm text-muted-foreground'>
+								{t('pages.profile.account_created')}
+							</p>
 							<p>{formatDate(user.createdAt)}</p>
 						</div>
 						<div>
-							<p className='text-sm text-muted-foreground'>Last Updated</p>
-							<p>{user.updatedAt ? formatDate(user.updatedAt) : 'Never'}</p>
+							<p className='text-sm text-muted-foreground'>
+								{t('pages.profile.last_updated')}
+							</p>
+							<p>
+								{user.updatedAt
+									? formatDate(user.updatedAt)
+									: t('common.never')}
+							</p>
 						</div>
 					</div>
 				</CardContent>

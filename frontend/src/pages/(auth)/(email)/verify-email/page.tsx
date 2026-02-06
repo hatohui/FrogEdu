@@ -11,9 +11,11 @@ import {
 } from '@/components/ui/card'
 import { toast } from 'sonner'
 import authService from '@/services/user-microservice/auth.service'
+import { useTranslation } from 'react-i18next'
 
 const VerifyEmailPage = (): React.JSX.Element => {
 	const navigate = useNavigate()
+	const { t } = useTranslation()
 	const [searchParams] = useSearchParams()
 	const token = searchParams.get('token')
 	const [isVerifying, setIsVerifying] = React.useState(true)
@@ -22,7 +24,7 @@ const VerifyEmailPage = (): React.JSX.Element => {
 
 	React.useEffect(() => {
 		if (!token) {
-			setError('No verification token provided')
+			setError(t('pages.auth.verify.no_token'))
 			setIsVerifying(false)
 			return
 		}
@@ -36,9 +38,10 @@ const VerifyEmailPage = (): React.JSX.Element => {
 				const response = await authService.verifyEmail(token)
 				if (response.success) {
 					setIsSuccess(true)
-					toast.success('Email verified successfully!')
+					toast.success(t('messages.email_verified_success'))
 				} else {
-					const message = response.error?.detail || 'Failed to verify email'
+					const message =
+						response.error?.detail || t('messages.email_verified_failed')
 					setError(message)
 					toast.error(message)
 				}
@@ -46,7 +49,7 @@ const VerifyEmailPage = (): React.JSX.Element => {
 				const message =
 					err instanceof Error
 						? err.message
-						: 'Failed to verify email. The link may have expired.'
+						: t('messages.email_verified_failed_generic')
 				setError(message)
 				toast.error(message)
 			} finally {
@@ -66,9 +69,11 @@ const VerifyEmailPage = (): React.JSX.Element => {
 							<Loader2 className='h-16 w-16 animate-spin text-green-600' />
 						</div>
 						<CardTitle className='text-2xl font-bold'>
-							Verifying Your Email
+							{t('pages.auth.verify.verifying_title')}
 						</CardTitle>
-						<CardDescription>Please wait...</CardDescription>
+						<CardDescription>
+							{t('pages.auth.verify.verifying_note')}
+						</CardDescription>
 					</CardHeader>
 				</Card>
 			</div>
@@ -91,12 +96,14 @@ const VerifyEmailPage = (): React.JSX.Element => {
 						)}
 					</div>
 					<CardTitle className='text-2xl font-bold'>
-						{isSuccess ? 'Email Verified!' : 'Verification Failed'}
+						{isSuccess
+							? t('pages.auth.verify.success_title')
+							: t('pages.auth.verify.failed_title')}
 					</CardTitle>
 					<CardDescription className='text-base'>
 						{isSuccess
-							? 'Your email has been successfully verified. You can now sign in to your account.'
-							: error || 'Unable to verify your email. Please try again.'}
+							? t('pages.auth.verify.success_description')
+							: error || t('pages.auth.verify.failed_description')}
 					</CardDescription>
 				</CardHeader>
 				<CardContent className='space-y-4'>
@@ -106,7 +113,7 @@ const VerifyEmailPage = (): React.JSX.Element => {
 							onClick={() => navigate('/login')}
 							size='lg'
 						>
-							Go to Login
+							{t('actions.go_to_login')}
 						</Button>
 					) : (
 						<div className='space-y-2'>
@@ -115,7 +122,7 @@ const VerifyEmailPage = (): React.JSX.Element => {
 								onClick={() => navigate('/register')}
 								size='lg'
 							>
-								Back to Register
+								{t('actions.back_to_register')}
 							</Button>
 							<Button
 								variant='outline'
@@ -123,7 +130,7 @@ const VerifyEmailPage = (): React.JSX.Element => {
 								onClick={() => navigate('/')}
 								size='lg'
 							>
-								Go to Home
+								{t('actions.go_to_home')}
 							</Button>
 						</div>
 					)}

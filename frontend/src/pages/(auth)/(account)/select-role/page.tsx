@@ -11,9 +11,11 @@ import {
 } from '@/components/ui/card'
 import { GraduationCap, Users } from 'lucide-react'
 import { getCurrentUser, fetchAuthSession } from 'aws-amplify/auth'
+import { useTranslation } from 'react-i18next'
 
 const SelectRolePage = (): React.JSX.Element => {
 	const navigate = useNavigate()
+	const { t } = useTranslation()
 	const { user, isAuthenticated } = useMe()
 	const [isSubmitting, setIsSubmitting] = React.useState(false)
 	const [error, setError] = React.useState<string | null>(null)
@@ -89,7 +91,7 @@ const SelectRolePage = (): React.JSX.Element => {
 			window.location.href = '/app'
 		} catch (err) {
 			console.error('Error creating user profile:', err)
-			setError('Failed to set up your profile. Please try again.')
+			setError(t('pages.auth.select_role.profile_setup_failed'))
 			setIsSubmitting(false)
 		}
 	}
@@ -99,13 +101,17 @@ const SelectRolePage = (): React.JSX.Element => {
 			<Card className='w-full max-w-2xl shadow-xl'>
 				<CardHeader className='text-center space-y-2'>
 					<div className='flex justify-center mb-4'>
-						<img src='/frog.png' alt='FrogEdu logo' className='w-20 h-20' />
+						<img
+							src='/frog.png'
+							alt={t('common.logo_alt')}
+							className='w-20 h-20'
+						/>
 					</div>
 					<CardTitle className='text-3xl font-bold'>
-						Welcome to FrogEdu!
+						{t('pages.auth.select_role.title')}
 					</CardTitle>
 					<CardDescription className='text-base'>
-						Please select your role to continue
+						{t('pages.auth.select_role.subtitle')}
 					</CardDescription>
 				</CardHeader>
 				<CardContent className='space-y-6'>
@@ -128,10 +134,11 @@ const SelectRolePage = (): React.JSX.Element => {
 										<GraduationCap className='w-10 h-10 text-green-700 dark:text-green-400' />
 									</div>
 									<div className='text-center'>
-										<h3 className='text-xl font-semibold mb-2'>Teacher</h3>
+										<h3 className='text-xl font-semibold mb-2'>
+											{t('roles.teacher')}
+										</h3>
 										<p className='text-sm text-muted-foreground'>
-											Create and manage classes, assign homework, and track
-											student progress
+											{t('pages.auth.select_role.teacher_description')}
 										</p>
 									</div>
 								</CardContent>
@@ -150,10 +157,11 @@ const SelectRolePage = (): React.JSX.Element => {
 										<Users className='w-10 h-10 text-blue-700 dark:text-blue-400' />
 									</div>
 									<div className='text-center'>
-										<h3 className='text-xl font-semibold mb-2'>Student</h3>
+										<h3 className='text-xl font-semibold mb-2'>
+											{t('roles.student')}
+										</h3>
 										<p className='text-sm text-muted-foreground'>
-											Join classes, complete assignments, and learn with AI
-											assistance
+											{t('pages.auth.select_role.student_description')}
 										</p>
 									</div>
 								</CardContent>
@@ -162,7 +170,7 @@ const SelectRolePage = (): React.JSX.Element => {
 					</div>
 
 					<div className='text-center text-sm text-muted-foreground'>
-						You can change your role later in settings
+						{t('pages.auth.select_role.footer_note')}
 					</div>
 				</CardContent>
 			</Card>

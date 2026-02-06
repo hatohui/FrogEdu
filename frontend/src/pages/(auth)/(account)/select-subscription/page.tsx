@@ -15,9 +15,11 @@ import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Check, Sparkles, Crown, Zap, ArrowRight } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 
 const SelectSubscriptionPage = (): React.JSX.Element => {
 	const navigate = useNavigate()
+	const { t } = useTranslation()
 	const { user, isAuthenticated, isLoading: isLoadingUser } = useMe()
 	const { tiers, isLoadingTiers, subscribeToPro, isSubscribing, isPro } =
 		useSubscription()
@@ -77,22 +79,22 @@ const SelectSubscriptionPage = (): React.JSX.Element => {
 	const proTier = tiers?.find(t => t.name.toLowerCase() === 'pro')
 
 	const freeFeatures = [
-		'Create up to 3 classes',
-		'Basic exam generation',
-		'5 AI-generated exams per month',
-		'Access to digital textbooks',
-		'Community support',
+		'create_classes',
+		'basic_exam_generation',
+		'ai_exams_limit',
+		'digital_textbooks',
+		'community_support',
 	]
 
 	const proFeatures = [
-		'Unlimited classes',
-		'Advanced exam generation',
-		'Unlimited AI-generated exams',
-		'Priority access to new features',
-		'Advanced analytics & reports',
-		'Export exams to PDF/Word',
-		'Priority customer support',
-		'Custom branding options',
+		'unlimited_classes',
+		'advanced_exam_generation',
+		'unlimited_ai_exams',
+		'priority_features',
+		'advanced_analytics',
+		'export_formats',
+		'priority_support',
+		'custom_branding',
 	]
 
 	return (
@@ -101,14 +103,19 @@ const SelectSubscriptionPage = (): React.JSX.Element => {
 				<Card className='shadow-xl'>
 					<CardHeader className='text-center space-y-2'>
 						<div className='flex justify-center mb-4'>
-							<img src='/frog.png' alt='FrogEdu logo' className='w-20 h-20' />
+							<img
+								src='/frog.png'
+								alt={t('common.logo_alt')}
+								className='w-20 h-20'
+							/>
 						</div>
 						<CardTitle className='text-3xl font-bold'>
-							Choose Your Plan
+							{t('pages.auth.subscription.title')}
 						</CardTitle>
 						<CardDescription className='text-base max-w-lg mx-auto'>
-							Welcome{user?.firstName ? `, ${user.firstName}` : ''}! Select a
-							subscription plan to unlock the full potential of FrogEdu.
+							{t('pages.auth.subscription.subtitle', {
+								name: user?.firstName || '',
+							})}
 						</CardDescription>
 					</CardHeader>
 					<CardContent className='space-y-6'>
@@ -122,19 +129,21 @@ const SelectSubscriptionPage = (): React.JSX.Element => {
 									<div className='flex items-center justify-between'>
 										<Badge variant='secondary'>
 											<Zap className='w-3 h-3 mr-1' />
-											Free
+											{t('badges.free')}
 										</Badge>
 									</div>
-									<CardTitle className='text-2xl'>Free Plan</CardTitle>
+									<CardTitle className='text-2xl'>
+										{t('pages.auth.subscription.free_title')}
+									</CardTitle>
 									<CardDescription>
-										Perfect for getting started with FrogEdu
+										{t('pages.auth.subscription.free_description')}
 									</CardDescription>
 								</CardHeader>
 								<CardContent className='space-y-4'>
 									<div className='text-3xl font-bold'>
 										{freeTier?.currency === 'VND' ? '₫' : '$'}0
 										<span className='text-base font-normal text-muted-foreground'>
-											/forever
+											/{t('pages.auth.subscription.forever')}
 										</span>
 									</div>
 									<Separator />
@@ -142,7 +151,11 @@ const SelectSubscriptionPage = (): React.JSX.Element => {
 										{freeFeatures.map((feature, index) => (
 											<li key={index} className='flex items-start gap-2'>
 												<Check className='w-5 h-5 text-green-500 shrink-0 mt-0.5' />
-												<span className='text-sm'>{feature}</span>
+												<span className='text-sm'>
+													{t(
+														`pages.auth.subscription.features.free.${feature}`
+													)}
+												</span>
 											</li>
 										))}
 									</ul>
@@ -156,7 +169,7 @@ const SelectSubscriptionPage = (): React.JSX.Element => {
 											handleSelectFree()
 										}}
 									>
-										Continue with Free
+										{t('actions.continue_free')}
 									</Button>
 								</CardFooter>
 							</Card>
@@ -169,19 +182,21 @@ const SelectSubscriptionPage = (): React.JSX.Element => {
 								<div className='absolute -top-3 left-1/2 -translate-x-1/2'>
 									<Badge className='bg-primary text-primary-foreground'>
 										<Sparkles className='w-3 h-3 mr-1' />
-										Recommended
+										{t('badges.recommended')}
 									</Badge>
 								</div>
 								<CardHeader className='pt-6'>
 									<div className='flex items-center justify-between'>
 										<Badge variant='default'>
 											<Crown className='w-3 h-3 mr-1' />
-											Pro
+											{t('badges.pro')}
 										</Badge>
 									</div>
-									<CardTitle className='text-2xl'>Pro Plan</CardTitle>
+									<CardTitle className='text-2xl'>
+										{t('pages.auth.subscription.pro_title')}
+									</CardTitle>
 									<CardDescription>
-										For serious educators who want more
+										{t('pages.auth.subscription.pro_description')}
 									</CardDescription>
 								</CardHeader>
 								<CardContent className='space-y-4'>
@@ -189,7 +204,7 @@ const SelectSubscriptionPage = (): React.JSX.Element => {
 										{proTier?.currency === 'VND' ? '₫' : '$'}
 										{proTier?.price?.toLocaleString() || '99,000'}
 										<span className='text-base font-normal text-muted-foreground'>
-											/{proTier?.durationInDays || 30} days
+											/{proTier?.durationInDays || 30} {t('common.days')}
 										</span>
 									</div>
 									<Separator />
@@ -197,7 +212,9 @@ const SelectSubscriptionPage = (): React.JSX.Element => {
 										{proFeatures.map((feature, index) => (
 											<li key={index} className='flex items-start gap-2'>
 												<Check className='w-5 h-5 text-primary shrink-0 mt-0.5' />
-												<span className='text-sm'>{feature}</span>
+												<span className='text-sm'>
+													{t(`pages.auth.subscription.features.pro.${feature}`)}
+												</span>
 											</li>
 										))}
 									</ul>
@@ -212,10 +229,10 @@ const SelectSubscriptionPage = (): React.JSX.Element => {
 										disabled={isSubscribing}
 									>
 										{isSubscribing ? (
-											'Processing...'
+											t('actions.processing')
 										) : (
 											<>
-												Upgrade to Pro
+												{t('actions.upgrade_to_pro')}
 												<ArrowRight className='w-4 h-4 ml-2' />
 											</>
 										)}
@@ -225,17 +242,14 @@ const SelectSubscriptionPage = (): React.JSX.Element => {
 						</div>
 
 						<div className='text-center text-sm text-muted-foreground'>
-							<p>
-								You can upgrade or change your plan anytime from your account
-								settings.
-							</p>
+							<p>{t('pages.auth.subscription.footer_note')}</p>
 							<p className='mt-2'>
 								<button
 									type='button'
 									onClick={handleSkip}
 									className='text-primary hover:underline'
 								>
-									Skip for now and decide later
+									{t('actions.skip_for_now')}
 								</button>
 							</p>
 						</div>

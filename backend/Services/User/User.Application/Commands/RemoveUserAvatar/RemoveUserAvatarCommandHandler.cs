@@ -36,13 +36,11 @@ public sealed class RemoveUserAvatarCommandHandler
             return Result.Failure("User not found");
         }
 
-        // If user has no avatar, just return success
         if (string.IsNullOrEmpty(user.AvatarUrl))
         {
             return Result.Success();
         }
 
-        // Delete the asset from storage
         var deleteAssetCommand = new DeleteAssetCommand(user.AvatarUrl);
         var deleteResult = await _mediator.Send(deleteAssetCommand, cancellationToken);
 

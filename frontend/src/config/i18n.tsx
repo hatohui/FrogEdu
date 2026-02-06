@@ -9,7 +9,7 @@ const loadLanguage = async (lng: string) => {
 }
 
 export const initI18n = async () => {
-	const supportedLngs = ['en', 'vi', 'th', 'zh']
+	const supportedLngs = ['en', 'vi']
 
 	const urlParams = new URLSearchParams(window.location.search)
 	const langFromQuery = urlParams.get('lang')
@@ -62,7 +62,7 @@ export const initI18n = async () => {
 }
 
 export const changeLanguage = async (lng: string) => {
-	const supportedLngs = ['en', 'vi', 'th', 'zh']
+	const supportedLngs = ['en', 'vi']
 	if (!supportedLngs.includes(lng)) return
 
 	const translation = await loadLanguage(lng)

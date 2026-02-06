@@ -20,7 +20,558 @@
 	"common": {
 		"back": "Back",
 		"confirm": "Confirm",
-		"cancel": "Cancel"
+		"cancel": "Cancel",
+		"app_name": "FrogEdu",
+		"learning_platform": "Learning Platform",
+		"admin_dashboard": "Admin Dashboard",
+		"logo_alt": "FrogEdu Logo",
+		"never": "Never",
+		"loading": "Loading...",
+		"days": "days"
+	},
+	"navigation": {
+		"home": "Home",
+		"about": "About",
+		"dashboard": "Dashboard",
+		"app": "App",
+		"exams": "Exams",
+		"classes": "Classes",
+		"matrices": "Matrices",
+		"profile": "Profile",
+		"settings": "Settings",
+		"subscription": "Subscription",
+		"transactions": "Transactions",
+		"security": "Security",
+		"overview": "Overview",
+		"subjects": "Subjects",
+		"users": "Users",
+		"analytics": "Analytics",
+		"app_home": "App Home",
+		"my_classes": "My Classes",
+		"content_library": "Content Library",
+		"quick_access": "Quick Access",
+		"admin_panel": "Admin Panel"
+	},
+	"roles": {
+		"admin": "Admin",
+		"teacher": "Teacher",
+		"student": "Student",
+		"user": "User",
+		"administrator": "Administrator"
+	},
+	"badges": {
+		"pro": "Pro",
+		"free": "Free",
+		"upgrade": "Upgrade",
+		"verified": "Verified",
+		"not_verified": "Not Verified",
+		"unverified": "Unverified",
+		"active": "Active"
+	},
+	"actions": {
+		"logout": "Logout",
+		"sign_out": "Sign Out",
+		"login": "Login",
+		"sign_in": "Sign In",
+		"signing_in": "Signing in...",
+		"sign_in_google": "Sign in with Google",
+		"creating_account": "Creating account...",
+		"signing_up": "Signing up...",
+		"sign_up_google": "Sign up with Google",
+		"collapse": "Collapse",
+		"switch_to_dark": "Switch to dark mode",
+		"switch_to_light": "Switch to light mode",
+		"save_changes": "Save Changes",
+		"save_preferences": "Save Preferences",
+		"change_avatar": "Change Avatar",
+		"remove_avatar": "Remove Avatar",
+		"verify_email": "Verify Email",
+		"change_password": "Change Password",
+		"enable_two_factor": "Enable Two-Factor Authentication",
+		"revoke_sessions": "Revoke All Other Sessions",
+		"saving": "Saving...",
+		"sending": "Sending...",
+		"send_reset_link": "Send Reset Link",
+		"reset_password": "Reset Password",
+		"resetting_password": "Resetting password...",
+		"confirm_email": "Confirm Email",
+		"confirming": "Confirming...",
+		"resending": "Resending...",
+		"resend_code": "Resend Code",
+		"resend_email": "Resend Email",
+		"back_to_login": "Back to Login",
+		"back_to_register": "Back to Register",
+		"go_to_home": "Go to Home",
+		"go_to_login": "Go to Login",
+		"continue_free": "Continue with Free",
+		"upgrade_to_pro": "Upgrade to Pro",
+		"processing": "Processing...",
+		"skip_for_now": "Skip for now and decide later",
+		"subscribe": "Subscribe",
+		"back_to_home": "Back to Home"
+	},
+	"messages": {
+		"sign_out_success": "Successfully signed out",
+		"profile_updated": "Profile updated successfully",
+		"profile_update_failed": "Failed to update profile",
+		"verification_email_sent": "Verification email sent! Please check your inbox.",
+		"verification_email_failed": "Failed to send verification email",
+		"email_immutable": "Email cannot be changed",
+		"reset_email_sent": "Password reset email sent successfully",
+		"reset_email_failed": "Failed to send password reset email",
+		"reset_email_failed_generic": "Failed to send password reset email. Please try again.",
+		"reset_token_invalid": "Invalid or missing reset token",
+		"password_reset_success": "Password reset successfully!",
+		"password_reset_failed": "Failed to reset password. The link may have expired.",
+		"email_verified_success": "Email verified successfully!",
+		"email_verified_failed": "Failed to verify email",
+		"email_verified_failed_generic": "Failed to verify email. The link may have expired.",
+		"email_confirmed_success": "Email confirmed successfully! Please sign in.",
+		"email_confirmed_failed": "Failed to confirm email. Please try again.",
+		"verification_code_resent": "Verification code resent to your email",
+		"verification_code_resend_failed": "Failed to resend code. Please try again."
+	},
+	"languages": {
+		"english": "English",
+		"vietnamese": "Vietnamese"
+	},
+	"options": {
+		"light": "Light",
+		"dark": "Dark",
+		"system": "System"
+	},
+	"labels": {
+		"theme": "Theme",
+		"language": "Language",
+		"email": "Email",
+		"role": "Role",
+		"first_name": "First Name",
+		"last_name": "Last Name",
+		"email_address": "Email Address",
+		"phone_number": "Phone Number",
+		"bio": "Bio",
+		"timezone": "Timezone",
+		"email_notifications": "Email notifications",
+		"push_notifications": "Push notifications",
+		"profile_picture": "Profile Picture",
+		"password": "Password",
+		"confirm_password": "Confirm Password",
+		"current_password": "Current Password",
+		"new_password": "New Password",
+		"confirm_new_password": "Confirm New Password",
+		"verification_code": "Verification Code",
+		"theme_mode": "Theme Mode",
+		"compact_mode": "Compact Mode",
+		"show_animations": "Show Animations",
+		"exam_reminders": "Exam Reminders",
+		"class_updates": "Class Updates",
+		"marketing_emails": "Marketing Emails",
+		"authenticator_app": "Authenticator App",
+		"current_session": "Current Session"
+	},
+	"placeholders": {
+		"first_name": "John",
+		"last_name": "Doe",
+		"first_name_full": "Enter your first name",
+		"last_name_full": "Enter your last name",
+		"email": "Enter your email",
+		"password": "Enter your password",
+		"confirm_password": "Confirm your password",
+		"phone_number": "+1 (555) 123-4567",
+		"bio": "Tell us about yourself",
+		"current_password": "Enter current password",
+		"new_password": "Enter new password",
+		"confirm_new_password": "Confirm new password",
+		"verification_code": "Enter 6-digit code"
+	},
+	"forms": {
+		"profile": {
+			"validation": {
+				"first_name_required": "First name is required",
+				"first_name_max": "First name must not exceed 100 characters",
+				"last_name_required": "Last name is required",
+				"last_name_max": "Last name must not exceed 100 characters"
+			}
+		},
+		"auth": {
+			"validation": {
+				"email_invalid": "Please enter a valid email address",
+				"password_min": "Password must be at least 8 characters",
+				"password_uppercase": "Password must contain at least one uppercase letter",
+				"password_lowercase": "Password must contain at least one lowercase letter",
+				"password_number": "Password must contain at least one number",
+				"password_special": "Password must contain at least one special character",
+				"role_required": "Please select your role",
+				"first_name_required": "First name is required",
+				"last_name_required": "Last name is required",
+				"passwords_match": "Passwords do not match",
+				"code_length": "Verification code must be 6 digits"
+			}
+		}
+	},
+	"pages": {
+		"profile": {
+			"title": "My Profile",
+			"subtitle": "Manage your account settings and preferences.",
+			"profile_information": "Profile Information",
+			"profile_description": "Update your personal information and avatar.",
+			"account_information": "Account Information",
+			"unable_to_load": "Unable to load profile from server",
+			"email_status": "Email Status",
+			"member_since": "Member Since",
+			"account_created": "Account Created",
+			"last_updated": "Last Updated",
+			"avatar_instructions": "Click the camera icon to upload a new photo.",
+			"avatar_formats": "JPG, PNG, GIF up to 5MB"
+		},
+		"settings": {
+			"title": "Settings",
+			"subtitle": "Manage your account settings and preferences",
+			"tabs": {
+				"profile": "Profile",
+				"security": "Security",
+				"notifications": "Notifications",
+				"appearance": "Appearance"
+			},
+			"profile_information": "Profile Information",
+			"profile_description": "Update your personal information and public profile",
+			"avatar_limit": "JPG, PNG or GIF. Max size 2MB.",
+			"preferences": "Preferences",
+			"preferences_description": "Configure your language and timezone preferences",
+			"change_password": "Change Password",
+			"change_password_description": "Ensure your account is using a strong password",
+			"two_factor": "Two-Factor Authentication",
+			"two_factor_description": "Add an extra layer of security to your account",
+			"authenticator_description": "Use an authenticator app to generate verification codes",
+			"authenticator_setup_title": "Setup Authenticator App",
+			"authenticator_setup_description": "Scan the QR code below with your authenticator app",
+			"qr_placeholder": "QR Code Placeholder",
+			"active_sessions": "Active Sessions",
+			"active_sessions_description": "Manage your active sessions across devices",
+			"session_location": "Windows • Chrome • Ho Chi Minh, Vietnam",
+			"active_now": "Active now",
+			"email_notifications": "Email Notifications",
+			"email_notifications_description": "Choose what emails you want to receive",
+			"email_activity_updates": "Receive email updates about your activity",
+			"exam_reminders_description": "Get notified about upcoming exams",
+			"class_updates_description": "Updates about classes you're enrolled in",
+			"marketing_emails_description": "News, updates, and special offers",
+			"push_notifications": "Push Notifications",
+			"push_notifications_description": "Manage your push notification preferences",
+			"push_notifications_devices": "Receive push notifications on your devices",
+			"theme": "Theme",
+			"theme_description": "Choose how FrogEdu looks to you",
+			"theme_hint": "Select the theme for the dashboard",
+			"display_preferences": "Display Preferences",
+			"display_preferences_description": "Customize your viewing experience",
+			"compact_mode_description": "Display more content in less space",
+			"show_animations_description": "Enable smooth transitions and animations",
+			"appearance": "Appearance",
+			"appearance_description": "Customize how the app looks",
+			"notifications": "Notifications",
+			"notifications_description": "Configure notification preferences",
+			"language": "Language",
+			"language_description": "Set your preferred language"
+		},
+		"auth": {
+			"login": {
+				"subtitle": "Educational Platform for Modern Learning",
+				"or_continue_with": "Or continue with",
+				"forgot_password": "Forgot your password?",
+				"no_account": "Don't have an account?",
+				"footer": "© {{year}} FrogEdu. All Rights Reserved."
+			},
+			"register": {
+				"subtitle": "Educational Platform for Modern Learning",
+				"role_label": "I am a",
+				"role_placeholder": "Select your role",
+				"or_continue_with": "Or continue with",
+				"have_account": "Already have an account?",
+				"footer": "© {{year}} FrogEdu. All Rights Reserved."
+			},
+			"forgot": {
+				"title": "Forgot Password?",
+				"subtitle": "No worries! Enter your email and we'll send you reset instructions.",
+				"check_email_title": "Check Your Email",
+				"check_email_description": "We've sent a password reset link to",
+				"check_email_note": "Please check your email and click on the link to reset your password. The link will expire in 1 hour."
+			},
+			"reset": {
+				"title": "Reset Password",
+				"subtitle": "Enter your new password below",
+				"success_title": "Password Reset Successful!",
+				"success_description": "Your password has been successfully reset. You can now sign in with your new password."
+			},
+			"confirm": {
+				"title": "Confirm Your Email",
+				"subtitle": "We've sent a verification code to",
+				"no_code": "Didn't receive the code?"
+			},
+			"verify": {
+				"no_token": "No verification token provided",
+				"verifying_title": "Verifying Your Email",
+				"verifying_note": "Please wait...",
+				"success_title": "Email Verified!",
+				"failed_title": "Verification Failed",
+				"success_description": "Your email has been successfully verified. You can now sign in to your account.",
+				"failed_description": "Unable to verify your email. Please try again."
+			},
+			"select_role": {
+				"title": "Welcome to FrogEdu!",
+				"subtitle": "Please select your role to continue",
+				"teacher_description": "Create and manage classes, assign homework, and track student progress",
+				"student_description": "Join classes, complete assignments, and learn with AI assistance",
+				"footer_note": "You can change your role later in settings",
+				"profile_setup_failed": "Failed to set up your profile. Please try again."
+			},
+			"subscription": {
+				"title": "Choose Your Plan",
+				"subtitle": "Welcome{{name}}! Select a subscription plan to unlock the full potential of FrogEdu.",
+				"free_title": "Free Plan",
+				"free_description": "Perfect for getting started with FrogEdu",
+				"pro_title": "Pro Plan",
+				"pro_description": "For serious educators who want more",
+				"forever": "forever",
+				"footer_note": "You can upgrade or change your plan anytime from your account settings.",
+				"features": {
+					"free": {
+						"create_classes": "Create up to 3 classes",
+						"basic_exam_generation": "Basic exam generation",
+						"ai_exams_limit": "5 AI-generated exams per month",
+						"digital_textbooks": "Access to digital textbooks",
+						"community_support": "Community support"
+					},
+					"pro": {
+						"unlimited_classes": "Unlimited classes",
+						"advanced_exam_generation": "Advanced exam generation",
+						"unlimited_ai_exams": "Unlimited AI-generated exams",
+						"priority_features": "Priority access to new features",
+						"advanced_analytics": "Advanced analytics & reports",
+						"export_formats": "Export exams to PDF/Word",
+						"priority_support": "Priority customer support",
+						"custom_branding": "Custom branding options"
+					}
+				}
+			},
+			"callback": {
+				"error_title": "Authentication Error",
+				"completing_sign_in": "Completing sign in...",
+				"redirecting": "Redirecting..."
+			}
+		},
+		"landing": {
+			"hero": {
+				"badge_ai": "AI-Powered",
+				"badge_curriculum": "Vietnamese Curriculum",
+				"title_prefix": "Transform Education with",
+				"title_emphasis": "AI-Powered Learning",
+				"subtitle": "FrogEdu combines intelligent exam generation, personalized tutoring, and comprehensive digital textbooks to revolutionize Vietnamese primary education.",
+				"primary_cta": "Start Teaching Today",
+				"secondary_cta": "I Already Have an Account",
+				"stats": {
+					"grade_levels": "Grade Levels",
+					"questions": "Questions",
+					"powered": "Powered"
+				}
+			},
+			"features": {
+				"title": "Powerful Features",
+				"subtitle": "Everything you need to create, teach, and inspire",
+				"smart_exam": {
+					"tooltip": "Balanced exam generation based on difficulty",
+					"title": "Smart Exam Generator",
+					"description": "Define exam matrices and generate balanced assessments",
+					"bullets": {
+						"by_difficulty": "Create exams by difficulty level",
+						"auto_selection": "Automatic question selection",
+						"pdf_export": "PDF export to S3",
+						"manual_override": "Manual override options"
+					}
+				},
+				"ai_tutor": {
+					"tooltip": "Socratic method with intelligent responses",
+					"title": "AI Student Tutor",
+					"description": "Socratic dialogue with intelligent guidance",
+					"bullets": {
+						"realtime_chat": "Real-time chat responses",
+						"socratic": "Socratic questioning method",
+						"textbook_refs": "Textbook references",
+						"history": "Conversation history tracking"
+					}
+				},
+				"textbook": {
+					"tooltip": "Grade 1-5 Vietnamese textbooks",
+					"title": "Digital Textbook Library",
+					"description": "Comprehensive Vietnamese curriculum content",
+					"bullets": {
+						"grade_textbooks": "Grade 1-5 textbooks",
+						"navigation": "Chapter-based navigation",
+						"assets": "Supplementary assets",
+						"search": "Full-text search"
+					}
+				},
+				"class_management": {
+					"tooltip": "Manage students and track progress",
+					"title": "Class Management",
+					"description": "Organize students and track progress",
+					"bullets": {
+						"create": "Create and manage classes",
+						"enrollment": "Student enrollment codes",
+						"progress": "Progress tracking",
+						"analytics": "Performance analytics"
+					}
+				}
+			},
+			"benefits": {
+				"title": "Why Choose FrogEdu?",
+				"subtitle": "Designed by educators, powered by AI",
+				"save_time": {
+					"title": "Save Time",
+					"description": "Generate comprehensive exams in minutes, not hours"
+				},
+				"improve_learning": {
+					"title": "Improve Learning",
+					"description": "AI tutor provides personalized guidance using Socratic method"
+				},
+				"better_assessment": {
+					"title": "Better Assessment",
+					"description": "Balanced exams with automatic question selection based on difficulty"
+				},
+				"student_engagement": {
+					"title": "Student Engagement",
+					"description": "Interactive learning platform keeps students motivated and engaged"
+				},
+				"data_driven": {
+					"title": "Data-Driven Decisions",
+					"description": "Track student progress and identify learning gaps"
+				},
+				"vietnamese_curriculum": {
+					"title": "Vietnamese Curriculum",
+					"description": "Content designed for Vietnamese primary education standards"
+				}
+			},
+			"about": {
+				"title": "Built for Vietnamese Education",
+				"subtitle": "FrogEdu is specifically designed for Vietnamese primary schools (Grades 1-5), combining cutting-edge AI technology with proven educational methods to create an intuitive platform that teachers and students love.",
+				"stats": {
+					"curriculum": "Vietnamese Curriculum",
+					"support": "AI Support Available",
+					"scalable": "Scalable Platform"
+				}
+			},
+			"cta": {
+				"title": "Ready to Transform Your Classroom?",
+				"subtitle": "Join teachers across Vietnam using FrogEdu to create smarter assessments and empower student learning",
+				"primary_cta": "Create Free Account"
+			},
+			"faq": {
+				"title": "Frequently Asked Questions",
+				"subtitle": "Get answers to common questions about FrogEdu",
+				"q1": {
+					"question": "How does the Smart Exam Generator work?",
+					"answer": "The Smart Exam Generator uses AI to analyze your exam matrix (difficulty distribution and topic coverage) and automatically selects questions from our extensive question bank. You can always manually override selections if needed."
+				},
+				"q2": {
+					"question": "Is FrogEdu suitable for all grade levels?",
+					"answer": "Yes! FrogEdu covers Vietnamese primary education grades 1-5. Each grade has age-appropriate content and difficulty levels tailored to curriculum standards."
+				},
+				"q3": {
+					"question": "Can I export exams in different formats?",
+					"answer": "Currently, we support PDF and DOCX exports. All files are stored securely in AWS S3 and delivered via presigned URLs for safe access."
+				},
+				"q4": {
+					"question": "How does the AI Tutor help students?",
+					"answer": "The AI Tutor uses a Socratic method to guide students through problems without giving direct answers. It references relevant textbook content and maintains conversation history for teachers to review."
+				},
+				"q5": {
+					"question": "Is there a free trial available?",
+					"answer": "Yes! We offer a free trial so you can explore all features. No credit card required to get started. Sign up today to begin transforming your classroom."
+				}
+			},
+			"newsletter": {
+				"title": "Stay Updated",
+				"subtitle": "Subscribe to our newsletter for tips, updates, and exclusive educator resources"
+			},
+			"footer": {
+				"product": "Product",
+				"features": "Features",
+				"benefits": "Benefits",
+				"pricing": "Pricing",
+				"resources": "Resources",
+				"documentation": "Documentation",
+				"blog": "Blog",
+				"support": "Support",
+				"company": "Company",
+				"about": "About",
+				"contact": "Contact",
+				"careers": "Careers",
+				"legal": "Legal",
+				"privacy": "Privacy",
+				"terms": "Terms",
+				"cookies": "Cookies",
+				"copyright": "© 2026 FrogEdu. All rights reserved.",
+				"twitter": "Twitter",
+				"facebook": "Facebook",
+				"linkedin": "LinkedIn"
+			}
+		},
+		"about": {
+			"hero": {
+				"badge_ai": "AI-Powered",
+				"badge_made_in": "Made in Vietnam",
+				"title_prefix": "About",
+				"subtitle": "FrogEdu is an innovative AI-powered educational platform designed specifically for Vietnamese primary education, combining cutting-edge technology with pedagogical excellence."
+			},
+			"mission": {
+				"title": "Our Mission",
+				"paragraph_one": "We believe every child deserves access to quality education. Our mission is to democratize learning by providing teachers and students with powerful AI tools that make education more engaging, personalized, and effective.",
+				"paragraph_two": "By focusing on the Vietnamese primary education curriculum (Grades 1-5), we ensure our platform aligns perfectly with national educational standards while incorporating innovative teaching methodologies."
+			},
+			"stats": {
+				"grade_levels": "Grade Levels",
+				"questions": "Questions",
+				"powered": "Powered",
+				"available": "Available"
+			},
+			"features": {
+				"title": "What We Offer",
+				"subtitle": "Our platform provides comprehensive tools for both teachers and students",
+				"ai_exam": {
+					"title": "AI Exam Generation",
+					"description": "Generate customized exams aligned with Vietnamese curriculum using advanced AI. Create multiple choice, fill-in-the-blank, and essay questions instantly."
+				},
+				"class_management": {
+					"title": "Class Management",
+					"description": "Create and manage classes, assign homework, track student progress, and communicate with students all in one place."
+				},
+				"textbooks": {
+					"title": "Digital Textbooks",
+					"description": "Access comprehensive digital textbooks for Vietnamese primary education with interactive content and learning materials."
+				}
+			},
+			"team": {
+				"title": "Our Team",
+				"subtitle": "FrogEdu is built by a passionate team of educators, engineers, and designers who believe in the power of technology to transform education.",
+				"dedicated_title": "Dedicated Team",
+				"dedicated_description": "Educators & Engineers working together",
+				"made_in_title": "Made in Vietnam",
+				"made_in_description": "Built with Vietnamese education in mind"
+			},
+			"contact": {
+				"title": "Get in Touch",
+				"subtitle": "Have questions or want to learn more about FrogEdu?",
+				"location_label": "Location",
+				"location_value": "Ho Chi Minh City, Vietnam",
+				"primary_cta": "Start Teaching Today"
+			}
+		}
+	},
+	"timezones": {
+		"utc": "UTC (GMT+0)",
+		"eastern": "Eastern Time (GMT-5)",
+		"pacific": "Pacific Time (GMT-8)",
+		"hcm": "Ho Chi Minh (GMT+7)",
+		"london": "London (GMT+0)"
 	},
 	"health": {
 		"title": "System Health",

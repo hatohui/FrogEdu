@@ -28,6 +28,15 @@ import { useTheme } from '@/config/theme'
 import { useMe } from '@/hooks/auth/useMe'
 import { useSubscription } from '@/hooks/useSubscription'
 import UserAvatar from '../common/UserAvatar'
+import { useTranslation } from 'react-i18next'
+import { useLanguage } from '@/config/i18n'
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from '@/components/ui/select'
 
 interface HeaderProps {
 	onMenuClick?: () => void
@@ -42,6 +51,8 @@ const Header = ({
 	const { isPro } = useSubscription()
 	const [theme, toggleTheme] = useTheme()
 	const navigate = useNavigate()
+	const { t } = useTranslation()
+	const { lang, setLanguage } = useLanguage()
 
 	const isAdmin = user?.role?.name === 'Admin'
 	const isTeacher = user?.role?.name === 'Teacher'
@@ -49,6 +60,10 @@ const Header = ({
 
 	const handleSignOut = async () => {
 		await signOut()
+	}
+
+	const handleLanguageChange = (value: string) => {
+		void setLanguage(value)
 	}
 
 	return (
@@ -72,7 +87,7 @@ const Header = ({
 				<h1 className='text-lg font-semibold text-foreground hidden sm:block'>
 					{typeof document !== 'undefined'
 						? document.title.split(' | ')[0]
-						: 'App'}
+						: t('navigation.app')}
 				</h1>
 			</div>
 
@@ -84,7 +99,7 @@ const Header = ({
 						{isAdmin ? (
 							<Badge className='bg-gradient-to-r from-purple-600 to-purple-700 text-white hidden sm:flex'>
 								<Shield className='h-3 w-3 mr-1' />
-								Admin
+								{t('roles.admin')}
 							</Badge>
 						) : (
 							<>
@@ -92,13 +107,13 @@ const Header = ({
 								{isTeacher && (
 									<Badge className='bg-gradient-to-r from-blue-600 to-blue-700 text-white hidden sm:flex'>
 										<BookOpen className='h-3 w-3 mr-1' />
-										Teacher
+										{t('roles.teacher')}
 									</Badge>
 								)}
 								{isStudent && (
 									<Badge className='bg-gradient-to-r from-green-600 to-green-700 text-white hidden sm:flex'>
 										<GraduationCap className='h-3 w-3 mr-1' />
-										Student
+										{t('roles.student')}
 									</Badge>
 								)}
 
@@ -112,12 +127,12 @@ const Header = ({
 									{isPro ? (
 										<Badge className='bg-gradient-to-r from-amber-500 to-orange-500 text-white'>
 											<Crown className='h-3 w-3 mr-1' />
-											Pro
+											{t('badges.pro')}
 										</Badge>
 									) : (
 										<Badge variant='secondary'>
 											<CreditCard className='h-3 w-3 mr-1' />
-											Free
+											{t('badges.free')}
 										</Badge>
 									)}
 								</Button>
@@ -132,7 +147,11 @@ const Header = ({
 					size='icon'
 					onClick={toggleTheme}
 					className='h-10 w-10'
-					title={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
+					title={
+						theme === 'light'
+							? t('actions.switch_to_dark')
+							: t('actions.switch_to_light')
+					}
 				>
 					{theme === 'light' ? (
 						<Moon className='h-5 w-5' />
@@ -140,6 +159,16 @@ const Header = ({
 						<Sun className='h-5 w-5' />
 					)}
 				</Button>
+
+				<Select value={lang} onValueChange={handleLanguageChange}>
+					<SelectTrigger className='h-10 w-[110px]'>
+						<SelectValue placeholder={t('config.select_language')} />
+					</SelectTrigger>
+					<SelectContent>
+						<SelectItem value='en'>{t('languages.english')}</SelectItem>
+						<SelectItem value='vi'>{t('languages.vietnamese')}</SelectItem>
+					</SelectContent>
+				</Select>
 
 				{/* Admin Navigation Buttons */}
 				{user?.role?.name === 'Admin' && (
@@ -151,7 +180,7 @@ const Header = ({
 							className='hidden md:flex items-center gap-2'
 						>
 							<Home className='h-4 w-4' />
-							<span>Dashboard</span>
+							<span>{t('navigation.dashboard')}</span>
 						</Button>
 						<Button
 							variant='outline'
@@ -160,7 +189,7 @@ const Header = ({
 							className='hidden md:flex items-center gap-2'
 						>
 							<Home className='h-4 w-4' />
-							<span>App</span>
+							<span>{t('navigation.app')}</span>
 						</Button>
 					</>
 				)}
@@ -177,28 +206,28 @@ const Header = ({
 						<DropdownMenuLabel className='flex flex-col space-y-1'>
 							<div className='flex items-center gap-2'>
 								<span className='text-sm font-medium'>
-									{user?.firstName || user?.email || 'User'}
+									{user?.firstName || user?.email || t('roles.user')}
 								</span>
 								{/* Role Badge */}
 								{isAdmin && (
 									<Badge className='bg-gradient-to-r from-purple-600 to-purple-700 text-white text-xs px-1.5 py-0'>
-										Admin
+										{t('roles.admin')}
 									</Badge>
 								)}
 								{isTeacher && (
 									<Badge className='bg-gradient-to-r from-blue-600 to-blue-700 text-white text-xs px-1.5 py-0'>
-										Teacher
+										{t('roles.teacher')}
 									</Badge>
 								)}
 								{isStudent && (
 									<Badge className='bg-gradient-to-r from-green-600 to-green-700 text-white text-xs px-1.5 py-0'>
-										Student
+										{t('roles.student')}
 									</Badge>
 								)}
 								{/* Subscription Badge for non-admins */}
 								{!isAdmin && isPro && (
 									<Badge className='bg-gradient-to-r from-amber-500 to-orange-500 text-white text-xs px-1.5 py-0'>
-										Pro
+										{t('badges.pro')}
 									</Badge>
 								)}
 							</div>
@@ -212,20 +241,20 @@ const Header = ({
 						<DropdownMenuItem asChild>
 							<Link to='/profile' className='cursor-pointer'>
 								<User className='mr-2 h-4 w-4' />
-								<span>Profile</span>
+								<span>{t('navigation.profile')}</span>
 							</Link>
 						</DropdownMenuItem>
 
 						<DropdownMenuItem asChild>
 							<Link to='/profile/subscription' className='cursor-pointer'>
 								<CreditCard className='mr-2 h-4 w-4' />
-								<span>Subscription</span>
+								<span>{t('navigation.subscription')}</span>
 								{!isAdmin && !isPro && (
 									<Badge
 										variant='outline'
 										className='ml-auto text-xs border-amber-500 text-amber-600'
 									>
-										Upgrade
+										{t('badges.upgrade')}
 									</Badge>
 								)}
 							</Link>
@@ -234,7 +263,7 @@ const Header = ({
 						<DropdownMenuItem asChild>
 							<Link to='/settings' className='cursor-pointer'>
 								<Settings className='mr-2 h-4 w-4' />
-								<span>Settings</span>
+								<span>{t('navigation.settings')}</span>
 							</Link>
 						</DropdownMenuItem>
 
@@ -242,7 +271,7 @@ const Header = ({
 
 						<DropdownMenuItem onClick={handleSignOut}>
 							<LogOut className='mr-2 h-4 w-4' />
-							<span>Logout</span>
+							<span>{t('actions.logout')}</span>
 						</DropdownMenuItem>
 					</DropdownMenuContent>
 				</DropdownMenu>

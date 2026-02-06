@@ -23,9 +23,10 @@ import {
 	TooltipProvider,
 	TooltipTrigger,
 } from '@/components/ui/tooltip'
+import { useTranslation } from 'react-i18next'
 
 interface NavItem {
-	name: string
+	labelKey: string
 	href: string
 	icon: React.ComponentType<{ className?: string }>
 	adminOnly?: boolean
@@ -33,33 +34,33 @@ interface NavItem {
 
 const navItems: NavItem[] = [
 	{
-		name: 'Dashboard',
+		labelKey: 'navigation.dashboard',
 		href: '/dashboard',
 		icon: LayoutDashboard,
 		adminOnly: true,
 	},
 	{
-		name: 'App',
+		labelKey: 'navigation.app',
 		href: '/app',
 		icon: Home,
 	},
 	{
-		name: 'Exams',
+		labelKey: 'navigation.exams',
 		href: '/app/exams',
 		icon: FileText,
 	},
 	{
-		name: 'Classes',
+		labelKey: 'navigation.classes',
 		href: '/app/classes',
 		icon: Users,
 	},
 	{
-		name: 'Matrices',
+		labelKey: 'navigation.matrices',
 		href: '/app/matrices',
 		icon: Grid3x3,
 	},
 	{
-		name: 'Profile',
+		labelKey: 'navigation.profile',
 		href: '/profile',
 		icon: User,
 	},
@@ -80,6 +81,7 @@ const Sidebar = ({
 }: SidebarProps): React.ReactElement => {
 	const location = useLocation()
 	const { user: me, signOut } = useMe()
+	const { t } = useTranslation()
 
 	const handleSignOut = async () => {
 		await signOut()
@@ -123,17 +125,17 @@ const Sidebar = ({
 						<div className='w-10 h-10 rounded-lg bg-primary flex items-center justify-center text-primary-foreground font-bold text-xl transition-transform group-hover:scale-105'>
 							<img
 								src='/frog.png'
-								alt='FrogEdu Logo'
+								alt={t('common.logo_alt')}
 								className='w-full h-full object-contain'
 							/>
 						</div>
 						{!collapsed && (
 							<div className='flex flex-col'>
 								<span className='font-bold text-lg text-sidebar-foreground'>
-									FrogEdu
+									{t('common.app_name')}
 								</span>
 								<span className='text-xs text-sidebar-foreground/60'>
-									Learning Platform
+									{t('common.learning_platform')}
 								</span>
 							</div>
 						)}
@@ -156,7 +158,9 @@ const Sidebar = ({
 							) : (
 								<ChevronLeft className='h-4 w-4' />
 							)}
-							{!collapsed && <span className='ml-2'>Collapse</span>}
+							{!collapsed && (
+								<span className='ml-2'>{t('actions.collapse')}</span>
+							)}
 						</Button>
 					</div>
 				)}
@@ -176,6 +180,7 @@ const Sidebar = ({
 									item.href !== '/dashboard' &&
 									location.pathname.startsWith(item.href))
 							const Icon = item.icon
+							const label = t(item.labelKey)
 
 							const linkContent = (
 								<Link
@@ -191,7 +196,7 @@ const Sidebar = ({
 									)}
 								>
 									<Icon className='h-5 w-5 flex-shrink-0' />
-									{!collapsed && <span>{item.name}</span>}
+									{!collapsed && <span>{label}</span>}
 								</Link>
 							)
 
@@ -199,7 +204,7 @@ const Sidebar = ({
 								<Tooltip key={item.href}>
 									<TooltipTrigger asChild>{linkContent}</TooltipTrigger>
 									<TooltipContent side='right'>
-										<p>{item.name}</p>
+										<p>{label}</p>
 									</TooltipContent>
 								</Tooltip>
 							) : (
@@ -221,10 +226,10 @@ const Sidebar = ({
 										{me
 											? [me.firstName, me.lastName].filter(Boolean).join(' ') ||
 												me.email
-											: 'User'}
+											: t('roles.user')}
 									</p>
 									<p className='text-xs text-sidebar-foreground/60 truncate'>
-										{me?.role?.name || 'User'}
+										{me?.role?.name || t('roles.user')}
 									</p>
 								</div>
 							</div>
@@ -235,7 +240,7 @@ const Sidebar = ({
 								onClick={handleSignOut}
 							>
 								<LogOut className='h-4 w-4' />
-								<span>Sign Out</span>
+								<span>{t('actions.sign_out')}</span>
 							</Button>
 						</>
 					) : (
@@ -251,10 +256,10 @@ const Sidebar = ({
 										{me
 											? [me.firstName, me.lastName].filter(Boolean).join(' ') ||
 												me.email
-											: 'User'}
+											: t('roles.user')}
 									</p>
 									<p className='text-xs text-muted-foreground'>
-										{me?.role?.name || 'User'}
+										{me?.role?.name || t('roles.user')}
 									</p>
 								</TooltipContent>
 							</Tooltip>
@@ -270,7 +275,7 @@ const Sidebar = ({
 									</Button>
 								</TooltipTrigger>
 								<TooltipContent side='right'>
-									<p>Sign Out</p>
+									<p>{t('actions.sign_out')}</p>
 								</TooltipContent>
 							</Tooltip>
 						</>

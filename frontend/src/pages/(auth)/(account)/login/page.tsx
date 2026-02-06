@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import { useForm, type SubmitHandler } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
@@ -24,21 +24,32 @@ import {
 } from '@/components/ui/form'
 import ProtectedRoute from '@/components/common/ProtectedRoute'
 import { useNavigate } from 'react-router'
+import { useTranslation } from 'react-i18next'
 
-const loginSchema = z.object({
-	email: z.email({ message: 'Please enter a valid email address' }),
-	password: z
-		.string()
-		.min(8, { message: 'Password must be at least 8 characters' }),
-})
-
-type LoginFormValues = z.infer<typeof loginSchema>
+type LoginFormValues = {
+	email: string
+	password: string
+}
 
 const LoginPage = (): React.JSX.Element => {
 	const navigate = useNavigate()
+	const { t } = useTranslation()
 	const signInWithGoogle = useLogin().signInWithGoogle
 	const { login, isLoading, error, clearError } = useLogin()
 	const [showPassword, setShowPassword] = React.useState(false)
+
+	const loginSchema = useMemo(
+		() =>
+			z.object({
+				email: z
+					.string()
+					.email({ message: t('forms.auth.validation.email_invalid') }),
+				password: z
+					.string()
+					.min(8, { message: t('forms.auth.validation.password_min') }),
+			}),
+		[t]
+	)
 
 	const form = useForm<LoginFormValues>({
 		resolver: zodResolver(loginSchema),
@@ -70,11 +81,17 @@ const LoginPage = (): React.JSX.Element => {
 				<Card className='w-full max-w-md shadow-xl'>
 					<CardHeader className='space-y-1 text-center'>
 						<div className='flex justify-center mb-4'>
-							<img src='/frog.png' alt='FrogEdu logo' className='w-20 h-20' />
+							<img
+								src='/frog.png'
+								alt={t('common.logo_alt')}
+								className='w-20 h-20'
+							/>
 						</div>
-						<CardTitle className='text-3xl font-bold'>FrogEdu</CardTitle>
+						<CardTitle className='text-3xl font-bold'>
+							{t('common.app_name')}
+						</CardTitle>
 						<CardDescription className='text-base'>
-							Educational Platform for Modern Learning
+							{t('pages.auth.login.subtitle')}
 						</CardDescription>
 					</CardHeader>
 					<CardContent>
@@ -88,11 +105,11 @@ const LoginPage = (): React.JSX.Element => {
 									name='email'
 									render={({ field }) => (
 										<FormItem>
-											<FormLabel>Email</FormLabel>
+											<FormLabel>{t('labels.email')}</FormLabel>
 											<FormControl>
 												<Input
 													type='email'
-													placeholder='Enter your Email'
+													placeholder={t('placeholders.email')}
 													{...field}
 												/>
 											</FormControl>
@@ -106,12 +123,12 @@ const LoginPage = (): React.JSX.Element => {
 									name='password'
 									render={({ field }) => (
 										<FormItem>
-											<FormLabel>Password</FormLabel>
+											<FormLabel>{t('labels.password')}</FormLabel>
 											<FormControl>
 												<div className='relative'>
 													<Input
 														type={showPassword ? 'text' : 'password'}
-														placeholder='Enter your Password'
+														placeholder={t('placeholders.password')}
 														{...field}
 														className='pr-10'
 													/>
@@ -149,10 +166,10 @@ const LoginPage = (): React.JSX.Element => {
 									{isLoading ? (
 										<div className='flex items-center justify-center gap-2'>
 											<Loader2 className='h-4 w-4 animate-spin' />
-											<span>Signing in...</span>
+											<span>{t('actions.signing_in')}</span>
 										</div>
 									) : (
-										<span className='font-medium'>Sign In</span>
+										<span className='font-medium'>{t('actions.sign_in')}</span>
 									)}
 								</Button>
 
@@ -162,7 +179,7 @@ const LoginPage = (): React.JSX.Element => {
 									</div>
 									<div className='relative flex justify-center text-xs uppercase'>
 										<span className='bg-background px-2 text-muted-foreground'>
-											Or continue with
+											{t('pages.auth.login.or_continue_with')}
 										</span>
 									</div>
 								</div>
@@ -198,7 +215,9 @@ const LoginPage = (): React.JSX.Element => {
 										</svg>
 									)}
 									<span className='font-medium'>
-										{isLoading ? 'Signing in...' : 'Sign in with Google'}
+										{isLoading
+											? t('actions.signing_in')
+											: t('actions.sign_in_google')}
 									</span>
 								</Button>
 
@@ -209,7 +228,7 @@ const LoginPage = (): React.JSX.Element => {
 										className='text-green-700 dark:text-green-400'
 										onClick={() => navigate('/forgot-password')}
 									>
-										Forgot your password?
+										{t('pages.auth.login.forgot_password')}
 									</Button>
 								</div>
 							</form>
@@ -217,17 +236,19 @@ const LoginPage = (): React.JSX.Element => {
 					</CardContent>
 					<CardFooter className='flex flex-col space-y-2'>
 						<div className='text-sm text-center text-muted-foreground'>
-							Don't have an account?{' '}
+							{t('pages.auth.login.no_account')}{' '}
 							<Button
 								variant='link'
 								className='p-0 h-auto font-semibold text-green-700 dark:text-green-400'
 								onClick={() => navigate('/register')}
 							>
-								Create Account
+								{t('actions.create_account')}
 							</Button>
 						</div>
 						<p className='text-xs text-center text-muted-foreground'>
-							© {new Date().getFullYear()} FrogEdu. All Rights Reserved.
+							{t('pages.auth.login.footer', {
+								year: new Date().getFullYear(),
+							})}
 						</p>
 					</CardFooter>
 				</Card>

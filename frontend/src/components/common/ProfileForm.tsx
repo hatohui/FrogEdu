@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
@@ -27,19 +27,12 @@ import type { UpdateProfileDto } from '@/types/dtos/users/user'
 import { useUploadImage } from '@/hooks/image/useUploadImage'
 import type { UserWithRole } from '@/types/model/user-service/user'
 import UserAvatar from './UserAvatar'
+import { useTranslation } from 'react-i18next'
 
-const profileSchema = z.object({
-	firstName: z
-		.string()
-		.min(1, { message: 'First name is required' })
-		.max(100, { message: 'First name must not exceed 100 characters' }),
-	lastName: z
-		.string()
-		.min(1, { message: 'Last name is required' })
-		.max(100, { message: 'Last name must not exceed 100 characters' }),
-})
-
-type ProfileFormValues = z.infer<typeof profileSchema>
+type ProfileFormValues = {
+	firstName: string
+	lastName: string
+}
 
 interface ProfileFormProps {
 	user: UserWithRole
@@ -50,6 +43,7 @@ const ProfileForm = ({
 	user,
 	onSuccess,
 }: ProfileFormProps): React.JSX.Element => {
+	const { t } = useTranslation()
 	const queryClient = useQueryClient()
 	const [isVerifying, setIsVerifying] = useState(false)
 	const {
@@ -58,6 +52,27 @@ const ProfileForm = ({
 		handleAvatarChange,
 		handleAvatarDelete,
 	} = useUploadImage()
+
+	const profileSchema = useMemo(
+		() =>
+			z.object({
+				firstName: z
+					.string()
+					.min(1, {
+						message: t('forms.profile.validation.first_name_required'),
+					})
+					.max(100, {
+						message: t('forms.profile.validation.first_name_max'),
+					}),
+				lastName: z
+					.string()
+					.min(1, { message: t('forms.profile.validation.last_name_required') })
+					.max(100, {
+						message: t('forms.profile.validation.last_name_max'),
+					}),
+			}),
+		[t]
+	)
 
 	const form = useForm<ProfileFormValues>({
 		resolver: zodResolver(profileSchema),
@@ -71,11 +86,11 @@ const ProfileForm = ({
 		mutationFn: (data: UpdateProfileDto) => userService.updateProfile(data),
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ['currentUser'] })
-			toast.success('Profile updated successfully')
+			toast.success(t('messages.profile_updated'))
 			onSuccess?.()
 		},
 		onError: error => {
-			toast.error('Failed to update profile')
+			toast.error(t('messages.profile_update_failed'))
 			console.error('Profile update error:', error)
 		},
 	})
@@ -88,9 +103,9 @@ const ProfileForm = ({
 		setIsVerifying(true)
 		try {
 			await userService.sendVerificationEmail(user.id)
-			toast.success('Verification email sent! Please check your inbox.')
+			toast.success(t('messages.verification_email_sent'))
 		} catch (err) {
-			toast.error('Failed to send verification email')
+			toast.error(t('messages.verification_email_failed'))
 			console.error(err)
 		} finally {
 			setIsVerifying(false)
@@ -100,9 +115,9 @@ const ProfileForm = ({
 	return (
 		<Card>
 			<CardHeader>
-				<CardTitle>Profile Information</CardTitle>
+				<CardTitle>{t('pages.profile.profile_information')}</CardTitle>
 				<CardDescription>
-					Update your personal information and avatar.
+					{t('pages.profile.profile_description')}
 				</CardDescription>
 			</CardHeader>
 			<CardContent className='space-y-6'>
@@ -134,12 +149,12 @@ const ProfileForm = ({
 						/>
 					</div>
 					<div>
-						<h3 className='font-medium'>Profile Picture</h3>
+						<h3 className='font-medium'>{t('labels.profile_picture')}</h3>
 						<p className='text-sm text-muted-foreground'>
-							Click the camera icon to upload a new photo.
+							{t('pages.profile.avatar_instructions')}
 						</p>
 						<p className='text-xs text-muted-foreground mt-1'>
-							JPG, PNG, GIF up to 5MB
+							{t('pages.profile.avatar_formats')}
 						</p>
 						{(user.avatarUrl || avatarPreview) && (
 							<Button
@@ -151,7 +166,7 @@ const ProfileForm = ({
 								disabled={isUploadingAvatar}
 							>
 								<Trash2 className='h-4 w-4 mr-2' />
-								Remove Avatar
+								{t('actions.remove_avatar')}
 							</Button>
 						)}
 					</div>
@@ -166,9 +181,12 @@ const ProfileForm = ({
 								name='firstName'
 								render={({ field }) => (
 									<FormItem>
-										<FormLabel>First Name</FormLabel>
+										<FormLabel>{t('labels.first_name')}</FormLabel>
 										<FormControl>
-											<Input placeholder='John' {...field} />
+											<Input
+												placeholder={t('placeholders.first_name')}
+												{...field}
+											/>
 										</FormControl>
 										<FormMessage />
 									</FormItem>
@@ -179,9 +197,12 @@ const ProfileForm = ({
 								name='lastName'
 								render={({ field }) => (
 									<FormItem>
-										<FormLabel>Last Name</FormLabel>
+										<FormLabel>{t('labels.last_name')}</FormLabel>
 										<FormControl>
-											<Input placeholder='Doe' {...field} />
+											<Input
+												placeholder={t('placeholders.last_name')}
+												{...field}
+											/>
 										</FormControl>
 										<FormMessage />
 									</FormItem>
@@ -192,13 +213,15 @@ const ProfileForm = ({
 						{/* Read-only fields */}
 						<div className='grid gap-4 sm:grid-cols-2'>
 							<div className='space-y-2'>
-								<label className='text-sm font-medium'>Email</label>
+								<label className='text-sm font-medium'>
+									{t('labels.email')}
+								</label>
 								<Input value={user.email} disabled />
 								<div className='flex items-center gap-2'>
 									{!user.isEmailVerified && (
 										<>
 											<span className='text-xs text-destructive font-semibold'>
-												Unverified
+												{t('badges.unverified')}
 											</span>
 											<Button
 												type='button'
@@ -210,23 +233,28 @@ const ProfileForm = ({
 												{isVerifying ? (
 													<Loader2 className='h-3 w-3 animate-spin mr-1' />
 												) : null}
-												Verify Email
+												{t('actions.verify_email')}
 											</Button>
 										</>
 									)}
 									{user.isEmailVerified && (
 										<span className='text-xs text-green-600 font-semibold'>
-											Verified
+											{t('badges.verified')}
 										</span>
 									)}
 								</div>
 								<p className='text-xs text-muted-foreground'>
-									Email cannot be changed
+									{t('messages.email_immutable')}
 								</p>
 							</div>
 							<div className='space-y-2'>
-								<label className='text-sm font-medium'>Role</label>
-								<Input value={user.role?.name || 'Loading...'} disabled />
+								<label className='text-sm font-medium'>
+									{t('labels.role')}
+								</label>
+								<Input
+									value={user.role?.name || t('common.loading')}
+									disabled
+								/>
 							</div>
 						</div>
 
@@ -240,12 +268,12 @@ const ProfileForm = ({
 								{updateProfileMutation.isPending ? (
 									<>
 										<Loader2 className='mr-2 h-4 w-4 animate-spin' />
-										Saving...
+										{t('actions.saving')}
 									</>
 								) : (
 									<>
 										<Check className='mr-2 h-4 w-4' />
-										Save Changes
+										{t('actions.save_changes')}
 									</>
 								)}
 							</Button>
