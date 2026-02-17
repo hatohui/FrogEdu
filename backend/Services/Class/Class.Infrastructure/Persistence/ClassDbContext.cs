@@ -12,6 +12,9 @@ public class ClassDbContext : DbContext
     public DbSet<ClassRoom> ClassRooms => Set<ClassRoom>();
     public DbSet<ClassEnrollment> ClassEnrollments => Set<ClassEnrollment>();
     public DbSet<Assignment> Assignments => Set<Assignment>();
+    public DbSet<ExamSession> ExamSessions => Set<ExamSession>();
+    public DbSet<StudentExamAttempt> StudentExamAttempts => Set<StudentExamAttempt>();
+    public DbSet<StudentAnswer> StudentAnswers => Set<StudentAnswer>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -21,6 +24,9 @@ public class ClassDbContext : DbContext
         modelBuilder.ApplyConfiguration(new ClassRoomConfiguration());
         modelBuilder.ApplyConfiguration(new ClassEnrollmentConfiguration());
         modelBuilder.ApplyConfiguration(new AssignmentConfiguration());
+        modelBuilder.ApplyConfiguration(new ExamSessionConfiguration());
+        modelBuilder.ApplyConfiguration(new StudentExamAttemptConfiguration());
+        modelBuilder.ApplyConfiguration(new StudentAnswerConfiguration());
 
         // Auto-set timestamps for auditable entities
         foreach (var entityType in modelBuilder.Model.GetEntityTypes())

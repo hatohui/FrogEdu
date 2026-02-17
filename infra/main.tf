@@ -159,6 +159,7 @@ module "user_service" {
     "/auth/webhook",
     "/roles/{proxy+}",
     "/roles",
+    "/by-cognito/{proxy+}",
   ]
 
   environment_variables = {

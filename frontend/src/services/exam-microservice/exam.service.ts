@@ -285,6 +285,32 @@ class AssessmentService {
 			`${this.baseUrl}/matrices/${matrixId}/export/excel`
 		)
 	}
+
+	// ========== Session Data (for exam-taking) ==========
+
+	async getExamSessionData(examId: string): Promise<
+		ApiResponse<{
+			id: string
+			name: string
+			description: string
+			questionCount: number
+			totalPoints: number
+			questions: Array<{
+				id: string
+				content: string
+				points: number
+				questionType: number
+				imageUrl?: string
+				answers: Array<{
+					id: string
+					content: string
+					isCorrect: boolean
+				}>
+			}>
+		}>
+	> {
+		return apiService.get(`${this.baseUrl}/exams/${examId}/session-data`)
+	}
 }
 
 export default new AssessmentService()

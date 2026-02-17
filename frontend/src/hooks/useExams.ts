@@ -563,6 +563,21 @@ export function useExamPreview(examId: string) {
 	})
 }
 
+/**
+ * Fetch exam session data with question/answer GUIDs for exam-taking.
+ * Uses the unauthenticated /session-data endpoint.
+ */
+export function useExamSessionData(examId: string) {
+	return useQuery({
+		queryKey: [...examKeys.detail(examId), 'session-data'],
+		queryFn: async () => {
+			const response = await examService.getExamSessionData(examId)
+			return response.data
+		},
+		enabled: !!examId,
+	})
+}
+
 export function useExportExamToPdf() {
 	return useMutation({
 		mutationFn: async (examId: string) => {

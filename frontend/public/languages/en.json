@@ -37,6 +37,7 @@
 		"app": "App",
 		"exams": "Exams",
 		"classes": "Classes",
+		"exam_sessions": "Exam Sessions",
 		"matrices": "Matrices",
 		"profile": "Profile",
 		"settings": "Settings",
@@ -555,6 +556,138 @@
 					"student_id": "Student ID",
 					"status": "Status"
 				}
+			}
+		},
+		"exam_sessions": {
+			"title": "Exam Sessions",
+			"subtitle_teacher": "Manage exam sessions for your classes.",
+			"subtitle_student": "View your upcoming and active exam sessions.",
+			"empty": {
+				"title": "No exam sessions",
+				"teacher_description": "Create an exam session to assign an exam to your class.",
+				"student_description": "No active or upcoming exam sessions available.",
+				"create_first": "Create exam session"
+			},
+			"status": {
+				"active": "Active",
+				"upcoming": "Upcoming",
+				"ended": "Ended",
+				"inactive": "Inactive"
+			},
+			"tabs": {
+				"active": "Active ({{count}})",
+				"upcoming": "Upcoming ({{count}})",
+				"ended": "Ended ({{count}})"
+			},
+			"table": {
+				"exam": "Exam",
+				"start_time": "Start Time",
+				"end_time": "End Time",
+				"retries": "Retries",
+				"attempts": "Attempts",
+				"status": "Status",
+				"actions": "Actions"
+			},
+			"actions": {
+				"create": "Create Session",
+				"edit": "Edit",
+				"delete": "Delete",
+				"view_results": "View Results",
+				"start_exam": "Start Exam",
+				"resume_exam": "Resume Exam",
+				"view_attempt": "View Attempt"
+			},
+			"create": {
+				"title": "Create Exam Session",
+				"description": "Set up a new exam session for this class.",
+				"fields": {
+					"exam": "Exam",
+					"start_time": "Start Time",
+					"end_time": "End Time",
+					"retry_times": "Max Retries",
+					"is_retryable": "Allow Retries",
+					"shuffle_questions": "Shuffle Questions",
+					"shuffle_answers": "Shuffle Answers",
+					"partial_scoring": "Allow Partial Scoring"
+				},
+				"placeholders": {
+					"exam": "Select an exam",
+					"retry_times": "Number of retries allowed"
+				},
+				"descriptions": {
+					"is_retryable": "Allow students to retake this exam.",
+					"shuffle_questions": "Randomize the order of questions for each student.",
+					"shuffle_answers": "Randomize the order of answer choices for each student.",
+					"partial_scoring": "Award partial credit for partially correct answers."
+				},
+				"actions": {
+					"create": "Create Session",
+					"creating": "Creating..."
+				}
+			},
+			"edit": {
+				"title": "Edit Exam Session",
+				"description": "Update exam session settings.",
+				"actions": {
+					"update": "Update Session",
+					"updating": "Updating..."
+				}
+			},
+			"delete": {
+				"title": "Delete Exam Session?",
+				"description": "This will permanently delete the exam session and all its attempt records. This action cannot be undone."
+			},
+			"results": {
+				"title": "Session Results",
+				"subtitle": "View student scores and attempt details.",
+				"summary": {
+					"total_attempts": "Total Attempts",
+					"average_score": "Average Score",
+					"highest_score": "Highest Score",
+					"lowest_score": "Lowest Score"
+				},
+				"table": {
+					"student": "Student",
+					"score": "Score",
+					"percentage": "Percentage",
+					"attempt_number": "Attempt #",
+					"status": "Status",
+					"submitted_at": "Submitted At",
+					"actions": "Actions"
+				},
+				"empty": "No attempts recorded yet.",
+				"view_detail": "View Details"
+			},
+			"take": {
+				"title": "Taking Exam",
+				"question_of": "Question {{current}} of {{total}}",
+				"time_remaining": "Time Remaining",
+				"submit_exam": "Submit Exam",
+				"submit_confirm_title": "Submit Exam?",
+				"submit_confirm_description": "Are you sure you want to submit? You cannot change your answers after submission.",
+				"submit_confirm_unanswered": "You have {{count}} unanswered questions.",
+				"submitting": "Submitting...",
+				"next": "Next",
+				"previous": "Previous",
+				"answered": "Answered",
+				"unanswered": "Unanswered"
+			},
+			"attempt_result": {
+				"title": "Exam Result",
+				"score": "Your Score",
+				"total_points": "Total Points",
+				"percentage": "Percentage",
+				"status": "Status",
+				"back_to_sessions": "Back to Sessions",
+				"correct": "Correct",
+				"incorrect": "Incorrect",
+				"partial": "Partially Correct"
+			},
+			"attempt_status": {
+				"in_progress": "In Progress",
+				"submitted": "Submitted",
+				"graded": "Graded",
+				"timed_out": "Timed Out"
 			}
 		},
 		"dashboard": {

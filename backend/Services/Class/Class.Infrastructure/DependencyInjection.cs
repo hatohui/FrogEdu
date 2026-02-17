@@ -45,6 +45,8 @@ public static class DependencyInjection
         services.AddScoped<IClassRoomRepository, ClassRoomRepository>();
         services.AddScoped<IClassEnrollmentRepository, ClassEnrollmentRepository>();
         services.AddScoped<IAssignmentRepository, AssignmentRepository>();
+        services.AddScoped<IExamSessionRepository, ExamSessionRepository>();
+        services.AddScoped<IStudentExamAttemptRepository, StudentExamAttemptRepository>();
 
         // Register database health service
         services.AddScoped<IDatabaseHealthService, DatabaseHealthService>();
@@ -57,6 +59,9 @@ public static class DependencyInjection
 
         // Register UserServiceClient for fetching user details from User microservice
         services.AddHttpClient<IUserServiceClient, UserServiceClient>();
+
+        // Register ExamServiceClient for fetching exam questions/answers for scoring
+        services.AddHttpClient<IExamServiceClient, ExamServiceClient>();
 
         return services;
     }

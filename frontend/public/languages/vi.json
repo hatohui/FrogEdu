@@ -37,6 +37,7 @@
 		"app": "Ứng dụng",
 		"exams": "Bài thi",
 		"classes": "Lớp học",
+		"exam_sessions": "Phiên thi",
 		"matrices": "Ma trận",
 		"profile": "Hồ sơ",
 		"settings": "Cài đặt",
@@ -757,6 +758,138 @@
 					"student_id": "Mã học sinh",
 					"status": "Trạng thái"
 				}
+			}
+		},
+		"exam_sessions": {
+			"title": "Phiên thi",
+			"subtitle_teacher": "Quản lý các phiên thi cho lớp học của bạn.",
+			"subtitle_student": "Xem các phiên thi sắp tới và đang diễn ra.",
+			"empty": {
+				"title": "Chưa có phiên thi",
+				"teacher_description": "Tạo phiên thi để giao bài thi cho lớp.",
+				"student_description": "Không có phiên thi nào đang diễn ra hoặc sắp tới.",
+				"create_first": "Tạo phiên thi"
+			},
+			"status": {
+				"active": "Đang diễn ra",
+				"upcoming": "Sắp tới",
+				"ended": "Đã kết thúc",
+				"inactive": "Không hoạt động"
+			},
+			"tabs": {
+				"active": "Đang diễn ra ({{count}})",
+				"upcoming": "Sắp tới ({{count}})",
+				"ended": "Đã kết thúc ({{count}})"
+			},
+			"table": {
+				"exam": "Bài thi",
+				"start_time": "Thời gian bắt đầu",
+				"end_time": "Thời gian kết thúc",
+				"retries": "Số lần thử lại",
+				"attempts": "Lượt thi",
+				"status": "Trạng thái",
+				"actions": "Hành động"
+			},
+			"actions": {
+				"create": "Tạo phiên thi",
+				"edit": "Chỉnh sửa",
+				"delete": "Xóa",
+				"view_results": "Xem kết quả",
+				"start_exam": "Bắt đầu thi",
+				"resume_exam": "Tiếp tục thi",
+				"view_attempt": "Xem bài làm"
+			},
+			"create": {
+				"title": "Tạo phiên thi",
+				"description": "Thiết lập phiên thi mới cho lớp học này.",
+				"fields": {
+					"exam": "Bài thi",
+					"start_time": "Thời gian bắt đầu",
+					"end_time": "Thời gian kết thúc",
+					"retry_times": "Số lần thử lại tối đa",
+					"is_retryable": "Cho phép thi lại",
+					"shuffle_questions": "Xáo trộn câu hỏi",
+					"shuffle_answers": "Xáo trộn đáp án",
+					"partial_scoring": "Cho phép chấm điểm từng phần"
+				},
+				"placeholders": {
+					"exam": "Chọn bài thi",
+					"retry_times": "Số lần thi lại được phép"
+				},
+				"descriptions": {
+					"is_retryable": "Cho phép học sinh thi lại bài thi này.",
+					"shuffle_questions": "Xáo trộn thứ tự câu hỏi cho mỗi học sinh.",
+					"shuffle_answers": "Xáo trộn thứ tự các đáp án cho mỗi học sinh.",
+					"partial_scoring": "Cho điểm từng phần cho các câu trả lời đúng một phần."
+				},
+				"actions": {
+					"create": "Tạo phiên thi",
+					"creating": "Đang tạo..."
+				}
+			},
+			"edit": {
+				"title": "Chỉnh sửa phiên thi",
+				"description": "Cập nhật cài đặt phiên thi.",
+				"actions": {
+					"update": "Cập nhật phiên thi",
+					"updating": "Đang cập nhật..."
+				}
+			},
+			"delete": {
+				"title": "Xóa phiên thi?",
+				"description": "Thao tác này sẽ xóa vĩnh viễn phiên thi và tất cả bản ghi lượt thi. Không thể hoàn tác."
+			},
+			"results": {
+				"title": "Kết quả phiên thi",
+				"subtitle": "Xem điểm số và chi tiết lượt thi của học sinh.",
+				"summary": {
+					"total_attempts": "Tổng lượt thi",
+					"average_score": "Điểm trung bình",
+					"highest_score": "Điểm cao nhất",
+					"lowest_score": "Điểm thấp nhất"
+				},
+				"table": {
+					"student": "Học sinh",
+					"score": "Điểm",
+					"percentage": "Phần trăm",
+					"attempt_number": "Lượt thi #",
+					"status": "Trạng thái",
+					"submitted_at": "Nộp lúc",
+					"actions": "Hành động"
+				},
+				"empty": "Chưa có lượt thi nào.",
+				"view_detail": "Xem chi tiết"
+			},
+			"take": {
+				"title": "Đang làm bài thi",
+				"question_of": "Câu {{current}} / {{total}}",
+				"time_remaining": "Thời gian còn lại",
+				"submit_exam": "Nộp bài",
+				"submit_confirm_title": "Nộp bài thi?",
+				"submit_confirm_description": "Bạn có chắc chắn muốn nộp bài? Bạn không thể thay đổi câu trả lời sau khi nộp.",
+				"submit_confirm_unanswered": "Bạn còn {{count}} câu chưa trả lời.",
+				"submitting": "Đang nộp...",
+				"next": "Tiếp theo",
+				"previous": "Quay lại",
+				"answered": "Đã trả lời",
+				"unanswered": "Chưa trả lời"
+			},
+			"attempt_result": {
+				"title": "Kết quả bài thi",
+				"score": "Điểm của bạn",
+				"total_points": "Tổng điểm",
+				"percentage": "Phần trăm",
+				"status": "Trạng thái",
+				"back_to_sessions": "Quay lại danh sách",
+				"correct": "Đúng",
+				"incorrect": "Sai",
+				"partial": "Đúng một phần"
+			},
+			"attempt_status": {
+				"in_progress": "Đang làm",
+				"submitted": "Đã nộp",
+				"graded": "Đã chấm điểm",
+				"timed_out": "Hết giờ"
 			}
 		},
 		"dashboard": {

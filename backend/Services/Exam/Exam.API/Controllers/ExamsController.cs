@@ -12,6 +12,7 @@ using FrogEdu.Exam.Application.Queries.GetExamById;
 using FrogEdu.Exam.Application.Queries.GetExamPreview;
 using FrogEdu.Exam.Application.Queries.GetExamQuestions;
 using FrogEdu.Exam.Application.Queries.GetExams;
+using FrogEdu.Exam.Application.Queries.GetExamSessionData;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -179,6 +180,28 @@ public class ExamsController(IMediator mediator) : BaseController
     {
         var userId = GetAuthenticatedUserId();
         var query = new GetExamPreviewQuery(examId, userId);
+        var result = await _mediator.Send(query, cancellationToken);
+
+        if (result is null)
+            return NotFound();
+
+        return Ok(result);
+    }
+
+    /// <summary>
+    /// Get exam data with question/answer GUIDs for session grading and student display.
+    /// No ownership check — used for service-to-service communication and exam sessions.
+    /// </summary>
+    [HttpGet("{examId:guid}/session-data")]
+    [AllowAnonymous]
+    [ProducesResponseType(typeof(ExamSessionDataDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<ExamSessionDataDto>> GetExamSessionData(
+        [FromRoute] Guid examId,
+        CancellationToken cancellationToken
+    )
+    {
+        var query = new GetExamSessionDataQuery(examId);
         var result = await _mediator.Send(query, cancellationToken);
 
         if (result is null)
