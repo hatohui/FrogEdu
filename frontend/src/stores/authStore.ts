@@ -24,6 +24,7 @@ interface AuthState {
 	signInWithGoogle: () => Promise<void>
 	signOut: () => Promise<void>
 	refreshAuth: () => Promise<void>
+	syncRoleAndRefreshToken: () => Promise<string | null>
 	clearError: () => void
 }
 
@@ -156,6 +157,31 @@ export const useAuthStore = create<AuthState>()((set, get) => ({
 				isAuthenticated: false,
 				isLoading: false,
 			})
+		}
+	},
+
+	syncRoleAndRefreshToken: async () => {
+		try {
+			// Step 1: Call GET /me to sync role to Cognito's custom:role attribute
+			await userService.getCurrentUser()
+			console.log('✓ Role synced to Cognito via GET /me')
+
+			// Step 2: Force token refresh to get new JWT with updated custom:role claim
+			const session = await fetchAuthSession({ forceRefresh: true })
+			const newRole = session.tokens?.idToken?.payload['custom:role'] as
+				| string
+				| undefined
+
+			if (newRole) {
+				console.log('✓ Token refreshed, new role in JWT:', newRole)
+				return newRole
+			} else {
+				console.warn('⚠ Token refreshed but custom:role not found in JWT')
+				return null
+			}
+		} catch (error) {
+			console.error('Failed to sync role and refresh token:', error)
+			return null
 		}
 	},
 

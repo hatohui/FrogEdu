@@ -1,7 +1,8 @@
 import userService from '@/services/user-microservice/user.service'
 import { useAuthStore } from '@/stores/authStore'
-import { useQuery } from '@tanstack/react-query'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { useNavigate, useLocation } from 'react-router'
+import { useEffect, useRef } from 'react'
 import type { UserWithRole } from '@/types/model/user-service/user'
 
 // Re-export for backward compatibility
@@ -11,7 +12,12 @@ export const useMe = () => {
 	const isAuthenticated = useAuthStore(state => state.isAuthenticated)
 	const signOut = useAuthStore(state => state.signOut)
 	const refreshAuth = useAuthStore(state => state.refreshAuth)
+	const syncRoleAndRefreshToken = useAuthStore(
+		state => state.syncRoleAndRefreshToken
+	)
 	const location = useLocation()
+	const queryClient = useQueryClient()
+	const hasSyncedRef = useRef(false)
 
 	const shouldQuery =
 		isAuthenticated &&
@@ -40,6 +46,35 @@ export const useMe = () => {
 		enabled: !!userData?.roleId,
 	})
 
+	// Auto-sync role on first load (self-healing)
+	useEffect(() => {
+		if (
+			shouldQuery &&
+			!hasSyncedRef.current &&
+			!isLoadingUser &&
+			!isLoadingRole
+		) {
+			hasSyncedRef.current = true
+			// Trigger role sync in background - this will:
+			// 1. Call GET /me to sync role to Cognito
+			// 2. Force JWT token refresh
+			// 3. Invalidate queries to refetch with new role
+			syncRoleAndRefreshToken().then(newRole => {
+				if (newRole) {
+					// Invalidate queries to refetch user data with refreshed token
+					queryClient.invalidateQueries({ queryKey: ['currentUser'] })
+					console.log('🔄 Auto-synced role and refreshed token')
+				}
+			})
+		}
+	}, [
+		shouldQuery,
+		isLoadingUser,
+		isLoadingRole,
+		syncRoleAndRefreshToken,
+		queryClient,
+	])
+
 	const user: UserWithRole | undefined = userData
 		? { ...userData, role }
 		: undefined
@@ -64,5 +99,6 @@ export const useMe = () => {
 		signOut,
 		isAuthenticated,
 		refreshAuth,
+		syncRoleAndRefreshToken,
 	}
 }
