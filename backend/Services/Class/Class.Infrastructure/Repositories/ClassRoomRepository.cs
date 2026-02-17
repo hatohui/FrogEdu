@@ -33,7 +33,10 @@ public class ClassRoomRepository : IClassRoomRepository
         return await _context
             .ClassRooms.Include(c => c.Enrollments)
             .Include(c => c.Assignments)
-            .FirstOrDefaultAsync(c => c.InviteCode.Value == inviteCode, cancellationToken);
+            .FirstOrDefaultAsync(
+                c => EF.Property<string>(c, "InviteCode") == inviteCode,
+                cancellationToken
+            );
     }
 
     public async Task<IReadOnlyList<ClassRoom>> GetByTeacherIdAsync(

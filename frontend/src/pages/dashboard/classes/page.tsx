@@ -11,6 +11,8 @@ import {
 	Eye,
 	ClipboardPlus,
 	BookOpen,
+	Plus,
+	UserPlus,
 } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -49,6 +51,8 @@ import {
 import { Label } from '@/components/ui/label'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useClasses, useAdminAssignExam } from '@/hooks/useClasses'
+import { CreateClassModal } from '@/components/classes'
+import JoinClassModal from '@/components/classes/JoinClassModal'
 import type { ClassRoom } from '@/types/model/class-service'
 import type { AssignExamRequest } from '@/types/dtos/classes'
 
@@ -62,6 +66,8 @@ const ClassesPage = (): React.ReactElement => {
 	const [statusFilter, setStatusFilter] = useState<string>('all')
 	const [assignDialogOpen, setAssignDialogOpen] = useState(false)
 	const [selectedClassId, setSelectedClassId] = useState<string | null>(null)
+	const [showCreateModal, setShowCreateModal] = useState(false)
+	const [showJoinModal, setShowJoinModal] = useState(false)
 
 	// Assign exam form state
 	const [examId, setExamId] = useState('')
@@ -205,12 +211,26 @@ const ClassesPage = (): React.ReactElement => {
 		<div className='space-y-6 p-6'>
 			{/* Header */}
 			<div>
-				<h1 className='text-3xl font-bold tracking-tight'>
-					{t('pages.dashboard.classes.title')}
-				</h1>
-				<p className='text-muted-foreground'>
-					{t('pages.dashboard.classes.subtitle')}
-				</p>
+				<div className='flex items-center justify-between'>
+					<div>
+						<h1 className='text-3xl font-bold tracking-tight'>
+							{t('pages.dashboard.classes.title')}
+						</h1>
+						<p className='text-muted-foreground'>
+							{t('pages.dashboard.classes.subtitle')}
+						</p>
+					</div>
+					<div className='flex gap-2'>
+						<Button variant='outline' onClick={() => setShowJoinModal(true)}>
+							<UserPlus className='h-4 w-4 mr-2' />
+							{t('pages.classes.actions.join')}
+						</Button>
+						<Button onClick={() => setShowCreateModal(true)}>
+							<Plus className='h-4 w-4 mr-2' />
+							{t('pages.classes.actions.create')}
+						</Button>
+					</div>
+				</div>
 			</div>
 
 			{/* Stats Cards */}
@@ -495,6 +515,15 @@ const ClassesPage = (): React.ReactElement => {
 					</DialogFooter>
 				</DialogContent>
 			</Dialog>
+
+			{/* Create Class Modal */}
+			<CreateClassModal
+				open={showCreateModal}
+				onOpenChange={setShowCreateModal}
+			/>
+
+			{/* Join Class Modal */}
+			<JoinClassModal open={showJoinModal} onOpenChange={setShowJoinModal} />
 		</div>
 	)
 }

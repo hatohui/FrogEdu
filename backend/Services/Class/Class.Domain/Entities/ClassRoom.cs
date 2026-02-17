@@ -110,6 +110,9 @@ public sealed class ClassRoom : AuditableEntity
 
     public void EnrollStudent(Guid studentId)
     {
+        if (studentId == TeacherId)
+            throw new InvalidOperationException("Cannot enroll in your own class");
+
         if (!CanEnrollStudent())
             throw new InvalidOperationException(
                 "Cannot enroll student: classroom is full or inactive"
