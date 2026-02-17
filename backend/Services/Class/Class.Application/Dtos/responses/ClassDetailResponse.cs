@@ -11,7 +11,7 @@ public sealed record ClassDetailResponse(
     Guid TeacherId,
     DateTime CreatedAt,
     int StudentCount,
-    IReadOnlyList<EnrollmentDto> Enrollments,
+    IReadOnlyList<EnrollmentWithUserDto> Enrollments,
     IReadOnlyList<AssignmentResponse> Assignments
 );
 

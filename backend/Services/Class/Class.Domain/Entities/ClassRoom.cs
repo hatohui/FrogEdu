@@ -130,6 +130,18 @@ public sealed class ClassRoom : AuditableEntity
         AddDomainEvent(new StudentEnrolledDomainEvent(Id, studentId));
     }
 
+    public void RemoveStudent(Guid studentId)
+    {
+        var enrollment = _enrollments.FirstOrDefault(e =>
+            e.StudentId == studentId && e.Status == Enums.EnrollmentStatus.Active
+        );
+
+        if (enrollment is null)
+            throw new InvalidOperationException("Student is not enrolled in this classroom");
+
+        enrollment.KickStudent();
+    }
+
     public void AddAssignment(Assignment assignment)
     {
         _assignments.Add(assignment);

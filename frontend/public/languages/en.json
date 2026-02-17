@@ -467,6 +467,8 @@
 				"teacher": "Teacher",
 				"teacher_unknown": "Unknown teacher",
 				"students": "Students",
+				"student": "Student",
+				"edit_details": "Edit Details",
 				"invite_title": "Invite students",
 				"invite_description": "Share this code so students can join your class.",
 				"code_expired": "Invite code expired",
@@ -488,7 +490,13 @@
 				"status_active": "Active",
 				"status_overdue": "Overdue",
 				"status_upcoming": "Upcoming",
-				"status_completed": "Completed"
+				"status_completed": "Completed",
+				"view_profile": "View Profile",
+				"remove_from_class": "Remove from class",
+				"remove_student_title": "Remove Student",
+				"remove_student_description": "Are you sure you want to remove {{name}} from this class? This action cannot be undone.",
+				"remove_student": "Remove Student",
+				"removing": "Removing..."
 			},
 			"card": {
 				"grade_badge": "Grade {{grade}}",

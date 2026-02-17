@@ -147,3 +147,30 @@ export function useAdminAssignExam() {
 		},
 	})
 }
+
+/**
+ * Hook to remove a student from a class (Teacher/Admin)
+ */
+export function useRemoveStudent() {
+	const queryClient = useQueryClient()
+
+	return useMutation({
+		mutationFn: ({
+			classId,
+			studentId,
+		}: {
+			classId: string
+			studentId: string
+		}) => classService.removeStudent(classId, studentId),
+		onSuccess: (_, variables) => {
+			queryClient.invalidateQueries({
+				queryKey: classKeys.detail(variables.classId),
+			})
+			queryClient.invalidateQueries({ queryKey: classKeys.all() })
+			toast.success('Student removed successfully')
+		},
+		onError: (error: Error) => {
+			toast.error(error.message || 'Failed to remove student')
+		},
+	})
+}

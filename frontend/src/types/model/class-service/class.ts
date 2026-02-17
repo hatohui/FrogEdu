@@ -15,6 +15,9 @@ export interface ClassRoom {
 export interface ClassEnrollment {
 	id: string
 	studentId: string
+	studentFirstName: string
+	studentLastName: string
+	studentAvatarUrl: string | null
 	joinedAt: string
 	status: EnrollmentStatus
 }

@@ -13,20 +13,23 @@ import { toast } from 'sonner'
 import authService from '@/services/user-microservice/auth.service'
 import { useAuthStore } from '@/stores/authStore'
 import { useTranslation } from 'react-i18next'
+import { useMe } from '@/hooks/auth/useMe'
+import { useQueryClient } from '@tanstack/react-query'
 
 const VerifyEmailPage = (): React.JSX.Element => {
 	const navigate = useNavigate()
 	const { t } = useTranslation()
 	const [searchParams] = useSearchParams()
 	const token = searchParams.get('token')
+	const queryClient = useQueryClient()
 	const [isVerifying, setIsVerifying] = React.useState(true)
 	const [isSuccess, setIsSuccess] = React.useState(false)
 	const [error, setError] = React.useState<string | null>(null)
+	const { isAuthenticated } = useMe()
 
 	const authLoading = useAuthStore(state => state.isLoading)
 
 	React.useEffect(() => {
-		// Wait for auth store to finish hydrating before verifying
 		if (authLoading) return
 
 		if (!token) {
@@ -35,16 +38,13 @@ const VerifyEmailPage = (): React.JSX.Element => {
 			return
 		}
 
-		// Debug: Log the token received from URL
-		console.log('Token from URL:', token)
-		console.log('Token length:', token.length)
-
 		const verifyEmail = async () => {
 			try {
 				const response = await authService.verifyEmail(token)
 				if (response.success) {
 					setIsSuccess(true)
 					toast.success(t('messages.email_verified_success'))
+					queryClient.invalidateQueries({ queryKey: ['currentUser'] })
 				} else {
 					const message =
 						response.error?.detail || t('messages.email_verified_failed')
@@ -64,7 +64,7 @@ const VerifyEmailPage = (): React.JSX.Element => {
 		}
 
 		verifyEmail()
-	}, [token, authLoading])
+	}, [token, authLoading, t, queryClient])
 
 	if (isVerifying) {
 		return (
@@ -113,7 +113,7 @@ const VerifyEmailPage = (): React.JSX.Element => {
 					</CardDescription>
 				</CardHeader>
 				<CardContent className='space-y-4'>
-					{isSuccess ? (
+					{!isAuthenticated ? (
 						<Button
 							className='w-full'
 							onClick={() => navigate('/login')}

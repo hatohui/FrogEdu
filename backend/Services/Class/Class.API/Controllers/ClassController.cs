@@ -2,6 +2,7 @@ using FrogEdu.Class.Application.Commands.AdminAssignExam;
 using FrogEdu.Class.Application.Commands.AssignExam;
 using FrogEdu.Class.Application.Commands.CreateClass;
 using FrogEdu.Class.Application.Commands.JoinClass;
+using FrogEdu.Class.Application.Commands.RemoveStudent;
 using FrogEdu.Class.Application.Dtos;
 using FrogEdu.Class.Application.Dtos.requests;
 using FrogEdu.Class.Application.Queries.GetClassAssignments;
@@ -200,5 +201,29 @@ public class ClassController(IMediator mediator) : BaseController
             return BadRequest(result.Error);
 
         return CreatedAtAction(nameof(GetClassAssignments), new { classId }, result.Value);
+    }
+
+    /// <summary>
+    /// Remove a student from a class (Teacher who owns the class or Admin)
+    /// </summary>
+    [HttpDelete("{classId:guid}/students/{studentId:guid}")]
+    [Authorize]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> RemoveStudent(
+        Guid classId,
+        Guid studentId,
+        CancellationToken cancellationToken
+    )
+    {
+        var command = new RemoveStudentCommand(classId, studentId);
+        var success = await _mediator.Send(command, cancellationToken);
+
+        if (!success)
+            return BadRequest("Failed to remove student from class");
+
+        return NoContent();
     }
 }

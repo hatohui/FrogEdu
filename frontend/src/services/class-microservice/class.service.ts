@@ -48,6 +48,12 @@ export const classService = {
 		return response.data
 	},
 
+	removeStudent: async (classId: string, studentId: string): Promise<void> => {
+		await axiosInstance.delete(
+			`${baseUrl}/classes/${classId}/students/${studentId}`
+		)
+	},
+
 	// ─── Assignments ───
 
 	assignExam: async (

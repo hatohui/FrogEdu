@@ -1,6 +1,10 @@
 import React, { useState } from 'react'
 import { useParams, Link, useNavigate } from 'react-router'
-import { useClassDetail, useAssignExam } from '@/hooks/useClasses'
+import {
+	useClassDetail,
+	useAssignExam,
+	useRemoveStudent,
+} from '@/hooks/useClasses'
 import { useMe } from '@/hooks/auth/useMe'
 import { Button } from '@/components/ui/button'
 import {
@@ -32,6 +36,13 @@ import {
 	DialogTitle,
 } from '@/components/ui/dialog'
 import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuSeparator,
+	DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
+import {
 	ArrowLeft,
 	Calendar,
 	CheckCircle2,
@@ -40,11 +51,16 @@ import {
 	FileText,
 	AlertTriangle,
 	Users,
+	MoreVertical,
+	UserMinus,
+	Edit,
 } from 'lucide-react'
 import { format } from 'date-fns'
 import { toast } from 'sonner'
 import { useTranslation } from 'react-i18next'
 import type { AssignExamRequest } from '@/types/dtos/classes'
+import type { GetMeResponse } from '@/types/dtos/users/user'
+import UserAvatar from '@/components/common/UserAvatar'
 
 const ClassDetailPage: React.FC = () => {
 	const { t } = useTranslation()
@@ -54,6 +70,7 @@ const ClassDetailPage: React.FC = () => {
 
 	const { data: classDetail, isLoading, error } = useClassDetail(id || '')
 	const assignExamMutation = useAssignExam()
+	const removeStudentMutation = useRemoveStudent()
 
 	// Assign exam dialog state
 	const [assignDialogOpen, setAssignDialogOpen] = useState(false)
@@ -62,6 +79,13 @@ const ClassDetailPage: React.FC = () => {
 	const [dueDate, setDueDate] = useState('')
 	const [isMandatory, setIsMandatory] = useState(true)
 	const [weight, setWeight] = useState('100')
+
+	// Remove student confirmation dialog
+	const [removeDialogOpen, setRemoveDialogOpen] = useState(false)
+	const [studentToRemove, setStudentToRemove] = useState<{
+		id: string
+		name: string
+	} | null>(null)
 
 	const isTeacher =
 		user?.role?.name === 'Teacher' && classDetail?.teacherId === user?.cognitoId
@@ -105,6 +129,25 @@ const ClassDetailPage: React.FC = () => {
 				},
 			}
 		)
+	}
+
+	const handleRemoveStudent = () => {
+		if (!id || !studentToRemove) return
+
+		removeStudentMutation.mutate(
+			{ classId: id, studentId: studentToRemove.id },
+			{
+				onSuccess: () => {
+					setRemoveDialogOpen(false)
+					setStudentToRemove(null)
+				},
+			}
+		)
+	}
+
+	const openRemoveDialog = (studentId: string, studentName: string) => {
+		setStudentToRemove({ id: studentId, name: studentName })
+		setRemoveDialogOpen(true)
 	}
 
 	const getEnrollmentStatusBadge = (status: string) => {
@@ -196,12 +239,20 @@ const ClassDetailPage: React.FC = () => {
 						})}
 					</p>
 				</div>
-				{canManage && (
-					<Button onClick={handleOpenAssignDialog}>
-						<ClipboardPlus className='h-4 w-4 mr-2' />
-						{t('pages.dashboard.classes.actions.assign_exam')}
-					</Button>
-				)}
+				<div className='flex gap-2'>
+					{canManage && (
+						<>
+							<Button onClick={handleOpenAssignDialog}>
+								<ClipboardPlus className='h-4 w-4 mr-2' />
+								{t('pages.dashboard.classes.actions.assign_exam')}
+							</Button>
+							<Button variant='outline'>
+								<Edit className='h-4 w-4 mr-2' />
+								{t('pages.classes.detail.edit_details')}
+							</Button>
+						</>
+					)}
+				</div>
 			</div>
 
 			<div className='grid gap-6 lg:grid-cols-3'>
@@ -264,7 +315,7 @@ const ClassDetailPage: React.FC = () => {
 					</CardContent>
 				</Card>
 
-				{/* Invite code card - for teachers and admins */}
+				{/* Invite code card - for teachers and admins only */}
 				{canManage && classDetail.inviteCode && (
 					<Card>
 						<CardHeader>
@@ -316,31 +367,79 @@ const ClassDetailPage: React.FC = () => {
 							<Table>
 								<TableHeader>
 									<TableRow>
-										<TableHead>
-											{t('pages.dashboard.classes.detail.student_id')}
-										</TableHead>
+										<TableHead>{t('pages.classes.detail.student')}</TableHead>
 										<TableHead>
 											{t('pages.dashboard.classes.detail.joined_at')}
 										</TableHead>
 										<TableHead>
 											{t('pages.dashboard.classes.detail.status')}
 										</TableHead>
+										{canManage && <TableHead className='w-[50px]'></TableHead>}
 									</TableRow>
 								</TableHeader>
 								<TableBody>
-									{classDetail.enrollments.map(enrollment => (
-										<TableRow key={enrollment.id}>
-											<TableCell className='font-mono text-sm'>
-												{enrollment.studentId}
-											</TableCell>
-											<TableCell className='text-muted-foreground'>
-												{format(new Date(enrollment.joinedAt), 'MMM d, yyyy')}
-											</TableCell>
-											<TableCell>
-												{getEnrollmentStatusBadge(enrollment.status)}
-											</TableCell>
-										</TableRow>
-									))}
+									{classDetail.enrollments.map(enrollment => {
+										const studentName = `${enrollment.studentFirstName} ${enrollment.studentLastName}`
+										const studentUser: GetMeResponse = {
+											id: enrollment.studentId,
+											cognitoId: enrollment.studentId,
+											email: '',
+											firstName: enrollment.studentFirstName,
+											lastName: enrollment.studentLastName,
+											roleId: '',
+											avatarUrl: enrollment.studentAvatarUrl,
+											isEmailVerified: false,
+											createdAt: enrollment.joinedAt,
+											updatedAt: null,
+										}
+										return (
+											<TableRow key={enrollment.id}>
+												<TableCell>
+													<div className='flex items-center gap-3'>
+														<UserAvatar user={studentUser} />
+														<div className='font-medium'>{studentName}</div>
+													</div>
+												</TableCell>
+												<TableCell className='text-muted-foreground'>
+													{format(new Date(enrollment.joinedAt), 'MMM d, yyyy')}
+												</TableCell>
+												<TableCell>
+													{getEnrollmentStatusBadge(enrollment.status)}
+												</TableCell>
+												{canManage && (
+													<TableCell>
+														<DropdownMenu>
+															<DropdownMenuTrigger asChild>
+																<Button variant='ghost' size='icon'>
+																	<MoreVertical className='h-4 w-4' />
+																</Button>
+															</DropdownMenuTrigger>
+															<DropdownMenuContent align='end'>
+																<DropdownMenuItem
+																	onClick={() => navigate(`/app/classes/${id}`)}
+																>
+																	{t('pages.classes.detail.view_profile')}
+																</DropdownMenuItem>
+																<DropdownMenuSeparator />
+																<DropdownMenuItem
+																	className='text-destructive'
+																	onClick={() =>
+																		openRemoveDialog(
+																			enrollment.studentId,
+																			studentName
+																		)
+																	}
+																>
+																	<UserMinus className='h-4 w-4 mr-2' />
+																	{t('pages.classes.detail.remove_from_class')}
+																</DropdownMenuItem>
+															</DropdownMenuContent>
+														</DropdownMenu>
+													</TableCell>
+												)}
+											</TableRow>
+										)
+									})}
 								</TableBody>
 							</Table>
 						</div>
@@ -558,6 +657,42 @@ const ClassDetailPage: React.FC = () => {
 							{assignExamMutation.isPending
 								? t('pages.dashboard.classes.assign_dialog.submitting')
 								: t('pages.dashboard.classes.assign_dialog.submit')}
+						</Button>
+					</DialogFooter>
+				</DialogContent>
+			</Dialog>
+
+			{/* Remove Student Confirmation Dialog */}
+			<Dialog open={removeDialogOpen} onOpenChange={setRemoveDialogOpen}>
+				<DialogContent>
+					<DialogHeader>
+						<DialogTitle>
+							{t('pages.classes.detail.remove_student_title')}
+						</DialogTitle>
+						<DialogDescription>
+							{t('pages.classes.detail.remove_student_description', {
+								name: studentToRemove?.name,
+							})}
+						</DialogDescription>
+					</DialogHeader>
+					<DialogFooter>
+						<Button
+							variant='outline'
+							onClick={() => {
+								setRemoveDialogOpen(false)
+								setStudentToRemove(null)
+							}}
+						>
+							{t('common.cancel')}
+						</Button>
+						<Button
+							variant='destructive'
+							onClick={handleRemoveStudent}
+							disabled={removeStudentMutation.isPending}
+						>
+							{removeStudentMutation.isPending
+								? t('pages.classes.detail.removing')
+								: t('pages.classes.detail.remove_student')}
 						</Button>
 					</DialogFooter>
 				</DialogContent>

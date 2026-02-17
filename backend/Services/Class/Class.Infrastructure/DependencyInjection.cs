@@ -55,6 +55,9 @@ public static class DependencyInjection
         // Register subscription claims HTTP client for backend token enrichment
         services.AddSubscriptionClaimsClient();
 
+        // Register UserServiceClient for fetching user details from User microservice
+        services.AddHttpClient<IUserServiceClient, UserServiceClient>();
+
         return services;
     }
 }

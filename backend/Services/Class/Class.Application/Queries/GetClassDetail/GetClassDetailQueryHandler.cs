@@ -1,4 +1,5 @@
 using FrogEdu.Class.Application.Dtos;
+using FrogEdu.Class.Application.Interfaces;
 using FrogEdu.Class.Domain.Enums;
 using FrogEdu.Class.Domain.Repositories;
 using MediatR;
@@ -9,10 +10,15 @@ public sealed class GetClassDetailQueryHandler
     : IRequestHandler<GetClassDetailQuery, ClassDetailResponse?>
 {
     private readonly IClassRoomRepository _classRoomRepository;
+    private readonly IUserServiceClient _userServiceClient;
 
-    public GetClassDetailQueryHandler(IClassRoomRepository classRoomRepository)
+    public GetClassDetailQueryHandler(
+        IClassRoomRepository classRoomRepository,
+        IUserServiceClient userServiceClient
+    )
     {
         _classRoomRepository = classRoomRepository;
+        _userServiceClient = userServiceClient;
     }
 
     public async Task<ClassDetailResponse?> Handle(
@@ -25,13 +31,25 @@ public sealed class GetClassDetailQueryHandler
         if (classroom is null)
             return null;
 
+        // Fetch user details for all enrolled students
+        var studentIds = classroom.Enrollments.Select(e => e.StudentId).Distinct().ToList();
+        var users = await _userServiceClient.GetUsersByIdsAsync(studentIds, cancellationToken);
+        var userDict = users.ToDictionary(u => u.Id);
+
         var enrollments = classroom
-            .Enrollments.Select(e => new EnrollmentDto(
-                e.Id,
-                e.StudentId,
-                e.JoinedAt,
-                e.Status.ToString()
-            ))
+            .Enrollments.Select(e =>
+            {
+                var user = userDict.GetValueOrDefault(e.StudentId);
+                return new EnrollmentWithUserDto(
+                    e.Id,
+                    e.StudentId,
+                    user?.FirstName ?? "Unknown",
+                    user?.LastName ?? "User",
+                    user?.AvatarUrl,
+                    e.JoinedAt,
+                    e.Status.ToString()
+                );
+            })
             .ToList();
 
         var assignments = classroom
