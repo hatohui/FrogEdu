@@ -91,23 +91,25 @@ export interface RegenerateCodeResponse {
 	expiresAt: string
 }
 
+const baseUrl = '/classes'
+
 // Class Service API calls
 export const classService = {
-	// ─── User-facing endpoints ───
-
 	getMyClasses: async (): Promise<ClassDto[]> => {
-		const response = await axiosInstance.get<ClassDto[]>('/classes')
+		const response = await axiosInstance.get<ClassDto[]>(`${baseUrl}/classes`)
 		return response.data
 	},
 
 	getClassDetails: async (id: string): Promise<ClassDetailsDto> => {
-		const response = await axiosInstance.get<ClassDetailsDto>(`/classes/${id}`)
+		const response = await axiosInstance.get<ClassDetailsDto>(
+			`${baseUrl}/classes/${id}`
+		)
 		return response.data
 	},
 
 	createClass: async (data: CreateClassDto): Promise<CreateClassResponse> => {
 		const response = await axiosInstance.post<CreateClassResponse>(
-			'/classes',
+			`${baseUrl}/classes`,
 			data
 		)
 		return response.data
@@ -115,7 +117,7 @@ export const classService = {
 
 	joinClass: async (data: JoinClassDto): Promise<JoinClassResponse> => {
 		const response = await axiosInstance.post<JoinClassResponse>(
-			'/classes/join',
+			`${baseUrl}/classes/join`,
 			data
 		)
 		return response.data
@@ -126,7 +128,7 @@ export const classService = {
 		expiresInDays?: number
 	): Promise<RegenerateCodeResponse> => {
 		const response = await axiosInstance.post<RegenerateCodeResponse>(
-			`/classes/${classId}/regenerate-code`,
+			`${baseUrl}/classes/${classId}/regenerate-code`,
 			{ expiresInDays }
 		)
 		return response.data
@@ -134,7 +136,7 @@ export const classService = {
 
 	getDashboardStats: async (): Promise<DashboardStatsDto> => {
 		const response = await axiosInstance.get<DashboardStatsDto>(
-			'/classes/dashboard/stats'
+			`${baseUrl}/classes/dashboard/stats`
 		)
 		return response.data
 	},
@@ -142,12 +144,14 @@ export const classService = {
 	// ─── Typed endpoints (new) ───
 
 	getMyClassesTyped: async (): Promise<ClassRoom[]> => {
-		const response = await axiosInstance.get<ClassRoom[]>('/classes')
+		const response = await axiosInstance.get<ClassRoom[]>(`${baseUrl}/classes`)
 		return response.data
 	},
 
 	getClassDetailTyped: async (id: string): Promise<ClassDetail> => {
-		const response = await axiosInstance.get<ClassDetail>(`/classes/${id}`)
+		const response = await axiosInstance.get<ClassDetail>(
+			`${baseUrl}/classes/${id}`
+		)
 		return response.data
 	},
 
@@ -156,7 +160,7 @@ export const classService = {
 		data: AssignExamRequest
 	): Promise<AssignmentResponse> => {
 		const response = await axiosInstance.post<AssignmentResponse>(
-			`/classes/${classId}/assignments`,
+			`${baseUrl}/classes/${classId}/assignments`,
 			data
 		)
 		return response.data
@@ -164,7 +168,7 @@ export const classService = {
 
 	getClassAssignments: async (classId: string): Promise<ClassAssignment[]> => {
 		const response = await axiosInstance.get<ClassAssignment[]>(
-			`/classes/${classId}/assignments`
+			`${baseUrl}/classes/${classId}/assignments`
 		)
 		return response.data
 	},
@@ -172,13 +176,15 @@ export const classService = {
 	// ─── Admin endpoints ───
 
 	adminGetAllClasses: async (): Promise<ClassRoom[]> => {
-		const response = await axiosInstance.get<ClassRoom[]>('/classes/admin/all')
+		const response = await axiosInstance.get<ClassRoom[]>(
+			`${baseUrl}/classes/admin/all`
+		)
 		return response.data
 	},
 
 	adminGetClassDetail: async (id: string): Promise<ClassDetail> => {
 		const response = await axiosInstance.get<ClassDetail>(
-			`/classes/admin/${id}`
+			`${baseUrl}/classes/admin/${id}`
 		)
 		return response.data
 	},
@@ -188,7 +194,7 @@ export const classService = {
 		data: AssignExamRequest
 	): Promise<AssignmentResponse> => {
 		const response = await axiosInstance.post<AssignmentResponse>(
-			`/classes/admin/${classId}/assignments`,
+			`${baseUrl}/classes/admin/${classId}/assignments`,
 			data
 		)
 		return response.data
