@@ -15,6 +15,16 @@ export const userKeys = {
 	dashboardStats: () => [...userKeys.all, 'dashboard-stats'] as const,
 	details: () => [...userKeys.all, 'detail'] as const,
 	detail: (id: string) => [...userKeys.details(), id] as const,
+	roles: () => ['roles'] as const,
+}
+
+// Get all roles
+export function useRoles() {
+	return useQuery({
+		queryKey: userKeys.roles(),
+		queryFn: () => userService.getRoles(),
+		staleTime: Infinity, // Roles rarely change, cache indefinitely
+	})
 }
 
 // Get all users with pagination

@@ -1,11 +1,8 @@
 import userService from '@/services/user-microservice/user.service'
 import { useAuthStore } from '@/stores/authStore'
-import { useQuery, useQueryClient } from '@tanstack/react-query'
+import { useQuery } from '@tanstack/react-query'
 import { useNavigate, useLocation } from 'react-router'
-import { useEffect, useRef } from 'react'
 import type { UserWithRole } from '@/types/model/user-service/user'
-
-// Re-export for backward compatibility
 export type { UserWithRole } from '@/types/model/user-service/user'
 
 export const useMe = () => {
@@ -16,8 +13,6 @@ export const useMe = () => {
 		state => state.syncRoleAndRefreshToken
 	)
 	const location = useLocation()
-	const queryClient = useQueryClient()
-	const hasSyncedRef = useRef(false)
 
 	const shouldQuery =
 		isAuthenticated &&
@@ -33,7 +28,8 @@ export const useMe = () => {
 	} = useQuery({
 		queryKey: ['currentUser'],
 		queryFn: () => userService.getCurrentUser(),
-		staleTime: 5 * 60 * 1000,
+		staleTime: 5 * 60 * 1000, // Cache for 5 minutes
+		gcTime: 10 * 60 * 1000, // Keep in cache for 10 minutes
 		retry: 1,
 		enabled: shouldQuery,
 	})
@@ -42,38 +38,10 @@ export const useMe = () => {
 		queryKey: ['role', userData?.roleId],
 		queryFn: () => userService.getRoleById(userData!.roleId),
 		staleTime: 10 * 60 * 1000,
+		gcTime: 30 * 60 * 1000,
 		retry: 1,
 		enabled: !!userData?.roleId,
 	})
-
-	// Auto-sync role on first load (self-healing)
-	useEffect(() => {
-		if (
-			shouldQuery &&
-			!hasSyncedRef.current &&
-			!isLoadingUser &&
-			!isLoadingRole
-		) {
-			hasSyncedRef.current = true
-			// Trigger role sync in background - this will:
-			// 1. Call GET /me to sync role to Cognito
-			// 2. Force JWT token refresh
-			// 3. Invalidate queries to refetch with new role
-			syncRoleAndRefreshToken().then(newRole => {
-				if (newRole) {
-					// Invalidate queries to refetch user data with refreshed token
-					queryClient.invalidateQueries({ queryKey: ['currentUser'] })
-					console.log('🔄 Auto-synced role and refreshed token')
-				}
-			})
-		}
-	}, [
-		shouldQuery,
-		isLoadingUser,
-		isLoadingRole,
-		syncRoleAndRefreshToken,
-		queryClient,
-	])
 
 	const user: UserWithRole | undefined = userData
 		? { ...userData, role }

@@ -155,6 +155,7 @@
 	"labels": {
 		"theme": "Theme",
 		"language": "Language",
+		"user": "User",
 		"email": "Email",
 		"role": "Role",
 		"first_name": "First Name",

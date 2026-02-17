@@ -49,46 +49,36 @@ import {
 	DialogTitle,
 } from '@/components/ui/dialog'
 import { Label } from '@/components/ui/label'
-import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Skeleton } from '@/components/ui/skeleton'
 import {
 	useUsers,
 	useUserStatistics,
 	useUpdateUser,
 	useDeleteUser,
+	useRoles,
 } from '@/hooks/useUsers'
 import type { GetMeResponse, UpdateUserRequest } from '@/types/dtos/users'
-
-// Utility to map roleId to role name
-const getRoleName = (roleId: string): string => {
-	switch (roleId) {
-		case '1':
-			return 'Admin'
-		case '2':
-			return 'Teacher'
-		case '3':
-			return 'Student'
-		default:
-			return 'Unknown'
-	}
-}
-
-// Utility to map role name to roleId
-const getRoleId = (roleName: string): string => {
-	switch (roleName) {
-		case 'Admin':
-			return '1'
-		case 'Teacher':
-			return '2'
-		case 'Student':
-			return '3'
-		default:
-			return '3' // Default to Student
-	}
-}
+import UserAvatar from '@/components/common/UserAvatar'
 
 const UsersPage = (): React.ReactElement => {
 	const { t } = useTranslation()
+
+	// Fetch roles from backend
+	const { data: roles } = useRoles()
+
+	// Helper function to get role name by ID
+	const getRoleName = (roleId: string): string => {
+		if (!roles) return 'Unknown'
+		const role = roles.find(r => r.id === roleId)
+		return role?.name || 'Unknown'
+	}
+
+	// Helper function to get role ID by name
+	const getRoleId = (roleName: string): string => {
+		if (!roles) return ''
+		const role = roles.find(r => r.name === roleName)
+		return role?.id || ''
+	}
 
 	// Pagination state
 	const [page, setPage] = useState(1)
@@ -138,7 +128,7 @@ const UsersPage = (): React.ReactElement => {
 			bgColor: 'bg-blue-100 dark:bg-blue-950',
 		},
 		{
-			title: t('label.verified'),
+			title: t('badges.verified'),
 			value: statistics?.verifiedUsers?.toString() || '0',
 			change: `${statistics ? Math.round((statistics.verifiedUsers / statistics.totalUsers) * 100) : 0}%`,
 			icon: CheckCircle2,
@@ -183,10 +173,6 @@ const UsersPage = (): React.ReactElement => {
 			month: 'short',
 			day: 'numeric',
 		})
-	}
-
-	const getInitials = (firstName: string, lastName: string) => {
-		return `${firstName[0]}${lastName[0]}`.toUpperCase()
 	}
 
 	const handleEditUser = (user: GetMeResponse) => {
@@ -243,7 +229,6 @@ const UsersPage = (): React.ReactElement => {
 
 	const handleSendPasswordReset = (user: GetMeResponse) => {
 		console.log('Send password reset to:', user.email)
-		// TODO: Implement password reset email
 	}
 
 	const handlePreviousPage = () => {
@@ -336,9 +321,11 @@ const UsersPage = (): React.ReactElement => {
 									<SelectItem value='all'>
 										{t('user_management.all_roles')}
 									</SelectItem>
-									<SelectItem value='Admin'>{t('role.admin')}</SelectItem>
-									<SelectItem value='Teacher'>{t('role.teacher')}</SelectItem>
-									<SelectItem value='Student'>{t('role.student')}</SelectItem>
+									{roles?.map(role => (
+										<SelectItem key={role.id} value={role.name}>
+											{t(`roles.${role.name.toLowerCase()}`)}
+										</SelectItem>
+									))}
 								</SelectContent>
 							</Select>
 						</div>
@@ -349,14 +336,14 @@ const UsersPage = (): React.ReactElement => {
 						<Table>
 							<TableHeader>
 								<TableRow>
-									<TableHead>{t('label.user')}</TableHead>
-									<TableHead>{t('label.email')}</TableHead>
-									<TableHead>{t('label.role')}</TableHead>
-									<TableHead>{t('label.status')}</TableHead>
-									<TableHead>{t('label.created_at')}</TableHead>
-									<TableHead>{t('label.last_login')}</TableHead>
+									<TableHead>{t('labels.user')}</TableHead>
+									<TableHead>{t('labels.email')}</TableHead>
+									<TableHead>{t('labels.role')}</TableHead>
+									<TableHead>{t('labels.status')}</TableHead>
+									<TableHead>{t('labels.created_at')}</TableHead>
+									<TableHead>{t('labels.last_login')}</TableHead>
 									<TableHead className='text-right'>
-										{t('label.actions')}
+										{t('labels.actions')}
 									</TableHead>
 								</TableRow>
 							</TableHeader>
@@ -404,11 +391,7 @@ const UsersPage = (): React.ReactElement => {
 										<TableRow key={user.id}>
 											<TableCell>
 												<div className='flex items-center gap-3'>
-													<Avatar>
-														<AvatarFallback>
-															{getInitials(user.firstName, user.lastName)}
-														</AvatarFallback>
-													</Avatar>
+													<UserAvatar user={user} />
 													<div>
 														<div className='font-medium'>
 															{user.firstName} {user.lastName}
@@ -539,9 +522,7 @@ const UsersPage = (): React.ReactElement => {
 					{selectedUser && (
 						<div className='grid gap-4 py-4'>
 							<div className='grid gap-2'>
-								<Label htmlFor='firstName'>
-									{t('label.first_name', 'First Name')}
-								</Label>
+								<Label htmlFor='firstName'>{t('labels.first_name')}</Label>
 								<Input
 									id='firstName'
 									value={editFirstName}
@@ -549,9 +530,7 @@ const UsersPage = (): React.ReactElement => {
 								/>
 							</div>
 							<div className='grid gap-2'>
-								<Label htmlFor='lastName'>
-									{t('label.last_name', 'Last Name')}
-								</Label>
+								<Label htmlFor='lastName'>{t('labels.last_name')}</Label>
 								<Input
 									id='lastName'
 									value={editLastName}
@@ -559,7 +538,7 @@ const UsersPage = (): React.ReactElement => {
 								/>
 							</div>
 							<div className='grid gap-2'>
-								<Label htmlFor='email'>{t('label.email')}</Label>
+								<Label htmlFor='email'>{t('labels.email')}</Label>
 								<Input
 									id='email'
 									type='email'
@@ -568,15 +547,17 @@ const UsersPage = (): React.ReactElement => {
 								/>
 							</div>
 							<div className='grid gap-2'>
-								<Label htmlFor='role'>{t('label.role')}</Label>
+								<Label htmlFor='role'>{t('labels.role')}</Label>
 								<Select value={editRole} onValueChange={setEditRole}>
 									<SelectTrigger>
 										<SelectValue />
 									</SelectTrigger>
 									<SelectContent>
-										<SelectItem value='Admin'>{t('role.admin')}</SelectItem>
-										<SelectItem value='Teacher'>{t('role.teacher')}</SelectItem>
-										<SelectItem value='Student'>{t('role.student')}</SelectItem>
+										{roles?.map(role => (
+											<SelectItem key={role.id} value={role.name}>
+												{t(`roles.${role.name.toLowerCase()}`)}
+											</SelectItem>
+										))}
 									</SelectContent>
 								</Select>
 							</div>
@@ -617,11 +598,11 @@ const UsersPage = (): React.ReactElement => {
 					{selectedUser && (
 						<div className='py-4'>
 							<p className='text-sm'>
-								<strong>{t('label.user')}:</strong> {selectedUser.firstName}{' '}
+								<strong>{t('labels.user')}:</strong> {selectedUser.firstName}{' '}
 								{selectedUser.lastName}
 							</p>
 							<p className='text-sm text-muted-foreground'>
-								<strong>{t('label.email')}:</strong> {selectedUser.email}
+								<strong>{t('labels.email')}:</strong> {selectedUser.email}
 							</p>
 						</div>
 					)}

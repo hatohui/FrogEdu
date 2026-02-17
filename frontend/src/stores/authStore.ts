@@ -13,6 +13,7 @@ interface AuthState {
 	isAuthenticated: boolean
 	isLoading: boolean
 	error: string | null
+	cachedRoleId: string | null // Cache roleId to avoid repeated /me calls
 	signIn: (email: string, password: string) => Promise<void>
 	signUp: (
 		email: string,
@@ -32,6 +33,7 @@ export const useAuthStore = create<AuthState>()((set, get) => ({
 	isAuthenticated: false,
 	isLoading: true,
 	error: null,
+	cachedRoleId: null,
 
 	signIn: async (email: string, password: string) => {
 		set({ isLoading: true, error: null })
@@ -112,6 +114,7 @@ export const useAuthStore = create<AuthState>()((set, get) => ({
 			await amplifySignOut()
 			set({
 				isAuthenticated: false,
+				cachedRoleId: null, // Clear cached role on sign out
 				error: null,
 			})
 		} catch (error) {
@@ -132,13 +135,25 @@ export const useAuthStore = create<AuthState>()((set, get) => ({
 				const idToken = session.tokens.idToken
 				let customRole = idToken?.payload['custom:role'] as string | undefined
 
+				// If role not in JWT, check cache first before calling backend
 				if (!customRole) {
-					try {
-						const backendUser = await userService.getCurrentUser()
-						customRole = backendUser.roleId
-					} catch (error) {
-						console.log('Could not fetch user from backend:', error)
+					const cachedRole = get().cachedRoleId
+					if (cachedRole) {
+						customRole = cachedRole
+					} else {
+						// Only fetch from backend if not cached
+						try {
+							const backendUser = await userService.getCurrentUser()
+							customRole = backendUser.roleId
+							// Cache the roleId to avoid repeated API calls
+							set({ cachedRoleId: customRole })
+						} catch (error) {
+							console.log('Could not fetch user from backend:', error)
+						}
 					}
+				} else {
+					// Update cache if role is in JWT
+					set({ cachedRoleId: customRole })
 				}
 
 				set({
@@ -149,6 +164,7 @@ export const useAuthStore = create<AuthState>()((set, get) => ({
 				set({
 					isAuthenticated: false,
 					isLoading: false,
+					cachedRoleId: null,
 				})
 			}
 		} catch (error) {
@@ -156,27 +172,23 @@ export const useAuthStore = create<AuthState>()((set, get) => ({
 			set({
 				isAuthenticated: false,
 				isLoading: false,
+				cachedRoleId: null,
 			})
 		}
 	},
 
 	syncRoleAndRefreshToken: async () => {
 		try {
-			// Step 1: Call GET /me to sync role to Cognito's custom:role attribute
 			await userService.getCurrentUser()
-			console.log('✓ Role synced to Cognito via GET /me')
 
-			// Step 2: Force token refresh to get new JWT with updated custom:role claim
 			const session = await fetchAuthSession({ forceRefresh: true })
 			const newRole = session.tokens?.idToken?.payload['custom:role'] as
 				| string
 				| undefined
 
 			if (newRole) {
-				console.log('✓ Token refreshed, new role in JWT:', newRole)
 				return newRole
 			} else {
-				console.warn('⚠ Token refreshed but custom:role not found in JWT')
 				return null
 			}
 		} catch (error) {

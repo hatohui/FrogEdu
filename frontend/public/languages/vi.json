@@ -155,6 +155,7 @@
 	"labels": {
 		"theme": "Chủ đề",
 		"language": "Ngôn ngữ",
+		"user": "Người dùng",
 		"email": "Email",
 		"role": "Vai trò",
 		"first_name": "Tên",
