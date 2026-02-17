@@ -796,7 +796,7 @@
 					"enrollments_tab": "Học sinh",
 					"assignments_tab": "Bài tập",
 					"info_tab": "Thông tin",
-					"student_id": "Mã học sinh",
+					"student": "Học sinh",
 					"joined_at": "Ngày tham gia",
 					"status": "Trạng thái",
 					"no_students": "Chưa có học sinh",

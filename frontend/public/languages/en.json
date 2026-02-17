@@ -594,7 +594,7 @@
 					"enrollments_tab": "Students",
 					"assignments_tab": "Assignments",
 					"info_tab": "Information",
-					"student_id": "Student ID",
+					"student": "Student",
 					"joined_at": "Joined",
 					"status": "Status",
 					"no_students": "No students enrolled",

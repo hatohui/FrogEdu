@@ -350,7 +350,7 @@ const ClassDetailPage = (): React.ReactElement => {
 									<TableHeader>
 										<TableRow>
 											<TableHead>
-												{t('pages.dashboard.classes.detail.student_id')}
+												{t('pages.dashboard.classes.detail.student')}
 											</TableHead>
 											<TableHead>
 												{t('pages.dashboard.classes.detail.joined_at')}
@@ -363,8 +363,25 @@ const ClassDetailPage = (): React.ReactElement => {
 									<TableBody>
 										{classDetail.enrollments.map(enrollment => (
 											<TableRow key={enrollment.id}>
-												<TableCell className='font-mono text-sm'>
-													{enrollment.studentId}
+												<TableCell>
+													<div className='flex items-center gap-3'>
+														{enrollment.studentAvatarUrl ? (
+															<img
+																src={enrollment.studentAvatarUrl}
+																alt=''
+																className='h-8 w-8 rounded-full object-cover'
+															/>
+														) : (
+															<div className='h-8 w-8 rounded-full bg-muted flex items-center justify-center text-xs font-medium text-muted-foreground'>
+																{enrollment.studentFirstName?.[0]}
+																{enrollment.studentLastName?.[0]}
+															</div>
+														)}
+														<span className='font-medium'>
+															{enrollment.studentFirstName}{' '}
+															{enrollment.studentLastName}
+														</span>
+													</div>
 												</TableCell>
 												<TableCell className='text-muted-foreground'>
 													{formatDate(enrollment.joinedAt)}
