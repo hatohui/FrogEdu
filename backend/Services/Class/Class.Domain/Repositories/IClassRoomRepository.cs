@@ -21,6 +21,11 @@ public interface IClassRoomRepository
         string grade,
         CancellationToken cancellationToken = default
     );
+    Task<IReadOnlyList<ClassRoom>> GetAllAsync(CancellationToken cancellationToken = default);
+    Task<IReadOnlyList<ClassRoom>> GetByStudentIdAsync(
+        Guid studentId,
+        CancellationToken cancellationToken = default
+    );
     Task AddAsync(ClassRoom classRoom, CancellationToken cancellationToken = default);
     void Update(ClassRoom classRoom);
     void Delete(ClassRoom classRoom);

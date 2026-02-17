@@ -1,6 +1,17 @@
+import type {
+	ClassRoom,
+	ClassDetail,
+	ClassAssignment,
+} from '@/types/model/class-service'
+import type {
+	AssignExamRequest,
+	CreateClassResponse,
+	JoinClassResponse,
+	AssignmentResponse,
+} from '@/types/dtos/classes'
 import axiosInstance from '../axios'
 
-// DTOs matching backend
+// Legacy DTOs kept for backward compatibility with existing components
 export interface ClassDto {
 	id: string
 	name: string
@@ -69,21 +80,10 @@ export interface DashboardStatsDto {
 	archivedClasses: number
 }
 
-export interface CreateClassResponse {
-	classId: string
-	name: string
-	grade: string
-	inviteCode: string
-	maxStudents: number
-	bannerUrl: string | null
-	isActive: boolean
-	teacherId: string
-	createdAt: string
-}
-
-export interface JoinClassResponse {
-	classId: string
-	className: string
+export {
+	type CreateClassResponse,
+	type JoinClassResponse,
+	type AssignmentResponse,
 }
 
 export interface RegenerateCodeResponse {
@@ -93,6 +93,8 @@ export interface RegenerateCodeResponse {
 
 // Class Service API calls
 export const classService = {
+	// ─── User-facing endpoints ───
+
 	getMyClasses: async (): Promise<ClassDto[]> => {
 		const response = await axiosInstance.get<ClassDto[]>('/classes')
 		return response.data
@@ -133,6 +135,61 @@ export const classService = {
 	getDashboardStats: async (): Promise<DashboardStatsDto> => {
 		const response = await axiosInstance.get<DashboardStatsDto>(
 			'/classes/dashboard/stats'
+		)
+		return response.data
+	},
+
+	// ─── Typed endpoints (new) ───
+
+	getMyClassesTyped: async (): Promise<ClassRoom[]> => {
+		const response = await axiosInstance.get<ClassRoom[]>('/classes')
+		return response.data
+	},
+
+	getClassDetailTyped: async (id: string): Promise<ClassDetail> => {
+		const response = await axiosInstance.get<ClassDetail>(`/classes/${id}`)
+		return response.data
+	},
+
+	assignExam: async (
+		classId: string,
+		data: AssignExamRequest
+	): Promise<AssignmentResponse> => {
+		const response = await axiosInstance.post<AssignmentResponse>(
+			`/classes/${classId}/assignments`,
+			data
+		)
+		return response.data
+	},
+
+	getClassAssignments: async (classId: string): Promise<ClassAssignment[]> => {
+		const response = await axiosInstance.get<ClassAssignment[]>(
+			`/classes/${classId}/assignments`
+		)
+		return response.data
+	},
+
+	// ─── Admin endpoints ───
+
+	adminGetAllClasses: async (): Promise<ClassRoom[]> => {
+		const response = await axiosInstance.get<ClassRoom[]>('/classes/admin/all')
+		return response.data
+	},
+
+	adminGetClassDetail: async (id: string): Promise<ClassDetail> => {
+		const response = await axiosInstance.get<ClassDetail>(
+			`/classes/admin/${id}`
+		)
+		return response.data
+	},
+
+	adminAssignExam: async (
+		classId: string,
+		data: AssignExamRequest
+	): Promise<AssignmentResponse> => {
+		const response = await axiosInstance.post<AssignmentResponse>(
+			`/classes/admin/${classId}/assignments`,
+			data
 		)
 		return response.data
 	},

@@ -1,6 +1,10 @@
 import React from 'react'
 import { useParams, Link, useNavigate } from 'react-router'
-import { useClassDetails, useRegenerateInviteCode } from '@/hooks/useClasses'
+import {
+	useClassDetails,
+	useRegenerateInviteCode,
+	useClassAssignments,
+} from '@/hooks/useClasses'
 import { useMe } from '@/hooks/auth/useMe'
 import { StudentList } from '@/components/classes'
 import { Button } from '@/components/ui/button'
@@ -15,12 +19,23 @@ import { Badge } from '@/components/ui/badge'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Separator } from '@/components/ui/separator'
 import {
+	Table,
+	TableBody,
+	TableCell,
+	TableHead,
+	TableHeader,
+	TableRow,
+} from '@/components/ui/table'
+import {
 	ArrowLeft,
 	BookOpen,
 	Building,
 	Calendar,
+	CheckCircle2,
 	Clock,
 	Copy,
+	FileText,
+	AlertTriangle,
 	RefreshCw,
 	Users,
 } from 'lucide-react'
@@ -35,6 +50,8 @@ const ClassDetailPage: React.FC = () => {
 	const { user } = useMe()
 
 	const { data: classDetails, isLoading, error } = useClassDetails(id || '')
+	const { data: assignments, isLoading: assignmentsLoading } =
+		useClassAssignments(id || '')
 	const regenerateCode = useRegenerateInviteCode()
 
 	const isTeacher =
@@ -284,6 +301,106 @@ const ClassDetailPage: React.FC = () => {
 				</CardHeader>
 				<CardContent>
 					<StudentList members={classDetails.members} showRole={isTeacher} />
+				</CardContent>
+			</Card>
+
+			{/* Assignments */}
+			<Card>
+				<CardHeader>
+					<CardTitle className='flex items-center gap-2'>
+						<FileText className='h-5 w-5' />
+						{t('pages.classes.detail.assignments_title')}
+					</CardTitle>
+					<CardDescription>
+						{t('pages.classes.detail.assignments_description')}
+					</CardDescription>
+				</CardHeader>
+				<CardContent>
+					{assignmentsLoading ? (
+						<Skeleton className='h-32 w-full' />
+					) : !assignments || assignments.length === 0 ? (
+						<div className='flex flex-col items-center justify-center py-8 gap-2'>
+							<FileText className='h-8 w-8 text-muted-foreground' />
+							<p className='font-medium'>
+								{t('pages.classes.detail.no_assignments')}
+							</p>
+							<p className='text-sm text-muted-foreground'>
+								{t('pages.classes.detail.no_assignments_description')}
+							</p>
+						</div>
+					) : (
+						<div className='rounded-md border'>
+							<Table>
+								<TableHeader>
+									<TableRow>
+										<TableHead>
+											{t('pages.classes.detail.exam_label')}
+										</TableHead>
+										<TableHead>
+											{t('pages.classes.detail.start_date')}
+										</TableHead>
+										<TableHead>{t('pages.classes.detail.due_date')}</TableHead>
+										<TableHead>{t('pages.classes.detail.weight')}</TableHead>
+										<TableHead>{t('pages.classes.detail.mandatory')}</TableHead>
+										<TableHead>
+											{t('pages.dashboard.classes.detail.status')}
+										</TableHead>
+									</TableRow>
+								</TableHeader>
+								<TableBody>
+									{assignments.map(assignment => (
+										<TableRow key={assignment.id}>
+											<TableCell className='font-mono text-sm'>
+												{assignment.examId}
+											</TableCell>
+											<TableCell className='text-muted-foreground'>
+												{format(
+													new Date(assignment.startDate),
+													'MMM d, yyyy h:mm a'
+												)}
+											</TableCell>
+											<TableCell className='text-muted-foreground'>
+												{format(
+													new Date(assignment.dueDate),
+													'MMM d, yyyy h:mm a'
+												)}
+											</TableCell>
+											<TableCell>{assignment.weight}%</TableCell>
+											<TableCell>
+												<Badge
+													variant={
+														assignment.isMandatory ? 'default' : 'outline'
+													}
+												>
+													{assignment.isMandatory
+														? t('pages.classes.detail.mandatory')
+														: t('pages.classes.detail.optional')}
+												</Badge>
+											</TableCell>
+											<TableCell>
+												{assignment.isOverdue ? (
+													<div className='flex items-center gap-1 text-orange-600'>
+														<AlertTriangle className='h-3.5 w-3.5' />
+														{t('pages.classes.detail.status_overdue')}
+													</div>
+												) : assignment.isActive ? (
+													<div className='flex items-center gap-1 text-green-600'>
+														<CheckCircle2 className='h-3.5 w-3.5' />
+														{t('pages.classes.detail.status_active')}
+													</div>
+												) : (
+													<div className='flex items-center gap-1 text-blue-600'>
+														<Calendar className='h-3.5 w-3.5' />
+														{t('pages.classes.detail.status_upcoming')}
+													</div>
+												)}
+											</TableCell>
+										</TableRow>
+									))}
+								</TableBody>
+							</Table>
+						</div>
+					)}
 				</CardContent>
 			</Card>
 		</div>

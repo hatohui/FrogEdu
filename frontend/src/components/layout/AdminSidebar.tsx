@@ -53,6 +53,11 @@ const adminNavItems: NavItem[] = [
 		icon: Users,
 	},
 	{
+		labelKey: 'navigation.classes',
+		href: '/dashboard/classes',
+		icon: GraduationCap,
+	},
+	{
 		labelKey: 'navigation.analytics',
 		href: '/dashboard/analytics',
 		icon: BarChart3,

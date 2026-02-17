@@ -7,6 +7,12 @@ import {
 	type CreateClassDto,
 	type DashboardStatsDto,
 } from '@/services/class-microservice/class.service'
+import type {
+	ClassRoom,
+	ClassDetail,
+	ClassAssignment,
+} from '@/types/model/class-service'
+import type { AssignExamRequest } from '@/types/dtos/classes'
 
 // Query keys
 export const classKeys = {
@@ -15,6 +21,11 @@ export const classKeys = {
 		[...classKeys.all, 'list', { includeArchived }] as const,
 	details: (id: string) => [...classKeys.all, 'details', id] as const,
 	dashboardStats: () => [...classKeys.all, 'dashboard-stats'] as const,
+	assignments: (classId: string) =>
+		[...classKeys.all, 'assignments', classId] as const,
+	adminAll: () => [...classKeys.all, 'admin', 'all'] as const,
+	adminDetail: (id: string) =>
+		[...classKeys.all, 'admin', 'details', id] as const,
 }
 
 /**
@@ -106,6 +117,109 @@ export function useRegenerateInviteCode() {
 		},
 		onError: (error: Error) => {
 			toast.error(error.message || 'Failed to regenerate invite code')
+		},
+	})
+}
+
+// ─── Typed hooks (new) ───
+
+/**
+ * Hook to fetch typed class detail
+ */
+export function useClassDetailTyped(classId: string) {
+	return useQuery<ClassDetail, Error>({
+		queryKey: classKeys.details(classId),
+		queryFn: () => classService.getClassDetailTyped(classId),
+		enabled: !!classId,
+	})
+}
+
+/**
+ * Hook to fetch assignments for a class
+ */
+export function useClassAssignments(classId: string) {
+	return useQuery<ClassAssignment[], Error>({
+		queryKey: classKeys.assignments(classId),
+		queryFn: () => classService.getClassAssignments(classId),
+		enabled: !!classId,
+	})
+}
+
+/**
+ * Hook to assign an exam to a class (Teacher)
+ */
+export function useAssignExam() {
+	const queryClient = useQueryClient()
+
+	return useMutation({
+		mutationFn: ({
+			classId,
+			data,
+		}: {
+			classId: string
+			data: AssignExamRequest
+		}) => classService.assignExam(classId, data),
+		onSuccess: (_, variables) => {
+			queryClient.invalidateQueries({
+				queryKey: classKeys.assignments(variables.classId),
+			})
+			queryClient.invalidateQueries({
+				queryKey: classKeys.details(variables.classId),
+			})
+			toast.success('Exam assigned successfully!')
+		},
+		onError: (error: Error) => {
+			toast.error(error.message || 'Failed to assign exam')
+		},
+	})
+}
+
+// ─── Admin hooks ───
+
+/**
+ * Hook to fetch all classes (Admin)
+ */
+export function useAdminAllClasses() {
+	return useQuery<ClassRoom[], Error>({
+		queryKey: classKeys.adminAll(),
+		queryFn: () => classService.adminGetAllClasses(),
+	})
+}
+
+/**
+ * Hook to fetch class detail as admin
+ */
+export function useAdminClassDetail(classId: string) {
+	return useQuery<ClassDetail, Error>({
+		queryKey: classKeys.adminDetail(classId),
+		queryFn: () => classService.adminGetClassDetail(classId),
+		enabled: !!classId,
+	})
+}
+
+/**
+ * Hook to assign an exam to a class (Admin — bypasses ownership)
+ */
+export function useAdminAssignExam() {
+	const queryClient = useQueryClient()
+
+	return useMutation({
+		mutationFn: ({
+			classId,
+			data,
+		}: {
+			classId: string
+			data: AssignExamRequest
+		}) => classService.adminAssignExam(classId, data),
+		onSuccess: (_, variables) => {
+			queryClient.invalidateQueries({
+				queryKey: classKeys.adminDetail(variables.classId),
+			})
+			queryClient.invalidateQueries({ queryKey: classKeys.adminAll() })
+			toast.success('Exam assigned successfully!')
+		},
+		onError: (error: Error) => {
+			toast.error(error.message || 'Failed to assign exam')
 		},
 	})
 }

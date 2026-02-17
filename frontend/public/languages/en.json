@@ -425,7 +425,22 @@
 				"expires": "Expires",
 				"regenerate": "Regenerate code",
 				"roster_title": "Class roster",
-				"roster_description": "Students enrolled in this class"
+				"roster_description": "Students enrolled in this class",
+				"assignments_title": "Assignments",
+				"assignments_description": "Exams assigned to this class",
+				"no_assignments": "No assignments yet",
+				"no_assignments_description": "Assign exams to this class to get started.",
+				"assign_exam": "Assign exam",
+				"exam_label": "Exam",
+				"start_date": "Start date",
+				"due_date": "Due date",
+				"mandatory": "Mandatory",
+				"optional": "Optional",
+				"weight": "Weight",
+				"status_active": "Active",
+				"status_overdue": "Overdue",
+				"status_upcoming": "Upcoming",
+				"status_completed": "Completed"
 			},
 			"card": {
 				"grade_badge": "Grade {{grade}}",
@@ -481,6 +496,68 @@
 					"name": "Name",
 					"role": "Role",
 					"joined": "Joined"
+				}
+			}
+		},
+		"dashboard": {
+			"classes": {
+				"title": "Classes Management",
+				"subtitle": "View and manage all classes created by teachers.",
+				"search_placeholder": "Search classes by name or grade...",
+				"filter_all": "All",
+				"filter_active": "Active",
+				"filter_inactive": "Inactive",
+				"table": {
+					"name": "Class Name",
+					"grade": "Grade",
+					"teacher": "Teacher",
+					"students": "Students",
+					"assignments": "Assignments",
+					"status": "Status",
+					"created": "Created",
+					"actions": "Actions",
+					"invite_code": "Invite Code"
+				},
+				"actions": {
+					"view_details": "View Details",
+					"assign_exam": "Assign Exam",
+					"view_students": "View Students",
+					"view_assignments": "View Assignments"
+				},
+				"stats": {
+					"total_classes": "Total Classes",
+					"active_classes": "Active Classes",
+					"total_students": "Total Students",
+					"total_assignments": "Total Assignments"
+				},
+				"detail": {
+					"title": "Class Details",
+					"back": "Back to Classes",
+					"enrollments_tab": "Students",
+					"assignments_tab": "Assignments",
+					"info_tab": "Information",
+					"student_id": "Student ID",
+					"joined_at": "Joined",
+					"status": "Status",
+					"no_students": "No students enrolled",
+					"no_assignments": "No assignments yet"
+				},
+				"assign_dialog": {
+					"title": "Assign Exam to Class",
+					"description": "Select an exam and set the schedule.",
+					"exam_id": "Exam ID",
+					"exam_id_placeholder": "Enter exam ID",
+					"start_date": "Start Date",
+					"due_date": "Due Date",
+					"mandatory": "Mandatory",
+					"weight": "Weight (0-100)",
+					"weight_placeholder": "100",
+					"submit": "Assign Exam",
+					"submitting": "Assigning..."
+				},
+				"empty": {
+					"title": "No classes found",
+					"description": "No classes match your search criteria."
 				}
 			}
 		},

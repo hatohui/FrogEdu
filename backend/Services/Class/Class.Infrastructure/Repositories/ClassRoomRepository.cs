@@ -75,6 +75,37 @@ public class ClassRoomRepository : IClassRoomRepository
             .ToListAsync(cancellationToken);
     }
 
+    public async Task<IReadOnlyList<ClassRoom>> GetAllAsync(
+        CancellationToken cancellationToken = default
+    )
+    {
+        return await _context
+            .ClassRooms.Include(c => c.Enrollments)
+            .Include(c => c.Assignments)
+            .OrderByDescending(c => c.CreatedAt)
+            .ToListAsync(cancellationToken);
+    }
+
+    public async Task<IReadOnlyList<ClassRoom>> GetByStudentIdAsync(
+        Guid studentId,
+        CancellationToken cancellationToken = default
+    )
+    {
+        var enrolledClassIds = await _context
+            .ClassEnrollments.Where(e =>
+                e.StudentId == studentId && e.Status == Domain.Enums.EnrollmentStatus.Active
+            )
+            .Select(e => e.ClassId)
+            .ToListAsync(cancellationToken);
+
+        return await _context
+            .ClassRooms.Include(c => c.Enrollments)
+            .Include(c => c.Assignments)
+            .Where(c => enrolledClassIds.Contains(c.Id))
+            .OrderByDescending(c => c.CreatedAt)
+            .ToListAsync(cancellationToken);
+    }
+
     public async Task AddAsync(ClassRoom classRoom, CancellationToken cancellationToken = default)
     {
         await _context.ClassRooms.AddAsync(classRoom, cancellationToken);

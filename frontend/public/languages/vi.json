@@ -635,7 +635,22 @@
 				"expires": "Hết hạn",
 				"regenerate": "Tạo lại mã",
 				"roster_title": "Danh sách lớp",
-				"roster_description": "Học sinh trong lớp này"
+				"roster_description": "Học sinh trong lớp này",
+				"assignments_title": "Bài tập",
+				"assignments_description": "Các bài thi được giao trong lớp này",
+				"no_assignments": "Chưa có bài tập",
+				"no_assignments_description": "Giao bài thi cho lớp này để bắt đầu.",
+				"assign_exam": "Giao bài thi",
+				"exam_label": "Bài thi",
+				"start_date": "Ngày bắt đầu",
+				"due_date": "Ngày hết hạn",
+				"mandatory": "Bắt buộc",
+				"optional": "Tùy chọn",
+				"weight": "Trọng số",
+				"status_active": "Đang diễn ra",
+				"status_overdue": "Quá hạn",
+				"status_upcoming": "Sắp tới",
+				"status_completed": "Hoàn thành"
 			},
 			"card": {
 				"grade_badge": "Khối {{grade}}",
@@ -691,6 +706,68 @@
 					"name": "Tên",
 					"role": "Vai trò",
 					"joined": "Ngày tham gia"
+				}
+			}
+		},
+		"dashboard": {
+			"classes": {
+				"title": "Quản lý lớp học",
+				"subtitle": "Xem và quản lý tất cả lớp học do giáo viên tạo.",
+				"search_placeholder": "Tìm kiếm lớp học theo tên hoặc khối...",
+				"filter_all": "Tất cả",
+				"filter_active": "Đang hoạt động",
+				"filter_inactive": "Không hoạt động",
+				"table": {
+					"name": "Tên lớp",
+					"grade": "Khối",
+					"teacher": "Giáo viên",
+					"students": "Học sinh",
+					"assignments": "Bài tập",
+					"status": "Trạng thái",
+					"created": "Ngày tạo",
+					"actions": "Thao tác",
+					"invite_code": "Mã mời"
+				},
+				"actions": {
+					"view_details": "Xem chi tiết",
+					"assign_exam": "Giao bài thi",
+					"view_students": "Xem học sinh",
+					"view_assignments": "Xem bài tập"
+				},
+				"stats": {
+					"total_classes": "Tổng lớp học",
+					"active_classes": "Lớp đang hoạt động",
+					"total_students": "Tổng học sinh",
+					"total_assignments": "Tổng bài tập"
+				},
+				"detail": {
+					"title": "Chi tiết lớp học",
+					"back": "Quay lại danh sách",
+					"enrollments_tab": "Học sinh",
+					"assignments_tab": "Bài tập",
+					"info_tab": "Thông tin",
+					"student_id": "Mã học sinh",
+					"joined_at": "Ngày tham gia",
+					"status": "Trạng thái",
+					"no_students": "Chưa có học sinh",
+					"no_assignments": "Chưa có bài tập"
+				},
+				"assign_dialog": {
+					"title": "Giao bài thi cho lớp",
+					"description": "Chọn bài thi và đặt lịch.",
+					"exam_id": "Mã bài thi",
+					"exam_id_placeholder": "Nhập mã bài thi",
+					"start_date": "Ngày bắt đầu",
+					"due_date": "Ngày hết hạn",
+					"mandatory": "Bắt buộc",
+					"weight": "Trọng số (0-100)",
+					"weight_placeholder": "100",
+					"submit": "Giao bài thi",
+					"submitting": "Đang giao..."
+				},
+				"empty": {
+					"title": "Không tìm thấy lớp học",
+					"description": "Không có lớp học phù hợp với tiêu chí."
 				}
 			}
 		},
