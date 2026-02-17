@@ -174,37 +174,6 @@ public class ClassController(IMediator mediator) : BaseController
     }
 
     /// <summary>
-    /// Admin: Get all classes in the system
-    /// </summary>
-    [HttpGet("admin/all")]
-    [Authorize(Roles = "Admin")]
-    [ProducesResponseType(typeof(IReadOnlyList<ClassSummaryResponse>), StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetAllClasses(CancellationToken cancellationToken)
-    {
-        var query = new GetAllClassesQuery();
-        var result = await _mediator.Send(query, cancellationToken);
-        return Ok(result);
-    }
-
-    /// <summary>
-    /// Admin: Get class detail (same as regular but explicitly admin-only route)
-    /// </summary>
-    [HttpGet("admin/{id:guid}")]
-    [Authorize(Roles = "Admin")]
-    [ProducesResponseType(typeof(ClassDetailResponse), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> AdminGetClassById(Guid id, CancellationToken cancellationToken)
-    {
-        var query = new GetClassDetailQuery(id);
-        var result = await _mediator.Send(query, cancellationToken);
-
-        if (result is null)
-            return NotFound("Class not found");
-
-        return Ok(result);
-    }
-
-    /// <summary>
     /// Admin: Assign an exam to any class (bypasses teacher ownership check)
     /// </summary>
     [HttpPost("admin/{classId:guid}/assignments")]

@@ -35,7 +35,7 @@ import {
 } from '@/components/ui/dialog'
 import { Label } from '@/components/ui/label'
 import { Skeleton } from '@/components/ui/skeleton'
-import { useAdminClassDetail, useAdminAssignExam } from '@/hooks/useClasses'
+import { useClassDetail, useAdminAssignExam } from '@/hooks/useClasses'
 import type { AssignExamRequest } from '@/types/dtos/classes'
 
 type Tab = 'info' | 'students' | 'assignments'
@@ -44,7 +44,8 @@ const ClassDetailPage = (): React.ReactElement => {
 	const { t } = useTranslation()
 	const navigate = useNavigate()
 	const { id } = useParams<{ id: string }>()
-	const { data: classDetail, isLoading } = useAdminClassDetail(id ?? '')
+	// Use regular useClassDetail - backend already handles authorization
+	const { data: classDetail, isLoading } = useClassDetail(id ?? '')
 
 	const [activeTab, setActiveTab] = useState<Tab>('info')
 	const [assignDialogOpen, setAssignDialogOpen] = useState(false)

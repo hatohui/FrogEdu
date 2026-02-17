@@ -13,14 +13,10 @@ import type {
 
 // Query keys
 export const classKeys = {
-	all: ['classes'] as const,
-	list: () => [...classKeys.all, 'list'] as const,
-	details: (id: string) => [...classKeys.all, 'details', id] as const,
+	all: () => ['classes'] as const,
+	detail: (id: string) => [...classKeys.all(), 'detail', id] as const,
 	assignments: (classId: string) =>
-		[...classKeys.all, 'assignments', classId] as const,
-	adminAll: () => [...classKeys.all, 'admin', 'all'] as const,
-	adminDetail: (id: string) =>
-		[...classKeys.all, 'admin', 'details', id] as const,
+		[...classKeys.all(), 'assignments', classId] as const,
 }
 
 /**
@@ -28,7 +24,7 @@ export const classKeys = {
  */
 export function useClasses() {
 	return useQuery<ClassRoom[], Error>({
-		queryKey: classKeys.list(),
+		queryKey: classKeys.all(),
 		queryFn: () => classService.getMyClasses(),
 	})
 }
@@ -38,7 +34,7 @@ export function useClasses() {
  */
 export function useClassDetail(classId: string) {
 	return useQuery<ClassDetail, Error>({
-		queryKey: classKeys.details(classId),
+		queryKey: classKeys.detail(classId),
 		queryFn: () => classService.getClassDetail(classId),
 		enabled: !!classId,
 	})
@@ -53,7 +49,7 @@ export function useCreateClass() {
 	return useMutation({
 		mutationFn: (data: CreateClassRequest) => classService.createClass(data),
 		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: classKeys.all })
+			queryClient.invalidateQueries({ queryKey: classKeys.all() })
 			toast.success('Class created successfully!')
 		},
 		onError: (error: Error) => {
@@ -71,7 +67,7 @@ export function useJoinClass() {
 	return useMutation({
 		mutationFn: (inviteCode: string) => classService.joinClass({ inviteCode }),
 		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: classKeys.all })
+			queryClient.invalidateQueries({ queryKey: classKeys.all() })
 			toast.success('Successfully joined the class!')
 		},
 		onError: (error: Error) => {
@@ -110,7 +106,7 @@ export function useAssignExam() {
 				queryKey: classKeys.assignments(variables.classId),
 			})
 			queryClient.invalidateQueries({
-				queryKey: classKeys.details(variables.classId),
+				queryKey: classKeys.detail(variables.classId),
 			})
 			toast.success('Exam assigned successfully!')
 		},
@@ -121,27 +117,8 @@ export function useAssignExam() {
 }
 
 // ─── Admin hooks ───
-
-/**
- * Hook to fetch all classes (Admin)
- */
-export function useAdminAllClasses() {
-	return useQuery<ClassRoom[], Error>({
-		queryKey: classKeys.adminAll(),
-		queryFn: () => classService.adminGetAllClasses(),
-	})
-}
-
-/**
- * Hook to fetch class detail as admin
- */
-export function useAdminClassDetail(classId: string) {
-	return useQuery<ClassDetail, Error>({
-		queryKey: classKeys.adminDetail(classId),
-		queryFn: () => classService.adminGetClassDetail(classId),
-		enabled: !!classId,
-	})
-}
+// Note: Admin users can use regular useClasses/useClassDetail since backend filters by role.
+// Only admin-specific assign is needed to bypass ownership checks.
 
 /**
  * Hook to assign an exam to a class (Admin — bypasses ownership)
@@ -158,10 +135,11 @@ export function useAdminAssignExam() {
 			data: AssignExamRequest
 		}) => classService.adminAssignExam(classId, data),
 		onSuccess: (_, variables) => {
+			// Invalidate regular class queries (used by admin dashboard now)
 			queryClient.invalidateQueries({
-				queryKey: classKeys.adminDetail(variables.classId),
+				queryKey: classKeys.detail(variables.classId),
 			})
-			queryClient.invalidateQueries({ queryKey: classKeys.adminAll() })
+			queryClient.invalidateQueries({ queryKey: classKeys.all() })
 			toast.success('Exam assigned successfully!')
 		},
 		onError: (error: Error) => {

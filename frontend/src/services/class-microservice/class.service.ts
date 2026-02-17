@@ -70,20 +70,6 @@ export const classService = {
 
 	// ─── Admin endpoints ───
 
-	adminGetAllClasses: async (): Promise<ClassRoom[]> => {
-		const response = await axiosInstance.get<ClassRoom[]>(
-			`${baseUrl}/classes/admin/all`
-		)
-		return response.data
-	},
-
-	adminGetClassDetail: async (id: string): Promise<ClassDetail> => {
-		const response = await axiosInstance.get<ClassDetail>(
-			`${baseUrl}/classes/admin/${id}`
-		)
-		return response.data
-	},
-
 	adminAssignExam: async (
 		classId: string,
 		data: AssignExamRequest

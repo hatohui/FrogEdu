@@ -48,14 +48,15 @@ import {
 } from '@/components/ui/dialog'
 import { Label } from '@/components/ui/label'
 import { Skeleton } from '@/components/ui/skeleton'
-import { useAdminAllClasses, useAdminAssignExam } from '@/hooks/useClasses'
+import { useClasses, useAdminAssignExam } from '@/hooks/useClasses'
 import type { ClassRoom } from '@/types/model/class-service'
 import type { AssignExamRequest } from '@/types/dtos/classes'
 
 const ClassesPage = (): React.ReactElement => {
 	const { t } = useTranslation()
 	const navigate = useNavigate()
-	const { data: classes, isLoading } = useAdminAllClasses()
+	// Use regular useClasses - backend already filters by role (Admin gets all)
+	const { data: classes, isLoading } = useClasses()
 
 	const [searchQuery, setSearchQuery] = useState('')
 	const [statusFilter, setStatusFilter] = useState<string>('all')
