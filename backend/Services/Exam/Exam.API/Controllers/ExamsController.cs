@@ -3,6 +3,7 @@ using FrogEdu.Exam.Application.Commands.AttachMatrixToExam;
 using FrogEdu.Exam.Application.Commands.CreateExam;
 using FrogEdu.Exam.Application.Commands.DeleteExam;
 using FrogEdu.Exam.Application.Commands.DetachMatrixFromExam;
+using FrogEdu.Exam.Application.Commands.PublishExam;
 using FrogEdu.Exam.Application.Commands.RemoveQuestionFromExam;
 using FrogEdu.Exam.Application.Commands.UpdateExam;
 using FrogEdu.Exam.Application.DTOs;
@@ -93,6 +94,24 @@ public class ExamsController(IMediator mediator) : BaseController
     {
         var userId = GetAuthenticatedUserId();
         var command = new UpdateExamCommand(examId, request.Name, request.Description, userId);
+        await _mediator.Send(command, cancellationToken);
+        return NoContent();
+    }
+
+    [HttpPost("{examId:guid}/publish")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> PublishExam(
+        [FromRoute] Guid examId,
+        CancellationToken cancellationToken
+    )
+    {
+        var userId = GetAuthenticatedUserId();
+        var isAdmin = GetUserRole() == "Admin";
+        var command = new PublishExamCommand(examId, userId, isAdmin);
         await _mediator.Send(command, cancellationToken);
         return NoContent();
     }

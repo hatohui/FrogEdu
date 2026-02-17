@@ -56,7 +56,7 @@ public sealed class UserServiceClient : IUserServiceClient
                 return null;
 
             return new UserDto(
-                userResponse.Id,
+                Guid.Parse(userResponse.CognitoId),
                 userResponse.FirstName,
                 userResponse.LastName,
                 userResponse.Email,

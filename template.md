@@ -2,12 +2,10 @@ As #file:backend-spec.md
 
 use #shadcn and #io.github.upstash/context7 to help me implement the flow where:
 
-- Teachers creates an ExamSession which includes the session data including: examId, startTime, endTime, retryTimes, isRetryable, isActive, shouldShuffleQuestions, shouldShuffleAnswers
-- Create a scoring system for the class where it allows partial correctness, run DB migration with EF like other services if required.
-- Students should be able to take the test via class-assigned exams when the exam is active and such. Have the options to see upcoming tests in app/exams (make a conditional check and move to components to clean up). Admin should be able to see both
-- Saves the answers of students and let teachers see the list of takes by who, scored how much
-
-The MVP can simply ignore the essay type questions for now.
+- Teachers generates exams based on the matrixes via AI generation
+- Currently, there's no selection for question_type if you generate by matrix, only by questions to questions, is there a better way to do this or an option to randomize it?
+- The generated content is only in vietnamese, it should adapt to the frontend's lang=en or vi
+- The UI UX for the generation is not CLEAN enough, its very cluttered and the feature to generate/template by the matrix is unclear for uesrs to see
 
 Rules to follow:
 

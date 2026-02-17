@@ -3,6 +3,7 @@ import { useParams, Link, useNavigate } from 'react-router'
 import {
 	useClassDetail,
 	useAssignExam,
+	useAdminAssignExam,
 	useRemoveStudent,
 } from '@/hooks/useClasses'
 import { useMe } from '@/hooks/auth/useMe'
@@ -61,6 +62,7 @@ import { useTranslation } from 'react-i18next'
 import type { AssignExamRequest } from '@/types/dtos/classes'
 import type { GetMeResponse } from '@/types/dtos/users/user'
 import UserAvatar from '@/components/common/UserAvatar'
+import { ExamSelector } from '@/components/classes/ExamSelector'
 
 const ClassDetailPage: React.FC = () => {
 	const { t } = useTranslation()
@@ -70,6 +72,7 @@ const ClassDetailPage: React.FC = () => {
 
 	const { data: classDetail, isLoading, error } = useClassDetail(id || '')
 	const assignExamMutation = useAssignExam()
+	const adminAssignExamMutation = useAdminAssignExam()
 	const removeStudentMutation = useRemoveStudent()
 
 	// Assign exam dialog state
@@ -121,7 +124,8 @@ const ClassDetailPage: React.FC = () => {
 			weight: Number(weight) || 100,
 		}
 
-		assignExamMutation.mutate(
+		const mutation = isAdmin ? adminAssignExamMutation : assignExamMutation
+		mutation.mutate(
 			{ classId: id, data },
 			{
 				onSuccess: () => {
@@ -571,17 +575,10 @@ const ClassDetailPage: React.FC = () => {
 					</DialogHeader>
 					<div className='grid gap-4 py-4'>
 						<div className='grid gap-2'>
-							<Label htmlFor='examId'>
+							<Label>
 								{t('pages.dashboard.classes.assign_dialog.exam_id')}
 							</Label>
-							<Input
-								id='examId'
-								value={examId}
-								onChange={e => setExamId(e.target.value)}
-								placeholder={t(
-									'pages.dashboard.classes.assign_dialog.exam_id_placeholder'
-								)}
-							/>
+							<ExamSelector value={examId} onValueChange={setExamId} />
 						</div>
 						<div className='grid grid-cols-2 gap-4'>
 							<div className='grid gap-2'>
@@ -651,10 +648,11 @@ const ClassDetailPage: React.FC = () => {
 								!examId ||
 								!startDate ||
 								!dueDate ||
-								assignExamMutation.isPending
+								assignExamMutation.isPending ||
+								adminAssignExamMutation.isPending
 							}
 						>
-							{assignExamMutation.isPending
+							{assignExamMutation.isPending || adminAssignExamMutation.isPending
 								? t('pages.dashboard.classes.assign_dialog.submitting')
 								: t('pages.dashboard.classes.assign_dialog.submit')}
 						</Button>

@@ -59,6 +59,7 @@ import { useMe } from '@/hooks/auth/useMe'
 import { CreateClassModal } from '@/components/classes'
 import type { ClassRoom } from '@/types/model/class-service'
 import type { AssignExamRequest } from '@/types/dtos/classes'
+import { ExamSelector } from '@/components/classes/ExamSelector'
 
 const ClassesPage = (): React.ReactElement => {
 	const { t } = useTranslation()
@@ -443,17 +444,10 @@ const ClassesPage = (): React.ReactElement => {
 					</DialogHeader>
 					<div className='grid gap-4 py-4'>
 						<div className='grid gap-2'>
-							<Label htmlFor='examId'>
+							<Label>
 								{t('pages.dashboard.classes.assign_dialog.exam_id')}
 							</Label>
-							<Input
-								id='examId'
-								value={examId}
-								onChange={e => setExamId(e.target.value)}
-								placeholder={t(
-									'pages.dashboard.classes.assign_dialog.exam_id_placeholder'
-								)}
-							/>
+							<ExamSelector value={examId} onValueChange={setExamId} />
 						</div>
 						<div className='grid grid-cols-2 gap-4'>
 							<div className='grid gap-2'>
