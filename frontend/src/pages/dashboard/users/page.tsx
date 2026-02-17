@@ -412,14 +412,14 @@ const UsersPage = (): React.ReactElement => {
 													<div className='flex items-center gap-1 text-green-600'>
 														<CheckCircle2 className='h-4 w-4' />
 														<span className='text-sm'>
-															{t('label.verified')}
+															{t('badges.verified')}
 														</span>
 													</div>
 												) : (
 													<div className='flex items-center gap-1 text-orange-600'>
 														<XCircle className='h-4 w-4' />
 														<span className='text-sm'>
-															{t('label.unverified')}
+															{t('badges.unverified')}
 														</span>
 													</div>
 												)}
