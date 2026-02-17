@@ -93,7 +93,6 @@ export interface RegenerateCodeResponse {
 
 const baseUrl = '/classes'
 
-// Class Service API calls
 export const classService = {
 	getMyClasses: async (): Promise<ClassDto[]> => {
 		const response = await axiosInstance.get<ClassDto[]>(`${baseUrl}/classes`)

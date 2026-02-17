@@ -45,4 +45,44 @@ public abstract class BaseController : ControllerBase
         }
         return userId;
     }
+
+    /// <summary>
+    /// Get user role from JWT token claims
+    /// Checks multiple claim types: Role, custom:role, and cognito:groups
+    /// </summary>
+    /// <returns>User role (Admin, Teacher, or Student)</returns>
+    protected string GetUserRole()
+    {
+        // Check standard Role claim first
+        var role = User.FindFirst(ClaimTypes.Role)?.Value;
+        if (!string.IsNullOrEmpty(role))
+        {
+            return role;
+        }
+
+        // Check Cognito custom:role claim
+        role = User.FindFirst("custom:role")?.Value;
+        if (!string.IsNullOrEmpty(role))
+        {
+            return role;
+        }
+
+        // Check Cognito groups (can be multiple)
+        var groups = GetUserGroups().ToList();
+        if (groups.Contains("Admin"))
+        {
+            return "Admin";
+        }
+        if (groups.Contains("Teacher"))
+        {
+            return "Teacher";
+        }
+        if (groups.Contains("Student"))
+        {
+            return "Student";
+        }
+
+        // Default to Student if no role found
+        return "Student";
+    }
 }

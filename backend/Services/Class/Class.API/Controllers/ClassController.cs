@@ -21,7 +21,7 @@ public class ClassController(IMediator mediator) : BaseController
     private readonly IMediator _mediator = mediator;
 
     /// <summary>
-    /// Get classes for the current user (teacher sees their classes, student sees enrolled classes)
+    /// Get classes for the current user (teacher sees their classes, student sees enrolled classes, admin sees all)
     /// </summary>
     [HttpGet]
     [Authorize]
@@ -29,7 +29,7 @@ public class ClassController(IMediator mediator) : BaseController
     public async Task<IActionResult> GetClasses(CancellationToken cancellationToken)
     {
         var userId = GetAuthenticatedUserId();
-        var role = User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value ?? "Student";
+        var role = GetUserRole();
 
         var query = new GetMyClassesQuery(userId, role);
         var result = await _mediator.Send(query, cancellationToken);

@@ -32,12 +32,26 @@ public sealed class GetMyClassesQueryHandler
             return [];
         }
 
+        _logger.LogInformation(
+            "Fetching classes for user {UserId} with role {Role}",
+            userId,
+            request.Role
+        );
+
         var classes = request.Role switch
         {
+            "Admin" => await _classRoomRepository.GetAllAsync(cancellationToken),
             "Teacher" => await _classRoomRepository.GetByTeacherIdAsync(userId, cancellationToken),
             "Student" => await _classRoomRepository.GetByStudentIdAsync(userId, cancellationToken),
-            _ => await _classRoomRepository.GetByTeacherIdAsync(userId, cancellationToken),
+            _ => await _classRoomRepository.GetByStudentIdAsync(userId, cancellationToken),
         };
+
+        _logger.LogInformation(
+            "Found {Count} classes for user {UserId} with role {Role}",
+            classes.Count,
+            userId,
+            request.Role
+        );
 
         return classes
             .Select(c => new ClassSummaryResponse(
