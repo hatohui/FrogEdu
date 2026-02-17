@@ -56,7 +56,7 @@ public sealed class ClassRoom : AuditableEntity
             throw new ArgumentException("Teacher ID cannot be empty", nameof(teacherId));
 
         var classroom = new ClassRoom(name, grade, maxStudents, teacherId, bannerUrl);
-        classroom.MarkAsCreated();
+        classroom.MarkAsCreated(teacherId);
         classroom.AddDomainEvent(
             new ClassRoomCreatedDomainEvent(
                 classroom.Id,
@@ -76,11 +76,14 @@ public sealed class ClassRoom : AuditableEntity
         if (maxStudents <= 0)
             throw new ArgumentException("Max students must be greater than 0", nameof(maxStudents));
 
+        if (!Guid.TryParse(userId, out var userGuid))
+            throw new ArgumentException("Invalid user ID format", nameof(userId));
+
         Name = name;
         Grade = grade;
         MaxStudents = maxStudents;
         BannerUrl = bannerUrl;
-        MarkAsUpdated();
+        MarkAsUpdated(userGuid);
     }
 
     public void RegenerateCode()

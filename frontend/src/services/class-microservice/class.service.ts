@@ -177,7 +177,7 @@ export const classService = {
 
 	adminGetAllClasses: async (): Promise<ClassRoom[]> => {
 		const response = await axiosInstance.get<ClassRoom[]>(
-			`${baseUrl}/classes/admin/all`
+			`${baseUrl}/admin/all`
 		)
 		return response.data
 	},
