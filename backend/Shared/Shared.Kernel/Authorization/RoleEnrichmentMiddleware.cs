@@ -56,6 +56,14 @@ public sealed class RoleEnrichmentMiddleware
                 // If present, trust it and skip the HTTP call to the User service entirely.
                 // This is critical for Lambda deployments where services cannot reach each other.
                 var existingRole = context.User.FindFirst(ClaimTypes.Role)?.Value;
+
+                // DEBUG: Log all claims to diagnose JWT content
+                var allClaims = string.Join(
+                    ", ",
+                    context.User.Claims.Select(c => $"{c.Type}={c.Value}")
+                );
+                _logger.LogDebug("JWT claims for {CognitoSub}: {Claims}", cognitoSub, allClaims);
+
                 if (
                     !string.IsNullOrEmpty(existingRole)
                     && !existingRole.Equals(

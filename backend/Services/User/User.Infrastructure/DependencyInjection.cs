@@ -220,26 +220,41 @@ public static class DependencyInjection
             ?? Environment.GetEnvironmentVariable("COGNITO_REGION")
             ?? "ap-southeast-1";
 
-        if (string.IsNullOrWhiteSpace(accessKeyId) || string.IsNullOrWhiteSpace(secretAccessKey))
+        // If explicit credentials are provided, use them. Otherwise use Lambda IAM role (default credentials).
+        if (!string.IsNullOrWhiteSpace(accessKeyId) && !string.IsNullOrWhiteSpace(secretAccessKey))
         {
-            Console.WriteLine(
-                "Warning: Cognito configuration is incomplete. Role sync and password reset will not work."
-            );
-            // Don't register the Cognito client - CognitoAttributeService will handle gracefully
-            return;
-        }
-
-        services.AddScoped<IAmazonCognitoIdentityProvider>(sp =>
-        {
-            var credentials = new BasicAWSCredentials(accessKeyId, secretAccessKey);
-            var config = new AmazonCognitoIdentityProviderConfig
+            // Explicit credentials provided (for local development or non-Lambda environments)
+            services.AddScoped<IAmazonCognitoIdentityProvider>(sp =>
             {
-                RegionEndpoint = Amazon.RegionEndpoint.GetBySystemName(region),
-            };
+                var credentials = new BasicAWSCredentials(accessKeyId, secretAccessKey);
+                var config = new AmazonCognitoIdentityProviderConfig
+                {
+                    RegionEndpoint = Amazon.RegionEndpoint.GetBySystemName(region),
+                };
 
-            return new AmazonCognitoIdentityProviderClient(credentials, config);
-        });
+                return new AmazonCognitoIdentityProviderClient(credentials, config);
+            });
 
-        Console.WriteLine($"AWS Cognito configured for region: {region}");
+            Console.WriteLine(
+                $"AWS Cognito configured with explicit credentials for region: {region}"
+            );
+        }
+        else
+        {
+            // No explicit credentials — use default credential chain (Lambda IAM role)
+            services.AddScoped<IAmazonCognitoIdentityProvider>(sp =>
+            {
+                var config = new AmazonCognitoIdentityProviderConfig
+                {
+                    RegionEndpoint = Amazon.RegionEndpoint.GetBySystemName(region),
+                };
+
+                return new AmazonCognitoIdentityProviderClient(config);
+            });
+
+            Console.WriteLine(
+                $"AWS Cognito configured using default credentials (Lambda IAM role) for region: {region}"
+            );
+        }
     }
 }

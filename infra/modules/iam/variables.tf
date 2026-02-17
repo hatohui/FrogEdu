@@ -23,3 +23,8 @@ variable "github_repo" {
   type        = string
   default     = "*"
 }
+variable "cognito_user_pool_arn" {
+  description = "ARN of the Cognito User Pool for admin operations"
+  type        = string
+  default     = ""
+}

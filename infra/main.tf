@@ -17,9 +17,10 @@ module "cognito" {
 module "iam" {
   source = "./modules/iam"
 
-  project_name = local.project_name
-  environment  = local.environment
-  github_repo  = try(data.doppler_secrets.this.map.TF_GITHUB_REPO, "*")
+  project_name          = local.project_name
+  environment           = local.environment
+  github_repo           = try(data.doppler_secrets.this.map.TF_GITHUB_REPO, "*")
+  cognito_user_pool_arn = module.cognito.user_pool_arn
 }
 
 module "api_gateway" {
@@ -166,18 +167,23 @@ module "user_service" {
     MEDIAK_LICENSE_KEY        = local.mediak_license_key
     COGNITO_USER_POOL_ID      = module.cognito.user_pool_id
     AWS_COGNITO_REGION        = local.aws_region
-    SES_ACCESS_KEY_ID         = module.ses.access_key_id
-    SES_SECRET_ACCESS_KEY     = module.ses.secret_access_key
-    SES_REGION                = local.aws_region
-    AWS__SES__FromEmail       = "noreply@${local.ses_domain}"
-    AWS__SES__FromName        = "FrogEdu"
-    Frontend__BaseUrl         = "https://${local.frontend_domain}"
-    R2_ACCOUNT_ID             = local.r2_account_id
-    R2_ACCESS_KEY             = local.r2_access_key_id
-    R2_SECRET_KEY             = local.r2_secret_access_key
-    R2_BUCKET_NAME            = local.r2_bucket_name
-    R2_PUBLIC_ENDPOINT        = local.r2_public_endpoint
-    SUBSCRIPTION_SERVICE_URL  = "https://${local.api_domain}/api/subscriptions"
+    # Cognito configuration for role sync (uses Lambda IAM role, no credentials needed)
+    AWS__Cognito__UserPoolId = module.cognito.user_pool_id
+    AWS__Cognito__Region     = local.aws_region
+    # SES configuration
+    SES_ACCESS_KEY_ID     = module.ses.access_key_id
+    SES_SECRET_ACCESS_KEY = module.ses.secret_access_key
+    SES_REGION            = local.aws_region
+    AWS__SES__FromEmail   = "noreply@${local.ses_domain}"
+    AWS__SES__FromName    = "FrogEdu"
+    # Additional services
+    Frontend__BaseUrl        = "https://${local.frontend_domain}"
+    R2_ACCOUNT_ID            = local.r2_account_id
+    R2_ACCESS_KEY            = local.r2_access_key_id
+    R2_SECRET_KEY            = local.r2_secret_access_key
+    R2_BUCKET_NAME           = local.r2_bucket_name
+    R2_PUBLIC_ENDPOINT       = local.r2_public_endpoint
+    SUBSCRIPTION_SERVICE_URL = "https://${local.api_domain}/api/subscriptions"
   }
 }
 

@@ -27,16 +27,10 @@ public sealed class CognitoAttributeService : ICognitoAttributeService
         _logger = logger;
         _cognitoClient = cognitoClient;
 
-        // Check if Cognito is properly configured
+        // Check if Cognito is properly configured (at minimum, need UserPoolId)
         var userPoolId = configuration["AWS:Cognito:UserPoolId"];
-        var accessKeyId = configuration["AWS:Cognito:AccessKeyId"];
-        var secretAccessKey = configuration["AWS:Cognito:SecretAccessKey"];
 
-        _isConfigured =
-            !string.IsNullOrWhiteSpace(userPoolId)
-            && !string.IsNullOrWhiteSpace(accessKeyId)
-            && !string.IsNullOrWhiteSpace(secretAccessKey)
-            && cognitoClient != null;
+        _isConfigured = !string.IsNullOrWhiteSpace(userPoolId) && cognitoClient != null;
     }
 
     public async Task<Result> SyncRoleAttributeAsync(
@@ -49,7 +43,7 @@ public sealed class CognitoAttributeService : ICognitoAttributeService
         if (!_isConfigured)
         {
             _logger.LogWarning(
-                "Cognito is not configured - skipping role sync for user {CognitoId}. Configure AWS Cognito credentials to enable this feature.",
+                "Cognito is not configured - skipping role sync for user {CognitoId}. Ensure AWS__Cognito__UserPoolId is set and Lambda has IAM permissions.",
                 cognitoId
             );
             return Result.Failure("Cognito service is not available");

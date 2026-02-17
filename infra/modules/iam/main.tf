@@ -23,6 +23,42 @@ resource "aws_iam_role_policy_attachment" "lambda_basic" {
 }
 
 # =============================================================================
+# Cognito Admin Policy for Lambda (User Service role sync)
+# =============================================================================
+
+resource "aws_iam_policy" "lambda_cognito_admin" {
+  count       = var.cognito_user_pool_arn != "" ? 1 : 0
+  name        = "${var.project_name}-${var.environment}-lambda-cognito-admin"
+  description = "Allows Lambda to update Cognito user attributes for role sync"
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "cognito-idp:AdminUpdateUserAttributes",
+          "cognito-idp:AdminGetUser"
+        ]
+        Resource = var.cognito_user_pool_arn
+      }
+    ]
+  })
+
+  tags = {
+    Name        = "${var.project_name}-${var.environment}-lambda-cognito-admin"
+    Environment = var.environment
+    Purpose     = "Cognito user attribute management for role sync"
+  }
+}
+
+resource "aws_iam_role_policy_attachment" "lambda_cognito_admin" {
+  count      = var.cognito_user_pool_arn != "" ? 1 : 0
+  role       = aws_iam_role.lambda_execution.name
+  policy_arn = aws_iam_policy.lambda_cognito_admin[0].arn
+}
+
+# =============================================================================
 # GitHub Actions OIDC Provider
 # =============================================================================
 
