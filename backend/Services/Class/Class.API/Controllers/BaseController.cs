@@ -47,27 +47,21 @@ public abstract class BaseController : ControllerBase
     }
 
     /// <summary>
-    /// Get user role from JWT token claims
-    /// Checks multiple claim types: Role, custom:role, and cognito:groups
+    /// Get user role from JWT token claims.
+    /// The JWT's custom:role claim is mapped to ClaimTypes.Role during authentication.
+    /// Falls back to checking cognito:groups if Role claim is not present.
     /// </summary>
     /// <returns>User role (Admin, Teacher, or Student)</returns>
     protected string GetUserRole()
     {
-        // Check standard Role claim first
+        // Check standard Role claim (JWT custom:role is mapped here during token validation)
         var role = User.FindFirst(ClaimTypes.Role)?.Value;
         if (!string.IsNullOrEmpty(role))
         {
             return role;
         }
 
-        // Check Cognito custom:role claim
-        role = User.FindFirst("custom:role")?.Value;
-        if (!string.IsNullOrEmpty(role))
-        {
-            return role;
-        }
-
-        // Check Cognito groups (can be multiple)
+        // Fallback: Check Cognito groups (can be multiple)
         var groups = GetUserGroups().ToList();
         if (groups.Contains("Admin"))
         {
