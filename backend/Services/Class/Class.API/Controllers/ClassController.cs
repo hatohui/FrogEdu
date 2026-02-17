@@ -4,7 +4,6 @@ using FrogEdu.Class.Application.Commands.CreateClass;
 using FrogEdu.Class.Application.Commands.JoinClass;
 using FrogEdu.Class.Application.Dtos;
 using FrogEdu.Class.Application.Dtos.requests;
-using FrogEdu.Class.Application.Queries.GetAllClasses;
 using FrogEdu.Class.Application.Queries.GetClassAssignments;
 using FrogEdu.Class.Application.Queries.GetClassDetail;
 using FrogEdu.Class.Application.Queries.GetMyClasses;
