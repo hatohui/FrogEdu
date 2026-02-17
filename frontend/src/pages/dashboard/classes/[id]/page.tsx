@@ -36,6 +36,7 @@ import {
 import { Label } from '@/components/ui/label'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useClassDetail, useAdminAssignExam } from '@/hooks/useClasses'
+import { useUser } from '@/hooks/useUsers'
 import type { AssignExamRequest } from '@/types/dtos/classes'
 
 type Tab = 'info' | 'students' | 'assignments'
@@ -46,6 +47,9 @@ const ClassDetailPage = (): React.ReactElement => {
 	const { id } = useParams<{ id: string }>()
 	// Use regular useClassDetail - backend already handles authorization
 	const { data: classDetail, isLoading } = useClassDetail(id ?? '')
+
+	// Fetch teacher data
+	const { data: teacher } = useUser(classDetail?.teacherId ?? '')
 
 	const [activeTab, setActiveTab] = useState<Tab>('info')
 	const [assignDialogOpen, setAssignDialogOpen] = useState(false)
@@ -271,8 +275,10 @@ const ClassDetailPage = (): React.ReactElement => {
 									<p className='text-sm text-muted-foreground'>
 										{t('pages.dashboard.classes.table.teacher')}
 									</p>
-									<p className='font-medium font-mono text-sm'>
-										{classDetail.teacherId}
+									<p className='font-medium'>
+										{teacher
+											? `${teacher.firstName} ${teacher.lastName}`
+											: classDetail.teacherId}
 									</p>
 								</div>
 								<div>

@@ -1,11 +1,11 @@
 using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 
-namespace FrogEdu.Exam.API.Controllers;
+namespace FrogEdu.User.API.Controllers;
 
 public abstract class BaseController : ControllerBase
 {
-    protected string? GetCognitoUserId()
+    protected string? GetCognitoId()
     {
         // Try NameIdentifier first (standard claim type), then fall back to "sub" claim
         return User.FindFirstValue(ClaimTypes.NameIdentifier) ?? User.FindFirstValue("sub");
@@ -33,12 +33,11 @@ public abstract class BaseController : ControllerBase
     }
 
     /// <summary>
-    /// Validates that user is authenticated and returns Cognito User ID
+    /// Validates that user is authenticated and returns Cognito ID
     /// </summary>
-    /// <returns>Cognito User ID or throws UnauthorizedAccessException</returns>
     protected string GetAuthenticatedUserId()
     {
-        var userId = GetCognitoUserId();
+        var userId = GetCognitoId();
         if (string.IsNullOrEmpty(userId))
         {
             throw new UnauthorizedAccessException("User is not authenticated");

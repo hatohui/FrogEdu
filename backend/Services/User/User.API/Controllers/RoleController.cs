@@ -14,15 +14,22 @@ namespace FrogEdu.User.API.Controllers;
 [ApiController]
 [Route("roles")]
 [Tags("Roles")]
-public class RoleController(
-    ILogger<RoleController> logger,
-    IMediator mediator,
-    IRoleService roleService
-) : ControllerBase
+public class RoleController : BaseController
 {
-    private readonly ILogger<RoleController> _logger = logger;
-    private readonly IMediator _mediator = mediator;
-    private readonly IRoleService _roleService = roleService;
+    private readonly ILogger<RoleController> _logger;
+    private readonly IMediator _mediator;
+    private readonly IRoleService _roleService;
+
+    public RoleController(
+        ILogger<RoleController> logger,
+        IMediator mediator,
+        IRoleService roleService
+    )
+    {
+        _logger = logger;
+        _mediator = mediator;
+        _roleService = roleService;
+    }
 
     [HttpGet("")]
     [ProducesResponseType(typeof(IReadOnlyList<RoleDto>), StatusCodes.Status200OK)]
@@ -55,15 +62,22 @@ public class RoleController(
     }
 
     [HttpPost("")]
-    [Authorize(Roles = "Admin")]
+    [Authorize]
     [ProducesResponseType(typeof(Guid), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
     public async Task<IActionResult> CreateRole(
         [FromBody] CreateRoleRequest request,
         CancellationToken cancellationToken
     )
     {
+        var userRole = GetUserRole();
+        if (userRole != "Admin")
+        {
+            return Forbid();
+        }
+
         var command = new CreateRoleCommand(request.Name, request.Description);
         var result = await _mediator.Send(command, cancellationToken);
 
@@ -76,10 +90,11 @@ public class RoleController(
     }
 
     [HttpPut("{id:guid}")]
-    [Authorize(Roles = "Admin")]
+    [Authorize]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> UpdateRole(
         Guid id,
@@ -87,6 +102,12 @@ public class RoleController(
         CancellationToken cancellationToken
     )
     {
+        var userRole = GetUserRole();
+        if (userRole != "Admin")
+        {
+            return Forbid();
+        }
+
         var command = new UpdateRoleCommand(id, request.Name, request.Description);
         var result = await _mediator.Send(command, cancellationToken);
 
@@ -99,13 +120,20 @@ public class RoleController(
     }
 
     [HttpDelete("{id:guid}")]
-    [Authorize(Roles = "Admin")]
+    [Authorize]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> DeleteRole(Guid id, CancellationToken cancellationToken)
     {
+        var userRole = GetUserRole();
+        if (userRole != "Admin")
+        {
+            return Forbid();
+        }
+
         var command = new DeleteRoleCommand(id);
         var result = await _mediator.Send(command, cancellationToken);
 

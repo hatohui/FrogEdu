@@ -1,7 +1,7 @@
 using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 
-namespace FrogEdu.Exam.API.Controllers;
+namespace FrogEdu.Subscription.API.Controllers;
 
 public abstract class BaseController : ControllerBase
 {
@@ -35,7 +35,6 @@ public abstract class BaseController : ControllerBase
     /// <summary>
     /// Validates that user is authenticated and returns Cognito User ID
     /// </summary>
-    /// <returns>Cognito User ID or throws UnauthorizedAccessException</returns>
     protected string GetAuthenticatedUserId()
     {
         var userId = GetCognitoUserId();

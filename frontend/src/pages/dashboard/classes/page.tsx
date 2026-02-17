@@ -316,7 +316,11 @@ const ClassesPage = (): React.ReactElement => {
 									</TableRow>
 								) : (
 									filteredClasses.map(cls => (
-										<TableRow key={cls.id}>
+										<TableRow
+											key={cls.id}
+											className='cursor-pointer hover:bg-muted/50'
+											onClick={() => navigate(`/dashboard/classes/${cls.id}`)}
+										>
 											<TableCell className='font-medium'>{cls.name}</TableCell>
 											<TableCell>
 												<Badge variant='outline'>{cls.grade}</Badge>
@@ -350,7 +354,10 @@ const ClassesPage = (): React.ReactElement => {
 											<TableCell className='text-muted-foreground'>
 												{formatDate(cls.createdAt)}
 											</TableCell>
-											<TableCell className='text-right'>
+											<TableCell
+												className='text-right'
+												onClick={e => e.stopPropagation()}
+											>
 												<DropdownMenu>
 													<DropdownMenuTrigger asChild>
 														<Button variant='ghost' size='icon'>

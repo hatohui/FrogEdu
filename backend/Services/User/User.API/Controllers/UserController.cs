@@ -21,7 +21,7 @@ namespace FrogEdu.User.API.Controllers;
 [ApiController]
 [Route("")]
 [Tags("Users")]
-public class UserController : ControllerBase
+public class UserController : BaseController
 {
     private readonly IMediator _mediator;
     private readonly ILogger<UserController> _logger;
@@ -55,9 +55,10 @@ public class UserController : ControllerBase
     }
 
     [HttpGet("users")]
-    [Authorize(Roles = "Admin")]
+    [Authorize]
     [ProducesResponseType(typeof(PaginatedUsersResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
     public async Task<IActionResult> GetAllUsers(
         [FromQuery] int page = 1,
         [FromQuery] int pageSize = 10,
@@ -68,6 +69,12 @@ public class UserController : ControllerBase
         CancellationToken cancellationToken = default
     )
     {
+        var userRole = GetUserRole();
+        if (userRole != "Admin")
+        {
+            return Forbid();
+        }
+
         var query = new GetAllUsersQuery(page, pageSize, search, role, sortBy, sortOrder);
         var result = await _mediator.Send(query, cancellationToken);
 
@@ -75,11 +82,18 @@ public class UserController : ControllerBase
     }
 
     [HttpGet("users/statistics")]
-    [Authorize(Roles = "Admin")]
+    [Authorize]
     [ProducesResponseType(typeof(UserStatisticsResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
     public async Task<IActionResult> GetUserStatistics(CancellationToken cancellationToken)
     {
+        var userRole = GetUserRole();
+        if (userRole != "Admin")
+        {
+            return Forbid();
+        }
+
         var query = new GetUserStatisticsQuery();
         var result = await _mediator.Send(query, cancellationToken);
 
@@ -90,11 +104,18 @@ public class UserController : ControllerBase
     /// Get user dashboard statistics (growth chart, role distribution, verification status)
     /// </summary>
     [HttpGet("users/dashboard-stats")]
-    [Authorize(Roles = "Admin")]
+    [Authorize]
     [ProducesResponseType(typeof(UserDashboardStatsResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
     public async Task<IActionResult> GetUserDashboardStats(CancellationToken cancellationToken)
     {
+        var userRole = GetUserRole();
+        if (userRole != "Admin")
+        {
+            return Forbid();
+        }
+
         var query = new GetUserDashboardStatsQuery();
         var result = await _mediator.Send(query, cancellationToken);
 
@@ -102,12 +123,19 @@ public class UserController : ControllerBase
     }
 
     [HttpGet("users/{id:guid}")]
-    [Authorize(Roles = "Admin")]
+    [Authorize]
     [ProducesResponseType(typeof(UserDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetUserById(Guid id, CancellationToken cancellationToken)
     {
+        var userRole = GetUserRole();
+        if (userRole != "Admin")
+        {
+            return Forbid();
+        }
+
         var query = new GetUserByIdQuery(id);
         var result = await _mediator.Send(query, cancellationToken);
 
@@ -120,10 +148,11 @@ public class UserController : ControllerBase
     }
 
     [HttpPut("users/{id:guid}")]
-    [Authorize(Roles = "Admin")]
+    [Authorize]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> UpdateUser(
         Guid id,
@@ -131,6 +160,12 @@ public class UserController : ControllerBase
         CancellationToken cancellationToken
     )
     {
+        var userRole = GetUserRole();
+        if (userRole != "Admin")
+        {
+            return Forbid();
+        }
+
         var command = new UpdateUserCommand(
             id,
             request.FirstName,
@@ -148,10 +183,11 @@ public class UserController : ControllerBase
     }
 
     [HttpPut("users/{id:guid}/role")]
-    [Authorize(Roles = "Admin")]
+    [Authorize]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> UpdateUserRole(
         Guid id,
@@ -159,6 +195,12 @@ public class UserController : ControllerBase
         CancellationToken cancellationToken
     )
     {
+        var userRole = GetUserRole();
+        if (userRole != "Admin")
+        {
+            return Forbid();
+        }
+
         var command = new UpdateUserRoleCommand(id, request.RoleId);
         var result = await _mediator.Send(command, cancellationToken);
 
@@ -171,13 +213,20 @@ public class UserController : ControllerBase
     }
 
     [HttpDelete("users/{id:guid}")]
-    [Authorize(Roles = "Admin")]
+    [Authorize]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> DeleteUser(Guid id, CancellationToken cancellationToken)
     {
+        var userRole = GetUserRole();
+        if (userRole != "Admin")
+        {
+            return Forbid();
+        }
+
         var command = new DeleteUserCommand(id);
         var result = await _mediator.Send(command, cancellationToken);
 
@@ -280,11 +329,6 @@ public class UserController : ControllerBase
             return BadRequest(result.Error);
 
         return NoContent();
-    }
-
-    private string? GetCognitoId()
-    {
-        return User.FindFirstValue(ClaimTypes.NameIdentifier) ?? User.FindFirstValue("sub");
     }
 
     [HttpDelete("me/avatar")]

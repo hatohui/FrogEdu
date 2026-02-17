@@ -33,7 +33,7 @@ namespace FrogEdu.Subscription.API.Controllers;
 [ApiController]
 [Route("")]
 [Tags("Subscriptions")]
-public class SubscriptionController : ControllerBase
+public class SubscriptionController : BaseController
 {
     private readonly IMediator _mediator;
     private readonly ILogger<SubscriptionController> _logger;
@@ -210,12 +210,18 @@ public class SubscriptionController : ControllerBase
     /// Get subscription dashboard statistics (Admin only)
     /// </summary>
     [HttpGet("admin/dashboard-stats")]
-    [AuthorizeAdmin]
+    [Authorize]
     [ProducesResponseType(typeof(SubscriptionDashboardStatsResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     public async Task<IActionResult> GetDashboardStats(CancellationToken cancellationToken)
     {
+        var userRole = GetUserRole();
+        if (userRole != "Admin")
+        {
+            return Forbid();
+        }
+
         var query = new GetSubscriptionDashboardStatsQuery();
         var result = await _mediator.Send(query, cancellationToken);
         return Ok(result);
@@ -229,7 +235,7 @@ public class SubscriptionController : ControllerBase
     /// Get all subscription tiers including inactive (Admin only)
     /// </summary>
     [HttpGet("admin/tiers")]
-    [AuthorizeAdmin]
+    [Authorize]
     [ProducesResponseType(typeof(IReadOnlyList<SubscriptionTierDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -238,6 +244,12 @@ public class SubscriptionController : ControllerBase
         CancellationToken cancellationToken = default
     )
     {
+        var userRole = GetUserRole();
+        if (userRole != "Admin")
+        {
+            return Forbid();
+        }
+
         var query = new GetAllSubscriptionTiersQuery(includeInactive);
         var result = await _mediator.Send(query, cancellationToken);
         return Ok(result);
@@ -247,13 +259,19 @@ public class SubscriptionController : ControllerBase
     /// Get subscription tier by ID (Admin only)
     /// </summary>
     [HttpGet("admin/tiers/{id:guid}")]
-    [AuthorizeAdmin]
+    [Authorize]
     [ProducesResponseType(typeof(SubscriptionTierDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     public async Task<IActionResult> GetTierById(Guid id, CancellationToken cancellationToken)
     {
+        var userRole = GetUserRole();
+        if (userRole != "Admin")
+        {
+            return Forbid();
+        }
+
         var query = new GetSubscriptionTierByIdQuery(id);
         var result = await _mediator.Send(query, cancellationToken);
 
@@ -267,7 +285,7 @@ public class SubscriptionController : ControllerBase
     /// Create a new subscription tier (Admin only)
     /// </summary>
     [HttpPost("admin/tiers")]
-    [AuthorizeAdmin]
+    [Authorize]
     [ProducesResponseType(typeof(Guid), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -277,6 +295,12 @@ public class SubscriptionController : ControllerBase
         CancellationToken cancellationToken
     )
     {
+        var userRole = GetUserRole();
+        if (userRole != "Admin")
+        {
+            return Forbid();
+        }
+
         var command = new CreateSubscriptionTierCommand(
             dto.Name,
             dto.Description,
@@ -305,7 +329,7 @@ public class SubscriptionController : ControllerBase
     /// Update an existing subscription tier (Admin only)
     /// </summary>
     [HttpPut("admin/tiers/{id:guid}")]
-    [AuthorizeAdmin]
+    [Authorize]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -317,6 +341,12 @@ public class SubscriptionController : ControllerBase
         CancellationToken cancellationToken
     )
     {
+        var userRole = GetUserRole();
+        if (userRole != "Admin")
+        {
+            return Forbid();
+        }
+
         var command = new UpdateSubscriptionTierCommand(
             id,
             dto.Name,
@@ -341,7 +371,7 @@ public class SubscriptionController : ControllerBase
     /// Delete a subscription tier (Admin only)
     /// </summary>
     [HttpDelete("admin/tiers/{id:guid}")]
-    [AuthorizeAdmin]
+    [Authorize]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -349,6 +379,12 @@ public class SubscriptionController : ControllerBase
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     public async Task<IActionResult> DeleteTier(Guid id, CancellationToken cancellationToken)
     {
+        var userRole = GetUserRole();
+        if (userRole != "Admin")
+        {
+            return Forbid();
+        }
+
         var command = new DeleteSubscriptionTierCommand(id);
         var result = await _mediator.Send(command, cancellationToken);
 
@@ -364,7 +400,7 @@ public class SubscriptionController : ControllerBase
     /// Activate a subscription tier (Admin only)
     /// </summary>
     [HttpPost("admin/tiers/{id:guid}/activate")]
-    [AuthorizeAdmin]
+    [Authorize]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -372,6 +408,12 @@ public class SubscriptionController : ControllerBase
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     public async Task<IActionResult> ActivateTier(Guid id, CancellationToken cancellationToken)
     {
+        var userRole = GetUserRole();
+        if (userRole != "Admin")
+        {
+            return Forbid();
+        }
+
         var command = new ActivateSubscriptionTierCommand(id);
         var result = await _mediator.Send(command, cancellationToken);
 
@@ -387,7 +429,7 @@ public class SubscriptionController : ControllerBase
     /// Deactivate a subscription tier (Admin only)
     /// </summary>
     [HttpPost("admin/tiers/{id:guid}/deactivate")]
-    [AuthorizeAdmin]
+    [Authorize]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -395,6 +437,12 @@ public class SubscriptionController : ControllerBase
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     public async Task<IActionResult> DeactivateTier(Guid id, CancellationToken cancellationToken)
     {
+        var userRole = GetUserRole();
+        if (userRole != "Admin")
+        {
+            return Forbid();
+        }
+
         var command = new DeactivateSubscriptionTierCommand(id);
         var result = await _mediator.Send(command, cancellationToken);
 
@@ -414,7 +462,7 @@ public class SubscriptionController : ControllerBase
     /// Get all user subscriptions (Admin only)
     /// </summary>
     [HttpGet("admin/subscriptions")]
-    [AuthorizeAdmin]
+    [Authorize]
     [ProducesResponseType(typeof(IReadOnlyList<UserSubscriptionDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -423,6 +471,12 @@ public class SubscriptionController : ControllerBase
         CancellationToken cancellationToken = default
     )
     {
+        var userRole = GetUserRole();
+        if (userRole != "Admin")
+        {
+            return Forbid();
+        }
+
         var query = new GetAllSubscriptionsQuery(status);
         var result = await _mediator.Send(query, cancellationToken);
         return Ok(result);
@@ -432,7 +486,7 @@ public class SubscriptionController : ControllerBase
     /// Get user subscription by ID (Admin only)
     /// </summary>
     [HttpGet("admin/subscriptions/{id:guid}")]
-    [AuthorizeAdmin]
+    [Authorize]
     [ProducesResponseType(typeof(UserSubscriptionDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -442,6 +496,12 @@ public class SubscriptionController : ControllerBase
         CancellationToken cancellationToken
     )
     {
+        var userRole = GetUserRole();
+        if (userRole != "Admin")
+        {
+            return Forbid();
+        }
+
         var query = new GetSubscriptionByIdQuery(id);
         var result = await _mediator.Send(query, cancellationToken);
 
@@ -455,7 +515,7 @@ public class SubscriptionController : ControllerBase
     /// Suspend a user subscription (Admin only)
     /// </summary>
     [HttpPost("admin/subscriptions/{id:guid}/suspend")]
-    [AuthorizeAdmin]
+    [Authorize]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -466,6 +526,12 @@ public class SubscriptionController : ControllerBase
         CancellationToken cancellationToken
     )
     {
+        var userRole = GetUserRole();
+        if (userRole != "Admin")
+        {
+            return Forbid();
+        }
+
         var command = new SuspendSubscriptionCommand(id);
         var result = await _mediator.Send(command, cancellationToken);
 
@@ -481,7 +547,7 @@ public class SubscriptionController : ControllerBase
     /// Activate a user subscription (Admin only)
     /// </summary>
     [HttpPost("admin/subscriptions/{id:guid}/activate")]
-    [AuthorizeAdmin]
+    [Authorize]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -492,6 +558,12 @@ public class SubscriptionController : ControllerBase
         CancellationToken cancellationToken
     )
     {
+        var userRole = GetUserRole();
+        if (userRole != "Admin")
+        {
+            return Forbid();
+        }
+
         var command = new ActivateSubscriptionCommand(id);
         var result = await _mediator.Send(command, cancellationToken);
 
@@ -507,7 +579,7 @@ public class SubscriptionController : ControllerBase
     /// Renew a user subscription (Admin only)
     /// </summary>
     [HttpPost("admin/subscriptions/{id:guid}/renew")]
-    [AuthorizeAdmin]
+    [Authorize]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -519,6 +591,12 @@ public class SubscriptionController : ControllerBase
         CancellationToken cancellationToken
     )
     {
+        var userRole = GetUserRole();
+        if (userRole != "Admin")
+        {
+            return Forbid();
+        }
+
         var command = new RenewSubscriptionCommand(id, dto.NewEndDate);
         var result = await _mediator.Send(command, cancellationToken);
 
@@ -534,7 +612,7 @@ public class SubscriptionController : ControllerBase
     /// Delete a user subscription (Admin only)
     /// </summary>
     [HttpDelete("admin/subscriptions/{id:guid}")]
-    [AuthorizeAdmin]
+    [Authorize]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -545,6 +623,12 @@ public class SubscriptionController : ControllerBase
         CancellationToken cancellationToken
     )
     {
+        var userRole = GetUserRole();
+        if (userRole != "Admin")
+        {
+            return Forbid();
+        }
+
         var command = new DeleteSubscriptionCommand(id);
         var result = await _mediator.Send(command, cancellationToken);
 
@@ -564,7 +648,7 @@ public class SubscriptionController : ControllerBase
     /// Get all transactions (Admin only)
     /// </summary>
     [HttpGet("admin/transactions")]
-    [AuthorizeAdmin]
+    [Authorize]
     [ProducesResponseType(typeof(IReadOnlyList<TransactionDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -574,6 +658,12 @@ public class SubscriptionController : ControllerBase
         CancellationToken cancellationToken = default
     )
     {
+        var userRole = GetUserRole();
+        if (userRole != "Admin")
+        {
+            return Forbid();
+        }
+
         var query = new GetAllTransactionsQuery(paymentStatus, paymentProvider);
         var result = await _mediator.Send(query, cancellationToken);
         return Ok(result);
@@ -583,7 +673,7 @@ public class SubscriptionController : ControllerBase
     /// Get transaction by ID (Admin only)
     /// </summary>
     [HttpGet("admin/transactions/{id:guid}")]
-    [AuthorizeAdmin]
+    [Authorize]
     [ProducesResponseType(typeof(TransactionDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -593,6 +683,12 @@ public class SubscriptionController : ControllerBase
         CancellationToken cancellationToken
     )
     {
+        var userRole = GetUserRole();
+        if (userRole != "Admin")
+        {
+            return Forbid();
+        }
+
         var query = new GetTransactionByIdQuery(id);
         var result = await _mediator.Send(query, cancellationToken);
 
@@ -606,7 +702,7 @@ public class SubscriptionController : ControllerBase
     /// Update transaction payment status (Admin only)
     /// </summary>
     [HttpPut("admin/transactions/{id:guid}/status")]
-    [AuthorizeAdmin]
+    [Authorize]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -618,6 +714,12 @@ public class SubscriptionController : ControllerBase
         CancellationToken cancellationToken
     )
     {
+        var userRole = GetUserRole();
+        if (userRole != "Admin")
+        {
+            return Forbid();
+        }
+
         var command = new UpdateTransactionStatusCommand(
             id,
             dto.PaymentStatus,

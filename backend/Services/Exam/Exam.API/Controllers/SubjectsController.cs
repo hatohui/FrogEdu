@@ -68,7 +68,6 @@ public class SubjectsController : BaseController
     /// Create a new subject (Admin only)
     /// </summary>
     [HttpPost]
-    [Authorize(Roles = "Admin")]
     [ProducesResponseType(typeof(CreateSubjectResponse), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -78,6 +77,12 @@ public class SubjectsController : BaseController
         CancellationToken cancellationToken
     )
     {
+        var userRole = GetUserRole();
+        if (userRole != "Admin")
+        {
+            return Forbid();
+        }
+
         var command = new CreateSubjectCommand(
             request.SubjectCode,
             request.Name,
@@ -93,7 +98,6 @@ public class SubjectsController : BaseController
     /// Update a subject (Admin only)
     /// </summary>
     [HttpPut("{subjectId:guid}")]
-    [Authorize(Roles = "Admin")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -105,6 +109,12 @@ public class SubjectsController : BaseController
         CancellationToken cancellationToken
     )
     {
+        var userRole = GetUserRole();
+        if (userRole != "Admin")
+        {
+            return Forbid();
+        }
+
         var command = new UpdateSubjectCommand(
             subjectId,
             request.Name,
@@ -119,7 +129,6 @@ public class SubjectsController : BaseController
     /// Delete a subject (Admin only)
     /// </summary>
     [HttpDelete("{subjectId:guid}")]
-    [Authorize(Roles = "Admin")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -129,6 +138,12 @@ public class SubjectsController : BaseController
         CancellationToken cancellationToken
     )
     {
+        var userRole = GetUserRole();
+        if (userRole != "Admin")
+        {
+            return Forbid();
+        }
+
         var command = new DeleteSubjectCommand(subjectId);
         await _mediator.Send(command, cancellationToken);
         return NoContent();
