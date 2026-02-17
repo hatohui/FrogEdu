@@ -54,29 +54,6 @@ public class UserController : BaseController
         return Ok(result);
     }
 
-    /// <summary>
-    /// Get user by internal ID (for service-to-service calls only — no auth required, relies on internal network isolation)
-    /// </summary>
-    [HttpGet("internal/users/{id:guid}")]
-    [AllowAnonymous]
-    [ProducesResponseType(typeof(UserDto), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> GetUserByIdInternal(
-        Guid id,
-        CancellationToken cancellationToken
-    )
-    {
-        var query = new GetUserByIdQuery(id);
-        var result = await _mediator.Send(query, cancellationToken);
-
-        if (result is null)
-        {
-            return NotFound();
-        }
-
-        return Ok(result);
-    }
-
     [HttpGet("users")]
     [Authorize]
     [ProducesResponseType(typeof(PaginatedUsersResponse), StatusCodes.Status200OK)]
@@ -149,16 +126,9 @@ public class UserController : BaseController
     [Authorize]
     [ProducesResponseType(typeof(UserDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetUserById(Guid id, CancellationToken cancellationToken)
     {
-        var userRole = GetUserRole();
-        if (userRole != "Admin")
-        {
-            return Forbid();
-        }
-
         var query = new GetUserByIdQuery(id);
         var result = await _mediator.Send(query, cancellationToken);
 

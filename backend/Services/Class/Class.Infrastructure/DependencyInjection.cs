@@ -56,6 +56,7 @@ public static class DependencyInjection
         services.AddSubscriptionClaimsClient();
 
         // Register UserServiceClient for fetching user details from User microservice
+        services.AddHttpContextAccessor();
         services.AddHttpClient<IUserServiceClient, UserServiceClient>();
 
         return services;
