@@ -39,6 +39,16 @@ public abstract class BaseController : ControllerBase
     protected string GetAuthenticatedUserId()
     {
         var userId = GetCognitoUserId();
+
+        // Debug logging
+        var logger = HttpContext.RequestServices.GetService<ILogger<BaseController>>();
+        if (logger != null)
+        {
+            var allClaims = string.Join(", ", User.Claims.Select(c => $"{c.Type}={c.Value}"));
+            logger.LogInformation("JWT Claims: {Claims}", allClaims);
+            logger.LogInformation("Extracted UserId: '{UserId}'", userId);
+        }
+
         if (string.IsNullOrEmpty(userId))
         {
             throw new UnauthorizedAccessException("User is not authenticated");

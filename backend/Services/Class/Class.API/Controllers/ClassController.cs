@@ -20,8 +20,40 @@ public class ClassController(IMediator mediator) : BaseController
 {
     private readonly IMediator _mediator = mediator;
 
-    /// <summary>
-    /// Get classes for the current user (teacher sees their classes, student sees enrolled classes, admin sees all)
+    /// <summary>    /// Debug endpoint to check JWT token claims extraction
+    /// </summary>
+    [HttpGet("debug/auth")]
+    [Authorize]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public IActionResult DebugAuth()
+    {
+        var logger = HttpContext.RequestServices.GetRequiredService<ILogger<ClassController>>();
+
+        var userId = GetCognitoUserId();
+        var username = GetCognitoUsername();
+        var email = GetUserEmail();
+        var role = GetUserRole();
+        var groups = GetUserGroups().ToList();
+
+        var allClaims = User.Claims.Select(c => new { c.Type, c.Value }).ToList();
+
+        var result = new
+        {
+            UserId = userId,
+            Username = username,
+            Email = email,
+            Role = role,
+            Groups = groups,
+            AllClaims = allClaims,
+            IsGuid = Guid.TryParse(userId, out _),
+        };
+
+        logger.LogInformation("Debug Auth - Result: {@Result}", result);
+
+        return Ok(result);
+    }
+
+    /// <summary>    /// Get classes for the current user (teacher sees their classes, student sees enrolled classes, admin sees all)
     /// </summary>
     [HttpGet]
     [Authorize]
@@ -31,8 +63,18 @@ public class ClassController(IMediator mediator) : BaseController
         var userId = GetAuthenticatedUserId();
         var role = GetUserRole();
 
+        // Debug logging
+        var logger = HttpContext.RequestServices.GetRequiredService<ILogger<ClassController>>();
+        logger.LogInformation("GetClasses called - UserId: {UserId}, Role: {Role}", userId, role);
+
         var query = new GetMyClassesQuery(userId, role);
         var result = await _mediator.Send(query, cancellationToken);
+
+        logger.LogInformation(
+            "GetClasses result - Count: {Count}, UserId: {UserId}",
+            result.Count,
+            userId
+        );
         return Ok(result);
     }
 

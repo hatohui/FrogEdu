@@ -26,9 +26,19 @@ public sealed class GetMyClassesQueryHandler
         CancellationToken cancellationToken
     )
     {
+        _logger.LogInformation(
+            "GetMyClassesQuery received - UserId: '{UserId}', Role: '{Role}'",
+            request.UserId,
+            request.Role
+        );
+
         if (!Guid.TryParse(request.UserId, out var userId))
         {
-            _logger.LogWarning("Invalid UserId format: {UserId}", request.UserId);
+            _logger.LogWarning(
+                "Invalid UserId format - Cannot parse as GUID. UserId: '{UserId}', Length: {Length}",
+                request.UserId,
+                request.UserId?.Length ?? 0
+            );
             return [];
         }
 
