@@ -114,7 +114,7 @@ public class SubscriptionController : ControllerBase
     /// Get subscription claims for a user (internal API for User Service)
     /// </summary>
     [HttpGet("claims/{userId:guid}")]
-    [AllowAnonymous] // Internal API - should be secured via API key or service mesh in production
+    [AllowAnonymous]
     [ProducesResponseType(typeof(SubscriptionClaimsDto), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetSubscriptionClaims(
         Guid userId,

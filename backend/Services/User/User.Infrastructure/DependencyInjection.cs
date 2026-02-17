@@ -93,6 +93,9 @@ public static class DependencyInjection
             sp.GetRequiredService<ISubscriptionService>()
         );
 
+        // Register shared role claims client for role enrichment middleware
+        services.AddRoleClaimsClient();
+
         return services;
     }
 

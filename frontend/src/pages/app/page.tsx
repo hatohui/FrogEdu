@@ -55,7 +55,7 @@ const DashboardPage = (): React.ReactElement => {
 
 	// Fetch real data using TanStack Query
 	const { data: stats, isLoading: statsLoading } = useDashboardStats()
-	const { data: classes } = useClasses(false)
+	const { data: classes } = useClasses()
 
 	const recentClasses = classes?.slice(0, 3) || []
 
@@ -92,7 +92,7 @@ const DashboardPage = (): React.ReactElement => {
 			{/* Welcome Header */}
 			<div className='space-y-2'>
 				<h1 className='text-3xl font-bold tracking-tight'>
-					Welcome back, {getUserDisplayName()}! 👋
+					Welcome back, {getUserDisplayName()}!
 				</h1>
 				<p className='text-muted-foreground'>
 					Here's what's happening with your classes today.
@@ -154,19 +154,19 @@ const DashboardPage = (): React.ReactElement => {
 					<CardTitle>Quick Actions</CardTitle>
 				</CardHeader>
 				<CardContent className='flex flex-wrap gap-4'>
-					<Link to='/assessment/create'>
+					<Link to='/app/exams/create'>
 						<Button className='space-x-2'>
 							<Plus className='h-4 w-4' />
 							<span>Create New Exam</span>
 						</Button>
 					</Link>
-					<Link to='/content'>
+					<Link to='/app/content'>
 						<Button variant='outline' className='space-x-2'>
 							<BookOpen className='h-4 w-4' />
 							<span>Browse Content Library</span>
 						</Button>
 					</Link>
-					<Link to='/dashboard/classes'>
+					<Link to='/app/classes'>
 						<Button variant='outline' className='space-x-2'>
 							<Users className='h-4 w-4' />
 							<span>Manage Classes</span>

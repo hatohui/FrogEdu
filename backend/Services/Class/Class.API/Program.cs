@@ -60,6 +60,7 @@ app.UseDevelopmentCors();
 
 // Authentication & Authorization
 app.UseAuthentication();
+app.UseRoleEnrichment(); // Enrich authenticated requests with role claims from User service
 app.UseSubscriptionEnrichment(); // Enrich authenticated requests with subscription claims
 app.UseAuthorization();
 

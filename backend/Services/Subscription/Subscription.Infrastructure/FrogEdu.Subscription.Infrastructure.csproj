@@ -2,6 +2,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Subscription.Application\FrogEdu.Subscription.Application.csproj" />
+    <ProjectReference Include="..\..\..\Shared\Shared.Kernel\FrogEdu.Shared.Kernel.csproj" />
   </ItemGroup>
 
   <ItemGroup>

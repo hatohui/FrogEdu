@@ -1,12 +1,11 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useParams, Link, useNavigate } from 'react-router'
 import {
-	useClassDetails,
+	useClassDetailTyped,
 	useRegenerateInviteCode,
-	useClassAssignments,
+	useAssignExam,
 } from '@/hooks/useClasses'
 import { useMe } from '@/hooks/auth/useMe'
-import { StudentList } from '@/components/classes'
 import { Button } from '@/components/ui/button'
 import {
 	Card,
@@ -18,6 +17,8 @@ import {
 import { Badge } from '@/components/ui/badge'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Separator } from '@/components/ui/separator'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import {
 	Table,
 	TableBody,
@@ -27,12 +28,18 @@ import {
 	TableRow,
 } from '@/components/ui/table'
 import {
+	Dialog,
+	DialogContent,
+	DialogDescription,
+	DialogFooter,
+	DialogHeader,
+	DialogTitle,
+} from '@/components/ui/dialog'
+import {
 	ArrowLeft,
-	BookOpen,
-	Building,
 	Calendar,
 	CheckCircle2,
-	Clock,
+	ClipboardPlus,
 	Copy,
 	FileText,
 	AlertTriangle,
@@ -42,6 +49,7 @@ import {
 import { format } from 'date-fns'
 import { toast } from 'sonner'
 import { useTranslation } from 'react-i18next'
+import type { AssignExamRequest } from '@/types/dtos/classes'
 
 const ClassDetailPage: React.FC = () => {
 	const { t } = useTranslation()
@@ -49,18 +57,28 @@ const ClassDetailPage: React.FC = () => {
 	const navigate = useNavigate()
 	const { user } = useMe()
 
-	const { data: classDetails, isLoading, error } = useClassDetails(id || '')
-	const { data: assignments, isLoading: assignmentsLoading } =
-		useClassAssignments(id || '')
+	const { data: classDetail, isLoading, error } = useClassDetailTyped(id || '')
 	const regenerateCode = useRegenerateInviteCode()
+	const assignExamMutation = useAssignExam()
+
+	// Assign exam dialog state
+	const [assignDialogOpen, setAssignDialogOpen] = useState(false)
+	const [examId, setExamId] = useState('')
+	const [startDate, setStartDate] = useState('')
+	const [dueDate, setDueDate] = useState('')
+	const [isMandatory, setIsMandatory] = useState(true)
+	const [weight, setWeight] = useState('100')
 
 	const isTeacher =
-		user?.role?.name === 'Teacher' &&
-		classDetails?.homeroomTeacherId === user?.cognitoId
+		user?.role?.name === 'Teacher' && classDetail?.teacherId === user?.cognitoId
+
+	const isAdmin = user?.role?.name === 'Admin'
+
+	const canManage = isTeacher || isAdmin
 
 	const copyInviteCode = () => {
-		if (classDetails?.inviteCode) {
-			navigator.clipboard.writeText(classDetails.inviteCode)
+		if (classDetail?.inviteCode) {
+			navigator.clipboard.writeText(classDetail.inviteCode)
 			toast.success(t('pages.classes.detail.invite_copied'))
 		}
 	}
@@ -68,6 +86,59 @@ const ClassDetailPage: React.FC = () => {
 	const handleRegenerateCode = async () => {
 		if (!id) return
 		await regenerateCode.mutateAsync({ classId: id })
+	}
+
+	const handleOpenAssignDialog = () => {
+		setExamId('')
+		setStartDate('')
+		setDueDate('')
+		setIsMandatory(true)
+		setWeight('100')
+		setAssignDialogOpen(true)
+	}
+
+	const handleAssignExam = () => {
+		if (!id || !examId || !startDate || !dueDate) return
+
+		const data: AssignExamRequest = {
+			examId,
+			startDate: new Date(startDate).toISOString(),
+			dueDate: new Date(dueDate).toISOString(),
+			isMandatory,
+			weight: Number(weight) || 100,
+		}
+
+		assignExamMutation.mutate(
+			{ classId: id, data },
+			{
+				onSuccess: () => {
+					setAssignDialogOpen(false)
+				},
+			}
+		)
+	}
+
+	const getEnrollmentStatusBadge = (status: string) => {
+		switch (status) {
+			case 'Active':
+				return (
+					<Badge variant='default'>
+						{t('pages.dashboard.classes.filter_active')}
+					</Badge>
+				)
+			case 'Inactive':
+				return (
+					<Badge variant='secondary'>
+						{t('pages.dashboard.classes.filter_inactive')}
+					</Badge>
+				)
+			case 'Kicked':
+				return <Badge variant='destructive'>{status}</Badge>
+			case 'Withdrawn':
+				return <Badge variant='outline'>{status}</Badge>
+			default:
+				return <Badge variant='outline'>{status}</Badge>
+		}
 	}
 
 	if (isLoading) {
@@ -87,7 +158,7 @@ const ClassDetailPage: React.FC = () => {
 		)
 	}
 
-	if (error || !classDetails) {
+	if (error || !classDetail) {
 		return (
 			<div className='p-6'>
 				<Button variant='ghost' onClick={() => navigate(-1)} className='mb-4'>
@@ -103,18 +174,14 @@ const ClassDetailPage: React.FC = () => {
 		)
 	}
 
-	const isCodeExpired =
-		classDetails.inviteCodeExpiresAt &&
-		new Date(classDetails.inviteCodeExpiresAt) < new Date()
-
-	const studentCount = classDetails.members.filter(
-		m => m.role === 'Student'
-	).length
+	const activeEnrollments = classDetail.enrollments.filter(
+		e => e.status === 'Active'
+	)
 
 	return (
 		<div className='p-6 space-y-6 max-w-5xl mx-auto'>
 			{/* Back button */}
-			<Link to='/dashboard/classes'>
+			<Link to='/app/classes'>
 				<Button variant='ghost' className='gap-2'>
 					<ArrowLeft className='h-4 w-4' />
 					{t('pages.classes.detail.back_to_classes')}
@@ -126,20 +193,26 @@ const ClassDetailPage: React.FC = () => {
 				<div>
 					<div className='flex items-center gap-3'>
 						<h1 className='text-3xl font-bold tracking-tight'>
-							{classDetails.name}
+							{classDetail.name}
 						</h1>
-						{classDetails.isArchived && (
+						{!classDetail.isActive && (
 							<Badge variant='secondary'>
-								{t('pages.classes.detail.archived')}
+								{t('pages.dashboard.classes.filter_inactive')}
 							</Badge>
 						)}
 					</div>
-					{classDetails.description && (
-						<p className='text-muted-foreground mt-2 max-w-2xl'>
-							{classDetails.description}
-						</p>
-					)}
+					<p className='text-muted-foreground mt-1'>
+						{t('pages.classes.detail.grade_label', {
+							grade: classDetail.grade,
+						})}
+					</p>
 				</div>
+				{canManage && (
+					<Button onClick={handleOpenAssignDialog}>
+						<ClipboardPlus className='h-4 w-4 mr-2' />
+						{t('pages.dashboard.classes.actions.assign_exam')}
+					</Button>
+				)}
 			</div>
 
 			<div className='grid gap-6 lg:grid-cols-3'>
@@ -152,21 +225,6 @@ const ClassDetailPage: React.FC = () => {
 						<div className='grid gap-4 sm:grid-cols-2'>
 							<div className='flex items-center gap-3'>
 								<div className='flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10'>
-									<BookOpen className='h-5 w-5 text-primary' />
-								</div>
-								<div>
-									<p className='text-sm text-muted-foreground'>
-										{t('pages.classes.detail.subject')}
-									</p>
-									<p className='font-medium'>
-										{classDetails.subject ||
-											t('pages.classes.detail.not_specified')}
-									</p>
-								</div>
-							</div>
-
-							<div className='flex items-center gap-3'>
-								<div className='flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10'>
 									<Users className='h-5 w-5 text-primary' />
 								</div>
 								<div>
@@ -175,25 +233,11 @@ const ClassDetailPage: React.FC = () => {
 									</p>
 									<p className='font-medium'>
 										{t('pages.classes.detail.grade_label', {
-											grade: classDetails.grade,
+											grade: classDetail.grade,
 										})}
 									</p>
 								</div>
 							</div>
-
-							{classDetails.school && (
-								<div className='flex items-center gap-3'>
-									<div className='flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10'>
-										<Building className='h-5 w-5 text-primary' />
-									</div>
-									<div>
-										<p className='text-sm text-muted-foreground'>
-											{t('pages.classes.detail.school')}
-										</p>
-										<p className='font-medium'>{classDetails.school}</p>
-									</div>
-								</div>
-							)}
 
 							<div className='flex items-center gap-3'>
 								<div className='flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10'>
@@ -204,7 +248,7 @@ const ClassDetailPage: React.FC = () => {
 										{t('pages.classes.detail.created')}
 									</p>
 									<p className='font-medium'>
-										{format(new Date(classDetails.createdAt), 'MMM d, yyyy')}
+										{format(new Date(classDetail.createdAt), 'MMM d, yyyy')}
 									</p>
 								</div>
 							</div>
@@ -215,28 +259,24 @@ const ClassDetailPage: React.FC = () => {
 						<div className='flex items-center justify-between'>
 							<div>
 								<p className='text-sm text-muted-foreground'>
-									{t('pages.classes.detail.teacher')}
+									{t('pages.dashboard.classes.table.students')}
 								</p>
 								<p className='font-medium'>
-									{classDetails.teacherName ||
-										t('pages.classes.detail.teacher_unknown')}
+									{classDetail.studentCount} / {classDetail.maxStudents}
 								</p>
 							</div>
 							<div className='text-right'>
 								<p className='text-sm text-muted-foreground'>
-									{t('pages.classes.detail.students')}
+									{t('pages.dashboard.classes.table.assignments')}
 								</p>
-								<p className='font-medium'>
-									{studentCount}
-									{classDetails.maxStudents && ` / ${classDetails.maxStudents}`}
-								</p>
+								<p className='font-medium'>{classDetail.assignments.length}</p>
 							</div>
 						</div>
 					</CardContent>
 				</Card>
 
-				{/* Invite code card - only for teachers */}
-				{isTeacher && classDetails.inviteCode && (
+				{/* Invite code card - for teachers and admins */}
+				{canManage && classDetail.inviteCode && (
 					<Card>
 						<CardHeader>
 							<CardTitle className='text-lg'>
@@ -249,76 +289,118 @@ const ClassDetailPage: React.FC = () => {
 						<CardContent className='space-y-4'>
 							<div className='flex items-center justify-between bg-muted rounded-lg p-4'>
 								<code className='font-mono text-2xl font-bold tracking-[0.3em]'>
-									{classDetails.inviteCode}
+									{classDetail.inviteCode}
 								</code>
 								<Button variant='ghost' size='icon' onClick={copyInviteCode}>
 									<Copy className='h-5 w-5' />
 								</Button>
 							</div>
 
-							<div className='flex items-center gap-2 text-sm'>
-								<Clock className='h-4 w-4 text-muted-foreground' />
-								{isCodeExpired ? (
-									<span className='text-destructive'>
-										{t('pages.classes.detail.code_expired')}
-									</span>
-								) : (
-									<span className='text-muted-foreground'>
-										{t('pages.classes.detail.expires')}{' '}
-										{format(
-											new Date(classDetails.inviteCodeExpiresAt!),
-											'MMM d, yyyy'
-										)}
-									</span>
-								)}
-							</div>
-
-							<Button
-								variant='outline'
-								className='w-full'
-								onClick={handleRegenerateCode}
-								disabled={regenerateCode.isPending}
-							>
-								{regenerateCode.isPending ? (
-									<RefreshCw className='h-4 w-4 mr-2 animate-spin' />
-								) : (
-									<RefreshCw className='h-4 w-4 mr-2' />
-								)}
-								{t('pages.classes.detail.regenerate')}
-							</Button>
+							{isTeacher && (
+								<Button
+									variant='outline'
+									className='w-full'
+									onClick={handleRegenerateCode}
+									disabled={regenerateCode.isPending}
+								>
+									{regenerateCode.isPending ? (
+										<RefreshCw className='h-4 w-4 mr-2 animate-spin' />
+									) : (
+										<RefreshCw className='h-4 w-4 mr-2' />
+									)}
+									{t('pages.classes.detail.regenerate')}
+								</Button>
+							)}
 						</CardContent>
 					</Card>
 				)}
 			</div>
 
-			{/* Class roster */}
+			{/* Enrolled Students */}
 			<Card>
 				<CardHeader>
-					<CardTitle>{t('pages.classes.detail.roster_title')}</CardTitle>
+					<CardTitle className='flex items-center gap-2'>
+						<Users className='h-5 w-5' />
+						{t('pages.dashboard.classes.detail.enrollments_tab')}
+						<Badge variant='secondary' className='ml-2'>
+							{activeEnrollments.length}
+						</Badge>
+					</CardTitle>
 					<CardDescription>
 						{t('pages.classes.detail.roster_description')}
 					</CardDescription>
 				</CardHeader>
 				<CardContent>
-					<StudentList members={classDetails.members} showRole={isTeacher} />
+					{classDetail.enrollments.length === 0 ? (
+						<div className='flex flex-col items-center justify-center py-8 gap-2'>
+							<Users className='h-8 w-8 text-muted-foreground' />
+							<p className='text-muted-foreground'>
+								{t('pages.dashboard.classes.detail.no_students')}
+							</p>
+						</div>
+					) : (
+						<div className='rounded-md border'>
+							<Table>
+								<TableHeader>
+									<TableRow>
+										<TableHead>
+											{t('pages.dashboard.classes.detail.student_id')}
+										</TableHead>
+										<TableHead>
+											{t('pages.dashboard.classes.detail.joined_at')}
+										</TableHead>
+										<TableHead>
+											{t('pages.dashboard.classes.detail.status')}
+										</TableHead>
+									</TableRow>
+								</TableHeader>
+								<TableBody>
+									{classDetail.enrollments.map(enrollment => (
+										<TableRow key={enrollment.id}>
+											<TableCell className='font-mono text-sm'>
+												{enrollment.studentId}
+											</TableCell>
+											<TableCell className='text-muted-foreground'>
+												{format(new Date(enrollment.joinedAt), 'MMM d, yyyy')}
+											</TableCell>
+											<TableCell>
+												{getEnrollmentStatusBadge(enrollment.status)}
+											</TableCell>
+										</TableRow>
+									))}
+								</TableBody>
+							</Table>
+						</div>
+					)}
 				</CardContent>
 			</Card>
 
-			{/* Assignments */}
+			{/* Assignments & Upcoming Exams */}
 			<Card>
 				<CardHeader>
-					<CardTitle className='flex items-center gap-2'>
-						<FileText className='h-5 w-5' />
-						{t('pages.classes.detail.assignments_title')}
-					</CardTitle>
-					<CardDescription>
-						{t('pages.classes.detail.assignments_description')}
-					</CardDescription>
+					<div className='flex items-center justify-between'>
+						<div>
+							<CardTitle className='flex items-center gap-2'>
+								<FileText className='h-5 w-5' />
+								{t('pages.classes.detail.assignments_title')}
+								<Badge variant='secondary' className='ml-2'>
+									{classDetail.assignments.length}
+								</Badge>
+							</CardTitle>
+							<CardDescription>
+								{t('pages.classes.detail.assignments_description')}
+							</CardDescription>
+						</div>
+						{canManage && (
+							<Button size='sm' onClick={handleOpenAssignDialog}>
+								<ClipboardPlus className='mr-2 h-4 w-4' />
+								{t('pages.dashboard.classes.actions.assign_exam')}
+							</Button>
+						)}
+					</div>
 				</CardHeader>
 				<CardContent>
-					{assignmentsLoading ? (
-						<Skeleton className='h-32 w-full' />
-					) : !assignments || assignments.length === 0 ? (
+					{classDetail.assignments.length === 0 ? (
 						<div className='flex flex-col items-center justify-center py-8 gap-2'>
 							<FileText className='h-8 w-8 text-muted-foreground' />
 							<p className='font-medium'>
@@ -348,7 +430,7 @@ const ClassDetailPage: React.FC = () => {
 									</TableRow>
 								</TableHeader>
 								<TableBody>
-									{assignments.map(assignment => (
+									{classDetail.assignments.map(assignment => (
 										<TableRow key={assignment.id}>
 											<TableCell className='font-mono text-sm'>
 												{assignment.examId}
@@ -403,6 +485,110 @@ const ClassDetailPage: React.FC = () => {
 					)}
 				</CardContent>
 			</Card>
+
+			{/* Assign Exam Dialog */}
+			<Dialog open={assignDialogOpen} onOpenChange={setAssignDialogOpen}>
+				<DialogContent>
+					<DialogHeader>
+						<DialogTitle>
+							{t('pages.dashboard.classes.assign_dialog.title')}
+						</DialogTitle>
+						<DialogDescription>
+							{t('pages.dashboard.classes.assign_dialog.description')}
+						</DialogDescription>
+					</DialogHeader>
+					<div className='grid gap-4 py-4'>
+						<div className='grid gap-2'>
+							<Label htmlFor='examId'>
+								{t('pages.dashboard.classes.assign_dialog.exam_id')}
+							</Label>
+							<Input
+								id='examId'
+								value={examId}
+								onChange={e => setExamId(e.target.value)}
+								placeholder={t(
+									'pages.dashboard.classes.assign_dialog.exam_id_placeholder'
+								)}
+							/>
+						</div>
+						<div className='grid grid-cols-2 gap-4'>
+							<div className='grid gap-2'>
+								<Label htmlFor='startDate'>
+									{t('pages.dashboard.classes.assign_dialog.start_date')}
+								</Label>
+								<Input
+									id='startDate'
+									type='datetime-local'
+									value={startDate}
+									onChange={e => setStartDate(e.target.value)}
+								/>
+							</div>
+							<div className='grid gap-2'>
+								<Label htmlFor='dueDate'>
+									{t('pages.dashboard.classes.assign_dialog.due_date')}
+								</Label>
+								<Input
+									id='dueDate'
+									type='datetime-local'
+									value={dueDate}
+									onChange={e => setDueDate(e.target.value)}
+								/>
+							</div>
+						</div>
+						<div className='flex items-center gap-4'>
+							<div className='flex items-center gap-2'>
+								<input
+									type='checkbox'
+									id='mandatory-class'
+									checked={isMandatory}
+									onChange={e => setIsMandatory(e.target.checked)}
+									className='h-4 w-4 rounded border-gray-300'
+								/>
+								<Label htmlFor='mandatory-class'>
+									{t('pages.dashboard.classes.assign_dialog.mandatory')}
+								</Label>
+							</div>
+							<div className='grid gap-2 flex-1'>
+								<Label htmlFor='weight-class'>
+									{t('pages.dashboard.classes.assign_dialog.weight')}
+								</Label>
+								<Input
+									id='weight-class'
+									type='number'
+									min={0}
+									max={100}
+									value={weight}
+									onChange={e => setWeight(e.target.value)}
+									placeholder={t(
+										'pages.dashboard.classes.assign_dialog.weight_placeholder'
+									)}
+								/>
+							</div>
+						</div>
+					</div>
+					<DialogFooter>
+						<Button
+							variant='outline'
+							onClick={() => setAssignDialogOpen(false)}
+						>
+							{t('common.cancel')}
+						</Button>
+						<Button
+							onClick={handleAssignExam}
+							disabled={
+								!examId ||
+								!startDate ||
+								!dueDate ||
+								assignExamMutation.isPending
+							}
+						>
+							{assignExamMutation.isPending
+								? t('pages.dashboard.classes.assign_dialog.submitting')
+								: t('pages.dashboard.classes.assign_dialog.submit')}
+						</Button>
+					</DialogFooter>
+				</DialogContent>
+			</Dialog>
 		</div>
 	)
 }

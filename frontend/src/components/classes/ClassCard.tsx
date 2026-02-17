@@ -9,13 +9,13 @@ import {
 } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Users, BookOpen, ChevronRight, Copy, Clock } from 'lucide-react'
+import { Users, ChevronRight, Copy } from 'lucide-react'
 import { toast } from 'sonner'
-import type { ClassDto } from '@/services/class-microservice/class.service'
+import type { ClassRoom } from '@/types/model/class-service'
 import { useTranslation } from 'react-i18next'
 
 interface ClassCardProps {
-	classData: ClassDto
+	classData: ClassRoom
 	isTeacher?: boolean
 }
 
@@ -34,10 +34,6 @@ const ClassCard: React.FC<ClassCardProps> = ({
 		}
 	}
 
-	const isCodeExpired =
-		classData.inviteCodeExpiresAt &&
-		new Date(classData.inviteCodeExpiresAt) < new Date()
-
 	return (
 		<Link to={`/app/classes/${classData.id}`}>
 			<Card className='hover:shadow-md transition-all duration-200 cursor-pointer group'>
@@ -48,16 +44,16 @@ const ClassCard: React.FC<ClassCardProps> = ({
 								{classData.name}
 							</CardTitle>
 							<CardDescription className='mt-1'>
-								{classData.subject && (
-									<span className='inline-flex items-center gap-1'>
-										<BookOpen className='h-3 w-3' />
-										{classData.subject}
+								{classData.assignmentCount > 0 && (
+									<span className='text-xs'>
+										{classData.assignmentCount}{' '}
+										{t('pages.dashboard.classes.table.assignments')}
 									</span>
 								)}
 							</CardDescription>
 						</div>
 						<Badge
-							variant={classData.isArchived ? 'secondary' : 'default'}
+							variant={classData.isActive ? 'default' : 'secondary'}
 							className='ml-2'
 						>
 							{t('pages.classes.card.grade_badge', {
@@ -79,15 +75,6 @@ const ClassCard: React.FC<ClassCardProps> = ({
 						</span>
 					</div>
 
-					{/* Teacher info */}
-					{!isTeacher && classData.teacherName && (
-						<div className='text-sm text-muted-foreground'>
-							{t('pages.classes.card.teacher_label', {
-								name: classData.teacherName,
-							})}
-						</div>
-					)}
-
 					{/* Invite code for teachers */}
 					{isTeacher && classData.inviteCode && (
 						<div className='flex items-center justify-between bg-muted rounded-md p-2'>
@@ -98,12 +85,6 @@ const ClassCard: React.FC<ClassCardProps> = ({
 								<code className='font-mono font-semibold tracking-widest'>
 									{classData.inviteCode}
 								</code>
-								{isCodeExpired && (
-									<Badge variant='destructive' className='text-xs'>
-										<Clock className='h-3 w-3 mr-1' />
-										{t('pages.classes.card.expired')}
-									</Badge>
-								)}
 							</div>
 							<Button
 								variant='ghost'
@@ -113,13 +94,6 @@ const ClassCard: React.FC<ClassCardProps> = ({
 							>
 								<Copy className='h-4 w-4' />
 							</Button>
-						</div>
-					)}
-
-					{/* School info */}
-					{classData.school && (
-						<div className='text-xs text-muted-foreground truncate'>
-							{classData.school}
 						</div>
 					)}
 

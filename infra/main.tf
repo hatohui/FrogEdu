@@ -205,6 +205,7 @@ module "class_service" {
     MEDIAK_LICENSE_KEY         = local.mediak_license_key
     COGNITO_USER_POOL_ID       = module.cognito.user_pool_id
     AWS_COGNITO_REGION         = local.aws_region
+    USER_SERVICE_URL           = "https://${local.api_domain}/api/users"
     SUBSCRIPTION_SERVICE_URL   = "https://${local.api_domain}/api/subscriptions"
   }
 }

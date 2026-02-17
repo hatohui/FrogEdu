@@ -67,6 +67,9 @@ public static class DependencyInjection
         // Register subscription claims HTTP client for backend token enrichment
         services.AddSubscriptionClaimsClient();
 
+        // Register shared role claims client for role enrichment middleware
+        services.AddRoleClaimsClient();
+
         return services;
     }
 

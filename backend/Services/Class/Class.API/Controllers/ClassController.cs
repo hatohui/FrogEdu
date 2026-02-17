@@ -61,9 +61,10 @@ public class ClassController(IMediator mediator) : BaseController
     public async Task<IActionResult> GetClasses(CancellationToken cancellationToken)
     {
         var userId = GetAuthenticatedUserId();
+
+        // Role is now set by RoleEnrichmentMiddleware on ClaimTypes.Role
         var role = GetUserRole();
 
-        // Debug logging
         var logger = HttpContext.RequestServices.GetRequiredService<ILogger<ClassController>>();
         logger.LogInformation("GetClasses called - UserId: {UserId}, Role: {Role}", userId, role);
 

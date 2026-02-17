@@ -166,7 +166,7 @@ const SubjectsPage = (): React.ReactElement => {
 					</SelectTrigger>
 					<SelectContent>
 						<SelectItem value='all'>All Grades</SelectItem>
-						{[10, 11, 12].map(grade => (
+						{Array.from({ length: 5 }, (_, i) => i + 1).map(grade => (
 							<SelectItem key={grade} value={grade.toString()}>
 								Grade {grade}
 							</SelectItem>

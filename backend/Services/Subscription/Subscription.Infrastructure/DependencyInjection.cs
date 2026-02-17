@@ -1,3 +1,4 @@
+using FrogEdu.Shared.Kernel.Authorization;
 using FrogEdu.Subscription.Application.Interfaces;
 using FrogEdu.Subscription.Domain.Repositories;
 using FrogEdu.Subscription.Infrastructure.Persistence;
@@ -51,6 +52,9 @@ public static class DependencyInjection
 
         // Register database health service
         services.AddScoped<IDatabaseHealthService, DatabaseHealthService>();
+
+        // Register shared role claims client for role enrichment middleware
+        services.AddRoleClaimsClient();
 
         return services;
     }

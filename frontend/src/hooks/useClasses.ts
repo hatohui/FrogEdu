@@ -3,7 +3,6 @@ import { toast } from 'sonner'
 import {
 	classService,
 	type ClassDetailsDto,
-	type ClassDto,
 	type CreateClassDto,
 	type DashboardStatsDto,
 } from '@/services/class-microservice/class.service'
@@ -17,8 +16,7 @@ import type { AssignExamRequest } from '@/types/dtos/classes'
 // Query keys
 export const classKeys = {
 	all: ['classes'] as const,
-	list: (includeArchived?: boolean) =>
-		[...classKeys.all, 'list', { includeArchived }] as const,
+	list: () => [...classKeys.all, 'list'] as const,
 	details: (id: string) => [...classKeys.all, 'details', id] as const,
 	dashboardStats: () => [...classKeys.all, 'dashboard-stats'] as const,
 	assignments: (classId: string) =>
@@ -31,10 +29,10 @@ export const classKeys = {
 /**
  * Hook to fetch all classes for the current user
  */
-export function useClasses(includeArchived?: boolean) {
-	return useQuery<ClassDto[], Error>({
-		queryKey: classKeys.list(includeArchived),
-		queryFn: () => classService.getMyClasses(),
+export function useClasses() {
+	return useQuery<ClassRoom[], Error>({
+		queryKey: classKeys.list(),
+		queryFn: () => classService.getMyClassesTyped(),
 	})
 }
 

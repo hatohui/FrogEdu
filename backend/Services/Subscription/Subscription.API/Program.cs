@@ -1,5 +1,6 @@
 using DotNetEnv;
 using FrogEdu.Shared.Kernel;
+using FrogEdu.Shared.Kernel.Authorization;
 using FrogEdu.Subscription.API.Middleware;
 using FrogEdu.Subscription.Application;
 using FrogEdu.Subscription.Infrastructure;
@@ -61,6 +62,7 @@ app.UseDevelopmentCors();
 
 // Authentication & Authorization
 app.UseAuthentication();
+app.UseRoleEnrichment(); // Enrich authenticated requests with role claims from User service
 app.UseAuthorization();
 
 // ============================================================================

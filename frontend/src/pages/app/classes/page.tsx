@@ -15,13 +15,12 @@ const ClassesPage: React.FC = () => {
 	const isTeacher = user?.role?.name === 'Teacher'
 
 	const [showCreateModal, setShowCreateModal] = useState(false)
-	const [includeArchived, setIncludeArchived] = useState(false)
 	const [showJoinModal, setShowJoinModal] = useState(false)
 
-	const { data: classes, isLoading } = useClasses(includeArchived)
+	const { data: classes, isLoading } = useClasses()
 
-	const activeClasses = classes?.filter(c => !c.isArchived) || []
-	const archivedClasses = classes?.filter(c => c.isArchived) || []
+	const activeClasses = classes?.filter(c => c.isActive) || []
+	const inactiveClasses = classes?.filter(c => !c.isActive) || []
 
 	if (isLoading) {
 		return (
@@ -69,12 +68,7 @@ const ClassesPage: React.FC = () => {
 			</div>
 
 			{isTeacher ? (
-				<Tabs
-					defaultValue='active'
-					onValueChange={(value: string) =>
-						setIncludeArchived(value === 'archived')
-					}
-				>
+				<Tabs defaultValue='active'>
 					<TabsList>
 						<TabsTrigger value='active' className='gap-2'>
 							<Users className='h-4 w-4' />
@@ -82,10 +76,10 @@ const ClassesPage: React.FC = () => {
 								count: activeClasses.length,
 							})}
 						</TabsTrigger>
-						<TabsTrigger value='archived' className='gap-2'>
+						<TabsTrigger value='inactive' className='gap-2'>
 							<Archive className='h-4 w-4' />
 							{t('pages.classes.tabs.archived', {
-								count: archivedClasses.length,
+								count: inactiveClasses.length,
 							})}
 						</TabsTrigger>
 					</TabsList>
@@ -109,15 +103,15 @@ const ClassesPage: React.FC = () => {
 						)}
 					</TabsContent>
 
-					<TabsContent value='archived' className='mt-6'>
-						{archivedClasses.length === 0 ? (
+					<TabsContent value='inactive' className='mt-6'>
+						{inactiveClasses.length === 0 ? (
 							<div className='text-center py-12 text-muted-foreground'>
 								<Archive className='h-12 w-12 mx-auto mb-4 opacity-50' />
 								<p>{t('pages.classes.archived_empty')}</p>
 							</div>
 						) : (
 							<div className='grid gap-4 md:grid-cols-2 lg:grid-cols-3'>
-								{archivedClasses.map(classData => (
+								{inactiveClasses.map(classData => (
 									<ClassCard
 										key={classData.id}
 										classData={classData}

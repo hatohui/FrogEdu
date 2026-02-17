@@ -29,6 +29,28 @@ public class UserController : ControllerBase
         _logger = logger;
     }
 
+    /// <summary>
+    /// Get user profile by Cognito ID (for service-to-service calls)
+    /// </summary>
+    [HttpGet("by-cognito/{cognitoId}")]
+    [ProducesResponseType(typeof(UserDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetUserByCognitoId(
+        string cognitoId,
+        CancellationToken cancellationToken
+    )
+    {
+        var query = new GetUserProfileQuery(cognitoId);
+        var result = await _mediator.Send(query, cancellationToken);
+
+        if (result is null)
+        {
+            return NotFound($"User with Cognito ID {cognitoId} not found");
+        }
+
+        return Ok(result);
+    }
+
     [HttpGet("users")]
     [Authorize(Roles = "Admin")]
     [ProducesResponseType(typeof(IReadOnlyList<UserDto>), StatusCodes.Status200OK)]

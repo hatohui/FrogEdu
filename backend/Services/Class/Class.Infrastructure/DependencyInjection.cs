@@ -49,6 +49,16 @@ public static class DependencyInjection
         // Register database health service
         services.AddScoped<IDatabaseHealthService, DatabaseHealthService>();
 
+        // Register User Role HTTP client for fetching user roles
+        services.AddHttpClient<IUserRoleClient, Services.UserRoleClient>(client =>
+        {
+            client.Timeout = TimeSpan.FromSeconds(10);
+            client.DefaultRequestHeaders.Add("Accept", "application/json");
+        });
+
+        // Register shared role claims client for role enrichment middleware
+        services.AddRoleClaimsClient();
+
         // Register subscription claims HTTP client for backend token enrichment
         services.AddSubscriptionClaimsClient();
 
