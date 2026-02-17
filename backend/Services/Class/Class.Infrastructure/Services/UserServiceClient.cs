@@ -1,7 +1,5 @@
-using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using FrogEdu.Class.Application.Interfaces;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
@@ -10,19 +8,16 @@ namespace FrogEdu.Class.Infrastructure.Services;
 public sealed class UserServiceClient : IUserServiceClient
 {
     private readonly HttpClient _httpClient;
-    private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly ILogger<UserServiceClient> _logger;
     private readonly string _userServiceUrl;
 
     public UserServiceClient(
         HttpClient httpClient,
-        IHttpContextAccessor httpContextAccessor,
         IConfiguration configuration,
         ILogger<UserServiceClient> logger
     )
     {
         _httpClient = httpClient;
-        _httpContextAccessor = httpContextAccessor;
         _logger = logger;
 
         _userServiceUrl =
@@ -38,16 +33,10 @@ public sealed class UserServiceClient : IUserServiceClient
     {
         try
         {
-            var authHeader =
-                _httpContextAccessor.HttpContext?.Request.Headers.Authorization.ToString();
-            var request = new HttpRequestMessage(
-                HttpMethod.Get,
-                $"{_userServiceUrl}/users/{userId}"
+            var response = await _httpClient.GetAsync(
+                $"{_userServiceUrl}/by-cognito/{userId}",
+                cancellationToken
             );
-            if (!string.IsNullOrEmpty(authHeader))
-                request.Headers.Authorization = AuthenticationHeaderValue.Parse(authHeader);
-
-            var response = await _httpClient.SendAsync(request, cancellationToken);
 
             if (!response.IsSuccessStatusCode)
             {
