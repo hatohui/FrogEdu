@@ -60,6 +60,11 @@
 		"user": "Người dùng",
 		"administrator": "Quản trị viên"
 	},
+	"role": {
+		"admin": "Quản trị",
+		"teacher": "Giáo viên",
+		"student": "Học sinh"
+	},
 	"badges": {
 		"pro": "Pro",
 		"free": "Miễn phí",
@@ -121,6 +126,10 @@
 		"view_details": "Xem chi tiết",
 		"manage": "Quản lý",
 		"view_all": "Xem tất cả"
+	},
+	"action": {
+		"cancel": "Hủy",
+		"save": "Lưu"
 	},
 	"messages": {
 		"sign_out_success": "Đã đăng xuất thành công",

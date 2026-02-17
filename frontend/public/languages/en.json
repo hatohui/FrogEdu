@@ -60,6 +60,11 @@
 		"user": "User",
 		"administrator": "Administrator"
 	},
+	"role": {
+		"admin": "Admin",
+		"teacher": "Teacher",
+		"student": "Student"
+	},
 	"badges": {
 		"pro": "Pro",
 		"free": "Free",
@@ -121,6 +126,10 @@
 		"view_details": "View Details",
 		"manage": "Manage",
 		"view_all": "View All"
+	},
+	"action": {
+		"cancel": "Cancel",
+		"save": "Save"
 	},
 	"messages": {
 		"sign_out_success": "Successfully signed out",
