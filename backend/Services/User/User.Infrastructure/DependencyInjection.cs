@@ -81,6 +81,7 @@ public static class DependencyInjection
 
         // Register application-layer interfaces
         services.AddScoped<IPasswordService, CognitoPasswordService>();
+        services.AddScoped<ICognitoAttributeService, CognitoAttributeService>();
         services.AddSingleton<IApplicationConfiguration, ApplicationConfiguration>();
 
         // Register Subscription Service HTTP client

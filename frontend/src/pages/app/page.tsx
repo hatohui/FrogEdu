@@ -1,6 +1,7 @@
-import React from 'react'
+import React, { useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useMe } from '@/hooks/auth/useMe'
-import { useDashboardStats, useClasses } from '@/hooks/useClasses'
+import { useClasses } from '@/hooks/useClasses'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import {
@@ -25,37 +26,49 @@ interface StatCardProps {
 	}
 }
 
-const StatCard = ({ title, value, icon: Icon, trend }: StatCardProps) => (
-	<Card className='hover:shadow-md transition-shadow'>
-		<CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
-			<CardTitle className='text-sm font-medium text-muted-foreground'>
-				{title}
-			</CardTitle>
-			<Icon className='h-4 w-4 text-muted-foreground' />
-		</CardHeader>
-		<CardContent>
-			<div className='text-2xl font-bold'>{value}</div>
-			{trend && (
-				<p
-					className={`text-xs flex items-center mt-1 ${
-						trend.isPositive ? 'text-green-600' : 'text-red-600'
-					}`}
-				>
-					<TrendingUp className='h-3 w-3 mr-1' />
-					{trend.value}% from last month
-				</p>
-			)}
-		</CardContent>
-	</Card>
-)
+const StatCard = ({ title, value, icon: Icon, trend }: StatCardProps) => {
+	const { t } = useTranslation()
+	return (
+		<Card className='hover:shadow-md transition-shadow'>
+			<CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
+				<CardTitle className='text-sm font-medium text-muted-foreground'>
+					{title}
+				</CardTitle>
+				<Icon className='h-4 w-4 text-muted-foreground' />
+			</CardHeader>
+			<CardContent>
+				<div className='text-2xl font-bold'>{value}</div>
+				{trend && (
+					<p
+						className={`text-xs flex items-center mt-1 ${
+							trend.isPositive ? 'text-green-600' : 'text-red-600'
+						}`}
+					>
+						<TrendingUp className='h-3 w-3 mr-1' />
+						{t('pages.app_dashboard.trend_label', { value: trend.value })}
+					</p>
+				)}
+			</CardContent>
+		</Card>
+	)
+}
 
 const DashboardPage = (): React.ReactElement => {
+	const { t } = useTranslation()
 	const { user, isLoading: authLoading } = useMe()
 	const isTeacher = user?.role?.name === 'Teacher'
 
 	// Fetch real data using TanStack Query
-	const { data: stats, isLoading: statsLoading } = useDashboardStats()
-	const { data: classes } = useClasses()
+	const { data: classes, isLoading: classesLoading } = useClasses()
+
+	const stats = useMemo(() => {
+		if (!classes) return { classCount: 0, studentCount: 0, assignmentCount: 0 }
+		return {
+			classCount: classes.length,
+			studentCount: classes.reduce((sum, c) => sum + c.studentCount, 0),
+			assignmentCount: classes.reduce((sum, c) => sum + c.assignmentCount, 0),
+		}
+	}, [classes])
 
 	const recentClasses = classes?.slice(0, 3) || []
 
@@ -71,7 +84,7 @@ const DashboardPage = (): React.ReactElement => {
 		return user?.firstName || user?.email?.split('@')[0] || 'User'
 	}
 
-	const isLoading = authLoading || statsLoading
+	const isLoading = authLoading || classesLoading
 
 	if (isLoading) {
 		return (
@@ -92,34 +105,29 @@ const DashboardPage = (): React.ReactElement => {
 			{/* Welcome Header */}
 			<div className='space-y-2'>
 				<h1 className='text-3xl font-bold tracking-tight'>
-					Welcome back, {getUserDisplayName()}!
+					{t('pages.app_dashboard.welcome', { name: getUserDisplayName() })}
 				</h1>
 				<p className='text-muted-foreground'>
-					Here's what's happening with your classes today.
+					{t('pages.app_dashboard.subtitle')}
 				</p>
 			</div>
 
 			{/* Stats Grid */}
-			<div className='grid gap-4 md:grid-cols-2 lg:grid-cols-4'>
+			<div className='grid gap-4 md:grid-cols-2 lg:grid-cols-3'>
 				<StatCard
-					title='Active Classes'
-					value={stats?.classCount ?? 0}
+					title={t('pages.app_dashboard.stats.active_classes')}
+					value={stats.classCount}
 					icon={Users}
 				/>
 				<StatCard
-					title='Exams Created'
-					value={stats?.examCount ?? 0}
+					title={t('pages.app_dashboard.stats.students_enrolled')}
+					value={stats.studentCount}
+					icon={Users}
+				/>
+				<StatCard
+					title={t('pages.app_dashboard.stats.assignments')}
+					value={stats.assignmentCount}
 					icon={FileText}
-				/>
-				<StatCard
-					title='Students Enrolled'
-					value={stats?.studentCount ?? 0}
-					icon={Users}
-				/>
-				<StatCard
-					title='Content Items'
-					value={stats?.contentItemCount ?? 0}
-					icon={BookOpen}
 				/>
 			</div>
 
@@ -127,10 +135,10 @@ const DashboardPage = (): React.ReactElement => {
 			{recentClasses.length > 0 && (
 				<Card>
 					<CardHeader className='flex flex-row items-center justify-between'>
-						<CardTitle>Recent Classes</CardTitle>
+						<CardTitle>{t('pages.app_dashboard.recent_classes')}</CardTitle>
 						<Link to='/dashboard/classes'>
 							<Button variant='ghost' size='sm'>
-								View All
+								{t('pages.app_dashboard.view_all')}
 							</Button>
 						</Link>
 					</CardHeader>
@@ -151,25 +159,29 @@ const DashboardPage = (): React.ReactElement => {
 			{/* Quick Actions */}
 			<Card>
 				<CardHeader>
-					<CardTitle>Quick Actions</CardTitle>
+					<CardTitle>{t('pages.app_dashboard.quick_actions.title')}</CardTitle>
 				</CardHeader>
 				<CardContent className='flex flex-wrap gap-4'>
 					<Link to='/app/exams/create'>
 						<Button className='space-x-2'>
 							<Plus className='h-4 w-4' />
-							<span>Create New Exam</span>
+							<span>{t('pages.app_dashboard.quick_actions.create_exam')}</span>
 						</Button>
 					</Link>
 					<Link to='/app/content'>
 						<Button variant='outline' className='space-x-2'>
 							<BookOpen className='h-4 w-4' />
-							<span>Browse Content Library</span>
+							<span>
+								{t('pages.app_dashboard.quick_actions.browse_content')}
+							</span>
 						</Button>
 					</Link>
 					<Link to='/app/classes'>
 						<Button variant='outline' className='space-x-2'>
 							<Users className='h-4 w-4' />
-							<span>Manage Classes</span>
+							<span>
+								{t('pages.app_dashboard.quick_actions.manage_classes')}
+							</span>
 						</Button>
 					</Link>
 				</CardContent>
@@ -180,7 +192,7 @@ const DashboardPage = (): React.ReactElement => {
 				<CardHeader>
 					<CardTitle className='flex items-center space-x-2'>
 						<Clock className='h-5 w-5' />
-						<span>Recent Activity</span>
+						<span>{t('pages.app_dashboard.recent_activity')}</span>
 					</CardTitle>
 				</CardHeader>
 				<CardContent>

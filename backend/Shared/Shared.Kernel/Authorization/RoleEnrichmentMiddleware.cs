@@ -51,6 +51,38 @@ public sealed class RoleEnrichmentMiddleware
 
             if (!string.IsNullOrEmpty(cognitoSub))
             {
+                // Self-healing: Check if the JWT already carries a valid role via custom:role
+                // (mapped to ClaimTypes.Role by OnTokenValidated in AuthenticationExtensions).
+                // If present, trust it and skip the HTTP call to the User service entirely.
+                // This is critical for Lambda deployments where services cannot reach each other.
+                var existingRole = context.User.FindFirst(ClaimTypes.Role)?.Value;
+                if (
+                    !string.IsNullOrEmpty(existingRole)
+                    && !existingRole.Equals(
+                        RoleConstants.Student,
+                        StringComparison.OrdinalIgnoreCase
+                    )
+                )
+                {
+                    // JWT already has a meaningful role (Admin/Teacher) — trust it
+                    var jwtRoleClaims = new RoleClaimsDto
+                    {
+                        CognitoSub = cognitoSub,
+                        Role = char.ToUpper(existingRole[0]) + existingRole[1..].ToLower(),
+                    };
+                    context.Items[RoleClaimsKey] = jwtRoleClaims;
+
+                    _logger.LogDebug(
+                        "Self-healing: Using JWT custom:role '{Role}' for user {CognitoSub}, skipping User service call",
+                        jwtRoleClaims.Role,
+                        cognitoSub
+                    );
+
+                    await _next(context);
+                    return;
+                }
+
+                // No authoritative role in JWT — try fetching from User service
                 var roleClaims = await GetOrFetchRoleClaims(
                     roleClient,
                     cache,
@@ -58,27 +90,71 @@ public sealed class RoleEnrichmentMiddleware
                     context.RequestAborted
                 );
 
-                // Store in HttpContext.Items for programmatic access
-                context.Items[RoleClaimsKey] = roleClaims;
+                // Only override the JWT role if we got a real (non-default) result from the User service.
+                // If the HTTP call failed (returns Student default), preserve whatever the JWT had.
+                if (roleClaims.UserId.HasValue)
+                {
+                    // Successfully fetched from User service — this is authoritative
+                    context.Items[RoleClaimsKey] = roleClaims;
+                    EnrichClaimsPrincipal(context, roleClaims);
 
-                // Add ClaimTypes.Role to the ClaimsPrincipal so [Authorize(Roles = "Admin")] works
-                EnrichClaimsPrincipal(context, roleClaims);
+                    _logger.LogDebug(
+                        "Enriched request for user {CognitoSub} with role: {Role} (from User service)",
+                        cognitoSub,
+                        roleClaims.Role
+                    );
+                }
+                else if (!string.IsNullOrEmpty(existingRole))
+                {
+                    // HTTP call failed but JWT has a role (even Student) — keep it
+                    var fallbackClaims = new RoleClaimsDto
+                    {
+                        CognitoSub = cognitoSub,
+                        Role = char.ToUpper(existingRole[0]) + existingRole[1..].ToLower(),
+                    };
+                    context.Items[RoleClaimsKey] = fallbackClaims;
 
-                _logger.LogDebug(
-                    "Enriched request for user {CognitoSub} with role: {Role}",
-                    cognitoSub,
-                    roleClaims.Role
-                );
+                    _logger.LogDebug(
+                        "Self-healing: User service unreachable, using JWT role '{Role}' for {CognitoSub}",
+                        fallbackClaims.Role,
+                        cognitoSub
+                    );
+                }
+                else
+                {
+                    // No role available anywhere — use the default from the failed call
+                    context.Items[RoleClaimsKey] = roleClaims;
+                    EnrichClaimsPrincipal(context, roleClaims);
+
+                    _logger.LogWarning(
+                        "No role found for user {CognitoSub} — defaulting to {Role}. "
+                            + "User should call GET /me on the User service to sync their role to Cognito.",
+                        cognitoSub,
+                        roleClaims.Role
+                    );
+                }
             }
         }
         catch (Exception ex)
         {
-            // Don't fail the request if role enrichment fails
-            // User will instead be treated as their default role
-            _logger.LogWarning(
-                ex,
-                "Failed to enrich request with role claims. User will not have role-based access."
-            );
+            // Don't fail the request if role enrichment fails.
+            // Check if JWT already has a role claim from OnTokenValidated.
+            var existingRole = context.User.FindFirst(ClaimTypes.Role)?.Value;
+            if (!string.IsNullOrEmpty(existingRole))
+            {
+                _logger.LogWarning(
+                    ex,
+                    "Role enrichment failed, but JWT has role '{Role}' — keeping it.",
+                    existingRole
+                );
+            }
+            else
+            {
+                _logger.LogWarning(
+                    ex,
+                    "Failed to enrich request with role claims. User will not have role-based access."
+                );
+            }
         }
 
         await _next(context);

@@ -1,10 +1,6 @@
 import React, { useState } from 'react'
 import { useParams, Link, useNavigate } from 'react-router'
-import {
-	useClassDetailTyped,
-	useRegenerateInviteCode,
-	useAssignExam,
-} from '@/hooks/useClasses'
+import { useClassDetail, useAssignExam } from '@/hooks/useClasses'
 import { useMe } from '@/hooks/auth/useMe'
 import { Button } from '@/components/ui/button'
 import {
@@ -43,7 +39,6 @@ import {
 	Copy,
 	FileText,
 	AlertTriangle,
-	RefreshCw,
 	Users,
 } from 'lucide-react'
 import { format } from 'date-fns'
@@ -57,8 +52,7 @@ const ClassDetailPage: React.FC = () => {
 	const navigate = useNavigate()
 	const { user } = useMe()
 
-	const { data: classDetail, isLoading, error } = useClassDetailTyped(id || '')
-	const regenerateCode = useRegenerateInviteCode()
+	const { data: classDetail, isLoading, error } = useClassDetail(id || '')
 	const assignExamMutation = useAssignExam()
 
 	// Assign exam dialog state
@@ -81,11 +75,6 @@ const ClassDetailPage: React.FC = () => {
 			navigator.clipboard.writeText(classDetail.inviteCode)
 			toast.success(t('pages.classes.detail.invite_copied'))
 		}
-	}
-
-	const handleRegenerateCode = async () => {
-		if (!id) return
-		await regenerateCode.mutateAsync({ classId: id })
 	}
 
 	const handleOpenAssignDialog = () => {
@@ -295,22 +284,6 @@ const ClassDetailPage: React.FC = () => {
 									<Copy className='h-5 w-5' />
 								</Button>
 							</div>
-
-							{isTeacher && (
-								<Button
-									variant='outline'
-									className='w-full'
-									onClick={handleRegenerateCode}
-									disabled={regenerateCode.isPending}
-								>
-									{regenerateCode.isPending ? (
-										<RefreshCw className='h-4 w-4 mr-2 animate-spin' />
-									) : (
-										<RefreshCw className='h-4 w-4 mr-2' />
-									)}
-									{t('pages.classes.detail.regenerate')}
-								</Button>
-							)}
 						</CardContent>
 					</Card>
 				)}

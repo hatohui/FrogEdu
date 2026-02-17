@@ -1,24 +1,21 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
-import {
-	classService,
-	type ClassDetailsDto,
-	type CreateClassDto,
-	type DashboardStatsDto,
-} from '@/services/class-microservice/class.service'
+import { classService } from '@/services/class-microservice/class.service'
 import type {
 	ClassRoom,
 	ClassDetail,
 	ClassAssignment,
 } from '@/types/model/class-service'
-import type { AssignExamRequest } from '@/types/dtos/classes'
+import type {
+	AssignExamRequest,
+	CreateClassRequest,
+} from '@/types/dtos/classes'
 
 // Query keys
 export const classKeys = {
 	all: ['classes'] as const,
 	list: () => [...classKeys.all, 'list'] as const,
 	details: (id: string) => [...classKeys.all, 'details', id] as const,
-	dashboardStats: () => [...classKeys.all, 'dashboard-stats'] as const,
 	assignments: (classId: string) =>
 		[...classKeys.all, 'assignments', classId] as const,
 	adminAll: () => [...classKeys.all, 'admin', 'all'] as const,
@@ -27,44 +24,34 @@ export const classKeys = {
 }
 
 /**
- * Hook to fetch all classes for the current user
+ * Hook to fetch classes for the current user (role-based: Admin→all, Teacher→own, Student→enrolled)
  */
 export function useClasses() {
 	return useQuery<ClassRoom[], Error>({
 		queryKey: classKeys.list(),
-		queryFn: () => classService.getMyClassesTyped(),
+		queryFn: () => classService.getMyClasses(),
 	})
 }
 
 /**
  * Hook to fetch class details
  */
-export function useClassDetails(classId: string) {
-	return useQuery<ClassDetailsDto, Error>({
+export function useClassDetail(classId: string) {
+	return useQuery<ClassDetail, Error>({
 		queryKey: classKeys.details(classId),
-		queryFn: () => classService.getClassDetails(classId),
+		queryFn: () => classService.getClassDetail(classId),
 		enabled: !!classId,
 	})
 }
 
 /**
- * Hook to fetch dashboard statistics
- */
-export function useDashboardStats() {
-	return useQuery<DashboardStatsDto, Error>({
-		queryKey: classKeys.dashboardStats(),
-		queryFn: () => classService.getDashboardStats(),
-	})
-}
-
-/**
- * Hook to create a new class
+ * Hook to create a new class (Teacher)
  */
 export function useCreateClass() {
 	const queryClient = useQueryClient()
 
 	return useMutation({
-		mutationFn: (data: CreateClassDto) => classService.createClass(data),
+		mutationFn: (data: CreateClassRequest) => classService.createClass(data),
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: classKeys.all })
 			toast.success('Class created successfully!')
@@ -76,7 +63,7 @@ export function useCreateClass() {
 }
 
 /**
- * Hook to join a class via invite code
+ * Hook to join a class via invite code (Student)
  */
 export function useJoinClass() {
 	const queryClient = useQueryClient()
@@ -90,45 +77,6 @@ export function useJoinClass() {
 		onError: (error: Error) => {
 			toast.error(error.message || 'Failed to join class')
 		},
-	})
-}
-
-/**
- * Hook to regenerate invite code
- */
-export function useRegenerateInviteCode() {
-	const queryClient = useQueryClient()
-
-	return useMutation({
-		mutationFn: ({
-			classId,
-			expiresInDays = 7,
-		}: {
-			classId: string
-			expiresInDays?: number
-		}) => classService.regenerateInviteCode(classId, expiresInDays),
-		onSuccess: (_, variables) => {
-			queryClient.invalidateQueries({
-				queryKey: classKeys.details(variables.classId),
-			})
-			toast.success('Invite code regenerated!')
-		},
-		onError: (error: Error) => {
-			toast.error(error.message || 'Failed to regenerate invite code')
-		},
-	})
-}
-
-// ─── Typed hooks (new) ───
-
-/**
- * Hook to fetch typed class detail
- */
-export function useClassDetailTyped(classId: string) {
-	return useQuery<ClassDetail, Error>({
-		queryKey: classKeys.details(classId),
-		queryFn: () => classService.getClassDetailTyped(classId),
-		enabled: !!classId,
 	})
 }
 

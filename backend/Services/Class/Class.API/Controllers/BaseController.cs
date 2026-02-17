@@ -35,20 +35,9 @@ public abstract class BaseController : ControllerBase
     /// <summary>
     /// Validates that user is authenticated and returns Cognito User ID
     /// </summary>
-    /// <returns>Cognito User ID or throws UnauthorizedAccessException</returns>
     protected string GetAuthenticatedUserId()
     {
         var userId = GetCognitoUserId();
-
-        // Debug logging
-        var logger = HttpContext.RequestServices.GetService<ILogger<BaseController>>();
-        if (logger != null)
-        {
-            var allClaims = string.Join(", ", User.Claims.Select(c => $"{c.Type}={c.Value}"));
-            logger.LogInformation("JWT Claims: {Claims}", allClaims);
-            logger.LogInformation("Extracted UserId: '{UserId}'", userId);
-        }
-
         if (string.IsNullOrEmpty(userId))
         {
             throw new UnauthorizedAccessException("User is not authenticated");
@@ -58,61 +47,37 @@ public abstract class BaseController : ControllerBase
 
     /// <summary>
     /// Get user role from JWT token claims.
-    /// The JWT's custom:role claim is mapped to ClaimTypes.Role during authentication.
-    /// Falls back to checking cognito:groups if Role claim is not present.
+    /// Priority: ClaimTypes.Role (set by OnTokenValidated or RoleEnrichmentMiddleware)
+    ///         → cognito:groups → custom:role → default Student.
     /// </summary>
-    /// <returns>User role (Admin, Teacher, or Student)</returns>
     protected string GetUserRole()
     {
-        var logger = HttpContext.RequestServices.GetService<ILogger<BaseController>>();
-
-        // Check standard Role claim (JWT custom:role is mapped here during token validation)
+        // Primary: ClaimTypes.Role — set by OnTokenValidated (from custom:role)
+        // or by RoleEnrichmentMiddleware (from User service DB lookup)
         var role = User.FindFirst(ClaimTypes.Role)?.Value;
         if (!string.IsNullOrEmpty(role))
         {
-            logger?.LogDebug("Role found in ClaimTypes.Role: {Role}", role);
-            return role;
+            return NormalizeRole(role);
         }
 
-        // Fallback: Check Cognito groups (can be multiple)
+        // Fallback: Cognito groups
         var groups = GetUserGroups().ToList();
-        logger?.LogDebug("Cognito groups found: {Groups}", string.Join(", ", groups));
-
-        // Check for Admin first (case-insensitive to handle variations)
-        if (groups.Any(g => g.Equals("Admin", StringComparison.OrdinalIgnoreCase)))
+        foreach (var expected in new[] { "Admin", "Teacher", "Student" })
         {
-            logger?.LogInformation("User identified as Admin via cognito:groups");
-            return "Admin";
-        }
-        if (groups.Any(g => g.Equals("Teacher", StringComparison.OrdinalIgnoreCase)))
-        {
-            logger?.LogInformation("User identified as Teacher via cognito:groups");
-            return "Teacher";
-        }
-        if (groups.Any(g => g.Equals("Student", StringComparison.OrdinalIgnoreCase)))
-        {
-            logger?.LogInformation("User identified as Student via cognito:groups");
-            return "Student";
+            if (groups.Any(g => g.Equals(expected, StringComparison.OrdinalIgnoreCase)))
+                return expected;
         }
 
-        // Check for custom:role claim as additional fallback
+        // Fallback: Raw custom:role claim (shouldn't reach here if OnTokenValidated ran)
         var customRole = User.FindFirst("custom:role")?.Value;
         if (!string.IsNullOrEmpty(customRole))
         {
-            logger?.LogInformation("Role found in custom:role claim: {Role}", customRole);
-            // Capitalize first letter to match expected format
-            return char.ToUpper(customRole[0]) + customRole.Substring(1).ToLower();
+            return NormalizeRole(customRole);
         }
 
-        // Log warning when defaulting to Student
-        logger?.LogWarning(
-            "No role found in claims. ClaimTypes.Role: {RoleClaim}, cognito:groups: {Groups}, custom:role: {CustomRole}. Defaulting to Student. This may indicate role enrichment failed.",
-            role ?? "null",
-            groups.Any() ? string.Join(", ", groups) : "none",
-            customRole ?? "null"
-        );
-
-        // Default to Student if no role found
+        // Default — user should call GET /me to sync their role to Cognito
         return "Student";
     }
+
+    private static string NormalizeRole(string role) => char.ToUpper(role[0]) + role[1..].ToLower();
 }

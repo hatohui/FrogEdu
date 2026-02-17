@@ -236,6 +236,25 @@
 		}
 	},
 	"pages": {
+		"app_dashboard": {
+			"welcome": "Chào mừng trở lại, {{name}}!",
+			"subtitle": "Đây là những gì đang diễn ra với lớp học của bạn hôm nay.",
+			"stats": {
+				"active_classes": "Lớp đang hoạt động",
+				"students_enrolled": "Học sinh đã ghi danh",
+				"assignments": "Bài tập"
+			},
+			"recent_classes": "Lớp gần đây",
+			"view_all": "Xem tất cả",
+			"quick_actions": {
+				"title": "Thao tác nhanh",
+				"create_exam": "Tạo bài kiểm tra mới",
+				"browse_content": "Duyệt thư viện nội dung",
+				"manage_classes": "Quản lý lớp học"
+			},
+			"recent_activity": "Hoạt động gần đây",
+			"trend_label": "{{value}}% so với tháng trước"
+		},
 		"profile": {
 			"title": "Hồ sơ của tôi",
 			"subtitle": "Quản lý cài đặt tài khoản và tùy chọn.",
@@ -705,7 +724,9 @@
 				"table": {
 					"name": "Tên",
 					"role": "Vai trò",
-					"joined": "Ngày tham gia"
+					"joined": "Ngày tham gia",
+					"student_id": "Mã học sinh",
+					"status": "Trạng thái"
 				}
 			}
 		},

@@ -318,6 +318,25 @@
 		}
 	},
 	"pages": {
+		"app_dashboard": {
+			"welcome": "Welcome back, {{name}}!",
+			"subtitle": "Here's what's happening with your classes today.",
+			"stats": {
+				"active_classes": "Active Classes",
+				"students_enrolled": "Students Enrolled",
+				"assignments": "Assignments"
+			},
+			"recent_classes": "Recent Classes",
+			"view_all": "View All",
+			"quick_actions": {
+				"title": "Quick Actions",
+				"create_exam": "Create New Exam",
+				"browse_content": "Browse Content Library",
+				"manage_classes": "Manage Classes"
+			},
+			"recent_activity": "Recent Activity",
+			"trend_label": "{{value}}% from last month"
+		},
 		"profile": {
 			"title": "My Profile",
 			"subtitle": "Manage your account settings and preferences.",
@@ -495,7 +514,9 @@
 				"table": {
 					"name": "Name",
 					"role": "Role",
-					"joined": "Joined"
+					"joined": "Joined",
+					"student_id": "Student ID",
+					"status": "Status"
 				}
 			}
 		},

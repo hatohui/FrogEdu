@@ -1,4 +1,3 @@
-using System.Security.Claims;
 using FrogEdu.Class.Application.Commands.AdminAssignExam;
 using FrogEdu.Class.Application.Commands.AssignExam;
 using FrogEdu.Class.Application.Commands.CreateClass;
@@ -21,40 +20,8 @@ public class ClassController(IMediator mediator) : BaseController
 {
     private readonly IMediator _mediator = mediator;
 
-    /// <summary>    /// Debug endpoint to check JWT token claims extraction
-    /// </summary>
-    [HttpGet("debug/auth")]
-    [Authorize]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    public IActionResult DebugAuth()
-    {
-        var logger = HttpContext.RequestServices.GetRequiredService<ILogger<ClassController>>();
-
-        var userId = GetCognitoUserId();
-        var username = GetCognitoUsername();
-        var email = GetUserEmail();
-        var role = GetUserRole();
-        var groups = GetUserGroups().ToList();
-
-        var allClaims = User.Claims.Select(c => new { c.Type, c.Value }).ToList();
-
-        var result = new
-        {
-            UserId = userId,
-            Username = username,
-            Email = email,
-            Role = role,
-            Groups = groups,
-            AllClaims = allClaims,
-            IsGuid = Guid.TryParse(userId, out _),
-        };
-
-        logger.LogInformation("Debug Auth - Result: {@Result}", result);
-
-        return Ok(result);
-    }
-
-    /// <summary>    /// Get classes for the current user (teacher sees their classes, student sees enrolled classes, admin sees all)
+    /// <summary>
+    /// Get classes for the current user (teacher sees their classes, student sees enrolled classes, admin sees all)
     /// </summary>
     [HttpGet]
     [Authorize]
@@ -62,33 +29,17 @@ public class ClassController(IMediator mediator) : BaseController
     public async Task<IActionResult> GetClasses(CancellationToken cancellationToken)
     {
         var userId = GetAuthenticatedUserId();
-
-        // Role is now set by RoleEnrichmentMiddleware on ClaimTypes.Role
         var role = GetUserRole();
 
         var logger = HttpContext.RequestServices.GetRequiredService<ILogger<ClassController>>();
-
-        // Log detailed claim information for debugging
-        var roleClaim = User.FindFirst(ClaimTypes.Role)?.Value;
-        var cognitoGroups = GetUserGroups().ToList();
-        var customRole = User.FindFirst("custom:role")?.Value;
-
-        logger.LogInformation(
-            "GetClasses called - UserId: {UserId}, DetectedRole: {Role}, ClaimTypes.Role: {RoleClaim}, cognito:groups: {Groups}, custom:role: {CustomRole}",
-            userId,
-            role,
-            roleClaim ?? "null",
-            cognitoGroups.Any() ? string.Join(", ", cognitoGroups) : "none",
-            customRole ?? "null"
-        );
+        logger.LogInformation("GetClasses - UserId: {UserId}, Role: {Role}", userId, role);
 
         var query = new GetMyClassesQuery(userId, role);
         var result = await _mediator.Send(query, cancellationToken);
 
         logger.LogInformation(
-            "GetClasses result - Count: {Count}, UserId: {UserId}, Role: {Role}",
+            "GetClasses result - Count: {Count}, Role: {Role}",
             result.Count,
-            userId,
             role
         );
         return Ok(result);
