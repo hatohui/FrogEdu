@@ -12,19 +12,31 @@ namespace FrogEdu.User.Infrastructure.Services;
 /// </summary>
 public sealed class CognitoAttributeService : ICognitoAttributeService
 {
-    private readonly IAmazonCognitoIdentityProvider _cognitoClient;
+    private readonly IAmazonCognitoIdentityProvider? _cognitoClient;
     private readonly IConfiguration _configuration;
     private readonly ILogger<CognitoAttributeService> _logger;
+    private readonly bool _isConfigured;
 
     public CognitoAttributeService(
-        IAmazonCognitoIdentityProvider cognitoClient,
         IConfiguration configuration,
-        ILogger<CognitoAttributeService> logger
+        ILogger<CognitoAttributeService> logger,
+        IAmazonCognitoIdentityProvider? cognitoClient = null
     )
     {
-        _cognitoClient = cognitoClient;
         _configuration = configuration;
         _logger = logger;
+        _cognitoClient = cognitoClient;
+
+        // Check if Cognito is properly configured
+        var userPoolId = configuration["AWS:Cognito:UserPoolId"];
+        var accessKeyId = configuration["AWS:Cognito:AccessKeyId"];
+        var secretAccessKey = configuration["AWS:Cognito:SecretAccessKey"];
+
+        _isConfigured =
+            !string.IsNullOrWhiteSpace(userPoolId)
+            && !string.IsNullOrWhiteSpace(accessKeyId)
+            && !string.IsNullOrWhiteSpace(secretAccessKey)
+            && cognitoClient != null;
     }
 
     public async Task<Result> SyncRoleAttributeAsync(
@@ -33,15 +45,19 @@ public sealed class CognitoAttributeService : ICognitoAttributeService
         CancellationToken cancellationToken = default
     )
     {
+        // Early check: if Cognito is not configured, skip sync gracefully
+        if (!_isConfigured)
+        {
+            _logger.LogWarning(
+                "Cognito is not configured - skipping role sync for user {CognitoId}. Configure AWS Cognito credentials to enable this feature.",
+                cognitoId
+            );
+            return Result.Failure("Cognito service is not available");
+        }
+
         try
         {
-            var userPoolId = _configuration["AWS:Cognito:UserPoolId"];
-
-            if (string.IsNullOrWhiteSpace(userPoolId))
-            {
-                _logger.LogWarning("AWS Cognito UserPoolId is not configured - skipping role sync");
-                return Result.Failure("Cognito service is not properly configured");
-            }
+            var userPoolId = _configuration["AWS:Cognito:UserPoolId"]!;
 
             var updateRequest = new AdminUpdateUserAttributesRequest
             {
@@ -53,7 +69,7 @@ public sealed class CognitoAttributeService : ICognitoAttributeService
                 },
             };
 
-            await _cognitoClient.AdminUpdateUserAttributesAsync(updateRequest, cancellationToken);
+            await _cognitoClient!.AdminUpdateUserAttributesAsync(updateRequest, cancellationToken);
 
             _logger.LogInformation(
                 "Successfully synced custom:role attribute to '{Role}' for Cognito user {CognitoId}",

@@ -223,12 +223,9 @@ public static class DependencyInjection
         if (string.IsNullOrWhiteSpace(accessKeyId) || string.IsNullOrWhiteSpace(secretAccessKey))
         {
             Console.WriteLine(
-                "Warning: Cognito configuration is incomplete. Password reset will not work."
+                "Warning: Cognito configuration is incomplete. Role sync and password reset will not work."
             );
-            // Register a dummy service for development
-            services.AddScoped<IAmazonCognitoIdentityProvider>(_ =>
-                throw new InvalidOperationException("Cognito is not configured")
-            );
+            // Don't register the Cognito client - CognitoAttributeService will handle gracefully
             return;
         }
 
