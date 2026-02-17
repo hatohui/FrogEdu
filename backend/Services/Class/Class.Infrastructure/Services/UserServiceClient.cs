@@ -34,7 +34,7 @@ public sealed class UserServiceClient : IUserServiceClient
         try
         {
             var response = await _httpClient.GetAsync(
-                $"{_userServiceUrl}/users/{userId}",
+                $"{_userServiceUrl}/internal/users/{userId}",
                 cancellationToken
             );
 
