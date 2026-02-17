@@ -50,15 +50,20 @@ import {
 } from '@/components/ui/dialog'
 import { Label } from '@/components/ui/label'
 import { Skeleton } from '@/components/ui/skeleton'
-import { useClasses, useAdminAssignExam } from '@/hooks/useClasses'
+import {
+	useClasses,
+	useAdminAssignExam,
+	useJoinClass,
+} from '@/hooks/useClasses'
+import { useMe } from '@/hooks/auth/useMe'
 import { CreateClassModal } from '@/components/classes'
-import JoinClassModal from '@/components/classes/JoinClassModal'
 import type { ClassRoom } from '@/types/model/class-service'
 import type { AssignExamRequest } from '@/types/dtos/classes'
 
 const ClassesPage = (): React.ReactElement => {
 	const { t } = useTranslation()
 	const navigate = useNavigate()
+	const { user } = useMe()
 	// Use regular useClasses - backend already filters by role (Admin gets all)
 	const { data: classes, isLoading } = useClasses()
 
@@ -67,7 +72,6 @@ const ClassesPage = (): React.ReactElement => {
 	const [assignDialogOpen, setAssignDialogOpen] = useState(false)
 	const [selectedClassId, setSelectedClassId] = useState<string | null>(null)
 	const [showCreateModal, setShowCreateModal] = useState(false)
-	const [showJoinModal, setShowJoinModal] = useState(false)
 
 	// Assign exam form state
 	const [examId, setExamId] = useState('')
@@ -77,6 +81,7 @@ const ClassesPage = (): React.ReactElement => {
 	const [weight, setWeight] = useState('100')
 
 	const assignExamMutation = useAdminAssignExam()
+	const joinClassMutation = useJoinClass()
 
 	const filteredClasses = useMemo(() => {
 		if (!classes) return []
@@ -124,6 +129,12 @@ const ClassesPage = (): React.ReactElement => {
 		setIsMandatory(true)
 		setWeight('100')
 		setAssignDialogOpen(true)
+	}
+
+	const handleJoinClass = (cls: ClassRoom) => {
+		if (cls.inviteCode) {
+			joinClassMutation.mutate(cls.inviteCode)
+		}
 	}
 
 	const handleAssignExam = () => {
@@ -221,10 +232,6 @@ const ClassesPage = (): React.ReactElement => {
 						</p>
 					</div>
 					<div className='flex gap-2'>
-						<Button variant='outline' onClick={() => setShowJoinModal(true)}>
-							<UserPlus className='h-4 w-4 mr-2' />
-							{t('pages.classes.actions.join')}
-						</Button>
 						<Button onClick={() => setShowCreateModal(true)}>
 							<Plus className='h-4 w-4 mr-2' />
 							{t('pages.classes.actions.create')}
@@ -400,6 +407,17 @@ const ClassesPage = (): React.ReactElement => {
 															<ClipboardPlus className='mr-2 h-4 w-4' />
 															{t('pages.dashboard.classes.actions.assign_exam')}
 														</DropdownMenuItem>
+														{user?.cognitoId !== cls.teacherId && (
+															<>
+																<DropdownMenuSeparator />
+																<DropdownMenuItem
+																	onClick={() => handleJoinClass(cls)}
+																>
+																	<UserPlus className='mr-2 h-4 w-4' />
+																	{t('pages.classes.actions.join')}
+																</DropdownMenuItem>
+															</>
+														)}
 													</DropdownMenuContent>
 												</DropdownMenu>
 											</TableCell>
@@ -521,9 +539,6 @@ const ClassesPage = (): React.ReactElement => {
 				open={showCreateModal}
 				onOpenChange={setShowCreateModal}
 			/>
-
-			{/* Join Class Modal */}
-			<JoinClassModal open={showJoinModal} onOpenChange={setShowJoinModal} />
 		</div>
 	)
 }

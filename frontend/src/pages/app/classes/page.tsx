@@ -13,6 +13,7 @@ const ClassesPage: React.FC = () => {
 	const { t } = useTranslation()
 	const { user } = useMe()
 	const isTeacher = user?.role?.name === 'Teacher'
+	const isAdmin = user?.role?.name === 'Admin'
 
 	const [showCreateModal, setShowCreateModal] = useState(false)
 	const [showJoinModal, setShowJoinModal] = useState(false)
@@ -49,25 +50,35 @@ const ClassesPage: React.FC = () => {
 					<p className='text-muted-foreground mt-1'>
 						{isTeacher
 							? t('pages.classes.subtitle_teacher')
-							: t('pages.classes.subtitle_student')}
+							: isAdmin
+								? t('pages.classes.subtitle_teacher')
+								: t('pages.classes.subtitle_student')}
 					</p>
 				</div>
-				{isTeacher && (
-					<Button onClick={() => setShowCreateModal(true)}>
-						<Plus className='h-4 w-4 mr-2' />
-						{t('pages.classes.actions.create')}
-					</Button>
-				)}
-				{!isTeacher && (
-					<div>
-						<Button onClick={() => setShowJoinModal(prev => !prev)}>
+				{(isTeacher || isAdmin) && (
+					<div className='flex gap-2'>
+						<Button
+							variant='outline'
+							onClick={() => setShowJoinModal(prev => !prev)}
+						>
+							<UserPlus className='h-4 w-4 mr-2' />
 							{t('pages.classes.actions.join')}
+						</Button>
+						<Button onClick={() => setShowCreateModal(true)}>
+							<Plus className='h-4 w-4 mr-2' />
+							{t('pages.classes.actions.create')}
 						</Button>
 					</div>
 				)}
+				{!isTeacher && !isAdmin && (
+					<Button onClick={() => setShowJoinModal(prev => !prev)}>
+						<UserPlus className='h-4 w-4 mr-2' />
+						{t('pages.classes.actions.join')}
+					</Button>
+				)}
 			</div>
 
-			{isTeacher ? (
+			{isTeacher || isAdmin ? (
 				<Tabs defaultValue='active'>
 					<TabsList>
 						<TabsTrigger value='active' className='gap-2'>
@@ -87,7 +98,7 @@ const ClassesPage: React.FC = () => {
 					<TabsContent value='active' className='mt-6'>
 						{activeClasses.length === 0 ? (
 							<EmptyClassesState
-								isTeacher={isTeacher}
+								isTeacher={isTeacher || isAdmin}
 								onCreateClick={() => setShowCreateModal(true)}
 							/>
 						) : (
@@ -96,7 +107,7 @@ const ClassesPage: React.FC = () => {
 									<ClassCard
 										key={classData.id}
 										classData={classData}
-										isTeacher={isTeacher}
+										isTeacher={isTeacher || isAdmin}
 									/>
 								))}
 							</div>
@@ -115,7 +126,7 @@ const ClassesPage: React.FC = () => {
 									<ClassCard
 										key={classData.id}
 										classData={classData}
-										isTeacher={isTeacher}
+										isTeacher={isTeacher || isAdmin}
 									/>
 								))}
 							</div>

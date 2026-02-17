@@ -12,6 +12,7 @@ import {
 	CheckCircle2,
 	XCircle,
 	AlertTriangle,
+	UserPlus,
 } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -35,7 +36,12 @@ import {
 } from '@/components/ui/dialog'
 import { Label } from '@/components/ui/label'
 import { Skeleton } from '@/components/ui/skeleton'
-import { useClassDetail, useAdminAssignExam } from '@/hooks/useClasses'
+import {
+	useClassDetail,
+	useAdminAssignExam,
+	useJoinClass,
+} from '@/hooks/useClasses'
+import { useMe } from '@/hooks/auth/useMe'
 import { useUser } from '@/hooks/useUsers'
 import type { AssignExamRequest } from '@/types/dtos/classes'
 
@@ -45,6 +51,7 @@ const ClassDetailPage = (): React.ReactElement => {
 	const { t } = useTranslation()
 	const navigate = useNavigate()
 	const { id } = useParams<{ id: string }>()
+	const { user } = useMe()
 	// Use regular useClassDetail - backend already handles authorization
 	const { data: classDetail, isLoading } = useClassDetail(id ?? '')
 
@@ -62,6 +69,9 @@ const ClassDetailPage = (): React.ReactElement => {
 	const [weight, setWeight] = useState('100')
 
 	const assignExamMutation = useAdminAssignExam()
+	const joinClassMutation = useJoinClass()
+
+	const canEnroll = user?.cognitoId !== classDetail?.teacherId
 
 	const formatDate = (dateString: string) => {
 		return new Date(dateString).toLocaleDateString('en-US', {
@@ -109,6 +119,12 @@ const ClassDetailPage = (): React.ReactElement => {
 				},
 			}
 		)
+	}
+
+	const handleJoinClass = () => {
+		if (classDetail?.inviteCode) {
+			joinClassMutation.mutate(classDetail.inviteCode)
+		}
 	}
 
 	const getEnrollmentStatusBadge = (status: string) => {
@@ -212,6 +228,12 @@ const ClassDetailPage = (): React.ReactElement => {
 						<Badge variant='secondary'>
 							{t('pages.dashboard.classes.filter_inactive')}
 						</Badge>
+					)}
+					{canEnroll && classDetail.isActive && (
+						<Button onClick={handleJoinClass}>
+							<UserPlus className='h-4 w-4 mr-2' />
+							{t('pages.classes.actions.join')}
+						</Button>
 					)}
 				</div>
 			</div>
