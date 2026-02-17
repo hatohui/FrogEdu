@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using FrogEdu.Class.Application.Commands.AdminAssignExam;
 using FrogEdu.Class.Application.Commands.AssignExam;
 using FrogEdu.Class.Application.Commands.CreateClass;
@@ -66,15 +67,29 @@ public class ClassController(IMediator mediator) : BaseController
         var role = GetUserRole();
 
         var logger = HttpContext.RequestServices.GetRequiredService<ILogger<ClassController>>();
-        logger.LogInformation("GetClasses called - UserId: {UserId}, Role: {Role}", userId, role);
+
+        // Log detailed claim information for debugging
+        var roleClaim = User.FindFirst(ClaimTypes.Role)?.Value;
+        var cognitoGroups = GetUserGroups().ToList();
+        var customRole = User.FindFirst("custom:role")?.Value;
+
+        logger.LogInformation(
+            "GetClasses called - UserId: {UserId}, DetectedRole: {Role}, ClaimTypes.Role: {RoleClaim}, cognito:groups: {Groups}, custom:role: {CustomRole}",
+            userId,
+            role,
+            roleClaim ?? "null",
+            cognitoGroups.Any() ? string.Join(", ", cognitoGroups) : "none",
+            customRole ?? "null"
+        );
 
         var query = new GetMyClassesQuery(userId, role);
         var result = await _mediator.Send(query, cancellationToken);
 
         logger.LogInformation(
-            "GetClasses result - Count: {Count}, UserId: {UserId}",
+            "GetClasses result - Count: {Count}, UserId: {UserId}, Role: {Role}",
             result.Count,
-            userId
+            userId,
+            role
         );
         return Ok(result);
     }

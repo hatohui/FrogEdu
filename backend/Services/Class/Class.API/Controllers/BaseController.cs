@@ -64,27 +64,53 @@ public abstract class BaseController : ControllerBase
     /// <returns>User role (Admin, Teacher, or Student)</returns>
     protected string GetUserRole()
     {
+        var logger = HttpContext.RequestServices.GetService<ILogger<BaseController>>();
+
         // Check standard Role claim (JWT custom:role is mapped here during token validation)
         var role = User.FindFirst(ClaimTypes.Role)?.Value;
         if (!string.IsNullOrEmpty(role))
         {
+            logger?.LogDebug("Role found in ClaimTypes.Role: {Role}", role);
             return role;
         }
 
         // Fallback: Check Cognito groups (can be multiple)
         var groups = GetUserGroups().ToList();
-        if (groups.Contains("Admin"))
+        logger?.LogDebug("Cognito groups found: {Groups}", string.Join(", ", groups));
+
+        // Check for Admin first (case-insensitive to handle variations)
+        if (groups.Any(g => g.Equals("Admin", StringComparison.OrdinalIgnoreCase)))
         {
+            logger?.LogInformation("User identified as Admin via cognito:groups");
             return "Admin";
         }
-        if (groups.Contains("Teacher"))
+        if (groups.Any(g => g.Equals("Teacher", StringComparison.OrdinalIgnoreCase)))
         {
+            logger?.LogInformation("User identified as Teacher via cognito:groups");
             return "Teacher";
         }
-        if (groups.Contains("Student"))
+        if (groups.Any(g => g.Equals("Student", StringComparison.OrdinalIgnoreCase)))
         {
+            logger?.LogInformation("User identified as Student via cognito:groups");
             return "Student";
         }
+
+        // Check for custom:role claim as additional fallback
+        var customRole = User.FindFirst("custom:role")?.Value;
+        if (!string.IsNullOrEmpty(customRole))
+        {
+            logger?.LogInformation("Role found in custom:role claim: {Role}", customRole);
+            // Capitalize first letter to match expected format
+            return char.ToUpper(customRole[0]) + customRole.Substring(1).ToLower();
+        }
+
+        // Log warning when defaulting to Student
+        logger?.LogWarning(
+            "No role found in claims. ClaimTypes.Role: {RoleClaim}, cognito:groups: {Groups}, custom:role: {CustomRole}. Defaulting to Student. This may indicate role enrichment failed.",
+            role ?? "null",
+            groups.Any() ? string.Join(", ", groups) : "none",
+            customRole ?? "null"
+        );
 
         // Default to Student if no role found
         return "Student";
