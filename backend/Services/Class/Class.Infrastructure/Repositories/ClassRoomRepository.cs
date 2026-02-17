@@ -1,5 +1,6 @@
 using FrogEdu.Class.Domain.Entities;
 using FrogEdu.Class.Domain.Repositories;
+using FrogEdu.Class.Domain.ValueObjects;
 using FrogEdu.Class.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 
@@ -30,13 +31,11 @@ public class ClassRoomRepository : IClassRoomRepository
         CancellationToken cancellationToken = default
     )
     {
+        var code = InviteCode.Create(inviteCode);
         return await _context
             .ClassRooms.Include(c => c.Enrollments)
             .Include(c => c.Assignments)
-            .FirstOrDefaultAsync(
-                c => EF.Property<string>(c, "InviteCode") == inviteCode,
-                cancellationToken
-            );
+            .FirstOrDefaultAsync(c => c.InviteCode == code, cancellationToken);
     }
 
     public async Task<IReadOnlyList<ClassRoom>> GetByTeacherIdAsync(
