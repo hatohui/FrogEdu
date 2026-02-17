@@ -124,3 +124,14 @@ export const useTransactions = () => {
 		refetch,
 	}
 }
+
+/**
+ * Hook for fetching subscription dashboard statistics (Admin only)
+ */
+export const useSubscriptionDashboardStats = () => {
+	return useQuery({
+		queryKey: ['subscription', 'dashboard-stats'],
+		queryFn: () => subscriptionService.getDashboardStats(),
+		staleTime: 5 * 60 * 1000,
+	})
+}

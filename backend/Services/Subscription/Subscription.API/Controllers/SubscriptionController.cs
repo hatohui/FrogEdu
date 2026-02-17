@@ -18,6 +18,7 @@ using FrogEdu.Subscription.Application.Queries.GetAllSubscriptionTiers;
 using FrogEdu.Subscription.Application.Queries.GetAllTransactions;
 using FrogEdu.Subscription.Application.Queries.GetSubscriptionById;
 using FrogEdu.Subscription.Application.Queries.GetSubscriptionClaims;
+using FrogEdu.Subscription.Application.Queries.GetSubscriptionDashboardStats;
 using FrogEdu.Subscription.Application.Queries.GetSubscriptionTierById;
 using FrogEdu.Subscription.Application.Queries.GetSubscriptionTiers;
 using FrogEdu.Subscription.Application.Queries.GetTransactionById;
@@ -202,6 +203,25 @@ public class SubscriptionController : ControllerBase
     }
 
     // ==================== ADMIN ENDPOINTS ====================
+
+    #region Dashboard Statistics (Admin)
+
+    /// <summary>
+    /// Get subscription dashboard statistics (Admin only)
+    /// </summary>
+    [HttpGet("admin/dashboard-stats")]
+    [AuthorizeAdmin]
+    [ProducesResponseType(typeof(SubscriptionDashboardStatsResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    public async Task<IActionResult> GetDashboardStats(CancellationToken cancellationToken)
+    {
+        var query = new GetSubscriptionDashboardStatsQuery();
+        var result = await _mediator.Send(query, cancellationToken);
+        return Ok(result);
+    }
+
+    #endregion
 
     #region Subscription Tier Management (Admin)
 

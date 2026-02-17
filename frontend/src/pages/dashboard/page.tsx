@@ -13,6 +13,7 @@ import {
 	ArrowDownRight,
 	MoreVertical,
 } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import {
@@ -31,47 +32,10 @@ import {
 	DropdownMenuItem,
 	DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import { Skeleton } from '@/components/ui/skeleton'
 import { useNavigate } from 'react-router'
 import { useMe } from '@/hooks/auth/useMe'
-
-const stats = [
-	{
-		title: 'Total Users',
-		value: '2,847',
-		change: '+12.5%',
-		trend: 'up',
-		icon: Users,
-		color: 'text-blue-600',
-		bgColor: 'bg-blue-100 dark:bg-blue-950',
-	},
-	{
-		title: 'Active Exams',
-		value: '156',
-		change: '+8.2%',
-		trend: 'up',
-		icon: FileText,
-		color: 'text-green-600',
-		bgColor: 'bg-green-100 dark:bg-green-950',
-	},
-	{
-		title: 'Total Questions',
-		value: '4,293',
-		change: '+23.1%',
-		trend: 'up',
-		icon: Activity,
-		color: 'text-purple-600',
-		bgColor: 'bg-purple-100 dark:bg-purple-950',
-	},
-	{
-		title: 'Active Classes',
-		value: '89',
-		change: '-2.4%',
-		trend: 'down',
-		icon: GraduationCap,
-		color: 'text-orange-600',
-		bgColor: 'bg-orange-100 dark:bg-orange-950',
-	},
-]
+import { useUserStatistics } from '@/hooks/useUsers'
 
 const recentActivities = [
 	{
@@ -132,8 +96,50 @@ const topSubjects = [
 ]
 
 const DashboardPage = (): React.ReactElement => {
+	const { t } = useTranslation()
 	const navigate = useNavigate()
 	const { user } = useMe()
+	const { data: statistics, isLoading: isLoadingStats } = useUserStatistics()
+
+	// Build stats from real data
+	const stats = [
+		{
+			title: t('dashboard.total_users'),
+			value: statistics?.totalUsers?.toString() || '0',
+			change: `+${statistics?.usersCreatedLast30Days || 0}`,
+			trend: 'up' as const,
+			icon: Users,
+			color: 'text-blue-600',
+			bgColor: 'bg-blue-100 dark:bg-blue-950',
+		},
+		{
+			title: t('dashboard.active_exams'),
+			value: '0', // TODO: Replace with real exam statistics
+			change: '+0',
+			trend: 'up' as const,
+			icon: FileText,
+			color: 'text-green-600',
+			bgColor: 'bg-green-100 dark:bg-green-950',
+		},
+		{
+			title: t('dashboard.total_questions'),
+			value: '0', // TODO: Replace with real question statistics
+			change: '+0',
+			trend: 'up' as const,
+			icon: Activity,
+			color: 'text-purple-600',
+			bgColor: 'bg-purple-100 dark:bg-purple-950',
+		},
+		{
+			title: t('dashboard.active_classes'),
+			value: '0', // TODO: Replace with real class statistics
+			change: '+0',
+			trend: 'up' as const,
+			icon: GraduationCap,
+			color: 'text-orange-600',
+			bgColor: 'bg-orange-100 dark:bg-orange-950',
+		},
+	]
 
 	const getActivityIcon = (type: string) => {
 		switch (type) {
@@ -174,11 +180,10 @@ const DashboardPage = (): React.ReactElement => {
 			{/* Header */}
 			<div className='flex items-center justify-between'>
 				<div className='space-y-2'>
-					<h1 className='text-3xl font-bold tracking-tight'>Admin Dashboard</h1>
-					<p className='text-muted-foreground'>
-						Welcome back, {user?.firstName || 'Admin'}! Here's what's happening
-						today.
-					</p>
+					<h1 className='text-3xl font-bold tracking-tight'>
+						{t('dashboard.welcome', { name: user?.firstName || 'Admin' })}
+					</h1>
+					<p className='text-muted-foreground'>{t('dashboard.subtitle')}</p>
 				</div>
 				<div className='flex gap-2'>
 					<Button
@@ -186,55 +191,70 @@ const DashboardPage = (): React.ReactElement => {
 						onClick={() => navigate('/dashboard/subjects')}
 					>
 						<BookOpen className='h-4 w-4 mr-2' />
-						Manage Subjects
+						{t('dashboard.manage_subjects')}
 					</Button>
 					<Button onClick={() => navigate('/app/exams')}>
 						<FileText className='h-4 w-4 mr-2' />
-						View All Exams
+						{t('dashboard.view_all_exams')}
 					</Button>
 				</div>
 			</div>
 
 			{/* Stats Grid */}
 			<div className='grid gap-4 md:grid-cols-2 lg:grid-cols-4'>
-				{stats.map(stat => {
-					const Icon = stat.icon
-					return (
-						<Card
-							key={stat.title}
-							className='hover:shadow-md transition-shadow'
-						>
-							<CardHeader className='flex flex-row items-center justify-between pb-2'>
-								<CardTitle className='text-sm font-medium text-muted-foreground'>
-									{stat.title}
-								</CardTitle>
-								<div className={`p-2 rounded-lg ${stat.bgColor}`}>
-									<Icon className={`h-4 w-4 ${stat.color}`} />
-								</div>
-							</CardHeader>
-							<CardContent>
-								<div className='text-2xl font-bold'>{stat.value}</div>
-								<div className='flex items-center text-xs mt-1'>
-									{stat.trend === 'up' ? (
-										<ArrowUpRight className='h-3 w-3 text-green-600 mr-1' />
-									) : (
-										<ArrowDownRight className='h-3 w-3 text-red-600 mr-1' />
-									)}
-									<span
-										className={
-											stat.trend === 'up' ? 'text-green-600' : 'text-red-600'
-										}
-									>
-										{stat.change}
-									</span>
-									<span className='text-muted-foreground ml-1'>
-										from last month
-									</span>
-								</div>
-							</CardContent>
-						</Card>
-					)
-				})}
+				{isLoadingStats
+					? Array.from({ length: 4 }).map((_, index) => (
+							<Card key={index} className='hover:shadow-md transition-shadow'>
+								<CardHeader className='flex flex-row items-center justify-between pb-2'>
+									<Skeleton className='h-4 w-24' />
+									<Skeleton className='h-10 w-10 rounded-lg' />
+								</CardHeader>
+								<CardContent>
+									<Skeleton className='h-8 w-16 mb-2' />
+									<Skeleton className='h-3 w-32' />
+								</CardContent>
+							</Card>
+						))
+					: stats.map(stat => {
+							const Icon = stat.icon
+							return (
+								<Card
+									key={stat.title}
+									className='hover:shadow-md transition-shadow'
+								>
+									<CardHeader className='flex flex-row items-center justify-between pb-2'>
+										<CardTitle className='text-sm font-medium text-muted-foreground'>
+											{stat.title}
+										</CardTitle>
+										<div className={`p-2 rounded-lg ${stat.bgColor}`}>
+											<Icon className={`h-4 w-4 ${stat.color}`} />
+										</div>
+									</CardHeader>
+									<CardContent>
+										<div className='text-2xl font-bold'>{stat.value}</div>
+										<div className='flex items-center text-xs mt-1'>
+											{stat.trend === 'up' ? (
+												<ArrowUpRight className='h-3 w-3 text-green-600 mr-1' />
+											) : (
+												<ArrowDownRight className='h-3 w-3 text-red-600 mr-1' />
+											)}
+											<span
+												className={
+													stat.trend === 'up'
+														? 'text-green-600'
+														: 'text-red-600'
+												}
+											>
+												{stat.change}
+											</span>
+											<span className='text-muted-foreground ml-1'>
+												{t('label.from_last_month', 'from last month')}
+											</span>
+										</div>
+									</CardContent>
+								</Card>
+							)
+						})}
 			</div>
 
 			{/* Main Content Grid */}
@@ -245,9 +265,9 @@ const DashboardPage = (): React.ReactElement => {
 					<Card>
 						<CardHeader>
 							<CardTitle className='flex items-center justify-between'>
-								<span>Recent Activity</span>
+								<span>{t('dashboard.recent_activities')}</span>
 								<Button variant='ghost' size='sm'>
-									View All
+									{t('action.view_all')}
 								</Button>
 							</CardTitle>
 						</CardHeader>
@@ -285,16 +305,22 @@ const DashboardPage = (): React.ReactElement => {
 					{/* Top Subjects */}
 					<Card>
 						<CardHeader>
-							<CardTitle>Top Subjects by Activity</CardTitle>
+							<CardTitle>{t('dashboard.top_subjects')}</CardTitle>
 						</CardHeader>
 						<CardContent>
 							<Table>
 								<TableHeader>
 									<TableRow>
-										<TableHead>Subject</TableHead>
-										<TableHead className='text-right'>Exams</TableHead>
-										<TableHead className='text-right'>Questions</TableHead>
-										<TableHead className='text-right'>Students</TableHead>
+										<TableHead>{t('label.subject', 'Subject')}</TableHead>
+										<TableHead className='text-right'>
+											{t('label.exams', 'Exams')}
+										</TableHead>
+										<TableHead className='text-right'>
+											{t('label.questions', 'Questions')}
+										</TableHead>
+										<TableHead className='text-right'>
+											{t('label.students', 'Students')}
+										</TableHead>
 										<TableHead className='w-12'></TableHead>
 									</TableRow>
 								</TableHeader>
@@ -321,9 +347,15 @@ const DashboardPage = (): React.ReactElement => {
 														</Button>
 													</DropdownMenuTrigger>
 													<DropdownMenuContent align='end'>
-														<DropdownMenuItem>View Details</DropdownMenuItem>
-														<DropdownMenuItem>Edit Subject</DropdownMenuItem>
-														<DropdownMenuItem>View Exams</DropdownMenuItem>
+														<DropdownMenuItem>
+															{t('action.view_details')}
+														</DropdownMenuItem>
+														<DropdownMenuItem>
+															{t('action.edit', 'Edit')}
+														</DropdownMenuItem>
+														<DropdownMenuItem>
+															{t('action.view', 'View')} {t('label.exams')}
+														</DropdownMenuItem>
 													</DropdownMenuContent>
 												</DropdownMenu>
 											</TableCell>
@@ -342,14 +374,19 @@ const DashboardPage = (): React.ReactElement => {
 						<CardHeader>
 							<CardTitle className='flex items-center'>
 								<Activity className='h-5 w-5 mr-2' />
-								System Health
+								{t('dashboard.system_health')}
 							</CardTitle>
 						</CardHeader>
 						<CardContent className='space-y-4'>
 							{systemHealth.map(metric => (
 								<div key={metric.name} className='space-y-2'>
 									<div className='flex items-center justify-between text-sm'>
-										<span className='text-muted-foreground'>{metric.name}</span>
+										<span className='text-muted-foreground'>
+											{t(
+												`dashboard.${metric.name.toLowerCase().replace(/ /g, '_')}`,
+												metric.name
+											)}
+										</span>
 										<div className='flex items-center gap-2'>
 											<span className='font-medium'>{metric.value}%</span>
 											{metric.status === 'healthy' ? (
@@ -375,7 +412,7 @@ const DashboardPage = (): React.ReactElement => {
 					{/* Quick Actions */}
 					<Card>
 						<CardHeader>
-							<CardTitle>Quick Actions</CardTitle>
+							<CardTitle>{t('label.quick_actions', 'Quick Actions')}</CardTitle>
 						</CardHeader>
 						<CardContent className='space-y-2'>
 							<Button
@@ -384,7 +421,7 @@ const DashboardPage = (): React.ReactElement => {
 								onClick={() => navigate('/dashboard/subjects')}
 							>
 								<BookOpen className='h-4 w-4 mr-2' />
-								Manage Subjects
+								{t('dashboard.manage_subjects')}
 							</Button>
 							<Button
 								variant='outline'
@@ -392,7 +429,7 @@ const DashboardPage = (): React.ReactElement => {
 								onClick={() => navigate('/app/exams/create')}
 							>
 								<FileText className='h-4 w-4 mr-2' />
-								Create New Exam
+								{t('action.create', 'Create')} {t('label.exam', 'Exam')}
 							</Button>
 							<Button
 								variant='outline'
@@ -400,15 +437,15 @@ const DashboardPage = (): React.ReactElement => {
 								onClick={() => navigate('/app/exams')}
 							>
 								<TrendingUp className='h-4 w-4 mr-2' />
-								View Analytics
+								{t('action.view', 'View')} {t('label.analytics', 'Analytics')}
 							</Button>
 							<Button
 								variant='outline'
 								className='w-full justify-start'
-								onClick={() => navigate('/app/classes')}
+								onClick={() => navigate('/dashboard/users')}
 							>
 								<Users className='h-4 w-4 mr-2' />
-								Manage Users
+								{t('action.manage')} {t('label.users', 'Users')}
 							</Button>
 						</CardContent>
 					</Card>
@@ -416,30 +453,38 @@ const DashboardPage = (): React.ReactElement => {
 					{/* Quick Stats */}
 					<Card>
 						<CardHeader>
-							<CardTitle>Today's Overview</CardTitle>
+							<CardTitle>
+								{t('dashboard.todays_overview', "Today's Overview")}
+							</CardTitle>
 						</CardHeader>
 						<CardContent className='space-y-3'>
 							<div className='flex items-center justify-between'>
 								<span className='text-sm text-muted-foreground'>
-									Exams Created
+									{t('label.exams_created', 'Exams Created')}
 								</span>
-								<Badge variant='secondary'>12</Badge>
-							</div>
-							<div className='flex items-center justify-between'>
-								<span className='text-sm text-muted-foreground'>New Users</span>
-								<Badge variant='secondary'>28</Badge>
+								<Badge variant='secondary'>0</Badge>
 							</div>
 							<div className='flex items-center justify-between'>
 								<span className='text-sm text-muted-foreground'>
-									Questions Added
+									{t('label.new_users', 'New Users')}
 								</span>
-								<Badge variant='secondary'>156</Badge>
+								<Badge variant='secondary'>
+									{statistics?.usersCreatedLast7Days || 0}
+								</Badge>
 							</div>
 							<div className='flex items-center justify-between'>
 								<span className='text-sm text-muted-foreground'>
-									Active Sessions
+									{t('label.questions_added', 'Questions Added')}
 								</span>
-								<Badge variant='secondary'>847</Badge>
+								<Badge variant='secondary'>0</Badge>
+							</div>
+							<div className='flex items-center justify-between'>
+								<span className='text-sm text-muted-foreground'>
+									{t('label.verified_users', 'Verified Users')}
+								</span>
+								<Badge variant='secondary'>
+									{statistics?.verifiedUsers || 0}
+								</Badge>
 							</div>
 						</CardContent>
 					</Card>

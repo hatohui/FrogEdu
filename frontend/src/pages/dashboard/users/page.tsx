@@ -11,7 +11,9 @@ import {
 	XCircle,
 	Edit,
 	Trash2,
+	Loader2,
 } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -48,118 +50,122 @@ import {
 } from '@/components/ui/dialog'
 import { Label } from '@/components/ui/label'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
+import { Skeleton } from '@/components/ui/skeleton'
+import {
+	useUsers,
+	useUserStatistics,
+	useUpdateUser,
+	useDeleteUser,
+} from '@/hooks/useUsers'
+import type { GetMeResponse, UpdateUserRequest } from '@/types/dtos/users'
 
-// Mock data - will be replaced with actual API calls
-const mockUsers = [
-	{
-		id: '1',
-		email: 'john.doe@example.com',
-		firstName: 'John',
-		lastName: 'Doe',
-		role: 'Admin',
-		isEmailVerified: true,
-		createdAt: '2026-01-15T10:30:00Z',
-		lastLoginAt: '2026-02-03T14:20:00Z',
-	},
-	{
-		id: '2',
-		email: 'sarah.wilson@example.com',
-		firstName: 'Sarah',
-		lastName: 'Wilson',
-		role: 'Teacher',
-		isEmailVerified: true,
-		createdAt: '2026-01-20T09:15:00Z',
-		lastLoginAt: '2026-02-04T08:45:00Z',
-	},
-	{
-		id: '3',
-		email: 'mike.johnson@example.com',
-		firstName: 'Mike',
-		lastName: 'Johnson',
-		role: 'Student',
-		isEmailVerified: false,
-		createdAt: '2026-02-01T11:00:00Z',
-		lastLoginAt: '2026-02-03T16:30:00Z',
-	},
-	{
-		id: '4',
-		email: 'emily.brown@example.com',
-		firstName: 'Emily',
-		lastName: 'Brown',
-		role: 'Teacher',
-		isEmailVerified: true,
-		createdAt: '2025-12-10T13:45:00Z',
-		lastLoginAt: '2026-02-04T09:10:00Z',
-	},
-	{
-		id: '5',
-		email: 'david.lee@example.com',
-		firstName: 'David',
-		lastName: 'Lee',
-		role: 'Student',
-		isEmailVerified: true,
-		createdAt: '2026-01-25T15:20:00Z',
-		lastLoginAt: '2026-02-02T18:00:00Z',
-	},
-]
+// Utility to map roleId to role name
+const getRoleName = (roleId: string): string => {
+	switch (roleId) {
+		case '1':
+			return 'Admin'
+		case '2':
+			return 'Teacher'
+		case '3':
+			return 'Student'
+		default:
+			return 'Unknown'
+	}
+}
 
-const stats = [
-	{
-		title: 'Total Users',
-		value: '2,847',
-		change: '+12.5%',
-		icon: Users,
-		color: 'text-blue-600',
-		bgColor: 'bg-blue-100 dark:bg-blue-950',
-	},
-	{
-		title: 'Active Today',
-		value: '1,234',
-		change: '+5.2%',
-		icon: CheckCircle2,
-		color: 'text-green-600',
-		bgColor: 'bg-green-100 dark:bg-green-950',
-	},
-	{
-		title: 'Teachers',
-		value: '156',
-		change: '+8.1%',
-		icon: Shield,
-		color: 'text-purple-600',
-		bgColor: 'bg-purple-100 dark:bg-purple-950',
-	},
-	{
-		title: 'Students',
-		value: '2,691',
-		change: '+13.2%',
-		icon: Users,
-		color: 'text-orange-600',
-		bgColor: 'bg-orange-100 dark:bg-orange-950',
-	},
-]
+// Utility to map role name to roleId
+const getRoleId = (roleName: string): string => {
+	switch (roleName) {
+		case 'Admin':
+			return '1'
+		case 'Teacher':
+			return '2'
+		case 'Student':
+			return '3'
+		default:
+			return '3' // Default to Student
+	}
+}
 
 const UsersPage = (): React.ReactElement => {
+	const { t } = useTranslation()
+
+	// Pagination state
+	const [page, setPage] = useState(1)
+	const [pageSize] = useState(10)
 	const [searchQuery, setSearchQuery] = useState('')
 	const [roleFilter, setRoleFilter] = useState<string>('all')
-	const [selectedUser, setSelectedUser] = useState<
-		(typeof mockUsers)[0] | null
-	>(null)
+
+	// Fetch users with pagination
+	const { data: usersData, isLoading: isLoadingUsers } = useUsers({
+		page,
+		pageSize,
+		search: searchQuery || undefined,
+		role: roleFilter === 'all' ? undefined : getRoleId(roleFilter),
+		sortBy: 'createdAt',
+		sortOrder: 'desc',
+	})
+
+	// Fetch user statistics
+	const { data: statistics, isLoading: isLoadingStats } = useUserStatistics()
+
+	// Mutations
+	const updateUserMutation = useUpdateUser()
+	const deleteUserMutation = useDeleteUser()
+
+	// Dialog state
+	const [selectedUser, setSelectedUser] = useState<GetMeResponse | null>(null)
 	const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
 	const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
 
-	const filteredUsers = mockUsers.filter(user => {
-		const matchesSearch =
-			user.firstName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-			user.lastName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-			user.email.toLowerCase().includes(searchQuery.toLowerCase())
+	// Edit form state
+	const [editFirstName, setEditFirstName] = useState('')
+	const [editLastName, setEditLastName] = useState('')
+	const [editRole, setEditRole] = useState('')
 
-		const matchesRole = roleFilter === 'all' || user.role === roleFilter
+	const users = usersData?.items || []
+	const totalUsers = usersData?.total || 0
+	const totalPages = usersData?.totalPages || 1
 
-		return matchesSearch && matchesRole
-	})
+	// Stats cards data
+	const stats = [
+		{
+			title: t('user_management.total_users'),
+			value: statistics?.totalUsers?.toString() || '0',
+			change: `+${statistics?.usersCreatedLast30Days || 0}`,
+			icon: Users,
+			color: 'text-blue-600',
+			bgColor: 'bg-blue-100 dark:bg-blue-950',
+		},
+		{
+			title: t('label.verified'),
+			value: statistics?.verifiedUsers?.toString() || '0',
+			change: `${statistics ? Math.round((statistics.verifiedUsers / statistics.totalUsers) * 100) : 0}%`,
+			icon: CheckCircle2,
+			color: 'text-green-600',
+			bgColor: 'bg-green-100 dark:bg-green-950',
+		},
+		{
+			title: t('user_management.teachers'),
+			value: statistics?.totalTeachers?.toString() || '0',
+			change: `${statistics ? Math.round((statistics.totalTeachers / statistics.totalUsers) * 100) : 0}%`,
+			icon: Shield,
+			color: 'text-purple-600',
+			bgColor: 'bg-purple-100 dark:bg-purple-950',
+		},
+		{
+			title: t('user_management.students'),
+			value: statistics?.totalStudents?.toString() || '0',
+			change: `${statistics ? Math.round((statistics.totalStudents / statistics.totalUsers) * 100) : 0}%`,
+			icon: Users,
+			color: 'text-orange-600',
+			bgColor: 'bg-orange-100 dark:bg-orange-950',
+		},
+	]
 
-	const getRoleBadgeVariant = (role: string) => {
-		switch (role.toLowerCase()) {
+	const getRoleBadgeVariant = (roleId: string) => {
+		const roleName = getRoleName(roleId)
+		switch (roleName.toLowerCase()) {
 			case 'admin':
 				return 'destructive'
 			case 'teacher':
@@ -183,19 +189,69 @@ const UsersPage = (): React.ReactElement => {
 		return `${firstName[0]}${lastName[0]}`.toUpperCase()
 	}
 
-	const handleEditUser = (user: (typeof mockUsers)[0]) => {
+	const handleEditUser = (user: GetMeResponse) => {
 		setSelectedUser(user)
+		setEditFirstName(user.firstName)
+		setEditLastName(user.lastName)
+		setEditRole(getRoleName(user.roleId))
 		setIsEditDialogOpen(true)
 	}
 
-	const handleDeleteUser = (user: (typeof mockUsers)[0]) => {
+	const handleDeleteUser = (user: GetMeResponse) => {
 		setSelectedUser(user)
 		setIsDeleteDialogOpen(true)
 	}
 
-	const handleSendPasswordReset = (user: (typeof mockUsers)[0]) => {
+	const handleSaveUser = async () => {
+		if (!selectedUser) return
+
+		const updates: UpdateUserRequest = {
+			firstName:
+				editFirstName !== selectedUser.firstName ? editFirstName : undefined,
+			lastName:
+				editLastName !== selectedUser.lastName ? editLastName : undefined,
+			roleId:
+				getRoleId(editRole) !== selectedUser.roleId
+					? getRoleId(editRole)
+					: undefined,
+		}
+
+		// Remove undefined fields
+		const cleanedUpdates = Object.fromEntries(
+			Object.entries(updates).filter(([_, v]) => v !== undefined)
+		) as UpdateUserRequest
+
+		if (Object.keys(cleanedUpdates).length === 0) {
+			setIsEditDialogOpen(false)
+			return
+		}
+
+		await updateUserMutation.mutateAsync({
+			userId: selectedUser.id,
+			updates: cleanedUpdates,
+		})
+
+		setIsEditDialogOpen(false)
+	}
+
+	const handleConfirmDelete = async () => {
+		if (!selectedUser) return
+
+		await deleteUserMutation.mutateAsync(selectedUser.id)
+		setIsDeleteDialogOpen(false)
+	}
+
+	const handleSendPasswordReset = (user: GetMeResponse) => {
 		console.log('Send password reset to:', user.email)
 		// TODO: Implement password reset email
+	}
+
+	const handlePreviousPage = () => {
+		setPage(p => Math.max(1, p - 1))
+	}
+
+	const handleNextPage = () => {
+		setPage(p => Math.min(totalPages, p + 1))
 	}
 
 	return (
@@ -203,41 +259,56 @@ const UsersPage = (): React.ReactElement => {
 			{/* Header */}
 			<div className='flex items-center justify-between'>
 				<div>
-					<h1 className='text-3xl font-bold tracking-tight'>User Management</h1>
+					<h1 className='text-3xl font-bold tracking-tight'>
+						{t('user_management.title')}
+					</h1>
 					<p className='text-muted-foreground'>
-						Manage users, roles, and permissions
+						{t('user_management.description')}
 					</p>
 				</div>
 				<Button>
 					<UserPlus className='mr-2 h-4 w-4' />
-					Add User
+					{t('action.add_user')}
 				</Button>
 			</div>
 
 			{/* Stats Cards */}
 			<div className='grid gap-4 md:grid-cols-2 lg:grid-cols-4'>
-				{stats.map((stat, index) => {
-					const Icon = stat.icon
-					return (
-						<Card key={index}>
-							<CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
-								<CardTitle className='text-sm font-medium'>
-									{stat.title}
-								</CardTitle>
-								<div className={`rounded-full p-2 ${stat.bgColor}`}>
-									<Icon className={`h-4 w-4 ${stat.color}`} />
-								</div>
-							</CardHeader>
-							<CardContent>
-								<div className='text-2xl font-bold'>{stat.value}</div>
-								<p className='text-xs text-muted-foreground mt-1'>
-									<span className='text-green-600'>{stat.change}</span> from
-									last month
-								</p>
-							</CardContent>
-						</Card>
-					)
-				})}
+				{isLoadingStats
+					? Array.from({ length: 4 }).map((_, index) => (
+							<Card key={index}>
+								<CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
+									<Skeleton className='h-4 w-24' />
+									<Skeleton className='h-8 w-8 rounded-full' />
+								</CardHeader>
+								<CardContent>
+									<Skeleton className='h-8 w-16 mb-2' />
+									<Skeleton className='h-3 w-32' />
+								</CardContent>
+							</Card>
+						))
+					: stats.map((stat, index) => {
+							const Icon = stat.icon
+							return (
+								<Card key={index}>
+									<CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
+										<CardTitle className='text-sm font-medium'>
+											{stat.title}
+										</CardTitle>
+										<div className={`rounded-full p-2 ${stat.bgColor}`}>
+											<Icon className={`h-4 w-4 ${stat.color}`} />
+										</div>
+									</CardHeader>
+									<CardContent>
+										<div className='text-2xl font-bold'>{stat.value}</div>
+										<p className='text-xs text-muted-foreground mt-1'>
+											<span className='text-green-600'>{stat.change}</span>{' '}
+											{t('label.from_last_month', 'from last month')}
+										</p>
+									</CardContent>
+								</Card>
+							)
+						})}
 			</div>
 
 			{/* Filters */}
@@ -248,7 +319,7 @@ const UsersPage = (): React.ReactElement => {
 							<div className='relative flex-1 max-w-sm'>
 								<Search className='absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground' />
 								<Input
-									placeholder='Search users...'
+									placeholder={t('user_management.search_placeholder')}
 									value={searchQuery}
 									onChange={e => setSearchQuery(e.target.value)}
 									className='pl-8'
@@ -257,13 +328,17 @@ const UsersPage = (): React.ReactElement => {
 							<Select value={roleFilter} onValueChange={setRoleFilter}>
 								<SelectTrigger className='w-[180px]'>
 									<Filter className='mr-2 h-4 w-4' />
-									<SelectValue placeholder='Filter by role' />
+									<SelectValue
+										placeholder={t('user_management.filter_by_role')}
+									/>
 								</SelectTrigger>
 								<SelectContent>
-									<SelectItem value='all'>All Roles</SelectItem>
-									<SelectItem value='Admin'>Admin</SelectItem>
-									<SelectItem value='Teacher'>Teacher</SelectItem>
-									<SelectItem value='Student'>Student</SelectItem>
+									<SelectItem value='all'>
+										{t('user_management.all_roles')}
+									</SelectItem>
+									<SelectItem value='Admin'>{t('role.admin')}</SelectItem>
+									<SelectItem value='Teacher'>{t('role.teacher')}</SelectItem>
+									<SelectItem value='Student'>{t('role.student')}</SelectItem>
 								</SelectContent>
 							</Select>
 						</div>
@@ -274,24 +349,58 @@ const UsersPage = (): React.ReactElement => {
 						<Table>
 							<TableHeader>
 								<TableRow>
-									<TableHead>User</TableHead>
-									<TableHead>Email</TableHead>
-									<TableHead>Role</TableHead>
-									<TableHead>Status</TableHead>
-									<TableHead>Joined</TableHead>
-									<TableHead>Last Login</TableHead>
-									<TableHead className='text-right'>Actions</TableHead>
+									<TableHead>{t('label.user')}</TableHead>
+									<TableHead>{t('label.email')}</TableHead>
+									<TableHead>{t('label.role')}</TableHead>
+									<TableHead>{t('label.status')}</TableHead>
+									<TableHead>{t('label.created_at')}</TableHead>
+									<TableHead>{t('label.last_login')}</TableHead>
+									<TableHead className='text-right'>
+										{t('label.actions')}
+									</TableHead>
 								</TableRow>
 							</TableHeader>
 							<TableBody>
-								{filteredUsers.length === 0 ? (
+								{isLoadingUsers ? (
+									// Loading skeleton
+									Array.from({ length: pageSize }).map((_, index) => (
+										<TableRow key={index}>
+											<TableCell>
+												<div className='flex items-center gap-3'>
+													<Skeleton className='h-10 w-10 rounded-full' />
+													<Skeleton className='h-4 w-32' />
+												</div>
+											</TableCell>
+											<TableCell>
+												<Skeleton className='h-4 w-48' />
+											</TableCell>
+											<TableCell>
+												<Skeleton className='h-5 w-16' />
+											</TableCell>
+											<TableCell>
+												<Skeleton className='h-4 w-20' />
+											</TableCell>
+											<TableCell>
+												<Skeleton className='h-4 w-24' />
+											</TableCell>
+											<TableCell>
+												<Skeleton className='h-4 w-24' />
+											</TableCell>
+											<TableCell>
+												<Skeleton className='h-8 w-8 ml-auto' />
+											</TableCell>
+										</TableRow>
+									))
+								) : users.length === 0 ? (
 									<TableRow>
 										<TableCell colSpan={7} className='text-center py-8'>
-											<p className='text-muted-foreground'>No users found</p>
+											<p className='text-muted-foreground'>
+												{t('user_management.no_users_found')}
+											</p>
 										</TableCell>
 									</TableRow>
 								) : (
-									filteredUsers.map(user => (
+									users.map(user => (
 										<TableRow key={user.id}>
 											<TableCell>
 												<div className='flex items-center gap-3'>
@@ -311,20 +420,24 @@ const UsersPage = (): React.ReactElement => {
 												{user.email}
 											</TableCell>
 											<TableCell>
-												<Badge variant={getRoleBadgeVariant(user.role)}>
-													{user.role}
+												<Badge variant={getRoleBadgeVariant(user.roleId)}>
+													{t(`role.${getRoleName(user.roleId).toLowerCase()}`)}
 												</Badge>
 											</TableCell>
 											<TableCell>
 												{user.isEmailVerified ? (
 													<div className='flex items-center gap-1 text-green-600'>
 														<CheckCircle2 className='h-4 w-4' />
-														<span className='text-sm'>Verified</span>
+														<span className='text-sm'>
+															{t('label.verified')}
+														</span>
 													</div>
 												) : (
 													<div className='flex items-center gap-1 text-orange-600'>
 														<XCircle className='h-4 w-4' />
-														<span className='text-sm'>Unverified</span>
+														<span className='text-sm'>
+															{t('label.unverified')}
+														</span>
 													</div>
 												)}
 											</TableCell>
@@ -332,7 +445,7 @@ const UsersPage = (): React.ReactElement => {
 												{formatDate(user.createdAt)}
 											</TableCell>
 											<TableCell className='text-muted-foreground'>
-												{formatDate(user.lastLoginAt)}
+												{user.updatedAt ? formatDate(user.updatedAt) : '-'}
 											</TableCell>
 											<TableCell className='text-right'>
 												<DropdownMenu>
@@ -346,13 +459,16 @@ const UsersPage = (): React.ReactElement => {
 															onClick={() => handleEditUser(user)}
 														>
 															<Edit className='mr-2 h-4 w-4' />
-															Edit User
+															{t('user_management.edit_user')}
 														</DropdownMenuItem>
 														<DropdownMenuItem
 															onClick={() => handleSendPasswordReset(user)}
 														>
 															<Mail className='mr-2 h-4 w-4' />
-															Send Password Reset
+															{t(
+																'action.send_password_reset',
+																'Send Password Reset'
+															)}
 														</DropdownMenuItem>
 														<DropdownMenuSeparator />
 														<DropdownMenuItem
@@ -360,7 +476,7 @@ const UsersPage = (): React.ReactElement => {
 															className='text-destructive'
 														>
 															<Trash2 className='mr-2 h-4 w-4' />
-															Delete User
+															{t('user_management.delete_user')}
 														</DropdownMenuItem>
 													</DropdownMenuContent>
 												</DropdownMenu>
@@ -371,6 +487,40 @@ const UsersPage = (): React.ReactElement => {
 							</TableBody>
 						</Table>
 					</div>
+
+					{/* Pagination */}
+					{!isLoadingUsers && users.length > 0 && (
+						<div className='flex items-center justify-between px-2 py-4'>
+							<div className='text-sm text-muted-foreground'>
+								{t('user_management.showing_results', {
+									from: (page - 1) * pageSize + 1,
+									to: Math.min(page * pageSize, totalUsers),
+									total: totalUsers,
+								})}
+							</div>
+							<div className='flex items-center gap-2'>
+								<Button
+									variant='outline'
+									size='sm'
+									onClick={handlePreviousPage}
+									disabled={page === 1}
+								>
+									{t('user_management.previous_page')}
+								</Button>
+								<div className='text-sm font-medium'>
+									{page} / {totalPages}
+								</div>
+								<Button
+									variant='outline'
+									size='sm'
+									onClick={handleNextPage}
+									disabled={page === totalPages}
+								>
+									{t('user_management.next_page')}
+								</Button>
+							</div>
+						</div>
+					)}
 				</CardContent>
 			</Card>
 
@@ -378,39 +528,55 @@ const UsersPage = (): React.ReactElement => {
 			<Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
 				<DialogContent>
 					<DialogHeader>
-						<DialogTitle>Edit User</DialogTitle>
+						<DialogTitle>{t('user_management.edit_user')}</DialogTitle>
 						<DialogDescription>
-							Update user information and role assignments.
+							{t(
+								'user_management.edit_description',
+								'Update user information and role assignments.'
+							)}
 						</DialogDescription>
 					</DialogHeader>
 					{selectedUser && (
 						<div className='grid gap-4 py-4'>
 							<div className='grid gap-2'>
-								<Label htmlFor='firstName'>First Name</Label>
-								<Input id='firstName' defaultValue={selectedUser.firstName} />
-							</div>
-							<div className='grid gap-2'>
-								<Label htmlFor='lastName'>Last Name</Label>
-								<Input id='lastName' defaultValue={selectedUser.lastName} />
-							</div>
-							<div className='grid gap-2'>
-								<Label htmlFor='email'>Email</Label>
+								<Label htmlFor='firstName'>
+									{t('label.first_name', 'First Name')}
+								</Label>
 								<Input
-									id='email'
-									type='email'
-									defaultValue={selectedUser.email}
+									id='firstName'
+									value={editFirstName}
+									onChange={e => setEditFirstName(e.target.value)}
 								/>
 							</div>
 							<div className='grid gap-2'>
-								<Label htmlFor='role'>Role</Label>
-								<Select defaultValue={selectedUser.role}>
+								<Label htmlFor='lastName'>
+									{t('label.last_name', 'Last Name')}
+								</Label>
+								<Input
+									id='lastName'
+									value={editLastName}
+									onChange={e => setEditLastName(e.target.value)}
+								/>
+							</div>
+							<div className='grid gap-2'>
+								<Label htmlFor='email'>{t('label.email')}</Label>
+								<Input
+									id='email'
+									type='email'
+									value={selectedUser.email}
+									disabled
+								/>
+							</div>
+							<div className='grid gap-2'>
+								<Label htmlFor='role'>{t('label.role')}</Label>
+								<Select value={editRole} onValueChange={setEditRole}>
 									<SelectTrigger>
 										<SelectValue />
 									</SelectTrigger>
 									<SelectContent>
-										<SelectItem value='Admin'>Admin</SelectItem>
-										<SelectItem value='Teacher'>Teacher</SelectItem>
-										<SelectItem value='Student'>Student</SelectItem>
+										<SelectItem value='Admin'>{t('role.admin')}</SelectItem>
+										<SelectItem value='Teacher'>{t('role.teacher')}</SelectItem>
+										<SelectItem value='Student'>{t('role.student')}</SelectItem>
 									</SelectContent>
 								</Select>
 							</div>
@@ -420,11 +586,18 @@ const UsersPage = (): React.ReactElement => {
 						<Button
 							variant='outline'
 							onClick={() => setIsEditDialogOpen(false)}
+							disabled={updateUserMutation.isPending}
 						>
-							Cancel
+							{t('action.cancel')}
 						</Button>
-						<Button onClick={() => setIsEditDialogOpen(false)}>
-							Save Changes
+						<Button
+							onClick={handleSaveUser}
+							disabled={updateUserMutation.isPending}
+						>
+							{updateUserMutation.isPending && (
+								<Loader2 className='mr-2 h-4 w-4 animate-spin' />
+							)}
+							{t('action.save')}
 						</Button>
 					</DialogFooter>
 				</DialogContent>
@@ -434,20 +607,21 @@ const UsersPage = (): React.ReactElement => {
 			<Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
 				<DialogContent>
 					<DialogHeader>
-						<DialogTitle>Delete User</DialogTitle>
+						<DialogTitle>
+							{t('user_management.delete_confirm_title')}
+						</DialogTitle>
 						<DialogDescription>
-							Are you sure you want to delete this user? This action cannot be
-							undone.
+							{t('user_management.delete_confirm_message')}
 						</DialogDescription>
 					</DialogHeader>
 					{selectedUser && (
 						<div className='py-4'>
 							<p className='text-sm'>
-								<strong>User:</strong> {selectedUser.firstName}{' '}
+								<strong>{t('label.user')}:</strong> {selectedUser.firstName}{' '}
 								{selectedUser.lastName}
 							</p>
 							<p className='text-sm text-muted-foreground'>
-								<strong>Email:</strong> {selectedUser.email}
+								<strong>{t('label.email')}:</strong> {selectedUser.email}
 							</p>
 						</div>
 					)}
@@ -455,14 +629,19 @@ const UsersPage = (): React.ReactElement => {
 						<Button
 							variant='outline'
 							onClick={() => setIsDeleteDialogOpen(false)}
+							disabled={deleteUserMutation.isPending}
 						>
-							Cancel
+							{t('action.cancel')}
 						</Button>
 						<Button
 							variant='destructive'
-							onClick={() => setIsDeleteDialogOpen(false)}
+							onClick={handleConfirmDelete}
+							disabled={deleteUserMutation.isPending}
 						>
-							Delete User
+							{deleteUserMutation.isPending && (
+								<Loader2 className='mr-2 h-4 w-4 animate-spin' />
+							)}
+							{t('action.delete')}
 						</Button>
 					</DialogFooter>
 				</DialogContent>

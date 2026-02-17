@@ -3,6 +3,13 @@ import type {
 	GetMeResponse,
 	UpdateProfileDto,
 } from '@/types/dtos/users/user'
+import type {
+	GetAllUsersParams,
+	PaginatedResponse,
+	UpdateUserRequest,
+	UserStatistics,
+} from '@/types/dtos/users/admin'
+import type { UserDashboardStatsResponse } from '@/types/dtos/users/dashboard'
 import type { Role } from '@/types/model/user-service/role'
 import apiService, { type ApiResponse } from '../api.service'
 import axiosInstance, { publicAxios } from '../axios'
@@ -158,36 +165,50 @@ class UserService {
 	}
 
 	// User management endpoints for admin dashboard
-	async getAllUsers(params?: {
-		page?: number
-		pageSize?: number
-		search?: string
-		role?: string
-	}): Promise<
-		ApiResponse<{
-			items: GetMeResponse[]
-			total: number
-			page: number
-			pageSize: number
-			totalPages: number
-		}>
-	> {
-		return apiService.get(`${this.baseUrl}`, params)
+	async getAllUsers(
+		params?: GetAllUsersParams
+	): Promise<PaginatedResponse<GetMeResponse>> {
+		const query = new URLSearchParams()
+		if (params?.page) query.append('page', params.page.toString())
+		if (params?.pageSize) query.append('pageSize', params.pageSize.toString())
+		if (params?.search) query.append('search', params.search)
+		if (params?.role) query.append('role', params.role)
+		if (params?.sortBy) query.append('sortBy', params.sortBy)
+		if (params?.sortOrder) query.append('sortOrder', params.sortOrder)
+
+		const response = await axiosInstance.get<PaginatedResponse<GetMeResponse>>(
+			`${this.baseUrl}/users?${query.toString()}`
+		)
+		return response.data
 	}
 
-	async getUserById(userId: string): Promise<ApiResponse<GetMeResponse>> {
-		return apiService.get(`${this.baseUrl}/${userId}`)
+	async getUserStatistics(): Promise<UserStatistics> {
+		const response = await axiosInstance.get<UserStatistics>(
+			`${this.baseUrl}/users/statistics`
+		)
+		return response.data
 	}
 
-	async updateUser(
-		userId: string,
-		updates: Partial<UpdateProfileDto & { roleId: string }>
-	): Promise<ApiResponse<void>> {
-		return apiService.put(`${this.baseUrl}/${userId}`, updates)
+	async getUserDashboardStats(): Promise<UserDashboardStatsResponse> {
+		const response = await axiosInstance.get<UserDashboardStatsResponse>(
+			`${this.baseUrl}/users/dashboard-stats`
+		)
+		return response.data
 	}
 
-	async deleteUser(userId: string): Promise<ApiResponse<void>> {
-		return apiService.delete(`${this.baseUrl}/${userId}`)
+	async getUserById(userId: string): Promise<GetMeResponse> {
+		const response = await axiosInstance.get<GetMeResponse>(
+			`${this.baseUrl}/users/${userId}`
+		)
+		return response.data
+	}
+
+	async updateUser(userId: string, updates: UpdateUserRequest): Promise<void> {
+		await axiosInstance.put(`${this.baseUrl}/users/${userId}`, updates)
+	}
+
+	async deleteUser(userId: string): Promise<void> {
+		await axiosInstance.delete(`${this.baseUrl}/users/${userId}`)
 	}
 
 	async sendPasswordResetEmail(email: string): Promise<ApiResponse<void>> {

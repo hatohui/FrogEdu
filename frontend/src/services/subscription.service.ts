@@ -7,6 +7,7 @@ import type {
 	SubscribeToProResponse,
 	CancelSubscriptionResponse,
 } from '@/types/dtos/subscriptions'
+import type { SubscriptionDashboardStatsResponse } from '@/types/dtos/subscriptions/dashboard'
 import axiosInstance from './axios'
 
 class SubscriptionService {
@@ -59,6 +60,17 @@ class SubscriptionService {
 		const response = await axiosInstance.post<CancelSubscriptionResponse>(
 			`${this.baseUrl}/cancel`
 		)
+		return response.data
+	}
+
+	/**
+	 * Get subscription dashboard statistics (Admin only)
+	 */
+	async getDashboardStats(): Promise<SubscriptionDashboardStatsResponse> {
+		const response =
+			await axiosInstance.get<SubscriptionDashboardStatsResponse>(
+				`${this.baseUrl}/admin/dashboard-stats`
+			)
 		return response.data
 	}
 }

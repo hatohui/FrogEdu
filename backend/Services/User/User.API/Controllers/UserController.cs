@@ -3,11 +3,14 @@ using FrogEdu.User.Application.Commands.DeleteUser;
 using FrogEdu.User.Application.Commands.RemoveUserAvatar;
 using FrogEdu.User.Application.Commands.UpdateAvatar;
 using FrogEdu.User.Application.Commands.UpdateProfile;
+using FrogEdu.User.Application.Commands.UpdateUser;
 using FrogEdu.User.Application.Commands.UpdateUserRole;
 using FrogEdu.User.Application.DTOs;
 using FrogEdu.User.Application.Queries.GetAllUsers;
 using FrogEdu.User.Application.Queries.GetUserById;
 using FrogEdu.User.Application.Queries.GetUserProfile;
+using FrogEdu.User.Application.Queries.GetUserDashboardStats;
+using FrogEdu.User.Application.Queries.GetUserStatistics;
 using FrogEdu.User.Application.Queries.GetUserWithSubscription;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -53,11 +56,46 @@ public class UserController : ControllerBase
 
     [HttpGet("users")]
     [Authorize(Roles = "Admin")]
-    [ProducesResponseType(typeof(IReadOnlyList<UserDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(PaginatedUsersResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    public async Task<IActionResult> GetAllUsers(CancellationToken cancellationToken)
+    public async Task<IActionResult> GetAllUsers(
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 10,
+        [FromQuery] string? search = null,
+        [FromQuery] string? role = null,
+        [FromQuery] string? sortBy = "createdAt",
+        [FromQuery] string? sortOrder = "desc",
+        CancellationToken cancellationToken = default
+    )
     {
-        var query = new GetAllUsersQuery();
+        var query = new GetAllUsersQuery(page, pageSize, search, role, sortBy, sortOrder);
+        var result = await _mediator.Send(query, cancellationToken);
+
+        return Ok(result);
+    }
+
+    [HttpGet("users/statistics")]
+    [Authorize(Roles = "Admin")]
+    [ProducesResponseType(typeof(UserStatisticsResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    public async Task<IActionResult> GetUserStatistics(CancellationToken cancellationToken)
+    {
+        var query = new GetUserStatisticsQuery();
+        var result = await _mediator.Send(query, cancellationToken);
+
+        return Ok(result);
+    }
+
+    /// <summary>
+    /// Get user dashboard statistics (growth chart, role distribution, verification status)
+    /// </summary>
+    [HttpGet("users/dashboard-stats")]
+    [Authorize(Roles = "Admin")]
+    [ProducesResponseType(typeof(UserDashboardStatsResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    public async Task<IActionResult> GetUserDashboardStats(CancellationToken cancellationToken)
+    {
+        var query = new GetUserDashboardStatsQuery();
         var result = await _mediator.Send(query, cancellationToken);
 
         return Ok(result);
@@ -69,7 +107,30 @@ public class UserController : ControllerBase
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetUserById(Guid id, CancellationToken cancellationToken)
+    {")]
+    [Authorize(Roles = "Admin")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> UpdateUser(
+        Guid id,
+        [FromBody] UpdateUserRequest request,
+        CancellationToken cancellationToken
+    )
     {
+        var command = new UpdateUserCommand(id, request.FirstName, request.LastName, request.RoleId);
+        var result = await _mediator.Send(command, cancellationToken);
+
+        if (result.IsFailure)
+        {
+            return BadRequest(result.Error);
+        }
+
+        return NoContent();
+    }
+
+    [HttpPut("users/{id:guid}
         var query = new GetUserByIdQuery(id);
         var result = await _mediator.Send(query, cancellationToken);
 

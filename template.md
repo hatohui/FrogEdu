@@ -2,10 +2,10 @@ As #file:backend-spec.md
 
 use #shadcn and #io.github.upstash/context7 to help me implement the flow where:
 
-1. Student joins a class via invite code
-2. Teacher can assigns a test to that class
-3. Student can see the class's details and upcoming exams
-4. Admins have a dashboard to view all classes created by teachers, and view all exams and students in that class, they can also assign in the dashboard.
+Create user growth chart (last 30 days)
+Create role distribution pie chart
+Add verification status chart
+Statistics about revenue from subscriptions, status of those subscriptions for dashboard
 
 Rules to follow:
 
