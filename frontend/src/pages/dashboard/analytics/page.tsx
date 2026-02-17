@@ -8,81 +8,76 @@ import {
 	UserCheck,
 } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import {
+	Card,
+	CardContent,
+	CardDescription,
+	CardHeader,
+	CardTitle,
+} from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Skeleton } from '@/components/ui/skeleton'
 import {
-	LineChart,
-	Line,
-	BarChart,
-	Bar,
+	ChartContainer,
+	ChartTooltip,
+	ChartTooltipContent,
+	ChartLegend,
+	ChartLegendContent,
+	type ChartConfig,
+} from '@/components/ui/chart'
+import {
+	Area,
+	AreaChart,
+	CartesianGrid,
 	XAxis,
 	YAxis,
-	CartesianGrid,
-	Tooltip,
-	Legend,
-	ResponsiveContainer,
-	PieChart,
 	Pie,
-	Cell,
+	PieChart,
+	Bar,
+	BarChart,
+	Label,
 } from 'recharts'
 import { useUserDashboardStats, useUserStatistics } from '@/hooks/useUsers'
 import { useSubscriptionDashboardStats } from '@/hooks/useSubscription'
 
-const ROLE_COLORS: Record<string, string> = {
-	Admin: '#ef4444',
-	Teacher: '#8b5cf6',
-	Student: '#3b82f6',
-}
+const userGrowthConfig = {
+	count: {
+		label: 'Daily Registrations',
+		color: 'hsl(217, 91%, 60%)',
+	},
+} satisfies ChartConfig
 
-const VERIFICATION_COLORS: Record<string, string> = {
-	Verified: '#10b981',
-	Unverified: '#f59e0b',
-}
+const roleChartConfig = {
+	count: { label: 'Users' },
+	Admin: { label: 'Admin', color: 'hsl(0, 84%, 60%)' },
+	Teacher: { label: 'Teacher', color: 'hsl(262, 83%, 58%)' },
+	Student: { label: 'Student', color: 'hsl(217, 91%, 60%)' },
+} satisfies ChartConfig
 
-const SUBSCRIPTION_STATUS_COLORS: Record<string, string> = {
-	Active: '#10b981',
-	Expired: '#6b7280',
-	Cancelled: '#ef4444',
-	Suspended: '#f59e0b',
-}
+const verificationChartConfig = {
+	count: { label: 'Users' },
+	Verified: { label: 'Verified', color: 'hsl(160, 84%, 39%)' },
+	Unverified: { label: 'Unverified', color: 'hsl(38, 92%, 50%)' },
+} satisfies ChartConfig
 
-const REVENUE_COLOR = '#3b82f6'
-const TRANSACTION_COLOR = '#8b5cf6'
+const subscriptionStatusConfig = {
+	count: { label: 'Subscriptions' },
+	Active: { label: 'Active', color: 'hsl(160, 84%, 39%)' },
+	Expired: { label: 'Expired', color: 'hsl(220, 9%, 46%)' },
+	Cancelled: { label: 'Cancelled', color: 'hsl(0, 84%, 60%)' },
+	Suspended: { label: 'Suspended', color: 'hsl(38, 92%, 50%)' },
+} satisfies ChartConfig
+
+const revenueChartConfig = {
+	revenue: { label: 'Revenue', color: 'hsl(217, 91%, 60%)' },
+	transactions: { label: 'Transactions', color: 'hsl(262, 83%, 58%)' },
+} satisfies ChartConfig
 
 const ChartSkeleton = () => (
 	<div className='space-y-3'>
 		<Skeleton className='h-[350px] w-full' />
 	</div>
 )
-
-const CustomTooltip = ({
-	active,
-	payload,
-	label,
-}: {
-	active?: boolean
-	payload?: Array<{ name: string; value: number; color: string }>
-	label?: string
-}) => {
-	if (active && payload && payload.length) {
-		return (
-			<div className='rounded-lg border bg-background p-3 shadow-lg'>
-				<p className='font-semibold'>{label}</p>
-				{payload.map((entry, index: number) => (
-					<p key={index} className='text-sm' style={{ color: entry.color }}>
-						{entry.name}:{' '}
-						{typeof entry.value === 'number' &&
-						entry.name.toLowerCase().includes('revenue')
-							? `$${entry.value.toLocaleString()}`
-							: entry.value.toLocaleString()}
-					</p>
-				))}
-			</div>
-		)
-	}
-	return null
-}
 
 const AnalyticsPage = (): React.ReactElement => {
 	const { t } = useTranslation()
@@ -128,25 +123,25 @@ const AnalyticsPage = (): React.ReactElement => {
 
 	const roleDistributionData =
 		userDashboard?.roleDistribution.map(item => ({
-			name: t(`roles.${item.role.toLowerCase()}`),
+			name: item.role,
 			value: item.count,
-			color: ROLE_COLORS[item.role] ?? '#6b7280',
+			fill: `var(--color-${item.role})`,
 		})) ?? []
 
 	const verificationData =
 		userDashboard?.verificationStatus.map(item => ({
-			name: t(`analytics.${item.status.toLowerCase()}`),
+			name: item.status,
 			value: item.count,
-			color: VERIFICATION_COLORS[item.status] ?? '#6b7280',
+			fill: `var(--color-${item.status})`,
 		})) ?? []
 
 	const subscriptionStatusData =
 		subStats?.statusDistribution
 			.filter(item => item.count > 0)
 			.map(item => ({
-				name: t(`analytics.${item.status.toLowerCase()}`),
+				name: item.status,
 				value: item.count,
-				color: SUBSCRIPTION_STATUS_COLORS[item.status] ?? '#6b7280',
+				fill: `var(--color-${item.status})`,
 			})) ?? []
 
 	const growthChartData =
@@ -164,6 +159,11 @@ const AnalyticsPage = (): React.ReactElement => {
 			revenue: item.revenue,
 			transactions: item.transactionCount,
 		})) ?? []
+
+	const totalUsers = roleDistributionData.reduce(
+		(sum, item) => sum + item.value,
+		0
+	)
 
 	return (
 		<div className='space-y-6 p-6'>
@@ -214,43 +214,74 @@ const AnalyticsPage = (): React.ReactElement => {
 				{/* Overview Tab */}
 				<TabsContent value='overview' className='space-y-4'>
 					<div className='grid gap-4 md:grid-cols-7'>
-						{/* User Growth Line Chart */}
+						{/* User Growth Area Chart */}
 						<Card className='md:col-span-4'>
 							<CardHeader>
 								<CardTitle className='flex items-center gap-2'>
 									<Users className='h-5 w-5' />
 									{t('analytics.user_growth')}
 								</CardTitle>
+								<CardDescription>
+									{t('dashboard.new_registrations_trend')}
+								</CardDescription>
 							</CardHeader>
 							<CardContent>
 								{isLoadingUserDashboard ? (
 									<ChartSkeleton />
 								) : (
-									<ResponsiveContainer width='100%' height={350}>
-										<LineChart
+									<ChartContainer
+										config={userGrowthConfig}
+										className='h-[350px] w-full'
+									>
+										<AreaChart
+											accessibilityLayer
 											data={growthChartData}
-											margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+											margin={{ top: 10, right: 10, left: 0, bottom: 0 }}
 										>
-											<CartesianGrid strokeDasharray='3 3' />
+											<CartesianGrid vertical={false} />
 											<XAxis
 												dataKey='date'
-												tick={{ fontSize: 12 }}
+												tickLine={false}
+												axisLine={false}
+												tickMargin={8}
 												interval='preserveStartEnd'
+												tick={{ fontSize: 12 }}
 											/>
-											<YAxis allowDecimals={false} />
-											<Tooltip content={<CustomTooltip />} />
-											<Legend />
-											<Line
-												type='monotone'
+											<YAxis
+												allowDecimals={false}
+												tickLine={false}
+												axisLine={false}
+											/>
+											<ChartTooltip content={<ChartTooltipContent />} />
+											<defs>
+												<linearGradient
+													id='fillGrowth'
+													x1='0'
+													y1='0'
+													x2='0'
+													y2='1'
+												>
+													<stop
+														offset='5%'
+														stopColor='var(--color-count)'
+														stopOpacity={0.8}
+													/>
+													<stop
+														offset='95%'
+														stopColor='var(--color-count)'
+														stopOpacity={0.1}
+													/>
+												</linearGradient>
+											</defs>
+											<Area
 												dataKey='count'
-												stroke='#3b82f6'
+												type='natural'
+												fill='url(#fillGrowth)'
+												stroke='var(--color-count)'
 												strokeWidth={2}
-												name={t('analytics.daily_registrations')}
-												dot={false}
-												activeDot={{ r: 4 }}
 											/>
-										</LineChart>
-									</ResponsiveContainer>
+										</AreaChart>
+									</ChartContainer>
 								)}
 							</CardContent>
 						</Card>
@@ -262,33 +293,66 @@ const AnalyticsPage = (): React.ReactElement => {
 									<ShieldCheck className='h-5 w-5' />
 									{t('analytics.role_distribution')}
 								</CardTitle>
+								<CardDescription>
+									{t('dashboard.users_by_role')}
+								</CardDescription>
 							</CardHeader>
 							<CardContent>
 								{isLoadingUserDashboard ? (
 									<ChartSkeleton />
 								) : (
-									<ResponsiveContainer width='100%' height={350}>
+									<ChartContainer
+										config={roleChartConfig}
+										className='mx-auto aspect-square h-[320px]'
+									>
 										<PieChart>
+											<ChartTooltip
+												content={
+													<ChartTooltipContent nameKey='name' hideLabel />
+												}
+											/>
 											<Pie
 												data={roleDistributionData}
-												cx='50%'
-												cy='50%'
-												labelLine={false}
-												label={({ name, percent }) =>
-													`${name}: ${(percent * 100).toFixed(0)}%`
-												}
-												outerRadius={100}
-												fill='#8884d8'
 												dataKey='value'
+												nameKey='name'
+												innerRadius={60}
+												strokeWidth={5}
 											>
-												{roleDistributionData.map((entry, index) => (
-													<Cell key={`cell-${index}`} fill={entry.color} />
-												))}
+												<Label
+													content={({ viewBox }) => {
+														if (viewBox && 'cx' in viewBox && 'cy' in viewBox) {
+															return (
+																<text
+																	x={viewBox.cx}
+																	y={viewBox.cy}
+																	textAnchor='middle'
+																	dominantBaseline='middle'
+																>
+																	<tspan
+																		x={viewBox.cx}
+																		y={viewBox.cy}
+																		className='fill-foreground text-3xl font-bold'
+																	>
+																		{totalUsers.toLocaleString()}
+																	</tspan>
+																	<tspan
+																		x={viewBox.cx}
+																		y={(viewBox.cy || 0) + 24}
+																		className='fill-muted-foreground text-sm'
+																	>
+																		{t('analytics.users')}
+																	</tspan>
+																</text>
+															)
+														}
+													}}
+												/>
 											</Pie>
-											<Tooltip />
-											<Legend />
+											<ChartLegend
+												content={<ChartLegendContent nameKey='name' />}
+											/>
 										</PieChart>
-									</ResponsiveContainer>
+									</ChartContainer>
 								)}
 							</CardContent>
 						</Card>
@@ -302,33 +366,76 @@ const AnalyticsPage = (): React.ReactElement => {
 									<UserCheck className='h-5 w-5' />
 									{t('analytics.verification_status')}
 								</CardTitle>
+								<CardDescription>
+									{t('dashboard.email_verification_breakdown')}
+								</CardDescription>
 							</CardHeader>
 							<CardContent>
 								{isLoadingUserDashboard ? (
 									<ChartSkeleton />
 								) : (
-									<ResponsiveContainer width='100%' height={300}>
+									<ChartContainer
+										config={verificationChartConfig}
+										className='mx-auto aspect-square h-[300px]'
+									>
 										<PieChart>
+											<ChartTooltip
+												content={
+													<ChartTooltipContent nameKey='name' hideLabel />
+												}
+											/>
 											<Pie
 												data={verificationData}
-												cx='50%'
-												cy='50%'
-												labelLine={false}
-												label={({ name, percent }) =>
-													`${name}: ${(percent * 100).toFixed(0)}%`
-												}
-												outerRadius={90}
-												fill='#8884d8'
 												dataKey='value'
+												nameKey='name'
+												innerRadius={50}
+												strokeWidth={5}
 											>
-												{verificationData.map((entry, index) => (
-													<Cell key={`cell-${index}`} fill={entry.color} />
-												))}
+												<Label
+													content={({ viewBox }) => {
+														if (viewBox && 'cx' in viewBox && 'cy' in viewBox) {
+															const verified = verificationData.find(
+																d => d.name === 'Verified'
+															)
+															const pct =
+																totalUsers > 0
+																	? Math.round(
+																			((verified?.value ?? 0) / totalUsers) *
+																				100
+																		)
+																	: 0
+															return (
+																<text
+																	x={viewBox.cx}
+																	y={viewBox.cy}
+																	textAnchor='middle'
+																	dominantBaseline='middle'
+																>
+																	<tspan
+																		x={viewBox.cx}
+																		y={viewBox.cy}
+																		className='fill-foreground text-3xl font-bold'
+																	>
+																		{pct}%
+																	</tspan>
+																	<tspan
+																		x={viewBox.cx}
+																		y={(viewBox.cy || 0) + 24}
+																		className='fill-muted-foreground text-sm'
+																	>
+																		{t('analytics.verified')}
+																	</tspan>
+																</text>
+															)
+														}
+													}}
+												/>
 											</Pie>
-											<Tooltip />
-											<Legend />
+											<ChartLegend
+												content={<ChartLegendContent nameKey='name' />}
+											/>
 										</PieChart>
-									</ResponsiveContainer>
+									</ChartContainer>
 								)}
 							</CardContent>
 						</Card>
@@ -339,6 +446,9 @@ const AnalyticsPage = (): React.ReactElement => {
 									<CreditCard className='h-5 w-5' />
 									{t('analytics.subscription_status')}
 								</CardTitle>
+								<CardDescription>
+									{t('dashboard.subscription_breakdown')}
+								</CardDescription>
 							</CardHeader>
 							<CardContent>
 								{isLoadingSubStats ? (
@@ -348,28 +458,62 @@ const AnalyticsPage = (): React.ReactElement => {
 										{t('analytics.no_data')}
 									</div>
 								) : (
-									<ResponsiveContainer width='100%' height={300}>
+									<ChartContainer
+										config={subscriptionStatusConfig}
+										className='mx-auto aspect-square h-[300px]'
+									>
 										<PieChart>
+											<ChartTooltip
+												content={
+													<ChartTooltipContent nameKey='name' hideLabel />
+												}
+											/>
 											<Pie
 												data={subscriptionStatusData}
-												cx='50%'
-												cy='50%'
-												labelLine={false}
-												label={({ name, percent }) =>
-													`${name}: ${(percent * 100).toFixed(0)}%`
-												}
-												outerRadius={90}
-												fill='#8884d8'
 												dataKey='value'
+												nameKey='name'
+												innerRadius={50}
+												strokeWidth={5}
 											>
-												{subscriptionStatusData.map((entry, index) => (
-													<Cell key={`cell-${index}`} fill={entry.color} />
-												))}
+												<Label
+													content={({ viewBox }) => {
+														if (viewBox && 'cx' in viewBox && 'cy' in viewBox) {
+															const total = subscriptionStatusData.reduce(
+																(sum, item) => sum + item.value,
+																0
+															)
+															return (
+																<text
+																	x={viewBox.cx}
+																	y={viewBox.cy}
+																	textAnchor='middle'
+																	dominantBaseline='middle'
+																>
+																	<tspan
+																		x={viewBox.cx}
+																		y={viewBox.cy}
+																		className='fill-foreground text-3xl font-bold'
+																	>
+																		{total.toLocaleString()}
+																	</tspan>
+																	<tspan
+																		x={viewBox.cx}
+																		y={(viewBox.cy || 0) + 24}
+																		className='fill-muted-foreground text-sm'
+																	>
+																		{t('analytics.total_subscriptions')}
+																	</tspan>
+																</text>
+															)
+														}
+													}}
+												/>
 											</Pie>
-											<Tooltip />
-											<Legend />
+											<ChartLegend
+												content={<ChartLegendContent nameKey='name' />}
+											/>
 										</PieChart>
-									</ResponsiveContainer>
+									</ChartContainer>
 								)}
 							</CardContent>
 						</Card>
@@ -381,32 +525,66 @@ const AnalyticsPage = (): React.ReactElement => {
 					<Card>
 						<CardHeader>
 							<CardTitle>{t('analytics.user_growth')}</CardTitle>
+							<CardDescription>
+								{t('dashboard.new_registrations_trend')}
+							</CardDescription>
 						</CardHeader>
 						<CardContent>
 							{isLoadingUserDashboard ? (
 								<ChartSkeleton />
 							) : (
-								<ResponsiveContainer width='100%' height={400}>
-									<LineChart
+								<ChartContainer
+									config={userGrowthConfig}
+									className='h-[400px] w-full'
+								>
+									<AreaChart
+										accessibilityLayer
 										data={growthChartData}
-										margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+										margin={{ top: 10, right: 10, left: 0, bottom: 0 }}
 									>
-										<CartesianGrid strokeDasharray='3 3' />
-										<XAxis dataKey='date' tick={{ fontSize: 12 }} />
-										<YAxis allowDecimals={false} />
-										<Tooltip content={<CustomTooltip />} />
-										<Legend />
-										<Line
-											type='monotone'
-											dataKey='count'
-											stroke='#3b82f6'
-											strokeWidth={2}
-											name={t('analytics.daily_registrations')}
-											dot={{ r: 3 }}
-											activeDot={{ r: 6 }}
+										<CartesianGrid vertical={false} />
+										<XAxis
+											dataKey='date'
+											tickLine={false}
+											axisLine={false}
+											tickMargin={8}
+											tick={{ fontSize: 12 }}
 										/>
-									</LineChart>
-								</ResponsiveContainer>
+										<YAxis
+											allowDecimals={false}
+											tickLine={false}
+											axisLine={false}
+										/>
+										<ChartTooltip content={<ChartTooltipContent />} />
+										<defs>
+											<linearGradient
+												id='fillGrowthUsers'
+												x1='0'
+												y1='0'
+												x2='0'
+												y2='1'
+											>
+												<stop
+													offset='5%'
+													stopColor='var(--color-count)'
+													stopOpacity={0.8}
+												/>
+												<stop
+													offset='95%'
+													stopColor='var(--color-count)'
+													stopOpacity={0.1}
+												/>
+											</linearGradient>
+										</defs>
+										<Area
+											dataKey='count'
+											type='natural'
+											fill='url(#fillGrowthUsers)'
+											stroke='var(--color-count)'
+											strokeWidth={2}
+										/>
+									</AreaChart>
+								</ChartContainer>
 							)}
 						</CardContent>
 					</Card>
@@ -415,33 +593,66 @@ const AnalyticsPage = (): React.ReactElement => {
 						<Card>
 							<CardHeader>
 								<CardTitle>{t('analytics.role_distribution')}</CardTitle>
+								<CardDescription>
+									{t('dashboard.users_by_role')}
+								</CardDescription>
 							</CardHeader>
 							<CardContent>
 								{isLoadingUserDashboard ? (
 									<ChartSkeleton />
 								) : (
-									<ResponsiveContainer width='100%' height={350}>
+									<ChartContainer
+										config={roleChartConfig}
+										className='mx-auto aspect-square h-[320px]'
+									>
 										<PieChart>
+											<ChartTooltip
+												content={
+													<ChartTooltipContent nameKey='name' hideLabel />
+												}
+											/>
 											<Pie
 												data={roleDistributionData}
-												cx='50%'
-												cy='50%'
-												labelLine={false}
-												label={({ name, percent }) =>
-													`${name}: ${(percent * 100).toFixed(0)}%`
-												}
-												outerRadius={100}
-												fill='#8884d8'
 												dataKey='value'
+												nameKey='name'
+												innerRadius={60}
+												strokeWidth={5}
 											>
-												{roleDistributionData.map((entry, index) => (
-													<Cell key={`cell-${index}`} fill={entry.color} />
-												))}
+												<Label
+													content={({ viewBox }) => {
+														if (viewBox && 'cx' in viewBox && 'cy' in viewBox) {
+															return (
+																<text
+																	x={viewBox.cx}
+																	y={viewBox.cy}
+																	textAnchor='middle'
+																	dominantBaseline='middle'
+																>
+																	<tspan
+																		x={viewBox.cx}
+																		y={viewBox.cy}
+																		className='fill-foreground text-3xl font-bold'
+																	>
+																		{totalUsers.toLocaleString()}
+																	</tspan>
+																	<tspan
+																		x={viewBox.cx}
+																		y={(viewBox.cy || 0) + 24}
+																		className='fill-muted-foreground text-sm'
+																	>
+																		{t('analytics.users')}
+																	</tspan>
+																</text>
+															)
+														}
+													}}
+												/>
 											</Pie>
-											<Tooltip />
-											<Legend />
+											<ChartLegend
+												content={<ChartLegendContent nameKey='name' />}
+											/>
 										</PieChart>
-									</ResponsiveContainer>
+									</ChartContainer>
 								)}
 							</CardContent>
 						</Card>
@@ -449,33 +660,76 @@ const AnalyticsPage = (): React.ReactElement => {
 						<Card>
 							<CardHeader>
 								<CardTitle>{t('analytics.verification_status')}</CardTitle>
+								<CardDescription>
+									{t('dashboard.email_verification_breakdown')}
+								</CardDescription>
 							</CardHeader>
 							<CardContent>
 								{isLoadingUserDashboard ? (
 									<ChartSkeleton />
 								) : (
-									<ResponsiveContainer width='100%' height={350}>
+									<ChartContainer
+										config={verificationChartConfig}
+										className='mx-auto aspect-square h-[320px]'
+									>
 										<PieChart>
+											<ChartTooltip
+												content={
+													<ChartTooltipContent nameKey='name' hideLabel />
+												}
+											/>
 											<Pie
 												data={verificationData}
-												cx='50%'
-												cy='50%'
-												labelLine={false}
-												label={({ name, percent }) =>
-													`${name}: ${(percent * 100).toFixed(0)}%`
-												}
-												outerRadius={100}
-												fill='#8884d8'
 												dataKey='value'
+												nameKey='name'
+												innerRadius={50}
+												strokeWidth={5}
 											>
-												{verificationData.map((entry, index) => (
-													<Cell key={`cell-${index}`} fill={entry.color} />
-												))}
+												<Label
+													content={({ viewBox }) => {
+														if (viewBox && 'cx' in viewBox && 'cy' in viewBox) {
+															const verified = verificationData.find(
+																d => d.name === 'Verified'
+															)
+															const pct =
+																totalUsers > 0
+																	? Math.round(
+																			((verified?.value ?? 0) / totalUsers) *
+																				100
+																		)
+																	: 0
+															return (
+																<text
+																	x={viewBox.cx}
+																	y={viewBox.cy}
+																	textAnchor='middle'
+																	dominantBaseline='middle'
+																>
+																	<tspan
+																		x={viewBox.cx}
+																		y={viewBox.cy}
+																		className='fill-foreground text-3xl font-bold'
+																	>
+																		{pct}%
+																	</tspan>
+																	<tspan
+																		x={viewBox.cx}
+																		y={(viewBox.cy || 0) + 24}
+																		className='fill-muted-foreground text-sm'
+																	>
+																		{t('analytics.verified')}
+																	</tspan>
+																</text>
+															)
+														}
+													}}
+												/>
 											</Pie>
-											<Tooltip />
-											<Legend />
+											<ChartLegend
+												content={<ChartLegendContent nameKey='name' />}
+											/>
 										</PieChart>
-									</ResponsiveContainer>
+									</ChartContainer>
 								)}
 							</CardContent>
 						</Card>
@@ -487,36 +741,40 @@ const AnalyticsPage = (): React.ReactElement => {
 					<Card>
 						<CardHeader>
 							<CardTitle>{t('analytics.monthly_revenue')}</CardTitle>
+							<CardDescription>
+								{t('dashboard.revenue_and_transactions')}
+							</CardDescription>
 						</CardHeader>
 						<CardContent>
 							{isLoadingSubStats ? (
 								<ChartSkeleton />
 							) : (
-								<ResponsiveContainer width='100%' height={400}>
-									<BarChart
-										data={revenueChartData}
-										margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-									>
-										<CartesianGrid strokeDasharray='3 3' />
-										<XAxis dataKey='month' />
-										<YAxis yAxisId='left' orientation='left' />
-										<YAxis yAxisId='right' orientation='right' />
-										<Tooltip content={<CustomTooltip />} />
-										<Legend />
+								<ChartContainer
+									config={revenueChartConfig}
+									className='h-[400px] w-full'
+								>
+									<BarChart accessibilityLayer data={revenueChartData}>
+										<CartesianGrid vertical={false} />
+										<XAxis
+											dataKey='month'
+											tickLine={false}
+											tickMargin={10}
+											axisLine={false}
+										/>
+										<ChartTooltip content={<ChartTooltipContent />} />
+										<ChartLegend content={<ChartLegendContent />} />
 										<Bar
-											yAxisId='left'
 											dataKey='revenue'
-											fill={REVENUE_COLOR}
-											name={t('analytics.revenue')}
+											fill='var(--color-revenue)'
+											radius={4}
 										/>
 										<Bar
-											yAxisId='right'
 											dataKey='transactions'
-											fill={TRANSACTION_COLOR}
-											name={t('analytics.transactions')}
+											fill='var(--color-transactions)'
+											radius={4}
 										/>
 									</BarChart>
-								</ResponsiveContainer>
+								</ChartContainer>
 							)}
 						</CardContent>
 					</Card>
@@ -524,6 +782,9 @@ const AnalyticsPage = (): React.ReactElement => {
 					<Card>
 						<CardHeader>
 							<CardTitle>{t('analytics.subscription_status')}</CardTitle>
+							<CardDescription>
+								{t('dashboard.subscription_breakdown')}
+							</CardDescription>
 						</CardHeader>
 						<CardContent>
 							{isLoadingSubStats ? (
@@ -533,28 +794,60 @@ const AnalyticsPage = (): React.ReactElement => {
 									{t('analytics.no_data')}
 								</div>
 							) : (
-								<ResponsiveContainer width='100%' height={350}>
+								<ChartContainer
+									config={subscriptionStatusConfig}
+									className='mx-auto aspect-square h-[350px]'
+								>
 									<PieChart>
+										<ChartTooltip
+											content={<ChartTooltipContent nameKey='name' hideLabel />}
+										/>
 										<Pie
 											data={subscriptionStatusData}
-											cx='50%'
-											cy='50%'
-											labelLine={false}
-											label={({ name, percent }) =>
-												`${name}: ${(percent * 100).toFixed(0)}%`
-											}
-											outerRadius={120}
-											fill='#8884d8'
 											dataKey='value'
+											nameKey='name'
+											innerRadius={60}
+											strokeWidth={5}
 										>
-											{subscriptionStatusData.map((entry, index) => (
-												<Cell key={`cell-${index}`} fill={entry.color} />
-											))}
+											<Label
+												content={({ viewBox }) => {
+													if (viewBox && 'cx' in viewBox && 'cy' in viewBox) {
+														const total = subscriptionStatusData.reduce(
+															(sum, item) => sum + item.value,
+															0
+														)
+														return (
+															<text
+																x={viewBox.cx}
+																y={viewBox.cy}
+																textAnchor='middle'
+																dominantBaseline='middle'
+															>
+																<tspan
+																	x={viewBox.cx}
+																	y={viewBox.cy}
+																	className='fill-foreground text-3xl font-bold'
+																>
+																	{total.toLocaleString()}
+																</tspan>
+																<tspan
+																	x={viewBox.cx}
+																	y={(viewBox.cy || 0) + 24}
+																	className='fill-muted-foreground text-sm'
+																>
+																	{t('analytics.total_subscriptions')}
+																</tspan>
+															</text>
+														)
+													}
+												}}
+											/>
 										</Pie>
-										<Tooltip />
-										<Legend />
+										<ChartLegend
+											content={<ChartLegendContent nameKey='name' />}
+										/>
 									</PieChart>
-								</ResponsiveContainer>
+								</ChartContainer>
 							)}
 						</CardContent>
 					</Card>
