@@ -30,15 +30,14 @@ public sealed class GetAllUsersQueryHandler(
             var searchLower = request.Search.ToLowerInvariant();
             query = query.Where(u =>
                 u.Email.Value.ToLowerInvariant().Contains(searchLower)
-                || u.FirstName.ToLowerInvariant().Contains(searchLower)
-                || u.LastName.ToLowerInvariant().Contains(searchLower)
+                || (u.FirstName != null && u.FirstName.ToLowerInvariant().Contains(searchLower))
+                || (u.LastName != null && u.LastName.ToLowerInvariant().Contains(searchLower))
             );
         }
 
         // Role filter
         if (!string.IsNullOrWhiteSpace(request.Role) && request.Role.ToLowerInvariant() != "all")
         {
-            var roleName = RoleConstants.MapRoleIdToName;
             query = query.Where(u =>
             {
                 var userRole = RoleConstants.MapRoleIdToName(u.RoleId);

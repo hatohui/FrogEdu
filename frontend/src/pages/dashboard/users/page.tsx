@@ -91,7 +91,7 @@ const UsersPage = (): React.ReactElement => {
 		page,
 		pageSize,
 		search: searchQuery || undefined,
-		role: roleFilter === 'all' ? undefined : getRoleId(roleFilter),
+		role: roleFilter === 'all' ? undefined : roleFilter,
 		sortBy: 'createdAt',
 		sortOrder: 'desc',
 	})
