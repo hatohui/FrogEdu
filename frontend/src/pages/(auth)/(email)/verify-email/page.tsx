@@ -11,6 +11,7 @@ import {
 } from '@/components/ui/card'
 import { toast } from 'sonner'
 import authService from '@/services/user-microservice/auth.service'
+import { useAuthStore } from '@/stores/authStore'
 import { useTranslation } from 'react-i18next'
 
 const VerifyEmailPage = (): React.JSX.Element => {
@@ -22,7 +23,12 @@ const VerifyEmailPage = (): React.JSX.Element => {
 	const [isSuccess, setIsSuccess] = React.useState(false)
 	const [error, setError] = React.useState<string | null>(null)
 
+	const authLoading = useAuthStore(state => state.isLoading)
+
 	React.useEffect(() => {
+		// Wait for auth store to finish hydrating before verifying
+		if (authLoading) return
+
 		if (!token) {
 			setError(t('pages.auth.verify.no_token'))
 			setIsVerifying(false)
@@ -58,7 +64,7 @@ const VerifyEmailPage = (): React.JSX.Element => {
 		}
 
 		verifyEmail()
-	}, [token])
+	}, [token, authLoading])
 
 	if (isVerifying) {
 		return (

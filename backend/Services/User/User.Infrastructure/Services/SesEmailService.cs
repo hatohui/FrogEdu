@@ -39,7 +39,8 @@ public class SesEmailService : IEmailService
     {
         try
         {
-            var verificationLink = $"{_frontendBaseUrl}/verify-email?token={verificationToken}";
+            var verificationBase = EnsureWwwHost(_frontendBaseUrl);
+            var verificationLink = $"{verificationBase}/verify-email?token={verificationToken}";
             var htmlBody = await LoadTemplateAsync("EmailVerification.html");
 
             htmlBody = htmlBody
@@ -185,5 +186,31 @@ public class SesEmailService : IEmailService
         }
 
         return await File.ReadAllTextAsync(templatePath);
+    }
+
+    // Ensure the host uses the 'www.' prefix for verification links only
+    private static string EnsureWwwHost(string baseUrl)
+    {
+        if (string.IsNullOrWhiteSpace(baseUrl))
+            return baseUrl ?? string.Empty;
+
+        try
+        {
+            var uri = new Uri(baseUrl);
+            var host = uri.Host;
+            if (!host.StartsWith("www.", StringComparison.OrdinalIgnoreCase))
+            {
+                host = "www." + host;
+                var builder = new UriBuilder(uri) { Host = host };
+                return builder.Uri.ToString().TrimEnd('/');
+            }
+
+            return uri.ToString().TrimEnd('/');
+        }
+        catch
+        {
+            // If parsing fails, return original value (best-effort)
+            return baseUrl.TrimEnd('/');
+        }
     }
 }

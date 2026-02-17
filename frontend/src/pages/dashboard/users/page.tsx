@@ -253,7 +253,7 @@ const UsersPage = (): React.ReactElement => {
 				</div>
 				<Button>
 					<UserPlus className='mr-2 h-4 w-4' />
-					{t('action.add_user')}
+					{t('actions.add_user')}
 				</Button>
 			</div>
 
