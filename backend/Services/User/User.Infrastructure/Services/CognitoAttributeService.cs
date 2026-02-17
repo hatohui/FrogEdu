@@ -39,7 +39,7 @@ public sealed class CognitoAttributeService : ICognitoAttributeService
 
             if (string.IsNullOrWhiteSpace(userPoolId))
             {
-                _logger.LogError("AWS Cognito UserPoolId is not configured");
+                _logger.LogWarning("AWS Cognito UserPoolId is not configured - skipping role sync");
                 return Result.Failure("Cognito service is not properly configured");
             }
 
@@ -62,6 +62,14 @@ public sealed class CognitoAttributeService : ICognitoAttributeService
             );
 
             return Result.Success();
+        }
+        catch (InvalidOperationException ex) when (ex.Message.Contains("Cognito is not configured"))
+        {
+            _logger.LogWarning(
+                "Cognito is not configured - skipping role sync for user {CognitoId}. Configure AWS Cognito credentials to enable this feature.",
+                cognitoId
+            );
+            return Result.Failure("Cognito service is not available");
         }
         catch (UserNotFoundException ex)
         {
