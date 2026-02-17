@@ -8,8 +8,8 @@ using FrogEdu.User.Application.Commands.UpdateUserRole;
 using FrogEdu.User.Application.DTOs;
 using FrogEdu.User.Application.Queries.GetAllUsers;
 using FrogEdu.User.Application.Queries.GetUserById;
-using FrogEdu.User.Application.Queries.GetUserProfile;
 using FrogEdu.User.Application.Queries.GetUserDashboardStats;
+using FrogEdu.User.Application.Queries.GetUserProfile;
 using FrogEdu.User.Application.Queries.GetUserStatistics;
 using FrogEdu.User.Application.Queries.GetUserWithSubscription;
 using MediatR;
@@ -107,7 +107,19 @@ public class UserController : ControllerBase
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetUserById(Guid id, CancellationToken cancellationToken)
-    {")]
+    {
+        var query = new GetUserByIdQuery(id);
+        var result = await _mediator.Send(query, cancellationToken);
+
+        if (result is null)
+        {
+            return NotFound($"User with ID {id} not found");
+        }
+
+        return Ok(result);
+    }
+
+    [HttpPut("users/{id:guid}")]
     [Authorize(Roles = "Admin")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -119,7 +131,12 @@ public class UserController : ControllerBase
         CancellationToken cancellationToken
     )
     {
-        var command = new UpdateUserCommand(id, request.FirstName, request.LastName, request.RoleId);
+        var command = new UpdateUserCommand(
+            id,
+            request.FirstName,
+            request.LastName,
+            request.RoleId
+        );
         var result = await _mediator.Send(command, cancellationToken);
 
         if (result.IsFailure)
@@ -128,18 +145,6 @@ public class UserController : ControllerBase
         }
 
         return NoContent();
-    }
-
-    [HttpPut("users/{id:guid}
-        var query = new GetUserByIdQuery(id);
-        var result = await _mediator.Send(query, cancellationToken);
-
-        if (result is null)
-        {
-            return NotFound($"User with ID {id} not found");
-        }
-
-        return Ok(result);
     }
 
     [HttpPut("users/{id:guid}/role")]

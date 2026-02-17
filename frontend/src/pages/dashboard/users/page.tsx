@@ -218,7 +218,7 @@ const UsersPage = (): React.ReactElement => {
 
 		// Remove undefined fields
 		const cleanedUpdates = Object.fromEntries(
-			Object.entries(updates).filter(([_, v]) => v !== undefined)
+			Object.entries(updates).filter(([, v]) => v !== undefined)
 		) as UpdateUserRequest
 
 		if (Object.keys(cleanedUpdates).length === 0) {

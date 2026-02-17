@@ -25,7 +25,7 @@ public sealed class GetSubscriptionDashboardStatsQueryHandler(
 
         // Total revenue from completed transactions
         var completedTransactions = transactions
-            .Where(t => t.PaymentStatus == PaymentStatus.Completed)
+            .Where(t => t.PaymentStatus == PaymentStatus.Paid)
             .ToList();
         var totalRevenue = completedTransactions.Sum(t => t.Amount.Amount);
 
