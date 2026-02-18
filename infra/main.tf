@@ -128,7 +128,8 @@ module "exam_service" {
     "/health",
     "/swagger/{proxy+}",
     "/swagger",
-    "/exams/internal/{proxy+}",
+    "/internal/{proxy+}",
+    "/exams/{examId}/session-data"
   ]
 
   environment_variables = {
