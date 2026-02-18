@@ -4,7 +4,8 @@ using MediatR;
 namespace FrogEdu.Class.Application.Queries.GetStudentExamSessions;
 
 /// <summary>
-/// Get exam sessions for the current user across their enrolled (or all, for Admin) classes
+/// Get exam sessions for the current user across their enrolled classes.
+/// All roles (including Admin) see only sessions for classes they are personally enrolled in.
 /// </summary>
 public sealed record GetStudentExamSessionsQuery(
     string StudentId,

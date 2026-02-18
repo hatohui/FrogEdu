@@ -11,17 +11,14 @@ public sealed class GetStudentExamSessionsQueryHandler
 {
     private readonly IExamSessionRepository _examSessionRepository;
     private readonly IClassEnrollmentRepository _enrollmentRepository;
-    private readonly IClassRoomRepository _classRoomRepository;
 
     public GetStudentExamSessionsQueryHandler(
         IExamSessionRepository examSessionRepository,
-        IClassEnrollmentRepository enrollmentRepository,
-        IClassRoomRepository classRoomRepository
+        IClassEnrollmentRepository enrollmentRepository
     )
     {
         _examSessionRepository = examSessionRepository;
         _enrollmentRepository = enrollmentRepository;
-        _classRoomRepository = classRoomRepository;
     }
 
     public async Task<IReadOnlyList<ExamSessionResponse>> Handle(
@@ -32,27 +29,18 @@ public sealed class GetStudentExamSessionsQueryHandler
         if (!Guid.TryParse(request.StudentId, out var studentId))
             return [];
 
-        List<Guid> classIds;
+        // Always filter by the user's own active enrollments, regardless of role.
+        // An Admin who joined a class as a student should see only the sessions
+        // for classes they are personally enrolled in — not sessions for all classes.
+        var enrollments = await _enrollmentRepository.GetByStudentIdAsync(
+            studentId,
+            cancellationToken
+        );
 
-        if (request.Role.Equals("Admin", StringComparison.OrdinalIgnoreCase))
-        {
-            // Admins see sessions across all classes
-            var allClasses = await _classRoomRepository.GetAllAsync(cancellationToken);
-            classIds = allClasses.Select(c => c.Id).ToList();
-        }
-        else
-        {
-            // Students/Teachers see sessions only for their enrolled classes
-            var enrollments = await _enrollmentRepository.GetByStudentIdAsync(
-                studentId,
-                cancellationToken
-            );
-
-            classIds = enrollments
-                .Where(e => e.Status == EnrollmentStatus.Active)
-                .Select(e => e.ClassId)
-                .ToList();
-        }
+        var classIds = enrollments
+            .Where(e => e.Status == EnrollmentStatus.Active)
+            .Select(e => e.ClassId)
+            .ToList();
 
         if (classIds.Count == 0)
             return [];
