@@ -68,6 +68,10 @@ public static class AuthenticationExtensions
                             var customRole = context.Principal?.FindFirst("custom:role")?.Value;
                             if (!string.IsNullOrEmpty(customRole))
                             {
+                                // Normalize incoming custom:role (e.g. "admin") to TitleCase ("Admin")
+                                var normalizedRole =
+                                    char.ToUpper(customRole[0]) + customRole[1..].ToLower();
+
                                 if (
                                     !identity.HasClaim(c =>
                                         c.Type == System.Security.Claims.ClaimTypes.Role
@@ -77,7 +81,7 @@ public static class AuthenticationExtensions
                                     identity.AddClaim(
                                         new System.Security.Claims.Claim(
                                             System.Security.Claims.ClaimTypes.Role,
-                                            customRole
+                                            normalizedRole
                                         )
                                     );
                                 }

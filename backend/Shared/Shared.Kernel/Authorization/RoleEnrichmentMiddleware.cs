@@ -71,7 +71,12 @@ public sealed class RoleEnrichmentMiddleware
                         CognitoSub = cognitoSub,
                         Role = char.ToUpper(existingRole[0]) + existingRole[1..].ToLower(),
                     };
+
+                    // Enrich HttpContext.Items and normalize the principal's Role claim so
+                    // [Authorize(Roles = "Admin")] works reliably even when the JWT used
+                    // a lowercase role value (e.g. "admin").
                     context.Items[RoleClaimsKey] = jwtRoleClaims;
+                    EnrichClaimsPrincipal(context, jwtRoleClaims);
 
                     _logger.LogDebug(
                         "Self-healing: Using JWT custom:role '{Role}' for user {CognitoSub}, skipping User service call",
