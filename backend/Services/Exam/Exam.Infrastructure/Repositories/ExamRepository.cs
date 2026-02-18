@@ -36,6 +36,17 @@ public class ExamRepository : IExamRepository
             .ToListAsync(cancellationToken);
     }
 
+    public async Task<IReadOnlyList<ExamEntity>> GetByIdsAsync(
+        IEnumerable<Guid> ids,
+        CancellationToken cancellationToken = default
+    )
+    {
+        var idList = ids.ToList();
+        return await _context
+            .Exams.Where(e => idList.Contains(e.Id))
+            .ToListAsync(cancellationToken);
+    }
+
     public async Task<IReadOnlyList<ExamEntity>> GetActiveExamsAsync(
         CancellationToken cancellationToken = default
     )

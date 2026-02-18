@@ -56,6 +56,16 @@ public sealed class AssignExamCommandHandler
                     "Cannot assign exams to an inactive class"
                 );
 
+            var alreadyAssigned = await _assignmentRepository.ExistsAsync(
+                request.ClassId,
+                request.ExamId,
+                cancellationToken
+            );
+            if (alreadyAssigned)
+                return Result<ExamSessionResponse>.Failure(
+                    "This exam has already been assigned to the class"
+                );
+
             // Create assignment record for display/grading metadata
             var assignment = Assignment.Create(
                 request.ClassId,
@@ -122,7 +132,9 @@ public sealed class AssignExamCommandHandler
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error while assigning exam to class");
-            return Result<ExamSessionResponse>.Failure("An error occurred while assigning the exam");
+            return Result<ExamSessionResponse>.Failure(
+                "An error occurred while assigning the exam"
+            );
         }
     }
 }

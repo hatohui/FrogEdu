@@ -75,6 +75,28 @@ export function useExam(examId: string) {
 	})
 }
 
+export function useExamNames(examIds: string[]) {
+	return useQuery({
+		queryKey: ['exam-names', examIds.slice().sort().join(',')],
+		queryFn: async () => {
+			const results = await Promise.all(
+				examIds.map(id =>
+					examService
+						.getExamById(id)
+						.then(r => ({ id, name: r.data?.name ?? id }))
+						.catch(() => ({ id, name: id }))
+				)
+			)
+			return Object.fromEntries(results.map(r => [r.id, r.name])) as Record<
+				string,
+				string
+			>
+		},
+		enabled: examIds.length > 0,
+		staleTime: 5 * 60 * 1000, // exam names don't change often
+	})
+}
+
 export function useCreateExam() {
 	const queryClient = useQueryClient()
 

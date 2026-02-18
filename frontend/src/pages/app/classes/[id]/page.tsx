@@ -8,6 +8,7 @@ import {
 	useUpdateAssignment,
 	useDeleteAssignment,
 } from '@/hooks/useClasses'
+import { useExamNames } from '@/hooks/useExams'
 import { useMe } from '@/hooks/auth/useMe'
 import { Button } from '@/components/ui/button'
 import {
@@ -78,6 +79,9 @@ const ClassDetailPage: React.FC = () => {
 	const { user } = useMe()
 
 	const { data: classDetail, isLoading, error } = useClassDetail(id || '')
+
+	const assignmentExamIds = classDetail?.assignments.map(a => a.examId) ?? []
+	const { data: examNames = {} } = useExamNames(assignmentExamIds)
 	const assignExamMutation = useAssignExam()
 	const adminAssignExamMutation = useAdminAssignExam()
 	const removeStudentMutation = useRemoveStudent()
@@ -594,8 +598,19 @@ const ClassDetailPage: React.FC = () => {
 								<TableBody>
 									{classDetail.assignments.map(assignment => (
 										<TableRow key={assignment.id}>
-											<TableCell className='font-mono text-sm'>
-												{assignment.examId}
+											<TableCell className='font-medium'>
+												{canManage ? (
+													<Link
+														to={`/app/exams/${assignment.examId}`}
+														className='hover:underline text-primary'
+													>
+														{examNames[assignment.examId] ?? assignment.examId}
+													</Link>
+												) : (
+													<span>
+														{examNames[assignment.examId] ?? assignment.examId}
+													</span>
+												)}
 											</TableCell>
 											<TableCell className='text-muted-foreground'>
 												{format(

@@ -21,6 +21,11 @@ public interface IAssignmentRepository
         Guid classId,
         CancellationToken cancellationToken = default
     );
+    Task<bool> ExistsAsync(
+        Guid classId,
+        Guid examId,
+        CancellationToken cancellationToken = default
+    );
     Task AddAsync(Assignment assignment, CancellationToken cancellationToken = default);
     void Update(Assignment assignment);
     void Delete(Assignment assignment);

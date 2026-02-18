@@ -25,16 +25,19 @@ public sealed class AdminAssignExamCommandHandler
     : IRequestHandler<AdminAssignExamCommand, Result<ExamSessionResponse>>
 {
     private readonly IClassRoomRepository _classRoomRepository;
+    private readonly IAssignmentRepository _assignmentRepository;
     private readonly IExamSessionRepository _examSessionRepository;
     private readonly ILogger<AdminAssignExamCommandHandler> _logger;
 
     public AdminAssignExamCommandHandler(
         IClassRoomRepository classRoomRepository,
+        IAssignmentRepository assignmentRepository,
         IExamSessionRepository examSessionRepository,
         ILogger<AdminAssignExamCommandHandler> logger
     )
     {
         _classRoomRepository = classRoomRepository;
+        _assignmentRepository = assignmentRepository;
         _examSessionRepository = examSessionRepository;
         _logger = logger;
     }
@@ -53,6 +56,16 @@ public sealed class AdminAssignExamCommandHandler
 
             if (classroom is null)
                 return Result<ExamSessionResponse>.Failure("Class not found");
+
+            var alreadyAssigned = await _assignmentRepository.ExistsAsync(
+                request.ClassId,
+                request.ExamId,
+                cancellationToken
+            );
+            if (alreadyAssigned)
+                return Result<ExamSessionResponse>.Failure(
+                    "This exam has already been assigned to the class"
+                );
 
             // Create assignment record for display/grading metadata
             var assignment = Assignment.Create(

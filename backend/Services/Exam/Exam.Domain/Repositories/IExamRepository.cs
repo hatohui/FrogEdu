@@ -7,6 +7,10 @@ public interface IExamRepository
         Guid userId,
         CancellationToken cancellationToken = default
     );
+    Task<IReadOnlyList<Entities.Exam>> GetByIdsAsync(
+        IEnumerable<Guid> ids,
+        CancellationToken cancellationToken = default
+    );
     Task<IReadOnlyList<Entities.Exam>> GetActiveExamsAsync(
         CancellationToken cancellationToken = default
     );

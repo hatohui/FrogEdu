@@ -68,6 +68,18 @@ public class AssignmentRepository : IAssignmentRepository
             .ToListAsync(cancellationToken);
     }
 
+    public async Task<bool> ExistsAsync(
+        Guid classId,
+        Guid examId,
+        CancellationToken cancellationToken = default
+    )
+    {
+        return await _context.Assignments.AnyAsync(
+            a => a.ClassId == classId && a.ExamId == examId,
+            cancellationToken
+        );
+    }
+
     public async Task AddAsync(Assignment assignment, CancellationToken cancellationToken = default)
     {
         await _context.Assignments.AddAsync(assignment, cancellationToken);

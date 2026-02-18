@@ -14,6 +14,7 @@ using FrogEdu.Exam.Application.Queries.GetExamPreview;
 using FrogEdu.Exam.Application.Queries.GetExamQuestions;
 using FrogEdu.Exam.Application.Queries.GetExams;
 using FrogEdu.Exam.Application.Queries.GetExamSessionData;
+using FrogEdu.Exam.Domain.Repositories;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -23,9 +24,10 @@ namespace FrogEdu.Exam.API.Controllers;
 [ApiController]
 [Route("exams")]
 [Authorize]
-public class ExamsController(IMediator mediator) : BaseController
+public class ExamsController(IMediator mediator, IExamRepository examRepository) : BaseController
 {
     private readonly IMediator _mediator = mediator;
+    private readonly IExamRepository _examRepository = examRepository;
 
     [HttpGet]
     [ProducesResponseType(typeof(GetExamsResponse), StatusCodes.Status200OK)]
@@ -290,6 +292,26 @@ public class ExamsController(IMediator mediator) : BaseController
             return NotFound();
 
         return File(pdfBytes, "application/pdf", $"exam-{examId}.pdf");
+    }
+
+    /// <summary>
+    /// Internal endpoint — no auth required. Used by the Class service to resolve exam names
+    /// for assignment display without exposing full exam details.
+    /// </summary>
+    [HttpGet("internal/batch-names")]
+    [AllowAnonymous]
+    [ProducesResponseType(typeof(IReadOnlyList<ExamNameDto>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetExamNamesBatch(
+        [FromQuery] List<Guid> ids,
+        CancellationToken cancellationToken
+    )
+    {
+        if (ids is null || ids.Count == 0)
+            return Ok(Array.Empty<ExamNameDto>());
+
+        var exams = await _examRepository.GetByIdsAsync(ids, cancellationToken);
+        var result = exams.Select(e => new ExamNameDto(e.Id, e.Name)).ToList();
+        return Ok(result);
     }
 
     [HttpGet("{examId:guid}/export/excel")]

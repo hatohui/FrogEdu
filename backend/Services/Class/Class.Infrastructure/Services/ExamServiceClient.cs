@@ -79,6 +79,45 @@ public sealed class ExamServiceClient : IExamServiceClient
         }
     }
 
+    public async Task<IReadOnlyDictionary<Guid, string>> GetExamNamesAsync(
+        IEnumerable<Guid> examIds,
+        CancellationToken cancellationToken = default
+    )
+    {
+        var ids = examIds.ToList();
+        if (ids.Count == 0)
+            return new Dictionary<Guid, string>();
+
+        try
+        {
+            var queryString = string.Join("&", ids.Select(id => $"ids={id}"));
+            var response = await _httpClient.GetAsync(
+                $"{_examServiceUrl}/exams/internal/batch-names?{queryString}",
+                cancellationToken
+            );
+
+            if (!response.IsSuccessStatusCode)
+            {
+                _logger.LogWarning(
+                    "Failed to fetch exam names. Status: {StatusCode}",
+                    response.StatusCode
+                );
+                return new Dictionary<Guid, string>();
+            }
+
+            var names = await response.Content.ReadFromJsonAsync<List<ExamNameResponse>>(
+                cancellationToken: cancellationToken
+            );
+
+            return names?.ToDictionary(n => n.Id, n => n.Name) ?? new Dictionary<Guid, string>();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error fetching exam names from Exam service");
+            return new Dictionary<Guid, string>();
+        }
+    }
+
     private static string MapQuestionType(int questionType) =>
         questionType switch
         {
@@ -89,6 +128,9 @@ public sealed class ExamServiceClient : IExamServiceClient
             5 => "FillInTheBlank",
             _ => "Unknown",
         };
+
+    // Internal response model matching GET /exams/internal/batch-names
+    private sealed record ExamNameResponse(Guid Id, string Name);
 
     // Internal response models matching GET /exams/{examId}/session-data
     private sealed record ExamSessionDataResponse(

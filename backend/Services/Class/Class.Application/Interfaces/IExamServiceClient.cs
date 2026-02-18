@@ -9,6 +9,14 @@ public interface IExamServiceClient
         Guid examId,
         CancellationToken cancellationToken = default
     );
+
+    /// <summary>
+    /// Fetch exam names for a batch of exam IDs (uses the internal no-auth endpoint).
+    /// </summary>
+    Task<IReadOnlyDictionary<Guid, string>> GetExamNamesAsync(
+        IEnumerable<Guid> examIds,
+        CancellationToken cancellationToken = default
+    );
 }
 
 public sealed record ExamWithQuestionsDto(

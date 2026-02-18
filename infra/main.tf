@@ -128,6 +128,7 @@ module "exam_service" {
     "/health",
     "/swagger/{proxy+}",
     "/swagger",
+    "/exams/internal/{proxy+}",
   ]
 
   environment_variables = {
