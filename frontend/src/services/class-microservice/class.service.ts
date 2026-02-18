@@ -3,13 +3,13 @@ import type {
 	ClassDetail,
 	ClassAssignment,
 } from '@/types/model/class-service'
+import type { ExamSession } from '@/types/model/class-service'
 import type {
 	AssignExamRequest,
 	CreateClassRequest,
 	CreateClassResponse,
 	JoinClassRequest,
 	JoinClassResponse,
-	AssignmentResponse,
 } from '@/types/dtos/classes'
 import axiosInstance from '../axios'
 
@@ -59,8 +59,8 @@ export const classService = {
 	assignExam: async (
 		classId: string,
 		data: AssignExamRequest
-	): Promise<AssignmentResponse> => {
-		const response = await axiosInstance.post<AssignmentResponse>(
+	): Promise<ExamSession> => {
+		const response = await axiosInstance.post<ExamSession>(
 			`${baseUrl}/classes/${classId}/assignments`,
 			data
 		)
@@ -79,8 +79,8 @@ export const classService = {
 	adminAssignExam: async (
 		classId: string,
 		data: AssignExamRequest
-	): Promise<AssignmentResponse> => {
-		const response = await axiosInstance.post<AssignmentResponse>(
+	): Promise<ExamSession> => {
+		const response = await axiosInstance.post<ExamSession>(
 			`${baseUrl}/classes/admin/${classId}/assignments`,
 			data
 		)

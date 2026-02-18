@@ -235,8 +235,9 @@ public class ExamSessionController(IMediator mediator) : BaseController
     )
     {
         var studentId = GetAuthenticatedUserId();
+        var role = GetUserRole();
 
-        var query = new GetStudentExamSessionsQuery(studentId, upcomingOnly);
+        var query = new GetStudentExamSessionsQuery(studentId, role, upcomingOnly);
         var result = await _mediator.Send(query, cancellationToken);
         return Ok(result);
     }
@@ -254,8 +255,9 @@ public class ExamSessionController(IMediator mediator) : BaseController
     )
     {
         var studentId = GetAuthenticatedUserId();
+        var role = GetUserRole();
 
-        var command = new StartExamAttemptCommand(sessionId, studentId);
+        var command = new StartExamAttemptCommand(sessionId, studentId, role);
         var result = await _mediator.Send(command, cancellationToken);
 
         if (result.IsFailure)

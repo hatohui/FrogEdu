@@ -11,14 +11,17 @@ public sealed class GetStudentExamSessionsQueryHandler
 {
     private readonly IExamSessionRepository _examSessionRepository;
     private readonly IClassEnrollmentRepository _enrollmentRepository;
+    private readonly IClassRoomRepository _classRoomRepository;
 
     public GetStudentExamSessionsQueryHandler(
         IExamSessionRepository examSessionRepository,
-        IClassEnrollmentRepository enrollmentRepository
+        IClassEnrollmentRepository enrollmentRepository,
+        IClassRoomRepository classRoomRepository
     )
     {
         _examSessionRepository = examSessionRepository;
         _enrollmentRepository = enrollmentRepository;
+        _classRoomRepository = classRoomRepository;
     }
 
     public async Task<IReadOnlyList<ExamSessionResponse>> Handle(
@@ -29,18 +32,29 @@ public sealed class GetStudentExamSessionsQueryHandler
         if (!Guid.TryParse(request.StudentId, out var studentId))
             return [];
 
-        // Get all classes the student is enrolled in
-        var enrollments = await _enrollmentRepository.GetByStudentIdAsync(
-            studentId,
-            cancellationToken
-        );
+        List<Guid> classIds;
 
-        var activeClassIds = enrollments
-            .Where(e => e.Status == EnrollmentStatus.Active)
-            .Select(e => e.ClassId)
-            .ToList();
+        if (request.Role.Equals("Admin", StringComparison.OrdinalIgnoreCase))
+        {
+            // Admins see sessions across all classes
+            var allClasses = await _classRoomRepository.GetAllAsync(cancellationToken);
+            classIds = allClasses.Select(c => c.Id).ToList();
+        }
+        else
+        {
+            // Students/Teachers see sessions only for their enrolled classes
+            var enrollments = await _enrollmentRepository.GetByStudentIdAsync(
+                studentId,
+                cancellationToken
+            );
 
-        if (activeClassIds.Count == 0)
+            classIds = enrollments
+                .Where(e => e.Status == EnrollmentStatus.Active)
+                .Select(e => e.ClassId)
+                .ToList();
+        }
+
+        if (classIds.Count == 0)
             return [];
 
         IReadOnlyList<ExamSession> sessions;
@@ -48,14 +62,14 @@ public sealed class GetStudentExamSessionsQueryHandler
         if (request.UpcomingOnly)
         {
             sessions = await _examSessionRepository.GetUpcomingSessionsForStudentAsync(
-                activeClassIds,
+                classIds,
                 cancellationToken
             );
         }
         else
         {
             sessions = await _examSessionRepository.GetAllSessionsForStudentAsync(
-                activeClassIds,
+                classIds,
                 cancellationToken
             );
         }

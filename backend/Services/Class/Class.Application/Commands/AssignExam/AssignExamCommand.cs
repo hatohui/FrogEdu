@@ -11,5 +11,10 @@ public sealed record AssignExamCommand(
     DateTime DueDate,
     bool IsMandatory,
     int Weight,
-    string UserId
-) : IRequest<Result<AssignmentResponse>>;
+    string UserId,
+    int RetryTimes = 0,
+    bool IsRetryable = false,
+    bool ShouldShuffleQuestions = false,
+    bool ShouldShuffleAnswers = false,
+    bool AllowPartialScoring = true
+) : IRequest<Result<ExamSessionResponse>>;

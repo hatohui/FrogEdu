@@ -16,4 +16,9 @@ export interface AssignExamRequest {
 	dueDate: string
 	isMandatory?: boolean
 	weight?: number
+	retryTimes?: number
+	isRetryable?: boolean
+	shouldShuffleQuestions?: boolean
+	shouldShuffleAnswers?: boolean
+	allowPartialScoring?: boolean
 }

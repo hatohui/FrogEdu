@@ -80,6 +80,11 @@ const ClassesPage = (): React.ReactElement => {
 	const [dueDate, setDueDate] = useState('')
 	const [isMandatory, setIsMandatory] = useState(true)
 	const [weight, setWeight] = useState('100')
+	const [retryTimes, setRetryTimes] = useState('0')
+	const [isRetryable, setIsRetryable] = useState(false)
+	const [shouldShuffleQuestions, setShouldShuffleQuestions] = useState(false)
+	const [shouldShuffleAnswers, setShouldShuffleAnswers] = useState(false)
+	const [allowPartialScoring, setAllowPartialScoring] = useState(true)
 
 	const assignExamMutation = useAdminAssignExam()
 	const joinClassMutation = useJoinClass()
@@ -129,6 +134,11 @@ const ClassesPage = (): React.ReactElement => {
 		setDueDate('')
 		setIsMandatory(true)
 		setWeight('100')
+		setRetryTimes('0')
+		setIsRetryable(false)
+		setShouldShuffleQuestions(false)
+		setShouldShuffleAnswers(false)
+		setAllowPartialScoring(true)
 		setAssignDialogOpen(true)
 	}
 
@@ -147,6 +157,11 @@ const ClassesPage = (): React.ReactElement => {
 			dueDate: new Date(dueDate).toISOString(),
 			isMandatory,
 			weight: Number(weight) || 100,
+			retryTimes: Number(retryTimes) || 0,
+			isRetryable,
+			shouldShuffleQuestions,
+			shouldShuffleAnswers,
+			allowPartialScoring,
 		}
 
 		assignExamMutation.mutate(
@@ -502,6 +517,61 @@ const ClassesPage = (): React.ReactElement => {
 									)}
 								/>
 							</div>
+						</div>
+					</div>
+					{/* Session settings */}
+					<div className='grid grid-cols-2 gap-3'>
+						<div className='flex items-center gap-2'>
+							<input
+								type='checkbox'
+								id='retryable-d'
+								checked={isRetryable}
+								onChange={e => setIsRetryable(e.target.checked)}
+								className='h-4 w-4 rounded border-gray-300'
+							/>
+							<Label htmlFor='retryable-d'>Allow retries</Label>
+						</div>
+						{isRetryable && (
+							<div className='grid gap-1'>
+								<Label htmlFor='retrytimes-d'>Max retries</Label>
+								<Input
+									id='retrytimes-d'
+									type='number'
+									min={1}
+									value={retryTimes}
+									onChange={e => setRetryTimes(e.target.value)}
+								/>
+							</div>
+						)}
+						<div className='flex items-center gap-2'>
+							<input
+								type='checkbox'
+								id='shuffle-q-d'
+								checked={shouldShuffleQuestions}
+								onChange={e => setShouldShuffleQuestions(e.target.checked)}
+								className='h-4 w-4 rounded border-gray-300'
+							/>
+							<Label htmlFor='shuffle-q-d'>Shuffle questions</Label>
+						</div>
+						<div className='flex items-center gap-2'>
+							<input
+								type='checkbox'
+								id='shuffle-a-d'
+								checked={shouldShuffleAnswers}
+								onChange={e => setShouldShuffleAnswers(e.target.checked)}
+								className='h-4 w-4 rounded border-gray-300'
+							/>
+							<Label htmlFor='shuffle-a-d'>Shuffle answers</Label>
+						</div>
+						<div className='flex items-center gap-2'>
+							<input
+								type='checkbox'
+								id='partial-d'
+								checked={allowPartialScoring}
+								onChange={e => setAllowPartialScoring(e.target.checked)}
+								className='h-4 w-4 rounded border-gray-300'
+							/>
+							<Label htmlFor='partial-d'>Partial scoring</Label>
 						</div>
 					</div>
 					<DialogFooter>

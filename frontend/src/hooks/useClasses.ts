@@ -10,6 +10,7 @@ import type {
 	AssignExamRequest,
 	CreateClassRequest,
 } from '@/types/dtos/classes'
+import { examSessionKeys } from './useExamSessions'
 
 // Query keys
 export const classKeys = {
@@ -108,6 +109,9 @@ export function useAssignExam() {
 			queryClient.invalidateQueries({
 				queryKey: classKeys.detail(variables.classId),
 			})
+			queryClient.invalidateQueries({
+				queryKey: examSessionKeys.student(),
+			})
 			toast.success('Exam assigned successfully!')
 		},
 		onError: (error: Error) => {
@@ -135,11 +139,13 @@ export function useAdminAssignExam() {
 			data: AssignExamRequest
 		}) => classService.adminAssignExam(classId, data),
 		onSuccess: (_, variables) => {
-			// Invalidate regular class queries (used by admin dashboard now)
 			queryClient.invalidateQueries({
 				queryKey: classKeys.detail(variables.classId),
 			})
 			queryClient.invalidateQueries({ queryKey: classKeys.all() })
+			queryClient.invalidateQueries({
+				queryKey: examSessionKeys.student(),
+			})
 			toast.success('Exam assigned successfully!')
 		},
 		onError: (error: Error) => {

@@ -46,17 +46,20 @@ public sealed class StartExamAttemptCommandHandler
             if (session is null)
                 return Result<StudentExamAttemptResponse>.Failure("Exam session not found");
 
-            // Check if student is enrolled in the class
-            var enrollment = await _enrollmentRepository.GetByClassAndStudentAsync(
-                session.ClassId,
-                studentId,
-                cancellationToken
-            );
-
-            if (enrollment is null || enrollment.Status != Domain.Enums.EnrollmentStatus.Active)
-                return Result<StudentExamAttemptResponse>.Failure(
-                    "You are not enrolled in this class"
+            // Admins can attempt any session; others must be enrolled
+            if (!request.Role.Equals("Admin", StringComparison.OrdinalIgnoreCase))
+            {
+                var enrollment = await _enrollmentRepository.GetByClassAndStudentAsync(
+                    session.ClassId,
+                    studentId,
+                    cancellationToken
                 );
+
+                if (enrollment is null || enrollment.Status != Domain.Enums.EnrollmentStatus.Active)
+                    return Result<StudentExamAttemptResponse>.Failure(
+                        "You are not enrolled in this class"
+                    );
+            }
 
             // Check if session is currently active
             if (!session.IsCurrentlyActive())

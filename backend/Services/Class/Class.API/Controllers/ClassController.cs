@@ -129,7 +129,7 @@ public class ClassController(IMediator mediator) : BaseController
     /// </summary>
     [HttpPost("{classId:guid}/assignments")]
     [Authorize]
-    [ProducesResponseType(typeof(AssignmentResponse), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(ExamSessionResponse), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> AssignExam(
         Guid classId,
@@ -146,7 +146,12 @@ public class ClassController(IMediator mediator) : BaseController
             request.DueDate,
             request.IsMandatory,
             request.Weight,
-            userId
+            userId,
+            request.RetryTimes,
+            request.IsRetryable,
+            request.ShouldShuffleQuestions,
+            request.ShouldShuffleAnswers,
+            request.AllowPartialScoring
         );
 
         var result = await _mediator.Send(command, cancellationToken);
@@ -178,7 +183,7 @@ public class ClassController(IMediator mediator) : BaseController
     /// </summary>
     [HttpPost("admin/{classId:guid}/assignments")]
     [Authorize(Roles = "Admin")]
-    [ProducesResponseType(typeof(AssignmentResponse), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(ExamSessionResponse), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> AdminAssignExam(
         Guid classId,
@@ -192,7 +197,12 @@ public class ClassController(IMediator mediator) : BaseController
             request.StartDate,
             request.DueDate,
             request.IsMandatory,
-            request.Weight
+            request.Weight,
+            request.RetryTimes,
+            request.IsRetryable,
+            request.ShouldShuffleQuestions,
+            request.ShouldShuffleAnswers,
+            request.AllowPartialScoring
         );
 
         var result = await _mediator.Send(command, cancellationToken);

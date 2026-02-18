@@ -82,6 +82,11 @@ const ClassDetailPage: React.FC = () => {
 	const [dueDate, setDueDate] = useState('')
 	const [isMandatory, setIsMandatory] = useState(true)
 	const [weight, setWeight] = useState('100')
+	const [retryTimes, setRetryTimes] = useState('0')
+	const [isRetryable, setIsRetryable] = useState(false)
+	const [shouldShuffleQuestions, setShouldShuffleQuestions] = useState(false)
+	const [shouldShuffleAnswers, setShouldShuffleAnswers] = useState(false)
+	const [allowPartialScoring, setAllowPartialScoring] = useState(true)
 
 	// Remove student confirmation dialog
 	const [removeDialogOpen, setRemoveDialogOpen] = useState(false)
@@ -110,6 +115,11 @@ const ClassDetailPage: React.FC = () => {
 		setDueDate('')
 		setIsMandatory(true)
 		setWeight('100')
+		setRetryTimes('0')
+		setIsRetryable(false)
+		setShouldShuffleQuestions(false)
+		setShouldShuffleAnswers(false)
+		setAllowPartialScoring(true)
 		setAssignDialogOpen(true)
 	}
 
@@ -122,6 +132,11 @@ const ClassDetailPage: React.FC = () => {
 			dueDate: new Date(dueDate).toISOString(),
 			isMandatory,
 			weight: Number(weight) || 100,
+			retryTimes: isRetryable ? Number(retryTimes) || 0 : 0,
+			isRetryable,
+			shouldShuffleQuestions,
+			shouldShuffleAnswers,
+			allowPartialScoring,
 		}
 
 		const mutation = isAdmin ? adminAssignExamMutation : assignExamMutation
@@ -635,24 +650,67 @@ const ClassDetailPage: React.FC = () => {
 							</div>
 						</div>
 					</div>
+					{/* Session settings */}
+					<div className='grid grid-cols-2 gap-3'>
+						<div className='flex items-center gap-2'>
+							<input
+								type='checkbox'
+								id='retryable-c'
+								checked={isRetryable}
+								onChange={e => setIsRetryable(e.target.checked)}
+								className='h-4 w-4 rounded border-gray-300'
+							/>
+							<Label htmlFor='retryable-c'>Allow retries</Label>
+						</div>
+						{isRetryable && (
+							<div className='grid gap-1'>
+								<Label htmlFor='retrytimes-c'>Max retries</Label>
+								<Input
+									id='retrytimes-c'
+									type='number'
+									min={1}
+									value={retryTimes}
+									onChange={e => setRetryTimes(e.target.value)}
+								/>
+							</div>
+						)}
+						<div className='flex items-center gap-2'>
+							<input
+								type='checkbox'
+								id='shuffle-q-c'
+								checked={shouldShuffleQuestions}
+								onChange={e => setShouldShuffleQuestions(e.target.checked)}
+								className='h-4 w-4 rounded border-gray-300'
+							/>
+							<Label htmlFor='shuffle-q-c'>Shuffle questions</Label>
+						</div>
+						<div className='flex items-center gap-2'>
+							<input
+								type='checkbox'
+								id='shuffle-a-c'
+								checked={shouldShuffleAnswers}
+								onChange={e => setShouldShuffleAnswers(e.target.checked)}
+								className='h-4 w-4 rounded border-gray-300'
+							/>
+							<Label htmlFor='shuffle-a-c'>Shuffle answers</Label>
+						</div>
+						<div className='flex items-center gap-2'>
+							<input
+								type='checkbox'
+								id='partial-c'
+								checked={allowPartialScoring}
+								onChange={e => setAllowPartialScoring(e.target.checked)}
+								className='h-4 w-4 rounded border-gray-300'
+							/>
+							<Label htmlFor='partial-c'>Partial scoring</Label>
+						</div>
+					</div>
 					<DialogFooter>
 						<Button
-							variant='outline'
-							onClick={() => setAssignDialogOpen(false)}
-						>
-							{t('common.cancel')}
-						</Button>
-						<Button
 							onClick={handleAssignExam}
-							disabled={
-								!examId ||
-								!startDate ||
-								!dueDate ||
-								assignExamMutation.isPending ||
-								adminAssignExamMutation.isPending
-							}
+							disabled={assignExamMutation.isPending}
 						>
-							{assignExamMutation.isPending || adminAssignExamMutation.isPending
+							{assignExamMutation.isPending
 								? t('pages.dashboard.classes.assign_dialog.submitting')
 								: t('pages.dashboard.classes.assign_dialog.submit')}
 						</Button>

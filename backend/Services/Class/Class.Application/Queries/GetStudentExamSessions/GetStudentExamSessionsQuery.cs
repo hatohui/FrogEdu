@@ -4,7 +4,10 @@ using MediatR;
 namespace FrogEdu.Class.Application.Queries.GetStudentExamSessions;
 
 /// <summary>
-/// Get all active/upcoming exam sessions for a student across enrolled classes
+/// Get exam sessions for the current user across their enrolled (or all, for Admin) classes
 /// </summary>
-public sealed record GetStudentExamSessionsQuery(string StudentId, bool UpcomingOnly = false)
-    : IRequest<IReadOnlyList<ExamSessionResponse>>;
+public sealed record GetStudentExamSessionsQuery(
+    string StudentId,
+    string Role,
+    bool UpcomingOnly = false
+) : IRequest<IReadOnlyList<ExamSessionResponse>>;
