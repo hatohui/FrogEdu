@@ -84,6 +84,22 @@ public class StudentExamAttemptRepository : IStudentExamAttemptRepository
         );
     }
 
+    public async Task<Dictionary<Guid, int>> GetAttemptCountsForStudentAsync(
+        Guid studentId,
+        IEnumerable<Guid> examSessionIds,
+        CancellationToken cancellationToken = default
+    )
+    {
+        var idList = examSessionIds.ToList();
+        return await _context
+            .StudentExamAttempts.Where(a =>
+                a.StudentId == studentId && idList.Contains(a.ExamSessionId)
+            )
+            .GroupBy(a => a.ExamSessionId)
+            .Select(g => new { SessionId = g.Key, Count = g.Count() })
+            .ToDictionaryAsync(x => x.SessionId, x => x.Count, cancellationToken);
+    }
+
     public async Task AddAsync(
         StudentExamAttempt attempt,
         CancellationToken cancellationToken = default

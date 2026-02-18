@@ -33,6 +33,15 @@ public interface IStudentExamAttemptRepository
         CancellationToken cancellationToken = default
     );
 
+    /// <summary>
+    /// Returns the count of attempts per exam session for a given student, keyed by ExamSessionId.
+    /// </summary>
+    Task<Dictionary<Guid, int>> GetAttemptCountsForStudentAsync(
+        Guid studentId,
+        IEnumerable<Guid> examSessionIds,
+        CancellationToken cancellationToken = default
+    );
+
     Task AddAsync(StudentExamAttempt attempt, CancellationToken cancellationToken = default);
     void Update(StudentExamAttempt attempt);
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);

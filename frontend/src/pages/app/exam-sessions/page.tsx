@@ -16,7 +16,14 @@ import {
 	TableRow,
 } from '@/components/ui/table'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Clock, CalendarClock, PlayCircle, CheckCircle2 } from 'lucide-react'
+import {
+	Clock,
+	CalendarClock,
+	PlayCircle,
+	CheckCircle2,
+	RotateCcw,
+	Eye,
+} from 'lucide-react'
 import { format } from 'date-fns'
 import type { ExamSession } from '@/types/model/class-service'
 
@@ -61,6 +68,21 @@ const ExamSessionsPage = (): React.ReactElement => {
 		)
 	}
 
+	/**
+	 * Determine whether the student can still take/retry this session.
+	 * - `attemptCount === 0` → has never started → show "Start Exam"
+	 * - `attemptCount > 0 && isRetryable && attemptCount < retryTimes` → can retry → show "Retry"
+	 * - otherwise → exhausted attempts
+	 */
+	const canStart = (session: ExamSession) =>
+		session.isCurrentlyActive && session.attemptCount === 0
+
+	const canRetry = (session: ExamSession) =>
+		session.isCurrentlyActive &&
+		session.isRetryable &&
+		session.attemptCount > 0 &&
+		session.attemptCount < session.retryTimes
+
 	const SessionTable = ({
 		sessions,
 		showAction = true,
@@ -94,8 +116,8 @@ const ExamSessionsPage = (): React.ReactElement => {
 						</TableCell>
 						<TableCell>{getStatusBadge(session)}</TableCell>
 						{showAction && (
-							<TableCell className='text-right'>
-								{session.isCurrentlyActive && (
+							<TableCell className='text-right space-x-2'>
+								{canStart(session) && (
 									<Button
 										size='sm'
 										onClick={() =>
@@ -103,20 +125,30 @@ const ExamSessionsPage = (): React.ReactElement => {
 										}
 									>
 										<PlayCircle className='h-4 w-4 mr-1' />
-										{session.attemptCount > 0
-											? t('pages.exam_sessions.actions.resume_exam')
-											: t('pages.exam_sessions.actions.start_exam')}
+										{t('pages.exam_sessions.actions.start_exam')}
 									</Button>
 								)}
-								{session.hasEnded && session.attemptCount > 0 && (
+								{canRetry(session) && (
 									<Button
 										size='sm'
-										variant='outline'
 										onClick={() =>
 											navigate(`/app/exam-sessions/${session.id}/take`)
 										}
 									>
-										{t('pages.exam_sessions.actions.view_attempt')}
+										<RotateCcw className='h-4 w-4 mr-1' />
+										{t('pages.exam_sessions.actions.retry_exam')}
+									</Button>
+								)}
+								{session.attemptCount > 0 && (
+									<Button
+										size='sm'
+										variant='outline'
+										onClick={() =>
+											navigate(`/app/exam-sessions/${session.id}/my-results`)
+										}
+									>
+										<Eye className='h-4 w-4 mr-1' />
+										{t('pages.exam_sessions.actions.view_my_results')}
 									</Button>
 								)}
 							</TableCell>

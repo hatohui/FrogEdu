@@ -8,6 +8,7 @@ using FrogEdu.Class.Application.Dtos.requests;
 using FrogEdu.Class.Application.Queries.GetAttemptDetail;
 using FrogEdu.Class.Application.Queries.GetExamSessionDetail;
 using FrogEdu.Class.Application.Queries.GetExamSessions;
+using FrogEdu.Class.Application.Queries.GetMySessionAttempts;
 using FrogEdu.Class.Application.Queries.GetSessionAttempts;
 using FrogEdu.Class.Application.Queries.GetSessionResults;
 using FrogEdu.Class.Application.Queries.GetStudentExamSessions;
@@ -218,6 +219,26 @@ public class ExamSessionController(IMediator mediator) : BaseController
         if (result is null)
             return NotFound("Attempt not found");
 
+        return Ok(result);
+    }
+
+    /// <summary>
+    /// Get all of the current student's own attempts for a session, including scores.
+    /// </summary>
+    [HttpGet("{sessionId:guid}/my-attempts")]
+    [Authorize]
+    [ProducesResponseType(
+        typeof(IReadOnlyList<StudentExamAttemptResponse>),
+        StatusCodes.Status200OK
+    )]
+    public async Task<IActionResult> GetMySessionAttempts(
+        Guid sessionId,
+        CancellationToken cancellationToken
+    )
+    {
+        var studentId = GetAuthenticatedUserId();
+        var query = new GetMySessionAttemptsQuery(sessionId, studentId);
+        var result = await _mediator.Send(query, cancellationToken);
         return Ok(result);
     }
 

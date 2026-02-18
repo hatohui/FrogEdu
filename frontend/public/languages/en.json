@@ -594,8 +594,10 @@
 				"delete": "Delete",
 				"view_results": "View Results",
 				"start_exam": "Start Exam",
+				"retry_exam": "Retry Exam",
 				"resume_exam": "Resume Exam",
-				"view_attempt": "View Attempt"
+				"view_attempt": "View Attempt",
+				"view_my_results": "View My Results"
 			},
 			"create": {
 				"title": "Create Exam Session",
@@ -688,9 +690,28 @@
 				"submitted": "Submitted",
 				"graded": "Graded",
 				"timed_out": "Timed Out"
+			},
+			"my_results": {
+				"title": "My Exam Results",
+				"subtitle": "Review your scores and attempts for this session.",
+				"not_found": "Session not found.",
+				"total_attempts": "Attempts Taken",
+				"best_score": "Best Score",
+				"retries_left": "Retries Left",
+				"attempts_title": "My Attempts",
+				"no_attempts": "You have not submitted any attempts yet."
 			}
 		},
 		"dashboard": {
+			"exam_sessions": {
+				"title": "Exam Sessions",
+				"subtitle": "Monitor all exam sessions and student attempts across classes.",
+				"select_class": "Select a Class",
+				"select_class_placeholder": "Choose a class...",
+				"sessions_in": "Sessions in {{class}}",
+				"click_session_to_see_results": "Click 'View Results' on a session to see student attempts and scores.",
+				"no_sessions": "No exam sessions found for this class."
+			},
 			"classes": {
 				"title": "Classes Management",
 				"subtitle": "View and manage all classes created by teachers.",

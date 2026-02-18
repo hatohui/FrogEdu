@@ -167,6 +167,17 @@ export function useAttemptDetail(attemptId: string) {
 }
 
 /**
+ * Fetch the current student's own attempts for a session (includes scores).
+ */
+export function useMySessionAttempts(sessionId: string) {
+	return useQuery<StudentExamAttempt[], Error>({
+		queryKey: [...examSessionKeys.all, 'my-attempts', sessionId] as const,
+		queryFn: () => examSessionService.getMySessionAttempts(sessionId),
+		enabled: !!sessionId,
+	})
+}
+
+/**
  * Fetch session results with student scores (Teacher)
  */
 export function useSessionResults(sessionId: string) {
@@ -227,6 +238,12 @@ export function useSubmitExamAttempt() {
 			})
 			queryClient.invalidateQueries({
 				queryKey: examSessionKeys.detail(variables.sessionId),
+			})
+			queryClient.invalidateQueries({
+				queryKey: [...examSessionKeys.all, 'my-attempts', variables.sessionId],
+			})
+			queryClient.invalidateQueries({
+				queryKey: examSessionKeys.student(),
 			})
 			toast.success('Exam submitted successfully!')
 		},

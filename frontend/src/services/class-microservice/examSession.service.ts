@@ -106,6 +106,18 @@ export const examSessionService = {
 		return response.data
 	},
 
+	/**
+	 * Get all of the current student's own attempts for a session (includes scores).
+	 */
+	getMySessionAttempts: async (
+		sessionId: string
+	): Promise<StudentExamAttempt[]> => {
+		const response = await axiosInstance.get<StudentExamAttempt[]>(
+			`${baseUrl}/${sessionId}/my-attempts`
+		)
+		return response.data
+	},
+
 	// ─── Teacher: Results ───
 
 	getSessionResults: async (sessionId: string): Promise<ExamSessionResults> => {

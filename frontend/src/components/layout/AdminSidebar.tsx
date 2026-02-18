@@ -17,6 +17,7 @@ import {
 	BarChart3,
 	Shield,
 	Grid3x3,
+	Clock,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
@@ -56,6 +57,11 @@ const adminNavItems: NavItem[] = [
 		labelKey: 'navigation.classes',
 		href: '/dashboard/classes',
 		icon: GraduationCap,
+	},
+	{
+		labelKey: 'navigation.exam_sessions',
+		href: '/dashboard/exam-sessions',
+		icon: Clock,
 	},
 	{
 		labelKey: 'navigation.analytics',

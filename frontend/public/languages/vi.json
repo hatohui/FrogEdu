@@ -796,8 +796,10 @@
 				"delete": "Xóa",
 				"view_results": "Xem kết quả",
 				"start_exam": "Bắt đầu thi",
+				"retry_exam": "Thi lại",
 				"resume_exam": "Tiếp tục thi",
-				"view_attempt": "Xem bài làm"
+				"view_attempt": "Xem bài làm",
+				"view_my_results": "Xem kết quả của tôi"
 			},
 			"create": {
 				"title": "Tạo phiên thi",
@@ -890,9 +892,28 @@
 				"submitted": "Đã nộp",
 				"graded": "Đã chấm điểm",
 				"timed_out": "Hết giờ"
+			},
+			"my_results": {
+				"title": "Kết quả bài thi của tôi",
+				"subtitle": "Xem lại điểm và các lượt thi của bạn trong phiên thi này.",
+				"not_found": "Không tìm thấy phiên thi.",
+				"total_attempts": "Số lượt đã thi",
+				"best_score": "Điểm cao nhất",
+				"retries_left": "Lượt thi còn lại",
+				"attempts_title": "Các lượt thi của tôi",
+				"no_attempts": "Bạn chưa nộp bài thi nào."
 			}
 		},
 		"dashboard": {
+			"exam_sessions": {
+				"title": "Phiên thi",
+				"subtitle": "Theo dõi tất cả phiên thi và lượt làm bài của học sinh trong các lớp.",
+				"select_class": "Chọn lớp học",
+				"select_class_placeholder": "Chọn một lớp...",
+				"sessions_in": "Phiên thi trong lớp {{class}}",
+				"click_session_to_see_results": "Nhấn 'Xem kết quả' để xem lượt thi và điểm số của học sinh.",
+				"no_sessions": "Không có phiên thi nào cho lớp này."
+			},
 			"classes": {
 				"title": "Quản lý lớp học",
 				"subtitle": "Xem và quản lý tất cả lớp học do giáo viên tạo.",
