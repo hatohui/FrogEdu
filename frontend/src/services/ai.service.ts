@@ -112,6 +112,10 @@ class AIService {
 					topic_name: topic.topicName,
 					cognitive_level: this.mapCognitiveLevel(topic.cognitiveLevel),
 					quantity: topic.quantity,
+					// Only send question_type if explicitly set (null/undefined = randomize on backend)
+					...(topic.questionType != null && {
+						question_type: this.mapQuestionType(topic.questionType),
+					}),
 				})),
 				language: request.language ?? 'vi',
 			}

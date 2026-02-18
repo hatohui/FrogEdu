@@ -4,13 +4,16 @@ import type {
 } from '@/types/model/exam-service/enums'
 
 /**
- * Topic configuration for AI generation matrix request
+ * Topic configuration for AI generation matrix request.
+ * questionType: null means the AI will randomize the type per question.
  */
 export interface AIMatrixTopicConfig {
 	topicId: string
 	topicName: string
 	cognitiveLevel: CognitiveLevel
 	quantity: number
+	/** Specific question type to generate. null/undefined = randomize. */
+	questionType?: QuestionType | null
 }
 
 /**

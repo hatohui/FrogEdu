@@ -233,6 +233,9 @@ module "subscription_service" {
     "/health",
     "/swagger/{proxy+}",
     "/swagger",
+    "/claims/{proxy+}",
+    "/tiers",
+    "/tiers/{proxy+}",
   ]
 
   environment_variables = {

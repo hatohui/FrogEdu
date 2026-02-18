@@ -122,49 +122,82 @@ def get_question_type_instruction(question_type: QuestionType) -> str:
 
 def build_matrix_prompt(request: GenerateQuestionsRequest) -> str:
     """Build prompt for matrix-based question generation."""
-    matrix_details = "\n".join([
-        f"- Topic: {topic.topic_name}, "
-        f"Cognitive Level: {topic.cognitive_level.value}, "
-        f"Quantity: {topic.quantity}"
-        for topic in request.matrix_topics
-    ])
+    # Build per-topic details, including question_type instruction
+    matrix_lines = []
+    type_instructions_used: set[QuestionType] = set()
+    
+    for topic in request.matrix_topics:
+        if topic.question_type:
+            type_label = topic.question_type.value
+            type_instructions_used.add(topic.question_type)
+        else:
+            type_label = "random (vary across select, true_false, multiple_choice)"
+        
+        matrix_lines.append(
+            f"- Topic: {topic.topic_name}, "
+            f"Cognitive Level: {topic.cognitive_level.value}, "
+            f"Quantity: {topic.quantity}, "
+            f"Question Type: {type_label}"
+        )
+    
+    matrix_details = "\n".join(matrix_lines)
     
     language_instruction = (
-        "Generate all content in Vietnamese."
+        "Generate ALL content in Vietnamese (questions, answers, and explanations)."
         if request.language == "vi"
-        else "Generate all content in English."
+        else "Generate ALL content in English (questions, answers, and explanations)."
     )
     
-    return f"""You are an expert education content creator for Vietnamese curriculum.
+    # Include specific type instructions only for types that are explicitly requested
+    type_specific_section = ""
+    if type_instructions_used:
+        type_specific_section = "\n**Question Type Instructions:**\n"
+        for qt in type_instructions_used:
+            type_specific_section += get_question_type_instruction(qt) + "\n"
+    
+    curriculum_note = (
+        "Follow Vietnamese curriculum standards and context."
+        if request.language == "vi"
+        else "Follow international curriculum standards appropriate for this grade level."
+    )
+
+    return f"""You are an expert education content creator.
+
+{language_instruction}
 
 Generate exam questions with the following specifications:
 
 **Subject**: {request.subject}
 **Grade Level**: {request.grade}
-**Language**: {request.language}
+**Output Language**: {request.language.upper()} — YOU MUST write ALL question content, ALL answer content, and ALL explanations in {"Vietnamese" if request.language == "vi" else "English"}. Do NOT mix languages.
 
-**Matrix Requirements**:
+**Matrix Requirements** (generate exactly the specified quantity for each row):
 {matrix_details}
 
-{language_instruction}
+{type_specific_section}
 
-For each question:
+**General Rules for ALL questions:**
 1. Content must be appropriate for grade {request.grade} students
-2. Follow Vietnamese curriculum standards (if applicable)
-3. Match the specified cognitive level (Bloom's Taxonomy)
-4. Include 4 answer options for multiple choice questions
-5. Mark the correct answer
-6. Provide clear explanations for answers
+2. {curriculum_note}
+3. Strictly match the specified cognitive level (Bloom's Taxonomy):
+   - remember: Recall facts, definitions, basic concepts
+   - understand: Explain, summarize, interpret ideas
+   - apply: Use knowledge in new situations, solve problems
+   - analyze: Break down, compare, draw connections
+4. For "random" question types: vary question types naturally across select, true_false, and multiple_choice
+5. Always include 4 answer options for select/multiple_choice questions
+6. Mark the correct answer(s) accurately
+7. Provide clear, educational explanations for each answer
 
-Return the questions in the specified JSON format."""
+Return ONLY the questions in the specified JSON format with no additional text."""
 
 
 def build_single_question_prompt(request: GenerateSingleQuestionRequest) -> str:
     """Build prompt for single question generation."""
     language_instruction = (
-        "Generate all content in Vietnamese."
+        "Generate ALL content in Vietnamese (question, answers, and explanations)."
         if request.language == "vi"
-        else "Generate all content in English."
+        else "Generate ALL content in English (question, answers, and explanations)."
     )
     
     topic_context = ""
@@ -176,6 +209,8 @@ def build_single_question_prompt(request: GenerateSingleQuestionRequest) -> str:
     
     return f"""You are an expert education content creator.
 
+{language_instruction}
+
 Generate ONE exam question with these specifications:
 
 **Subject**: {request.subject}
@@ -183,8 +218,7 @@ Generate ONE exam question with these specifications:
 **Topic**: {request.topic_name}{topic_context}
 **Cognitive Level**: {request.cognitive_level.value}
 **Question Type**: {request.question_type.value}
-
-{language_instruction}
+**Output Language**: {request.language.upper()} — YOU MUST write ALL question content, ALL answer content, and ALL explanations in {"Vietnamese" if request.language == "vi" else "English"}. Do NOT mix languages.
 
 {type_instruction}
 

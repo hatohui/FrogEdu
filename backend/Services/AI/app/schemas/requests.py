@@ -28,6 +28,10 @@ class MatrixTopicConfig(BaseModel):
     topic_name: str = Field(..., description="Name of the topic")
     cognitive_level: CognitiveLevel = Field(..., description="Cognitive level")
     quantity: int = Field(..., gt=0, description="Number of questions to generate")
+    question_type: Optional[QuestionType] = Field(
+        None,
+        description="Specific question type to generate. If null/not provided, question type is randomized per question."
+    )
 
 
 class GenerateQuestionsRequest(BaseModel):

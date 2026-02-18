@@ -51,7 +51,10 @@ import {
 // Local components
 import { QuestionFormFields } from './components/QuestionFormFields'
 import { QuestionAnswersSection } from './components/QuestionAnswersSection'
-import { AIGeneratorSection } from './components/AIGeneratorSection'
+import {
+	AIGeneratorSection,
+	matrixRowKey,
+} from './components/AIGeneratorSection'
 import { useQuestionForm, type QuestionFormData } from '@/hooks/useQuestionForm'
 import type { AIGeneratedQuestion } from '@/types/model/ai-service'
 import {
@@ -76,7 +79,7 @@ type MainTab = 'create' | 'bank'
  * Supports manual creation, AI generation, and adding from question bank
  */
 const CreateQuestionPage = (): React.ReactElement => {
-	const { t } = useTranslation()
+	const { t, i18n } = useTranslation()
 	const navigate = useNavigate()
 	const { examId } = useParams<{ examId: string }>()
 	const { data: exam } = useExam(examId ?? '')
@@ -122,6 +125,11 @@ const CreateQuestionPage = (): React.ReactElement => {
 	// Track existing question IDs for quick lookup
 	const existingQuestionIds = new Set(existingQuestions.map(q => q.id))
 
+	// Per-matrix-row question type overrides (null = random)
+	const [matrixTopicQuestionTypes, setMatrixTopicQuestionTypes] = useState<
+		Record<string, QuestionType | null>
+	>({})
+
 	// Bank tab state
 	const [bankSearchQuery, setBankSearchQuery] = useState('')
 	const [bankFilterLevel, setBankFilterLevel] = useState<string>('all')
@@ -130,6 +138,22 @@ const CreateQuestionPage = (): React.ReactElement => {
 	const [selectedBankQuestions, setSelectedBankQuestions] = useState<
 		Set<string>
 	>(new Set())
+
+	// Remaining questions needed per matrix row
+	const matrixRemainingCounts = React.useMemo(() => {
+		if (!matrix) return {}
+		const counts: Record<string, number> = {}
+		for (const mt of matrix.matrixTopics) {
+			const existing = existingQuestions.filter(
+				q => q.topicId === mt.topicId && q.cognitiveLevel === mt.cognitiveLevel
+			).length
+			counts[matrixRowKey(mt.topicId, mt.cognitiveLevel)] = Math.max(
+				0,
+				mt.quantity - existing
+			)
+		}
+		return counts
+	}, [matrix, existingQuestions])
 
 	// Matrix validation
 	const matrixValidation = validateMatrixProgress(
@@ -428,12 +452,15 @@ const CreateQuestionPage = (): React.ReactElement => {
 			return
 		}
 
+		const lang: 'vi' | 'en' = i18n.language.startsWith('vi') ? 'vi' : 'en'
+
 		// Build matrix topics configuration
 		const matrixTopics: Array<{
 			topicId: string
 			topicName: string
 			cognitiveLevel: CognitiveLevel
 			quantity: number
+			questionType?: QuestionType | null
 		}> = []
 
 		for (const matrixTopic of matrix.matrixTopics) {
@@ -449,11 +476,16 @@ const CreateQuestionPage = (): React.ReactElement => {
 
 			const needed = matrixTopic.quantity - existing
 			if (needed > 0) {
+				const rowKey = matrixRowKey(
+					matrixTopic.topicId,
+					matrixTopic.cognitiveLevel
+				)
 				matrixTopics.push({
 					topicId: topic.id,
 					topicName: topic.title,
 					cognitiveLevel: matrixTopic.cognitiveLevel,
 					quantity: needed,
+					questionType: matrixTopicQuestionTypes[rowKey] ?? null,
 				})
 			}
 		}
@@ -468,7 +500,7 @@ const CreateQuestionPage = (): React.ReactElement => {
 				exam.name ?? 'General',
 				exam.grade ?? 10,
 				matrixTopics,
-				'vi'
+				lang
 			)
 
 			if (result?.questions) {
@@ -490,12 +522,14 @@ const CreateQuestionPage = (): React.ReactElement => {
 		existingQuestions,
 		isPro,
 		generateFromMatrix,
+		i18n.language,
+		matrixTopicQuestionTypes,
+		t,
 	])
 
 	// Handle adding questions from bank
 	const handleAddFromBank = async (questionIds: string[]) => {
 		if (!examId) return
-
 		await addQuestionsMutation.mutateAsync({
 			examId,
 			questionIds,
@@ -652,6 +686,14 @@ const CreateQuestionPage = (): React.ReactElement => {
 									exam={exam}
 									topics={topics}
 									matrix={matrix ?? undefined}
+									matrixRemainingCounts={matrixRemainingCounts}
+									matrixTopicQuestionTypes={matrixTopicQuestionTypes}
+									onMatrixTopicTypeChange={(key, type) =>
+										setMatrixTopicQuestionTypes(prev => ({
+											...prev,
+											[key]: type,
+										}))
+									}
 									selectedTopic={selectedAiTopic}
 									onTopicChange={setSelectedAiTopic}
 									cognitiveLevel={aiCognitiveLevel}

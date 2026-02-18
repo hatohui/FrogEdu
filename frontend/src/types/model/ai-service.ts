@@ -34,13 +34,16 @@ export interface AIGeneratedQuestion {
 }
 
 /**
- * Topic configuration for AI generation matrix
+ * Topic configuration for AI generation matrix.
+ * questionType: null means randomize the type per-question.
  */
 export interface AIMatrixTopicConfig {
 	topicId: string
 	topicName: string
 	cognitiveLevel: CognitiveLevel
 	quantity: number
+	/** Specific question type to generate. null = randomize. */
+	questionType?: QuestionType | null
 }
 
 /**

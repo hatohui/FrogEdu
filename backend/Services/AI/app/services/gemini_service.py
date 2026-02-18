@@ -159,10 +159,10 @@ class GeminiService:
                 # Build the prompt for this topic
                 prompt = build_matrix_prompt(single_topic_request)
                 
-                # Configure with JSON schema
+                # Configure with JSON schema - constrain to specific type if provided
                 config = types.GenerateContentConfig(
                     response_mime_type="application/json",
-                    response_schema=self._create_question_schema(),
+                    response_schema=self._create_question_schema(topic_config.question_type),
                     temperature=0.7,
                 )
                 
@@ -182,7 +182,7 @@ class GeminiService:
                 
                 # Validate and fix each question, attaching the topic_id
                 for q in result.get("questions", []):
-                    validated_q = self._validate_question(q)
+                    validated_q = self._validate_question(q, topic_config.question_type)
                     # Attach the topic_id from the matrix configuration
                     validated_q["topic_id"] = topic_config.topic_id
                     all_validated_questions.append(Question(**validated_q))

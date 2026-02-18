@@ -8,6 +8,7 @@ import {
 	Download,
 	FileText,
 	Link,
+	Sparkles,
 } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -25,6 +26,7 @@ import {
 	useExportMatrixToExcel,
 	useSubjects,
 	useTopics,
+	useExams,
 } from '@/hooks/useExams'
 import { useConfirm } from '@/hooks/useConfirm'
 import { ConfirmDialog } from '@/components/common/ConfirmDialog'
@@ -38,6 +40,10 @@ const MatrixDetailPage = (): React.ReactElement => {
 	const { data: matrix, isLoading } = useMatrixById(matrixId ?? '')
 	const { data: subjects = [] } = useSubjects(matrix?.grade)
 	const { data: topics = [] } = useTopics(matrix?.subjectId ?? '')
+	const { data: allExams = [] } = useExams()
+
+	// Find which exam is linked to this matrix
+	const linkedExam = allExams.find(e => e.matrixId === matrixId)
 	const deleteMatrixMutation = useDeleteMatrix()
 	const exportToPdf = useExportMatrixToPdf()
 	const exportToExcel = useExportMatrixToExcel()
@@ -167,6 +173,20 @@ const MatrixDetailPage = (): React.ReactElement => {
 						</div>
 					</div>
 					<div className='flex gap-2'>
+					{linkedExam && (
+						<Button
+							variant='default'
+							className='bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700'
+							onClick={() =>
+								navigate(
+									`/app/exams/${linkedExam.id}/questions/create`
+								)
+							}
+						>
+							<Sparkles className='h-4 w-4 mr-2' />
+							Generate Questions
+						</Button>
+					)}
 						<DropdownMenu>
 							<DropdownMenuTrigger asChild>
 								<Button variant='outline'>
