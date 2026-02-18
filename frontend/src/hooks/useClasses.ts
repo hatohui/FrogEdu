@@ -9,6 +9,7 @@ import type {
 import type {
 	AssignExamRequest,
 	CreateClassRequest,
+	UpdateAssignmentRequest,
 } from '@/types/dtos/classes'
 import { examSessionKeys } from './useExamSessions'
 
@@ -150,6 +151,67 @@ export function useAdminAssignExam() {
 		},
 		onError: (error: Error) => {
 			toast.error(error.message || 'Failed to assign exam')
+		},
+	})
+}
+
+/**
+ * Hook to update an assignment and its linked exam session (Teacher/Admin)
+ */
+export function useUpdateAssignment() {
+	const queryClient = useQueryClient()
+
+	return useMutation({
+		mutationFn: ({
+			classId,
+			assignmentId,
+			data,
+		}: {
+			classId: string
+			assignmentId: string
+			data: UpdateAssignmentRequest
+		}) => classService.updateAssignment(classId, assignmentId, data),
+		onSuccess: (_, variables) => {
+			queryClient.invalidateQueries({
+				queryKey: classKeys.detail(variables.classId),
+			})
+			queryClient.invalidateQueries({
+				queryKey: examSessionKeys.student(),
+			})
+			toast.success('Assignment updated successfully!')
+		},
+		onError: (error: Error) => {
+			toast.error(error.message || 'Failed to update assignment')
+		},
+	})
+}
+
+/**
+ * Hook to delete an assignment and its linked exam session (Teacher/Admin)
+ */
+export function useDeleteAssignment() {
+	const queryClient = useQueryClient()
+
+	return useMutation({
+		mutationFn: ({
+			classId,
+			assignmentId,
+		}: {
+			classId: string
+			assignmentId: string
+		}) => classService.deleteAssignment(classId, assignmentId),
+		onSuccess: (_, variables) => {
+			queryClient.invalidateQueries({
+				queryKey: classKeys.detail(variables.classId),
+			})
+			queryClient.invalidateQueries({ queryKey: classKeys.all() })
+			queryClient.invalidateQueries({
+				queryKey: examSessionKeys.student(),
+			})
+			toast.success('Assignment deleted successfully!')
+		},
+		onError: (error: Error) => {
+			toast.error(error.message || 'Failed to delete assignment')
 		},
 	})
 }

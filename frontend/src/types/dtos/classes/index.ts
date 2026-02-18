@@ -2,6 +2,7 @@ export type {
 	CreateClassRequest,
 	JoinClassRequest,
 	AssignExamRequest,
+	UpdateAssignmentRequest,
 } from './request'
 
 export type {

@@ -1,8 +1,10 @@
 using FrogEdu.Class.Application.Commands.AdminAssignExam;
 using FrogEdu.Class.Application.Commands.AssignExam;
 using FrogEdu.Class.Application.Commands.CreateClass;
+using FrogEdu.Class.Application.Commands.DeleteAssignment;
 using FrogEdu.Class.Application.Commands.JoinClass;
 using FrogEdu.Class.Application.Commands.RemoveStudent;
+using FrogEdu.Class.Application.Commands.UpdateAssignment;
 using FrogEdu.Class.Application.Dtos;
 using FrogEdu.Class.Application.Dtos.requests;
 using FrogEdu.Class.Application.Queries.GetClassAssignments;
@@ -214,9 +216,78 @@ public class ClassController(IMediator mediator) : BaseController
     }
 
     /// <summary>
+    /// Update an assignment and its linked exam session (Teacher who owns the class or Admin)
+    /// </summary>
+    [HttpPut("{classId:guid}/assignments/{assignmentId:guid}")]
+    [Authorize]
+    [ProducesResponseType(typeof(AssignmentResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> UpdateAssignment(
+        Guid classId,
+        Guid assignmentId,
+        [FromBody] AssignExamRequest request,
+        CancellationToken cancellationToken
+    )
+    {
+        var userId = GetAuthenticatedUserId();
+        var role = GetUserRole();
+
+        var command = new UpdateAssignmentCommand(
+            classId,
+            assignmentId,
+            request.StartDate,
+            request.DueDate,
+            request.IsMandatory,
+            request.Weight,
+            userId,
+            role,
+            request.RetryTimes,
+            request.IsRetryable,
+            request.ShouldShuffleQuestions,
+            request.ShouldShuffleAnswers,
+            request.AllowPartialScoring
+        );
+
+        var result = await _mediator.Send(command, cancellationToken);
+
+        if (result.IsFailure)
+            return BadRequest(result.Error);
+
+        return Ok(result.Value);
+    }
+
+    /// <summary>
+    /// Delete an assignment and its linked exam session (Teacher who owns the class or Admin)
+    /// </summary>
+    [HttpDelete("{classId:guid}/assignments/{assignmentId:guid}")]
+    [Authorize]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> DeleteAssignment(
+        Guid classId,
+        Guid assignmentId,
+        CancellationToken cancellationToken
+    )
+    {
+        var userId = GetAuthenticatedUserId();
+        var role = GetUserRole();
+
+        var command = new DeleteAssignmentCommand(classId, assignmentId, userId, role);
+        var result = await _mediator.Send(command, cancellationToken);
+
+        if (result.IsFailure)
+            return BadRequest(result.Error);
+
+        return NoContent();
+    }
+
+    /// <summary>
     /// Remove a student from a class (Teacher who owns the class or Admin)
     /// </summary>
-    [HttpDelete("{classId:guid}/students/{studentId:guid}")]
     [Authorize]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]

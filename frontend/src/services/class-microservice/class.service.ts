@@ -74,6 +74,27 @@ export const classService = {
 		return response.data
 	},
 
+	updateAssignment: async (
+		classId: string,
+		assignmentId: string,
+		data: import('@/types/dtos/classes').UpdateAssignmentRequest
+	): Promise<import('@/types/model/class-service').ClassAssignment> => {
+		const response = await axiosInstance.put(
+			`${baseUrl}/classes/${classId}/assignments/${assignmentId}`,
+			data
+		)
+		return response.data
+	},
+
+	deleteAssignment: async (
+		classId: string,
+		assignmentId: string
+	): Promise<void> => {
+		await axiosInstance.delete(
+			`${baseUrl}/classes/${classId}/assignments/${assignmentId}`
+		)
+	},
+
 	// ─── Admin endpoints ───
 
 	adminAssignExam: async (

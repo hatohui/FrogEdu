@@ -13,6 +13,9 @@ import {
 	XCircle,
 	AlertTriangle,
 	UserPlus,
+	MoreVertical,
+	Edit,
+	Trash2,
 } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -27,6 +30,13 @@ import {
 } from '@/components/ui/table'
 import { Badge } from '@/components/ui/badge'
 import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuSeparator,
+	DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
+import {
 	Dialog,
 	DialogContent,
 	DialogDescription,
@@ -40,10 +50,16 @@ import {
 	useClassDetail,
 	useAdminAssignExam,
 	useJoinClass,
+	useUpdateAssignment,
+	useDeleteAssignment,
 } from '@/hooks/useClasses'
 import { useMe } from '@/hooks/auth/useMe'
 import { useUser } from '@/hooks/useUsers'
-import type { AssignExamRequest } from '@/types/dtos/classes'
+import type {
+	AssignExamRequest,
+	UpdateAssignmentRequest,
+} from '@/types/dtos/classes'
+import type { ClassAssignment } from '@/types/model/class-service'
 
 type Tab = 'info' | 'students' | 'assignments'
 
@@ -75,6 +91,18 @@ const ClassDetailPage = (): React.ReactElement => {
 
 	const assignExamMutation = useAdminAssignExam()
 	const joinClassMutation = useJoinClass()
+	const updateAssignmentMutation = useUpdateAssignment()
+	const deleteAssignmentMutation = useDeleteAssignment()
+
+	// Edit assignment dialog state
+	const [editAssignDialogOpen, setEditAssignDialogOpen] = useState(false)
+	const [editingAssignment, setEditingAssignment] =
+		useState<ClassAssignment | null>(null)
+
+	// Delete assignment confirmation dialog state
+	const [deleteAssignDialogOpen, setDeleteAssignDialogOpen] = useState(false)
+	const [assignmentToDelete, setAssignmentToDelete] =
+		useState<ClassAssignment | null>(null)
 
 	const canEnroll = user?.cognitoId !== classDetail?.teacherId
 
@@ -140,6 +168,71 @@ const ClassDetailPage = (): React.ReactElement => {
 		if (classDetail?.inviteCode) {
 			joinClassMutation.mutate(classDetail.inviteCode)
 		}
+	}
+
+	const handleOpenEditAssignDialog = (assignment: ClassAssignment) => {
+		setEditingAssignment(assignment)
+		const fmt = (d: string) => {
+			const dt = new Date(d)
+			return (
+				dt.getFullYear() +
+				'-' +
+				String(dt.getMonth() + 1).padStart(2, '0') +
+				'-' +
+				String(dt.getDate()).padStart(2, '0') +
+				'T' +
+				String(dt.getHours()).padStart(2, '0') +
+				':' +
+				String(dt.getMinutes()).padStart(2, '0')
+			)
+		}
+		setStartDate(fmt(assignment.startDate))
+		setDueDate(fmt(assignment.dueDate))
+		setIsMandatory(assignment.isMandatory)
+		setWeight(String(assignment.weight))
+		setRetryTimes('0')
+		setIsRetryable(false)
+		setShouldShuffleQuestions(false)
+		setShouldShuffleAnswers(false)
+		setAllowPartialScoring(true)
+		setEditAssignDialogOpen(true)
+	}
+
+	const handleUpdateAssignment = () => {
+		if (!id || !editingAssignment || !startDate || !dueDate) return
+		const data: UpdateAssignmentRequest = {
+			startDate: new Date(startDate).toISOString(),
+			dueDate: new Date(dueDate).toISOString(),
+			isMandatory,
+			weight: Number(weight) || 100,
+			retryTimes: isRetryable ? Number(retryTimes) || 0 : 0,
+			isRetryable,
+			shouldShuffleQuestions,
+			shouldShuffleAnswers,
+			allowPartialScoring,
+		}
+		updateAssignmentMutation.mutate(
+			{ classId: id, assignmentId: editingAssignment.id, data },
+			{
+				onSuccess: () => {
+					setEditAssignDialogOpen(false)
+					setEditingAssignment(null)
+				},
+			}
+		)
+	}
+
+	const handleDeleteAssignment = () => {
+		if (!id || !assignmentToDelete) return
+		deleteAssignmentMutation.mutate(
+			{ classId: id, assignmentId: assignmentToDelete.id },
+			{
+				onSuccess: () => {
+					setDeleteAssignDialogOpen(false)
+					setAssignmentToDelete(null)
+				},
+			}
+		)
 	}
 
 	const getEnrollmentStatusBadge = (status: string) => {
@@ -511,6 +604,40 @@ const ClassDetailPage = (): React.ReactElement => {
 														</div>
 													)}
 												</TableCell>
+												<TableCell>
+													<DropdownMenu>
+														<DropdownMenuTrigger asChild>
+															<Button
+																variant='ghost'
+																size='icon'
+																className='h-8 w-8'
+															>
+																<MoreVertical className='h-4 w-4' />
+															</Button>
+														</DropdownMenuTrigger>
+														<DropdownMenuContent align='end'>
+															<DropdownMenuItem
+																onClick={() =>
+																	handleOpenEditAssignDialog(assignment)
+																}
+															>
+																<Edit className='mr-2 h-4 w-4' />
+																Edit
+															</DropdownMenuItem>
+															<DropdownMenuSeparator />
+															<DropdownMenuItem
+																className='text-destructive focus:text-destructive'
+																onClick={() => {
+																	setAssignmentToDelete(assignment)
+																	setDeleteAssignDialogOpen(true)
+																}}
+															>
+																<Trash2 className='mr-2 h-4 w-4' />
+																Delete
+															</DropdownMenuItem>
+														</DropdownMenuContent>
+													</DropdownMenu>
+												</TableCell>
 											</TableRow>
 										))}
 									</TableBody>
@@ -520,6 +647,181 @@ const ClassDetailPage = (): React.ReactElement => {
 					</CardContent>
 				</Card>
 			)}
+
+			{/* Edit Assignment Dialog */}
+			<Dialog
+				open={editAssignDialogOpen}
+				onOpenChange={setEditAssignDialogOpen}
+			>
+				<DialogContent>
+					<DialogHeader>
+						<DialogTitle>Edit Assignment</DialogTitle>
+						<DialogDescription>
+							Update the assignment settings for this exam.
+						</DialogDescription>
+					</DialogHeader>
+					<div className='grid gap-4 py-4'>
+						<div className='grid grid-cols-2 gap-4'>
+							<div className='grid gap-2'>
+								<Label htmlFor='dedit-startDate'>
+									{t('pages.dashboard.classes.assign_dialog.start_date')}
+								</Label>
+								<Input
+									id='dedit-startDate'
+									type='datetime-local'
+									value={startDate}
+									onChange={e => setStartDate(e.target.value)}
+								/>
+							</div>
+							<div className='grid gap-2'>
+								<Label htmlFor='dedit-dueDate'>
+									{t('pages.dashboard.classes.assign_dialog.due_date')}
+								</Label>
+								<Input
+									id='dedit-dueDate'
+									type='datetime-local'
+									value={dueDate}
+									onChange={e => setDueDate(e.target.value)}
+								/>
+							</div>
+						</div>
+						<div className='flex items-center gap-4'>
+							<div className='flex items-center gap-2'>
+								<input
+									type='checkbox'
+									id='dedit-mandatory'
+									checked={isMandatory}
+									onChange={e => setIsMandatory(e.target.checked)}
+									className='h-4 w-4 rounded border-gray-300'
+								/>
+								<Label htmlFor='dedit-mandatory'>
+									{t('pages.dashboard.classes.assign_dialog.mandatory')}
+								</Label>
+							</div>
+							<div className='grid gap-2 flex-1'>
+								<Label htmlFor='dedit-weight'>
+									{t('pages.dashboard.classes.assign_dialog.weight')}
+								</Label>
+								<Input
+									id='dedit-weight'
+									type='number'
+									min={0}
+									max={100}
+									value={weight}
+									onChange={e => setWeight(e.target.value)}
+								/>
+							</div>
+						</div>
+					</div>
+					{/* Session settings */}
+					<div className='grid grid-cols-2 gap-3'>
+						<div className='flex items-center gap-2'>
+							<input
+								type='checkbox'
+								id='dedit-retryable'
+								checked={isRetryable}
+								onChange={e => setIsRetryable(e.target.checked)}
+								className='h-4 w-4 rounded border-gray-300'
+							/>
+							<Label htmlFor='dedit-retryable'>Allow retries</Label>
+						</div>
+						{isRetryable && (
+							<div className='grid gap-1'>
+								<Label htmlFor='dedit-retrytimes'>Max retries</Label>
+								<Input
+									id='dedit-retrytimes'
+									type='number'
+									min={1}
+									value={retryTimes}
+									onChange={e => setRetryTimes(e.target.value)}
+								/>
+							</div>
+						)}
+						<div className='flex items-center gap-2'>
+							<input
+								type='checkbox'
+								id='dedit-shuffle-q'
+								checked={shouldShuffleQuestions}
+								onChange={e => setShouldShuffleQuestions(e.target.checked)}
+								className='h-4 w-4 rounded border-gray-300'
+							/>
+							<Label htmlFor='dedit-shuffle-q'>Shuffle questions</Label>
+						</div>
+						<div className='flex items-center gap-2'>
+							<input
+								type='checkbox'
+								id='dedit-shuffle-a'
+								checked={shouldShuffleAnswers}
+								onChange={e => setShouldShuffleAnswers(e.target.checked)}
+								className='h-4 w-4 rounded border-gray-300'
+							/>
+							<Label htmlFor='dedit-shuffle-a'>Shuffle answers</Label>
+						</div>
+						<div className='flex items-center gap-2'>
+							<input
+								type='checkbox'
+								id='dedit-partial'
+								checked={allowPartialScoring}
+								onChange={e => setAllowPartialScoring(e.target.checked)}
+								className='h-4 w-4 rounded border-gray-300'
+							/>
+							<Label htmlFor='dedit-partial'>Partial scoring</Label>
+						</div>
+					</div>
+					<DialogFooter>
+						<Button
+							variant='outline'
+							onClick={() => setEditAssignDialogOpen(false)}
+						>
+							{t('common.cancel')}
+						</Button>
+						<Button
+							onClick={handleUpdateAssignment}
+							disabled={
+								!startDate || !dueDate || updateAssignmentMutation.isPending
+							}
+						>
+							{updateAssignmentMutation.isPending
+								? t('pages.dashboard.classes.assign_dialog.submitting')
+								: 'Save changes'}
+						</Button>
+					</DialogFooter>
+				</DialogContent>
+			</Dialog>
+
+			{/* Delete Assignment Confirmation Dialog */}
+			<Dialog
+				open={deleteAssignDialogOpen}
+				onOpenChange={setDeleteAssignDialogOpen}
+			>
+				<DialogContent>
+					<DialogHeader>
+						<DialogTitle>Delete Assignment</DialogTitle>
+						<DialogDescription>
+							Are you sure you want to remove this assignment? This will also
+							delete the linked exam session.
+						</DialogDescription>
+					</DialogHeader>
+					<DialogFooter>
+						<Button
+							variant='outline'
+							onClick={() => {
+								setDeleteAssignDialogOpen(false)
+								setAssignmentToDelete(null)
+							}}
+						>
+							{t('common.cancel')}
+						</Button>
+						<Button
+							variant='destructive'
+							onClick={handleDeleteAssignment}
+							disabled={deleteAssignmentMutation.isPending}
+						>
+							{deleteAssignmentMutation.isPending ? 'Deleting…' : 'Delete'}
+						</Button>
+					</DialogFooter>
+				</DialogContent>
+			</Dialog>
 
 			{/* Assign Exam Dialog */}
 			<Dialog open={assignDialogOpen} onOpenChange={setAssignDialogOpen}>

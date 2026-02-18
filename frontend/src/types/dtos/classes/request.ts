@@ -22,3 +22,15 @@ export interface AssignExamRequest {
 	shouldShuffleAnswers?: boolean
 	allowPartialScoring?: boolean
 }
+
+export interface UpdateAssignmentRequest {
+	startDate: string
+	dueDate: string
+	isMandatory: boolean
+	weight: number
+	retryTimes?: number
+	isRetryable?: boolean
+	shouldShuffleQuestions?: boolean
+	shouldShuffleAnswers?: boolean
+	allowPartialScoring?: boolean
+}
