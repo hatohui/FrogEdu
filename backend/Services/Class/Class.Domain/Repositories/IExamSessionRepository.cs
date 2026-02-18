@@ -38,6 +38,14 @@ public interface IExamSessionRepository
         CancellationToken cancellationToken = default
     );
 
+    /// <summary>
+    /// Get all exam sessions (active, ongoing, and ended) for a student across all enrolled classes
+    /// </summary>
+    Task<IReadOnlyList<ExamSession>> GetAllSessionsForStudentAsync(
+        IEnumerable<Guid> classIds,
+        CancellationToken cancellationToken = default
+    );
+
     Task AddAsync(ExamSession session, CancellationToken cancellationToken = default);
     void Update(ExamSession session);
     void Delete(ExamSession session);

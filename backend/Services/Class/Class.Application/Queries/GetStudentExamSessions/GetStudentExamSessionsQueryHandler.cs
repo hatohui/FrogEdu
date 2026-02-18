@@ -54,7 +54,7 @@ public sealed class GetStudentExamSessionsQueryHandler
         }
         else
         {
-            sessions = await _examSessionRepository.GetActiveSessionsForStudentAsync(
+            sessions = await _examSessionRepository.GetAllSessionsForStudentAsync(
                 activeClassIds,
                 cancellationToken
             );

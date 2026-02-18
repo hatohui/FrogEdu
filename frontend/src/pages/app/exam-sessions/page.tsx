@@ -26,14 +26,11 @@ const ExamSessionsPage = (): React.ReactElement => {
 	const { user } = useMe()
 	const isStudent = user?.role?.name === 'Student'
 
-	const { data: activeSessions, isLoading: loadingActive } =
-		useStudentExamSessions(false)
-	const { data: upcomingSessions, isLoading: loadingUpcoming } =
-		useStudentExamSessions(true)
+	const { data: sessions, isLoading } = useStudentExamSessions(false)
 
-	const active = activeSessions?.filter(s => s.isCurrentlyActive) || []
-	const upcoming = upcomingSessions?.filter(s => s.isUpcoming) || []
-	const ended = activeSessions?.filter(s => s.hasEnded) || []
+	const active = sessions?.filter(s => s.isCurrentlyActive) || []
+	const upcoming = sessions?.filter(s => s.isUpcoming) || []
+	const ended = sessions?.filter(s => s.hasEnded) || []
 
 	const getStatusBadge = (session: ExamSession) => {
 		if (session.isCurrentlyActive)
@@ -130,7 +127,7 @@ const ExamSessionsPage = (): React.ReactElement => {
 		</Table>
 	)
 
-	if (loadingActive || loadingUpcoming) {
+	if (isLoading) {
 		return (
 			<div className='p-6 space-y-6 max-w-7xl mx-auto'>
 				<Skeleton className='h-8 w-48' />
