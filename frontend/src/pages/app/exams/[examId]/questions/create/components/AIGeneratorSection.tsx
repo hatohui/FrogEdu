@@ -196,7 +196,10 @@ export const AIGeneratorSection: React.FC<AIGeneratorSectionProps> = ({
 								</p>
 							</div>
 						</div>
-						<Badge variant='outline' className='flex items-center gap-1 shrink-0 self-start'>
+						<Badge
+							variant='outline'
+							className='flex items-center gap-1 shrink-0 self-start'
+						>
 							<Globe className='h-3 w-3' />
 							{langLabel}
 						</Badge>
@@ -253,8 +256,8 @@ export const AIGeneratorSection: React.FC<AIGeneratorSectionProps> = ({
 												isFulfilled
 													? 'opacity-50'
 													: idx % 2 === 0
-													? 'bg-background'
-													: 'bg-muted/20'
+														? 'bg-background'
+														: 'bg-muted/20'
 											}`}
 										>
 											<div className='px-3 py-2.5 flex items-center'>
@@ -277,9 +280,12 @@ export const AIGeneratorSection: React.FC<AIGeneratorSectionProps> = ({
 													<CheckCircle2 className='h-4 w-4 text-green-500' />
 												) : (
 													<Badge variant='secondary' className='text-xs'>
-														{t('pages.exams.questions.ai.matrix_questions_needed', {
-															count: remaining ?? row.quantity,
-														})}
+														{t(
+															'pages.exams.questions.ai.matrix_questions_needed',
+															{
+																count: remaining ?? row.quantity,
+															}
+														)}
 													</Badge>
 												)}
 											</div>
@@ -361,7 +367,7 @@ export const AIGeneratorSection: React.FC<AIGeneratorSectionProps> = ({
 							{t('pages.exams.questions.ai.single_section_title')}
 						</span>
 						<span className='text-xs text-muted-foreground hidden sm:inline'>
-							–{' '}{t('pages.exams.questions.ai.single_section_description')}
+							– {t('pages.exams.questions.ai.single_section_description')}
 						</span>
 					</div>
 					{singleOpen ? (
@@ -437,7 +443,9 @@ export const AIGeneratorSection: React.FC<AIGeneratorSectionProps> = ({
 							) : (
 								<>
 									<Sparkles className='h-4 w-4 mr-2' />
-									{t('pages.exams.questions.ai.generate', { count: aiQuantity })}
+									{t('pages.exams.questions.ai.generate', {
+										count: aiQuantity,
+									})}
 								</>
 							)}
 						</Button>
@@ -508,4 +516,3 @@ export const AIGeneratorSection: React.FC<AIGeneratorSectionProps> = ({
 }
 
 export default AIGeneratorSection
-

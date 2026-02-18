@@ -173,20 +173,18 @@ const MatrixDetailPage = (): React.ReactElement => {
 						</div>
 					</div>
 					<div className='flex gap-2'>
-					{linkedExam && (
-						<Button
-							variant='default'
-							className='bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700'
-							onClick={() =>
-								navigate(
-									`/app/exams/${linkedExam.id}/questions/create`
-								)
-							}
-						>
-							<Sparkles className='h-4 w-4 mr-2' />
-							Generate Questions
-						</Button>
-					)}
+						{linkedExam && (
+							<Button
+								variant='default'
+								className='bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700'
+								onClick={() =>
+									navigate(`/app/exams/${linkedExam.id}/questions/create`)
+								}
+							>
+								<Sparkles className='h-4 w-4 mr-2' />
+								Generate Questions
+							</Button>
+						)}
 						<DropdownMenu>
 							<DropdownMenuTrigger asChild>
 								<Button variant='outline'>
