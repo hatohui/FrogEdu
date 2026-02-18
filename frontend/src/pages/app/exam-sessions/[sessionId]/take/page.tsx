@@ -38,6 +38,8 @@ import {
 	ArrowRight,
 	CheckCircle2,
 	Clock,
+	LayoutList,
+	List,
 	Send,
 	XCircle,
 } from 'lucide-react'
@@ -66,7 +68,11 @@ const ExamTakePage = (): React.ReactElement => {
 	const submitAttempt = useSubmitExamAttempt()
 
 	// UI state
+	const [viewMode, setViewMode] = useState<'paged' | 'full'>('paged')
 	const [currentQuestion, setCurrentQuestion] = useState(0)
+	const [highlightedQuestion, setHighlightedQuestion] = useState<string | null>(
+		null
+	)
 	const [answers, setAnswers] = useState<AnswerState>({})
 	const [attemptId, setAttemptId] = useState<string | null>(null)
 	const [showSubmitDialog, setShowSubmitDialog] = useState(false)
@@ -84,7 +90,35 @@ const ExamTakePage = (): React.ReactElement => {
 		[answers]
 	)
 
-	const unansweredCount = questions.length - answeredCount
+	/** List of { id, index } for every question that has no answer yet */
+	const unansweredQuestions = useMemo(
+		() =>
+			questions
+				.map((q, idx) => ({ id: q.id, index: idx }))
+				.filter(q => !answers[q.id] || answers[q.id].length === 0),
+		[questions, answers]
+	)
+
+	const unansweredCount = unansweredQuestions.length
+
+	/** Jump to a specific question and briefly highlight it */
+	const jumpToQuestion = useCallback(
+		(questionId: string, index: number) => {
+			setShowSubmitDialog(false)
+			setHighlightedQuestion(questionId)
+			if (viewMode === 'paged') {
+				setCurrentQuestion(index)
+			} else {
+				setTimeout(() => {
+					document
+						.getElementById(`question-${questionId}`)
+						?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+				}, 50)
+			}
+			setTimeout(() => setHighlightedQuestion(null), 2000)
+		},
+		[viewMode]
+	)
 
 	const progress =
 		questions.length > 0 ? (answeredCount / questions.length) * 100 : 0
@@ -296,53 +330,253 @@ const ExamTakePage = (): React.ReactElement => {
 		)
 	}
 
-	// ─── Question View ───
+	// ─── Shared header (progress + pills + view toggle) ───
+
+	const sharedHeader = (
+		<div className='space-y-3'>
+			<div className='flex items-center justify-between text-sm'>
+				<span className='font-medium'>{examData?.name}</span>
+				<span className='text-muted-foreground'>
+					{t('pages.exam_sessions.take.answered')}: {answeredCount} /{' '}
+					{questions.length}
+				</span>
+			</div>
+			<Progress value={progress} className='h-2' />
+			<div className='flex items-center justify-between'>
+				{/* Question navigation pills */}
+				<div className='flex flex-wrap gap-1'>
+					{questions.map((q, idx) => (
+						<Button
+							key={q.id}
+							variant={
+								idx === currentQuestion && viewMode === 'paged'
+									? 'default'
+									: answers[q.id]?.length > 0
+										? 'secondary'
+										: 'outline'
+							}
+							size='sm'
+							className='w-8 h-8 p-0 text-xs'
+							onClick={() => {
+								if (viewMode === 'paged') {
+									setCurrentQuestion(idx)
+								} else {
+									document
+										.getElementById(`question-${q.id}`)
+										?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+								}
+							}}
+						>
+							{idx + 1}
+						</Button>
+					))}
+				</div>
+				{/* View mode toggle */}
+				<div className='flex items-center gap-1 ml-2 shrink-0'>
+					<Button
+						variant={viewMode === 'paged' ? 'default' : 'ghost'}
+						size='sm'
+						onClick={() => setViewMode('paged')}
+						title='One question at a time'
+					>
+						<LayoutList className='h-4 w-4' />
+					</Button>
+					<Button
+						variant={viewMode === 'full' ? 'default' : 'ghost'}
+						size='sm'
+						onClick={() => setViewMode('full')}
+						title='All questions'
+					>
+						<List className='h-4 w-4' />
+					</Button>
+				</div>
+			</div>
+		</div>
+	)
+
+	// ─── Submit dialog (shared between both views) ───
+
+	const submitDialog = (
+		<AlertDialog open={showSubmitDialog} onOpenChange={setShowSubmitDialog}>
+			<AlertDialogContent>
+				<AlertDialogHeader>
+					<AlertDialogTitle>
+						{t('pages.exam_sessions.take.submit_confirm_title')}
+					</AlertDialogTitle>
+					<AlertDialogDescription asChild>
+						<div>
+							<p>{t('pages.exam_sessions.take.submit_confirm_description')}</p>
+							{unansweredCount > 0 && (
+								<div className='mt-3 rounded-md border border-amber-300 bg-amber-50 p-3 space-y-2'>
+									<p className='text-amber-700 font-medium text-sm'>
+										{t('pages.exam_sessions.take.submit_confirm_unanswered', {
+											count: unansweredCount,
+										})}
+									</p>
+									<div className='flex flex-wrap gap-1'>
+										{unansweredQuestions.map(q => (
+											<button
+												key={q.id}
+												className='inline-flex items-center justify-center w-8 h-8 rounded border border-amber-400 bg-white text-amber-700 text-xs font-medium hover:bg-amber-100 transition-colors'
+												onClick={() => jumpToQuestion(q.id, q.index)}
+											>
+												{q.index + 1}
+											</button>
+										))}
+									</div>
+								</div>
+							)}
+						</div>
+					</AlertDialogDescription>
+				</AlertDialogHeader>
+				<AlertDialogFooter>
+					<AlertDialogCancel>{t('common.cancel')}</AlertDialogCancel>
+					<AlertDialogAction
+						onClick={handleSubmit}
+						disabled={submitAttempt.isPending}
+					>
+						{submitAttempt.isPending
+							? t('pages.exam_sessions.take.submitting')
+							: t('pages.exam_sessions.take.submit_exam')}
+					</AlertDialogAction>
+				</AlertDialogFooter>
+			</AlertDialogContent>
+		</AlertDialog>
+	)
+
+	// ─── Full-page view (all questions at once) ───
+
+	if (viewMode === 'full') {
+		return (
+			<div className='p-6 space-y-6 max-w-4xl mx-auto'>
+				{sharedHeader}
+
+				<div className='space-y-6'>
+					{questions.map((q, idx) => (
+						<Card
+							key={q.id}
+							id={`question-${q.id}`}
+							className={
+								highlightedQuestion === q.id ? 'ring-2 ring-amber-400' : ''
+							}
+						>
+							<CardHeader>
+								<div className='flex items-start justify-between gap-4'>
+									<CardTitle className='text-base leading-relaxed'>
+										<span className='text-muted-foreground mr-2'>
+											{idx + 1}.
+										</span>
+										{q.content}
+									</CardTitle>
+									<Badge variant='outline' className='shrink-0'>
+										{q.points} pts
+									</Badge>
+								</div>
+								{q.imageUrl && (
+									<img
+										src={q.imageUrl}
+										alt='Question'
+										className='rounded-lg max-h-64 object-contain mt-2'
+									/>
+								)}
+							</CardHeader>
+							<CardContent>
+								{(q.questionType === QuestionType.MultipleChoice ||
+									q.questionType === QuestionType.TrueFalse) && (
+									<RadioGroup
+										value={answers[q.id]?.[0] || ''}
+										onValueChange={value =>
+											handleSelectAnswer(q.id, value, q.questionType)
+										}
+										className='space-y-3'
+									>
+										{q.answers.map(answer => (
+											<div
+												key={answer.id}
+												className='flex items-center space-x-3 rounded-lg border p-3 hover:bg-muted/50 cursor-pointer'
+											>
+												<RadioGroupItem
+													value={answer.id}
+													id={`${q.id}-${answer.id}`}
+												/>
+												<Label
+													htmlFor={`${q.id}-${answer.id}`}
+													className='cursor-pointer flex-1'
+												>
+													{answer.content}
+												</Label>
+											</div>
+										))}
+									</RadioGroup>
+								)}
+								{q.questionType === QuestionType.MultipleAnswer && (
+									<div className='space-y-3'>
+										{q.answers.map(answer => (
+											<div
+												key={answer.id}
+												className='flex items-center space-x-3 rounded-lg border p-3 hover:bg-muted/50 cursor-pointer'
+												onClick={() =>
+													handleSelectAnswer(q.id, answer.id, q.questionType)
+												}
+											>
+												<Checkbox
+													checked={answers[q.id]?.includes(answer.id) || false}
+													onCheckedChange={() =>
+														handleSelectAnswer(q.id, answer.id, q.questionType)
+													}
+												/>
+												<Label className='cursor-pointer flex-1'>
+													{answer.content}
+												</Label>
+											</div>
+										))}
+									</div>
+								)}
+								{q.questionType === QuestionType.FillInTheBlank && (
+									<Input
+										value={answers[q.id]?.[0] || ''}
+										onChange={e => handleFillInBlank(q.id, e.target.value)}
+										placeholder='Type your answer...'
+									/>
+								)}
+							</CardContent>
+						</Card>
+					))}
+				</div>
+
+				<div className='flex justify-end pt-2'>
+					<Button
+						variant='destructive'
+						onClick={() => setShowSubmitDialog(true)}
+					>
+						<Send className='h-4 w-4 mr-2' />
+						{t('pages.exam_sessions.take.submit_exam')}
+					</Button>
+				</div>
+
+				{submitDialog}
+			</div>
+		)
+	}
+
+	// ─── Paged view (one question at a time) ───
 
 	const currentQ = questions[currentQuestion]
 	if (!currentQ) return <></>
 
 	return (
-		<div className='p-6 space-y-4 max-w-4xl mx-auto'>
-			{/* Progress Bar */}
-			<div className='space-y-2'>
-				<div className='flex items-center justify-between text-sm'>
-					<span>
-						{t('pages.exam_sessions.take.question_of', {
-							current: currentQuestion + 1,
-							total: questions.length,
-						})}
-					</span>
-					<span className='text-muted-foreground'>
-						{t('pages.exam_sessions.take.answered')}: {answeredCount} /{' '}
-						{questions.length}
-					</span>
-				</div>
-				<Progress value={progress} className='h-2' />
-			</div>
-
-			{/* Question Navigation Pills */}
-			<div className='flex flex-wrap gap-1'>
-				{questions.map((q, idx) => (
-					<Button
-						key={q.id}
-						variant={
-							idx === currentQuestion
-								? 'default'
-								: answers[q.id]?.length > 0
-									? 'secondary'
-									: 'outline'
-						}
-						size='sm'
-						className='w-8 h-8 p-0'
-						onClick={() => setCurrentQuestion(idx)}
-					>
-						{idx + 1}
-					</Button>
-				))}
-			</div>
+		<div
+			className='p-6 space-y-4 max-w-4xl mx-auto'
+			id={`question-${currentQ.id}`}
+		>
+			{sharedHeader}
 
 			{/* Question Card */}
-			<Card>
+			<Card
+				className={
+					highlightedQuestion === currentQ.id ? 'ring-2 ring-amber-400' : ''
+				}
+			>
 				<CardHeader>
 					<div className='flex items-start justify-between'>
 						<CardTitle className='text-lg'>{currentQ.content}</CardTitle>
@@ -453,37 +687,7 @@ const ExamTakePage = (): React.ReactElement => {
 				</Button>
 			</div>
 
-			{/* Submit Confirmation Dialog */}
-			<AlertDialog open={showSubmitDialog} onOpenChange={setShowSubmitDialog}>
-				<AlertDialogContent>
-					<AlertDialogHeader>
-						<AlertDialogTitle>
-							{t('pages.exam_sessions.take.submit_confirm_title')}
-						</AlertDialogTitle>
-						<AlertDialogDescription>
-							{t('pages.exam_sessions.take.submit_confirm_description')}
-							{unansweredCount > 0 && (
-								<span className='block mt-2 text-amber-600 font-medium'>
-									{t('pages.exam_sessions.take.submit_confirm_unanswered', {
-										count: unansweredCount,
-									})}
-								</span>
-							)}
-						</AlertDialogDescription>
-					</AlertDialogHeader>
-					<AlertDialogFooter>
-						<AlertDialogCancel>{t('common.cancel')}</AlertDialogCancel>
-						<AlertDialogAction
-							onClick={handleSubmit}
-							disabled={submitAttempt.isPending}
-						>
-							{submitAttempt.isPending
-								? t('pages.exam_sessions.take.submitting')
-								: t('pages.exam_sessions.take.submit_exam')}
-						</AlertDialogAction>
-					</AlertDialogFooter>
-				</AlertDialogContent>
-			</AlertDialog>
+			{submitDialog}
 		</div>
 	)
 }

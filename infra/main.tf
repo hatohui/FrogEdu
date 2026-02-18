@@ -214,6 +214,7 @@ module "class_service" {
     COGNITO_USER_POOL_ID       = module.cognito.user_pool_id
     AWS_COGNITO_REGION         = local.aws_region
     USER_SERVICE_URL           = "https://${local.api_domain}/api/users"
+    EXAM_SERVICE_URL           = "https://${local.api_domain}/api/exams"
     SUBSCRIPTION_SERVICE_URL   = "https://${local.api_domain}/api/subscriptions"
   }
 }
