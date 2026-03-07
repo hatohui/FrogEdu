@@ -12,6 +12,7 @@ public class SubscriptionDbContext : DbContext
     public DbSet<SubscriptionTier> SubscriptionTiers => Set<SubscriptionTier>();
     public DbSet<UserSubscription> UserSubscriptions => Set<UserSubscription>();
     public DbSet<Transaction> Transactions => Set<Transaction>();
+    public DbSet<AIUsageRecord> AIUsageRecords => Set<AIUsageRecord>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -21,5 +22,6 @@ public class SubscriptionDbContext : DbContext
         modelBuilder.ApplyConfiguration(new SubscriptionTierConfiguration());
         modelBuilder.ApplyConfiguration(new UserSubscriptionConfiguration());
         modelBuilder.ApplyConfiguration(new TransactionConfiguration());
+        modelBuilder.ApplyConfiguration(new AIUsageRecordConfiguration());
     }
 }

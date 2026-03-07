@@ -21,6 +21,9 @@
 		"back": "Quay lại",
 		"confirm": "Xác nhận",
 		"cancel": "Hủy",
+		"all": "Tất cả",
+		"active": "Hoạt động",
+		"inactive": "Không hoạt động",
 		"app_name": "FrogEdu",
 		"learning_platform": "Nền tảng học tập",
 		"admin_dashboard": "Bảng điều khiển quản trị",
@@ -280,10 +283,24 @@
 				"title": "Thao tác nhanh",
 				"create_exam": "Tạo bài kiểm tra mới",
 				"browse_content": "Duyệt thư viện nội dung",
-				"manage_classes": "Quản lý lớp học"
+				"manage_classes": "Quản lý lớp học",
+				"my_classes": "Lớp của tôi",
+				"view_calendar": "Xem lịch"
 			},
 			"recent_activity": "Hoạt động gần đây",
-			"trend_label": "{{value}}% so với tháng trước"
+			"trend_label": "{{value}}% so với tháng trước",
+			"subscription_status": "Trạng thái đăng ký",
+			"expires_on": "Hết hạn vào {{date}}",
+			"ai_usage": "Sử dụng AI",
+			"unlimited": "Không giới hạn",
+			"ai_used_count": "Đã dùng {{count}} lần tạo",
+			"generations": "lần tạo",
+			"remaining": "còn lại",
+			"ai_limit_reached": "Bạn đã đạt giới hạn gói miễn phí. Nâng cấp lên Pro để tạo AI không giới hạn.",
+			"upcoming_exams": "Bài thi sắp tới",
+			"view_calendar": "Xem lịch",
+			"exam_session": "Phiên thi",
+			"no_upcoming_exams": "Không có bài thi sắp tới. Hãy tận hưởng thời gian rảnh!"
 		},
 		"profile": {
 			"title": "Hồ sơ của tôi",
@@ -759,6 +776,18 @@
 					"status": "Trạng thái"
 				}
 			}
+		},
+		"calendar": {
+			"title": "Lịch thi",
+			"subtitle": "Xem tất cả phiên thi sắp tới và đã qua.",
+			"has_exams": "Ngày có bài thi",
+			"exams_on": "Bài thi ngày {{date}}",
+			"select_date": "Chọn một ngày để xem bài thi",
+			"exam_session": "Phiên thi",
+			"no_exams": "Không có bài thi trong ngày này.",
+			"all_upcoming": "Tất cả bài thi sắp tới",
+			"retries_allowed": "Cho phép {{count}} lần thử lại",
+			"attempts": "{{count}} lần thử"
 		},
 		"exam_sessions": {
 			"title": "Phiên thi",
@@ -1653,5 +1682,62 @@
 		"previous_page": "Trước",
 		"next_page": "Tiếp theo",
 		"rows_per_page": "Số hàng mỗi trang"
+	},
+	"admin": {
+		"subscriptions": {
+			"title": "Quản lý đăng ký",
+			"subtitle": "Quản lý đăng ký, gói dịch vụ và xem giao dịch.",
+			"stats": {
+				"total_revenue": "Tổng doanh thu",
+				"active": "Đăng ký hoạt động",
+				"total": "Tổng đăng ký",
+				"monthly_growth": "Doanh thu tháng gần nhất"
+			},
+			"tabs": {
+				"subscriptions": "Đăng ký",
+				"tiers": "Gói dịch vụ",
+				"transactions": "Giao dịch"
+			},
+			"all_subscriptions": "Tất cả đăng ký",
+			"search_placeholder": "Tìm theo ID người dùng hoặc gói...",
+			"filter_status": "Lọc theo trạng thái",
+			"table": {
+				"user_id": "ID người dùng",
+				"plan": "Gói",
+				"status": "Trạng thái",
+				"start_date": "Ngày bắt đầu",
+				"end_date": "Ngày kết thúc",
+				"actions": "Thao tác"
+			},
+			"no_subscriptions": "Không tìm thấy đăng ký nào.",
+			"subscription_tiers": "Gói dịch vụ",
+			"target_role": "Vai trò mục tiêu",
+			"no_tiers": "Chưa có gói dịch vụ nào.",
+			"all_transactions": "Tất cả giao dịch",
+			"tx_table": {
+				"code": "Mã",
+				"amount": "Số tiền",
+				"provider": "Nhà cung cấp",
+				"status": "Trạng thái",
+				"plan": "Gói",
+				"date": "Ngày"
+			},
+			"no_transactions": "Không tìm thấy giao dịch nào.",
+			"actions": {
+				"suspend": "Tạm dừng",
+				"activate": "Kích hoạt",
+				"deactivate": "Vô hiệu hóa",
+				"renew": "Gia hạn"
+			},
+			"confirm_suspend": "Tạm dừng đăng ký",
+			"confirm_suspend_desc": "Bạn có chắc chắn muốn tạm dừng đăng ký của người dùng {{user}}?",
+			"confirm_activate": "Kích hoạt đăng ký",
+			"confirm_activate_desc": "Bạn có chắc chắn muốn kích hoạt đăng ký của người dùng {{user}}?",
+			"suspended_success": "Đã tạm dừng đăng ký thành công.",
+			"activated_success": "Đã kích hoạt đăng ký thành công.",
+			"tier_deactivated": "Đã vô hiệu hóa gói dịch vụ thành công.",
+			"tier_activated": "Đã kích hoạt gói dịch vụ thành công.",
+			"action_failed": "Thao tác thất bại. Vui lòng thử lại."
+		}
 	}
 }

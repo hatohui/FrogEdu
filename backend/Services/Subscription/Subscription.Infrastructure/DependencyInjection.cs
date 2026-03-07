@@ -49,6 +49,7 @@ public static class DependencyInjection
         services.AddScoped<ISubscriptionTierRepository, SubscriptionTierRepository>();
         services.AddScoped<IUserSubscriptionRepository, UserSubscriptionRepository>();
         services.AddScoped<ITransactionRepository, TransactionRepository>();
+        services.AddScoped<IAIUsageRecordRepository, AIUsageRecordRepository>();
 
         // Register database health service
         services.AddScoped<IDatabaseHealthService, DatabaseHealthService>();

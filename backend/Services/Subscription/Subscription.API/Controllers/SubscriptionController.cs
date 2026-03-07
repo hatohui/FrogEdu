@@ -8,11 +8,14 @@ using FrogEdu.Subscription.Application.Commands.DeactivateSubscriptionTier;
 using FrogEdu.Subscription.Application.Commands.DeleteSubscription;
 using FrogEdu.Subscription.Application.Commands.DeleteSubscriptionTier;
 using FrogEdu.Subscription.Application.Commands.RenewSubscription;
+using FrogEdu.Subscription.Application.Commands.RecordAIUsage;
 using FrogEdu.Subscription.Application.Commands.SubscribeToPro;
 using FrogEdu.Subscription.Application.Commands.SuspendSubscription;
 using FrogEdu.Subscription.Application.Commands.UpdateSubscriptionTier;
 using FrogEdu.Subscription.Application.Commands.UpdateTransactionStatus;
 using FrogEdu.Subscription.Application.DTOs;
+using FrogEdu.Subscription.Application.Queries.GetAIUsageHistory;
+using FrogEdu.Subscription.Application.Queries.GetAIUsageLimit;
 using FrogEdu.Subscription.Application.Queries.GetAllSubscriptions;
 using FrogEdu.Subscription.Application.Queries.GetAllSubscriptionTiers;
 using FrogEdu.Subscription.Application.Queries.GetAllTransactions;
@@ -201,6 +204,88 @@ public class SubscriptionController : BaseController
             }
         );
     }
+
+    // ==================== AI USAGE ENDPOINTS ====================
+
+    #region AI Usage
+
+    /// <summary>
+    /// Get current user's AI usage limit status
+    /// </summary>
+    [HttpGet("ai-usage/limit")]
+    [Authorize]
+    [ProducesResponseType(typeof(AIUsageLimitDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    public async Task<IActionResult> GetAIUsageLimit(CancellationToken cancellationToken)
+    {
+        var userId = GetUserIdFromClaims();
+        if (userId is null)
+            return Unauthorized();
+
+        var query = new GetAIUsageLimitQuery(userId.Value);
+        var result = await _mediator.Send(query, cancellationToken);
+        return Ok(result);
+    }
+
+    /// <summary>
+    /// Get current user's AI usage history
+    /// </summary>
+    [HttpGet("ai-usage/history")]
+    [Authorize]
+    [ProducesResponseType(typeof(IReadOnlyList<AIUsageDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    public async Task<IActionResult> GetAIUsageHistory(CancellationToken cancellationToken)
+    {
+        var userId = GetUserIdFromClaims();
+        if (userId is null)
+            return Unauthorized();
+
+        var query = new GetAIUsageHistoryQuery(userId.Value);
+        var result = await _mediator.Send(query, cancellationToken);
+        return Ok(result);
+    }
+
+    /// <summary>
+    /// Record an AI usage (called by AI service or internally)
+    /// </summary>
+    [HttpPost("ai-usage/record")]
+    [Authorize]
+    [ProducesResponseType(typeof(object), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    public async Task<IActionResult> RecordAIUsage(
+        [FromBody] RecordAIUsageRequest request,
+        CancellationToken cancellationToken)
+    {
+        var userId = GetUserIdFromClaims();
+        if (userId is null)
+            return Unauthorized();
+
+        var command = new RecordAIUsageCommand(userId.Value, request.ActionType, request.Metadata);
+        var result = await _mediator.Send(command, cancellationToken);
+
+        if (result.IsFailure)
+        {
+            return BadRequest(new { error = result.Error, limitReached = true });
+        }
+
+        return Ok(new { recordId = result.Value, message = "AI usage recorded successfully" });
+    }
+
+    /// <summary>
+    /// Check AI usage limit for a specific user (internal endpoint)
+    /// </summary>
+    [HttpGet("ai-usage/check/{userId:guid}")]
+    [AllowAnonymous]
+    [ProducesResponseType(typeof(AIUsageLimitDto), StatusCodes.Status200OK)]
+    public async Task<IActionResult> CheckUserAIUsageLimit(Guid userId, CancellationToken cancellationToken)
+    {
+        var query = new GetAIUsageLimitQuery(userId);
+        var result = await _mediator.Send(query, cancellationToken);
+        return Ok(result);
+    }
+
+    #endregion
 
     // ==================== ADMIN ENDPOINTS ====================
 
@@ -769,4 +854,10 @@ public sealed record CancelSubscriptionResponse
 {
     public Guid SubscriptionId { get; init; }
     public string Message { get; init; } = null!;
+}
+
+public sealed record RecordAIUsageRequest
+{
+    public string ActionType { get; init; } = null!;
+    public string? Metadata { get; init; }
 }

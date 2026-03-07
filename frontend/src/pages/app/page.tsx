@@ -4,17 +4,24 @@ import { useMe } from '@/hooks/auth/useMe'
 import { useClasses } from '@/hooks/useClasses'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Progress } from '@/components/ui/progress'
 import {
 	BookOpen,
 	FileText,
 	Users,
 	TrendingUp,
 	Plus,
-	Clock,
+	Crown,
+	CreditCard,
+	Sparkles,
+	CalendarDays,
 } from 'lucide-react'
 import { Link } from 'react-router'
 import { Skeleton } from '@/components/ui/skeleton'
 import { ClassCard } from '@/components/classes'
+import { useSubscription, useAIUsageLimit } from '@/hooks/useSubscription'
+import { useStudentExamSessions } from '@/hooks/useExamSessions'
 
 interface StatCardProps {
 	title: string
@@ -57,9 +64,16 @@ const DashboardPage = (): React.ReactElement => {
 	const { t } = useTranslation()
 	const { user, isLoading: authLoading } = useMe()
 	const isTeacher = user?.role?.name === 'Teacher'
+	const isStudent = user?.role?.name === 'Student'
+	const isAdmin = user?.role?.name === 'Admin'
 
 	// Fetch real data using TanStack Query
 	const { data: classes, isLoading: classesLoading } = useClasses()
+	const { subscription, isPro, isFree } = useSubscription()
+	const { usedCount, maxAllowed, remaining, canUseAI, isUnlimited } =
+		useAIUsageLimit()
+	const { data: upcomingExams, isLoading: examsLoading } =
+		useStudentExamSessions(true)
 
 	const stats = useMemo(() => {
 		if (!classes) return { classCount: 0, studentCount: 0, assignmentCount: 0 }
@@ -71,13 +85,6 @@ const DashboardPage = (): React.ReactElement => {
 	}, [classes])
 
 	const recentClasses = classes?.slice(0, 3) || []
-
-	const recentActivities = [
-		{ id: 1, action: 'Created exam "Math Quiz 1"', time: '2 hours ago' },
-		{ id: 2, action: 'Edited "Science Test Chapter 3"', time: '1 day ago' },
-		{ id: 3, action: 'Added content "Biology Notes"', time: '2 days ago' },
-		{ id: 4, action: 'Reviewed student submissions', time: '3 days ago' },
-	]
 
 	const getUserDisplayName = () => {
 		if (!user) return 'User'
@@ -103,14 +110,192 @@ const DashboardPage = (): React.ReactElement => {
 	return (
 		<div className='p-6 space-y-6 max-w-7xl mx-auto'>
 			{/* Welcome Header */}
-			<div className='space-y-2'>
-				<h1 className='text-3xl font-bold tracking-tight'>
-					{t('pages.app_dashboard.welcome', { name: getUserDisplayName() })}
-				</h1>
-				<p className='text-muted-foreground'>
-					{t('pages.app_dashboard.subtitle')}
-				</p>
+			<div className='flex items-center justify-between'>
+				<div className='space-y-2'>
+					<h1 className='text-3xl font-bold tracking-tight'>
+						{t('pages.app_dashboard.welcome', { name: getUserDisplayName() })}
+					</h1>
+					<p className='text-muted-foreground'>
+						{t('pages.app_dashboard.subtitle')}
+					</p>
+				</div>
+				{!isAdmin && (
+					<Link to='/profile/subscription'>
+						{isPro ? (
+							<Badge className='bg-gradient-to-r from-amber-500 to-orange-500 text-white px-3 py-1'>
+								<Crown className='h-4 w-4 mr-1' />
+								{t('badges.pro')}
+							</Badge>
+						) : (
+							<Button variant='outline' size='sm'>
+								<CreditCard className='h-4 w-4 mr-2' />
+								{t('actions.upgrade_to_pro')}
+							</Button>
+						)}
+					</Link>
+				)}
 			</div>
+
+			{/* Subscription & AI Usage Card for Teachers */}
+			{isTeacher && (
+				<div className='grid gap-4 md:grid-cols-2'>
+					{/* Subscription Status */}
+					<Card>
+						<CardHeader className='pb-3'>
+							<CardTitle className='text-base flex items-center gap-2'>
+								<CreditCard className='h-4 w-4' />
+								{t('pages.app_dashboard.subscription_status')}
+							</CardTitle>
+						</CardHeader>
+						<CardContent>
+							<div className='flex items-center justify-between'>
+								<div>
+									<p className='text-2xl font-bold'>
+										{subscription?.planName || t('badges.free')}
+									</p>
+									{subscription?.isActive && subscription?.endDate && (
+										<p className='text-xs text-muted-foreground mt-1'>
+											{t('pages.app_dashboard.expires_on', {
+												date: new Date(
+													subscription.endDate
+												).toLocaleDateString(),
+											})}
+										</p>
+									)}
+								</div>
+								{isFree && (
+									<Link to='/profile/subscription'>
+										<Button size='sm' variant='default'>
+											{t('actions.upgrade_to_pro')}
+										</Button>
+									</Link>
+								)}
+							</div>
+						</CardContent>
+					</Card>
+
+					{/* AI Usage */}
+					<Card>
+						<CardHeader className='pb-3'>
+							<CardTitle className='text-base flex items-center gap-2'>
+								<Sparkles className='h-4 w-4' />
+								{t('pages.app_dashboard.ai_usage')}
+							</CardTitle>
+						</CardHeader>
+						<CardContent>
+							{isUnlimited ? (
+								<div>
+									<p className='text-2xl font-bold text-green-600'>
+										{t('pages.app_dashboard.unlimited')}
+									</p>
+									<p className='text-xs text-muted-foreground mt-1'>
+										{t('pages.app_dashboard.ai_used_count', {
+											count: usedCount,
+										})}
+									</p>
+								</div>
+							) : (
+								<div className='space-y-2'>
+									<div className='flex justify-between text-sm'>
+										<span>
+											{usedCount} / {maxAllowed}{' '}
+											{t('pages.app_dashboard.generations')}
+										</span>
+										<span className={!canUseAI ? 'text-destructive' : ''}>
+											{remaining} {t('pages.app_dashboard.remaining')}
+										</span>
+									</div>
+									<Progress
+										value={maxAllowed ? (usedCount / maxAllowed) * 100 : 0}
+										className='h-2'
+									/>
+									{!canUseAI && (
+										<p className='text-xs text-destructive'>
+											{t('pages.app_dashboard.ai_limit_reached')}
+										</p>
+									)}
+								</div>
+							)}
+						</CardContent>
+					</Card>
+				</div>
+			)}
+
+			{/* Student: Upcoming Exams */}
+			{isStudent && (
+				<Card>
+					<CardHeader className='flex flex-row items-center justify-between'>
+						<CardTitle className='flex items-center gap-2'>
+							<CalendarDays className='h-5 w-5' />
+							{t('pages.app_dashboard.upcoming_exams')}
+						</CardTitle>
+						<Link to='/app/calendar'>
+							<Button variant='ghost' size='sm'>
+								{t('pages.app_dashboard.view_calendar')}
+							</Button>
+						</Link>
+					</CardHeader>
+					<CardContent>
+						{examsLoading ? (
+							<div className='space-y-3'>
+								{[1, 2, 3].map(i => (
+									<Skeleton key={i} className='h-16' />
+								))}
+							</div>
+						) : upcomingExams && upcomingExams.length > 0 ? (
+							<div className='space-y-3'>
+								{upcomingExams.slice(0, 5).map(session => (
+									<Link
+										key={session.id}
+										to={`/app/exam-sessions/${session.id}`}
+										className='block'
+									>
+										<div className='flex items-center justify-between p-3 rounded-lg border hover:bg-accent transition-colors'>
+											<div className='flex items-center gap-3'>
+												<div className='w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center'>
+													<FileText className='h-5 w-5 text-primary' />
+												</div>
+												<div>
+													<p className='font-medium text-sm'>
+														{t('pages.app_dashboard.exam_session')}
+													</p>
+													<p className='text-xs text-muted-foreground'>
+														{new Date(session.startTime).toLocaleDateString()} -{' '}
+														{new Date(session.startTime).toLocaleTimeString(
+															[],
+															{
+																hour: '2-digit',
+																minute: '2-digit',
+															}
+														)}
+													</p>
+												</div>
+											</div>
+											{session.isCurrentlyActive ? (
+												<Badge className='bg-green-600'>
+													{t('pages.exam_sessions.status.active')}
+												</Badge>
+											) : session.isUpcoming ? (
+												<Badge variant='secondary'>
+													{t('pages.exam_sessions.status.upcoming')}
+												</Badge>
+											) : (
+												<Badge variant='outline'>
+													{t('pages.exam_sessions.status.ended')}
+												</Badge>
+											)}
+										</div>
+									</Link>
+								))}
+							</div>
+						) : (
+							<p className='text-sm text-muted-foreground text-center py-6'>
+								{t('pages.app_dashboard.no_upcoming_exams')}
+							</p>
+						)}
+					</CardContent>
+				</Card>
+			)}
 
 			{/* Stats Grid */}
 			<div className='grid gap-4 md:grid-cols-2 lg:grid-cols-3'>
@@ -136,7 +321,7 @@ const DashboardPage = (): React.ReactElement => {
 				<Card>
 					<CardHeader className='flex flex-row items-center justify-between'>
 						<CardTitle>{t('pages.app_dashboard.recent_classes')}</CardTitle>
-						<Link to='/dashboard/classes'>
+						<Link to='/app/classes'>
 							<Button variant='ghost' size='sm'>
 								{t('pages.app_dashboard.view_all')}
 							</Button>
@@ -156,62 +341,52 @@ const DashboardPage = (): React.ReactElement => {
 				</Card>
 			)}
 
-			{/* Quick Actions */}
+			{/* Quick Actions - role-aware */}
 			<Card>
 				<CardHeader>
 					<CardTitle>{t('pages.app_dashboard.quick_actions.title')}</CardTitle>
 				</CardHeader>
 				<CardContent className='flex flex-wrap gap-4'>
-					<Link to='/app/exams/create'>
-						<Button className='space-x-2'>
-							<Plus className='h-4 w-4' />
-							<span>{t('pages.app_dashboard.quick_actions.create_exam')}</span>
-						</Button>
-					</Link>
-					<Link to='/app/content'>
-						<Button variant='outline' className='space-x-2'>
-							<BookOpen className='h-4 w-4' />
-							<span>
-								{t('pages.app_dashboard.quick_actions.browse_content')}
-							</span>
-						</Button>
-					</Link>
+					{(isTeacher || isAdmin) && (
+						<Link to='/app/exams/create'>
+							<Button className='space-x-2'>
+								<Plus className='h-4 w-4' />
+								<span>
+									{t('pages.app_dashboard.quick_actions.create_exam')}
+								</span>
+							</Button>
+						</Link>
+					)}
 					<Link to='/app/classes'>
 						<Button variant='outline' className='space-x-2'>
 							<Users className='h-4 w-4' />
 							<span>
-								{t('pages.app_dashboard.quick_actions.manage_classes')}
+								{isStudent
+									? t('pages.app_dashboard.quick_actions.my_classes')
+									: t('pages.app_dashboard.quick_actions.manage_classes')}
 							</span>
 						</Button>
 					</Link>
-				</CardContent>
-			</Card>
-
-			{/* Recent Activity */}
-			<Card>
-				<CardHeader>
-					<CardTitle className='flex items-center space-x-2'>
-						<Clock className='h-5 w-5' />
-						<span>{t('pages.app_dashboard.recent_activity')}</span>
-					</CardTitle>
-				</CardHeader>
-				<CardContent>
-					<div className='space-y-4'>
-						{recentActivities.map(activity => (
-							<div
-								key={activity.id}
-								className='flex items-start space-x-3 p-3 rounded-lg hover:bg-accent transition-colors'
-							>
-								<div className='flex-shrink-0 w-2 h-2 mt-2 rounded-full bg-primary' />
-								<div className='flex-1'>
-									<p className='text-sm font-medium'>{activity.action}</p>
-									<p className='text-xs text-muted-foreground'>
-										{activity.time}
-									</p>
-								</div>
-							</div>
-						))}
-					</div>
+					{isStudent && (
+						<Link to='/app/calendar'>
+							<Button variant='outline' className='space-x-2'>
+								<CalendarDays className='h-4 w-4' />
+								<span>
+									{t('pages.app_dashboard.quick_actions.view_calendar')}
+								</span>
+							</Button>
+						</Link>
+					)}
+					{(isTeacher || isAdmin) && (
+						<Link to='/app/content'>
+							<Button variant='outline' className='space-x-2'>
+								<BookOpen className='h-4 w-4' />
+								<span>
+									{t('pages.app_dashboard.quick_actions.browse_content')}
+								</span>
+							</Button>
+						</Link>
+					)}
 				</CardContent>
 			</Card>
 		</div>

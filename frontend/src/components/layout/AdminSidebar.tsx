@@ -18,6 +18,7 @@ import {
 	Shield,
 	Grid3x3,
 	Clock,
+	CreditCard,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
@@ -67,6 +68,11 @@ const adminNavItems: NavItem[] = [
 		labelKey: 'navigation.analytics',
 		href: '/dashboard/analytics',
 		icon: BarChart3,
+	},
+	{
+		labelKey: 'navigation.subscription',
+		href: '/dashboard/subscriptions',
+		icon: CreditCard,
 	},
 	{
 		labelKey: 'navigation.settings',

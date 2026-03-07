@@ -21,6 +21,9 @@
 		"back": "Back",
 		"confirm": "Confirm",
 		"cancel": "Cancel",
+		"all": "All",
+		"active": "Active",
+		"inactive": "Inactive",
 		"app_name": "FrogEdu",
 		"learning_platform": "Learning Platform",
 		"admin_dashboard": "Admin Dashboard",
@@ -362,10 +365,24 @@
 				"title": "Quick Actions",
 				"create_exam": "Create New Exam",
 				"browse_content": "Browse Content Library",
-				"manage_classes": "Manage Classes"
+				"manage_classes": "Manage Classes",
+				"my_classes": "My Classes",
+				"view_calendar": "View Calendar"
 			},
 			"recent_activity": "Recent Activity",
-			"trend_label": "{{value}}% from last month"
+			"trend_label": "{{value}}% from last month",
+			"subscription_status": "Subscription Status",
+			"expires_on": "Expires on {{date}}",
+			"ai_usage": "AI Usage",
+			"unlimited": "Unlimited",
+			"ai_used_count": "{{count}} generations used",
+			"generations": "generations",
+			"remaining": "remaining",
+			"ai_limit_reached": "You've reached your free tier limit. Upgrade to Pro for unlimited AI generations.",
+			"upcoming_exams": "Upcoming Exams",
+			"view_calendar": "View Calendar",
+			"exam_session": "Exam Session",
+			"no_upcoming_exams": "No upcoming exams. Enjoy your free time!"
 		},
 		"profile": {
 			"title": "My Profile",
@@ -557,6 +574,18 @@
 					"status": "Status"
 				}
 			}
+		},
+		"calendar": {
+			"title": "Exam Calendar",
+			"subtitle": "View all your upcoming and past exam sessions.",
+			"has_exams": "Dates with exams",
+			"exams_on": "Exams on {{date}}",
+			"select_date": "Select a date to view exams",
+			"exam_session": "Exam Session",
+			"no_exams": "No exams on this date.",
+			"all_upcoming": "All Upcoming Exams",
+			"retries_allowed": "{{count}} retries allowed",
+			"attempts": "{{count}} attempts"
 		},
 		"exam_sessions": {
 			"title": "Exam Sessions",
@@ -1661,5 +1690,62 @@
 		"previous_page": "Previous",
 		"next_page": "Next",
 		"rows_per_page": "Rows per page"
+	},
+	"admin": {
+		"subscriptions": {
+			"title": "Subscription Management",
+			"subtitle": "Manage subscriptions, tiers, and view transactions.",
+			"stats": {
+				"total_revenue": "Total Revenue",
+				"active": "Active Subscriptions",
+				"total": "Total Subscriptions",
+				"monthly_growth": "Latest Month Revenue"
+			},
+			"tabs": {
+				"subscriptions": "Subscriptions",
+				"tiers": "Tiers",
+				"transactions": "Transactions"
+			},
+			"all_subscriptions": "All Subscriptions",
+			"search_placeholder": "Search by user ID or plan...",
+			"filter_status": "Filter by status",
+			"table": {
+				"user_id": "User ID",
+				"plan": "Plan",
+				"status": "Status",
+				"start_date": "Start Date",
+				"end_date": "End Date",
+				"actions": "Actions"
+			},
+			"no_subscriptions": "No subscriptions found.",
+			"subscription_tiers": "Subscription Tiers",
+			"target_role": "Target Role",
+			"no_tiers": "No subscription tiers configured.",
+			"all_transactions": "All Transactions",
+			"tx_table": {
+				"code": "Code",
+				"amount": "Amount",
+				"provider": "Provider",
+				"status": "Status",
+				"plan": "Plan",
+				"date": "Date"
+			},
+			"no_transactions": "No transactions found.",
+			"actions": {
+				"suspend": "Suspend",
+				"activate": "Activate",
+				"deactivate": "Deactivate",
+				"renew": "Renew"
+			},
+			"confirm_suspend": "Suspend Subscription",
+			"confirm_suspend_desc": "Are you sure you want to suspend the subscription for user {{user}}?",
+			"confirm_activate": "Activate Subscription",
+			"confirm_activate_desc": "Are you sure you want to activate the subscription for user {{user}}?",
+			"suspended_success": "Subscription suspended successfully.",
+			"activated_success": "Subscription activated successfully.",
+			"tier_deactivated": "Tier deactivated successfully.",
+			"tier_activated": "Tier activated successfully.",
+			"action_failed": "Action failed. Please try again."
+		}
 	}
 }

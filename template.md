@@ -2,73 +2,18 @@ As #file:backend-spec.md
 
 use #shadcn and #io.github.upstash/context7 to help me implement the flow where:
 
-[
-{
-"id": "400b28e0-6f30-4ccf-8abf-de2808b84ac4",
-"classId": "e56b83d0-5236-484d-81a3-770a5b9441b4",
-"examId": "68501b10-a3aa-4fe8-9b77-178ad2fed878",
-"startTime": "2026-02-19T12:29:00Z",
-"endTime": "2026-02-20T12:29:00Z",
-"retryTimes": 1,
-"isRetryable": false,
-"isActive": true,
-"shouldShuffleQuestions": false,
-"shouldShuffleAnswers": false,
-"allowPartialScoring": true,
-"isCurrentlyActive": false,
-"isUpcoming": true,
-"hasEnded": false,
-"attemptCount": 0,
-"createdAt": "2026-02-18T12:29:38.75819Z"
-},
-{
-"id": "37adbe39-5a40-4881-9bae-b651f9e79672",
-"classId": "e56b83d0-5236-484d-81a3-770a5b9441b4",
-"examId": "306d7ae1-970b-45a6-a38a-61a8f47cd4d5",
-"startTime": "2026-02-18T12:36:00Z",
-"endTime": "2026-02-19T12:36:00Z",
-"retryTimes": 1,
-"isRetryable": true,
-"isActive": true,
-"shouldShuffleQuestions": false,
-"shouldShuffleAnswers": false,
-"allowPartialScoring": true,
-"isCurrentlyActive": true,
-"isUpcoming": false,
-"hasEnded": false,
-"attemptCount": 0,
-"createdAt": "2026-02-18T12:37:07.754546Z"
-},
-{
-"id": "31422322-03e5-4988-890f-0be887ef1d58",
-"classId": "e56b83d0-5236-484d-81a3-770a5b9441b4",
-"examId": "306d7ae1-970b-45a6-a38a-61a8f47cd4d5",
-"startTime": "2026-02-18T12:36:00Z",
-"endTime": "2026-02-19T12:36:00Z",
-"retryTimes": 1,
-"isRetryable": true,
-"isActive": true,
-"shouldShuffleQuestions": false,
-"shouldShuffleAnswers": false,
-"allowPartialScoring": true,
-"isCurrentlyActive": true,
-"isUpcoming": false,
-"hasEnded": false,
-"attemptCount": 0,
-"createdAt": "2026-02-18T12:37:08.014343Z"
-}
-]
+- Free Tier Subscription can only generate 3 times using AI.
+- Paid Tier Subscription can generate unlimited times using AI.
+- AI services should also track the user's usage and update the subscription status accordingly.
+- The system should have a mechanism to notify users when they are approaching their usage limits or when their subscription is about to expire.
+- The system should also have a mechanism to handle subscription renewals and cancellations.
+- The user should be able to view their subscription status and usage history in their dashboard.
+- When user subscribes to a plan, the system should create a subscription record in the database and associate it with the user. It should also create a transaction record for the payment and update the user's subscription status accordingly. -> Admins can see revenues in the dashboard and can also see the list of subscribers and their subscription status. Admins can also manage subscription plans and pricing.
+- The NavBar and SideBar should only shows what the role of the user is allowed to see, for example, if the user is not an admin, they should not see the admin dashboard link. If the user is not logged in, they should only see the login and register links. ex: Students shouldn't be able to see the exam creation, there's already a exam taking or UPCOMING exam.
 
-the
-https://api.frogedu.org/api/classes/exam-sessions/student?upcomingOnly=false
+If anything, there should be a calendar for them to see upcoming exams and they can click on it to see the details of the exam, and if they are allowed to take the exam, they can click on the button to start the exam. If they are not allowed to take the exam, they should see a message saying that they are not allowed to take the exam.
 
-is returning duplicates so one item appear twice, this should not happen as they should only return enrolled exams once.
-
-There's no way for you to see the attempts taken also
-
-- Student can't see their own scores after submitting, if its their second try they don't show it as "retry" but as "start exam"
-- Teachers can't see the attempts and score list taken by students
-- Admin dashboard should also be able to see this in the dashboard under exams
+The dashboard right now is hard code but it should be dynamic and should show the user's subscription status, usage history if user is a Teacher, upcoming exams if the user is a Student. The admin dashboard should show the list of subscribers, their subscription status, and the revenues generated from the subscriptions. The admin should also be able to manage subscription plans and pricing from the dashboard.
 
 Rules to follow:
 

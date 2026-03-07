@@ -176,7 +176,7 @@ services:
   frog-subscription-service:
     build:
       context: .
-      dockerfile: Services/AI/dev.Dockerfile
+      dockerfile: Services/Subscription/dev.Dockerfile
     container_name: frog-subscription-service
     environment:
       ASPNETCORE_ENVIRONMENT: Development
@@ -185,7 +185,7 @@ services:
     ports:
       - "8003:8080"
     volumes:
-      - ./Services/AI:/src/Services/AI
+      - ./Services/Subscription:/src/Services/Subscription
       - ./Shared:/src/Shared
     networks:
       - frogedu-network

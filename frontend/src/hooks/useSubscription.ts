@@ -135,3 +135,104 @@ export const useSubscriptionDashboardStats = () => {
 		staleTime: 5 * 60 * 1000,
 	})
 }
+
+/**
+ * Hook for AI usage limit info
+ */
+export const useAIUsageLimit = () => {
+	const isAuthenticated = useAuthStore(state => state.isAuthenticated)
+
+	const {
+		data: usageLimit,
+		isLoading,
+		error,
+		refetch,
+	} = useQuery({
+		queryKey: ['ai-usage', 'limit'],
+		queryFn: () => subscriptionService.getAIUsageLimit(),
+		staleTime: 2 * 60 * 1000,
+		retry: 1,
+		enabled: isAuthenticated,
+	})
+
+	return {
+		usageLimit,
+		isLoading,
+		error,
+		refetch,
+		canUseAI: usageLimit?.canUseAI ?? false,
+		isUnlimited: usageLimit?.isUnlimited ?? false,
+		remaining: usageLimit?.remaining ?? 0,
+		usedCount: usageLimit?.usedCount ?? 0,
+		maxAllowed: usageLimit?.maxAllowed ?? null,
+	}
+}
+
+/**
+ * Hook for AI usage history
+ */
+export const useAIUsageHistory = () => {
+	const isAuthenticated = useAuthStore(state => state.isAuthenticated)
+
+	return useQuery({
+		queryKey: ['ai-usage', 'history'],
+		queryFn: () => subscriptionService.getAIUsageHistory(),
+		staleTime: 2 * 60 * 1000,
+		retry: 1,
+		enabled: isAuthenticated,
+	})
+}
+
+/**
+ * Hook for recording AI usage
+ */
+export const useRecordAIUsage = () => {
+	const queryClient = useQueryClient()
+
+	return useMutation({
+		mutationFn: ({
+			actionType,
+			metadata,
+		}: {
+			actionType: string
+			metadata?: string
+		}) => subscriptionService.recordAIUsage(actionType, metadata),
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ['ai-usage'] })
+		},
+		onError: (error: Error) => {
+			toast.error(error.message || 'AI usage limit reached')
+		},
+	})
+}
+
+/**
+ * Hook for admin subscription management
+ */
+export const useAdminSubscriptions = (status?: string) => {
+	return useQuery({
+		queryKey: ['admin', 'subscriptions', status],
+		queryFn: () => subscriptionService.getAllSubscriptions(status),
+		staleTime: 2 * 60 * 1000,
+	})
+}
+
+export const useAdminTiers = (includeInactive = true) => {
+	return useQuery({
+		queryKey: ['admin', 'tiers', includeInactive],
+		queryFn: () => subscriptionService.getAllTiers(includeInactive),
+		staleTime: 5 * 60 * 1000,
+	})
+}
+
+export const useAdminTransactions = (
+	paymentStatus?: string,
+	paymentProvider?: string
+) => {
+	return useQuery({
+		queryKey: ['admin', 'transactions', paymentStatus, paymentProvider],
+		queryFn: () =>
+			subscriptionService.getAllTransactions(paymentStatus, paymentProvider),
+		staleTime: 2 * 60 * 1000,
+	})
+}

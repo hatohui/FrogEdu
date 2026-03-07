@@ -13,6 +13,8 @@ import {
 	Grid3x3,
 	Users,
 	ClipboardList,
+	CalendarDays,
+	CreditCard,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
@@ -31,6 +33,9 @@ interface NavItem {
 	href: string
 	icon: React.ComponentType<{ className?: string }>
 	adminOnly?: boolean
+	teacherOnly?: boolean
+	studentOnly?: boolean
+	roles?: string[] // explicit roles that can see this item
 }
 
 const navItems: NavItem[] = [
@@ -49,6 +54,7 @@ const navItems: NavItem[] = [
 		labelKey: 'navigation.exams',
 		href: '/app/exams',
 		icon: FileText,
+		roles: ['Admin', 'Teacher'],
 	},
 	{
 		labelKey: 'navigation.classes',
@@ -61,9 +67,21 @@ const navItems: NavItem[] = [
 		icon: ClipboardList,
 	},
 	{
+		labelKey: 'navigation.calendar',
+		href: '/app/calendar',
+		icon: CalendarDays,
+		studentOnly: true,
+	},
+	{
 		labelKey: 'navigation.matrices',
 		href: '/app/matrices',
 		icon: Grid3x3,
+		roles: ['Admin', 'Teacher'],
+	},
+	{
+		labelKey: 'navigation.subscription',
+		href: '/profile/subscription',
+		icon: CreditCard,
 	},
 	{
 		labelKey: 'navigation.profile',
@@ -175,8 +193,15 @@ const Sidebar = ({
 				<nav className='flex-1 p-4 space-y-2 overflow-y-auto min-h-0'>
 					{navItems
 						.filter(item => {
-							const isAdmin = me?.role?.name === 'Admin'
+							const userRole = me?.role?.name
+							const isAdmin = userRole === 'Admin'
+							const isTeacher = userRole === 'Teacher'
+							const isStudent = userRole === 'Student'
+
 							if (item.adminOnly) return isAdmin
+							if (item.teacherOnly) return isTeacher || isAdmin
+							if (item.studentOnly) return isStudent
+							if (item.roles) return item.roles.includes(userRole ?? '')
 							return true
 						})
 						.map(item => {
