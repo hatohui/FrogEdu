@@ -2,6 +2,7 @@ import React, { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useMe } from '@/hooks/auth/useMe'
 import { useClasses } from '@/hooks/useClasses'
+import { useEffectiveRole } from '@/hooks/useEffectiveRole'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -62,10 +63,8 @@ const StatCard = ({ title, value, icon: Icon, trend }: StatCardProps) => {
 
 const DashboardPage = (): React.ReactElement => {
 	const { t } = useTranslation()
-	const { user, isLoading: authLoading } = useMe()
-	const isTeacher = user?.role?.name === 'Teacher'
-	const isStudent = user?.role?.name === 'Student'
-	const isAdmin = user?.role?.name === 'Admin'
+	const { user } = useMe()
+	const { isTeacher, isStudent, isAdmin, isViewingAs } = useEffectiveRole()
 
 	// Fetch real data using TanStack Query
 	const { data: classes, isLoading: classesLoading } = useClasses()
@@ -91,7 +90,7 @@ const DashboardPage = (): React.ReactElement => {
 		return user?.firstName || user?.email?.split('@')[0] || 'User'
 	}
 
-	const isLoading = authLoading || classesLoading
+	const isLoading = classesLoading
 
 	if (isLoading) {
 		return (
@@ -116,7 +115,11 @@ const DashboardPage = (): React.ReactElement => {
 						{t('pages.app_dashboard.welcome', { name: getUserDisplayName() })}
 					</h1>
 					<p className='text-muted-foreground'>
-						{t('pages.app_dashboard.subtitle')}
+						{isViewingAs
+							? t('pages.app_dashboard.subtitle_preview', {
+									role: isTeacher ? t('roles.teacher') : t('roles.student'),
+								})
+							: t('pages.app_dashboard.subtitle')}
 					</p>
 				</div>
 				{!isAdmin && (

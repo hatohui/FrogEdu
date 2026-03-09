@@ -382,7 +382,8 @@
 			"upcoming_exams": "Upcoming Exams",
 			"view_calendar": "View Calendar",
 			"exam_session": "Exam Session",
-			"no_upcoming_exams": "No upcoming exams. Enjoy your free time!"
+			"no_upcoming_exams": "No upcoming exams. Enjoy your free time!",
+			"subtitle_preview": "Previewing dashboard as {{role}}."
 		},
 		"profile": {
 			"title": "My Profile",
@@ -1615,6 +1616,12 @@
 			"undo": "Undo",
 			"action_undone": "Action undone"
 		}
+	},
+	"header": {
+		"view_as": "View As",
+		"viewing_as": "Viewing as {{role}}",
+		"preview_as_role": "Preview UI as role",
+		"exit_preview": "Exit Preview"
 	},
 	"dashboard": {
 		"welcome": "Welcome back, {{name}}!",

@@ -19,6 +19,7 @@ import {
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
 import { useMe } from '@/hooks/auth/useMe'
+import { useEffectiveRole } from '@/hooks/useEffectiveRole'
 import UserAvatar from '../common/UserAvatar'
 import {
 	Tooltip,
@@ -105,6 +106,7 @@ const Sidebar = ({
 }: SidebarProps): React.ReactElement => {
 	const location = useLocation()
 	const { user: me, signOut } = useMe()
+	const { effectiveRole } = useEffectiveRole()
 	const { t } = useTranslation()
 
 	const handleSignOut = async () => {
@@ -193,7 +195,7 @@ const Sidebar = ({
 				<nav className='flex-1 p-4 space-y-2 overflow-y-auto min-h-0'>
 					{navItems
 						.filter(item => {
-							const userRole = me?.role?.name
+							const userRole = effectiveRole
 							const isAdmin = userRole === 'Admin'
 							const isTeacher = userRole === 'Teacher'
 							const isStudent = userRole === 'Student'

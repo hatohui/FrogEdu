@@ -300,7 +300,8 @@
 			"upcoming_exams": "Bài thi sắp tới",
 			"view_calendar": "Xem lịch",
 			"exam_session": "Phiên thi",
-			"no_upcoming_exams": "Không có bài thi sắp tới. Hãy tận hưởng thời gian rảnh!"
+			"no_upcoming_exams": "Không có bài thi sắp tới. Hãy tận hưởng thời gian rảnh!",
+			"subtitle_preview": "Đang xem trước giao diện với vai trò {{role}}."
 		},
 		"profile": {
 			"title": "Hồ sơ của tôi",
@@ -1607,6 +1608,12 @@
 			"curriculum_badge": "Chương trình",
 			"custom_badge": "Tùy chỉnh"
 		}
+	},
+	"header": {
+		"view_as": "Xem dưới dạng",
+		"viewing_as": "Đang xem với vai trò {{role}}",
+		"preview_as_role": "Xem trước giao diện theo vai trò",
+		"exit_preview": "Thoát xem trước"
 	},
 	"dashboard": {
 		"welcome": "Chào mừng trở lại, {{name}}!",
