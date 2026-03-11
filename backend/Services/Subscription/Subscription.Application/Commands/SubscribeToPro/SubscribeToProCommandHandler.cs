@@ -1,5 +1,6 @@
 using FrogEdu.Shared.Kernel;
 using FrogEdu.Subscription.Domain.Entities;
+using FrogEdu.Subscription.Domain.Enums;
 using FrogEdu.Subscription.Domain.Repositories;
 using MediatR;
 
@@ -13,14 +14,17 @@ public sealed class SubscribeToProCommandHandler
 {
     private readonly IUserSubscriptionRepository _userSubscriptionRepository;
     private readonly ISubscriptionTierRepository _subscriptionTierRepository;
+    private readonly ITransactionRepository _transactionRepository;
 
     public SubscribeToProCommandHandler(
         IUserSubscriptionRepository userSubscriptionRepository,
-        ISubscriptionTierRepository subscriptionTierRepository
+        ISubscriptionTierRepository subscriptionTierRepository,
+        ITransactionRepository transactionRepository
     )
     {
         _userSubscriptionRepository = userSubscriptionRepository;
         _subscriptionTierRepository = subscriptionTierRepository;
+        _transactionRepository = transactionRepository;
     }
 
     public async Task<Result<Guid>> Handle(
@@ -55,6 +59,20 @@ public sealed class SubscribeToProCommandHandler
 
         await _userSubscriptionRepository.AddAsync(subscription, cancellationToken);
         await _userSubscriptionRepository.SaveChangesAsync(cancellationToken);
+
+        // Create a paid transaction for revenue tracking (mock payment)
+        var transactionCode =
+            $"PRO-{DateTime.UtcNow:yyyyMMddHHmmss}-{Guid.NewGuid().ToString("N")[..8].ToUpper()}";
+        var transaction = Transaction.Create(
+            transactionCode,
+            proTier.Price,
+            PaymentProvider.PayOS,
+            subscription.Id
+        );
+        transaction.MarkAsPaid(transactionCode);
+
+        await _transactionRepository.AddAsync(transaction, cancellationToken);
+        await _transactionRepository.SaveChangesAsync(cancellationToken);
 
         return Result<Guid>.Success(subscription.Id);
     }

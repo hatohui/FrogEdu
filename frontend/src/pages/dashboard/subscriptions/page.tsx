@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import {
 	CreditCard,
 	Search,
@@ -12,6 +12,11 @@ import {
 	Play,
 	RefreshCw,
 	Loader2,
+	User,
+	Mail,
+	Calendar,
+	Zap,
+	Clock,
 } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -19,6 +24,14 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
 import { Skeleton } from '@/components/ui/skeleton'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Separator } from '@/components/ui/separator'
+import {
+	Sheet,
+	SheetContent,
+	SheetHeader,
+	SheetTitle,
+} from '@/components/ui/sheet'
 import {
 	Table,
 	TableBody,
@@ -57,10 +70,13 @@ import {
 	useSubscriptionDashboardStats,
 } from '@/hooks/useSubscription'
 import subscriptionService from '@/services/subscription.service'
-import { useQueryClient } from '@tanstack/react-query'
+import userService from '@/services/user-microservice/user.service'
+import { useQueryClient, useQueries, useQuery } from '@tanstack/react-query'
+import { userKeys } from '@/hooks/useUsers'
 import { toast } from 'sonner'
 import type { AdminSubscriptionDto } from '@/types/dtos/subscriptions'
 import type { SubscriptionTier } from '@/types/model/subscription'
+import type { GetMeResponse } from '@/types/dtos/users/user'
 
 // ─── Stat Card Component ───
 
@@ -93,6 +109,267 @@ const StatCard = ({
 		</CardContent>
 	</Card>
 )
+
+// ─── User Cell Component ───
+
+const UserCell = ({ user }: { user: GetMeResponse | undefined }) => {
+	if (!user) {
+		return (
+			<span className='text-muted-foreground text-xs italic'>Loading…</span>
+		)
+	}
+	const initials =
+		`${user.firstName?.[0] ?? ''}${user.lastName?.[0] ?? ''}`.toUpperCase()
+	return (
+		<div className='flex items-center gap-2'>
+			<Avatar className='h-7 w-7'>
+				<AvatarImage src={user.avatarUrl ?? undefined} />
+				<AvatarFallback className='text-xs'>{initials}</AvatarFallback>
+			</Avatar>
+			<div className='leading-tight'>
+				<p className='text-sm font-medium'>
+					{user.firstName} {user.lastName}
+				</p>
+				<p className='text-xs text-muted-foreground'>{user.email}</p>
+			</div>
+		</div>
+	)
+}
+
+// ─── Subscription Detail Sheet ───
+
+interface SubscriptionDetailSheetProps {
+	sub: AdminSubscriptionDto | null
+	user: GetMeResponse | undefined
+	open: boolean
+	onOpenChange: (open: boolean) => void
+}
+
+const SubscriptionDetailSheet = ({
+	sub,
+	user,
+	open,
+	onOpenChange,
+}: SubscriptionDetailSheetProps) => {
+	const { t } = useTranslation()
+	const { data: aiUsage, isLoading: aiLoading } = useQuery({
+		queryKey: ['subscription', 'ai-usage-admin', sub?.userId],
+		queryFn: () => subscriptionService.getAIUsageLimitForUser(sub!.userId),
+		enabled: open && !!sub?.userId,
+		staleTime: 30 * 1000,
+	})
+
+	if (!sub) return null
+
+	const startDate = new Date(sub.startDate)
+	const endDate = new Date(sub.endDate)
+	const now = new Date()
+	const totalMs = endDate.getTime() - startDate.getTime()
+	const elapsedMs = Math.min(now.getTime() - startDate.getTime(), totalMs)
+	const monthsSubscribed = Math.max(
+		0,
+		Math.floor(elapsedMs / (1000 * 60 * 60 * 24 * 30))
+	)
+	const daysLeft = Math.max(
+		0,
+		Math.ceil((endDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24))
+	)
+
+	const initials = user
+		? `${user.firstName?.[0] ?? ''}${user.lastName?.[0] ?? ''}`.toUpperCase()
+		: '?'
+
+	return (
+		<Sheet open={open} onOpenChange={onOpenChange}>
+			<SheetContent className='w-1/4 px-5 sm:w-[480px] overflow-y-auto'>
+				<SheetHeader className='pb-4'>
+					<SheetTitle>
+						{t('admin.subscriptions.detail.title', 'Subscription Details')}
+					</SheetTitle>
+				</SheetHeader>
+
+				{/* User Info */}
+				<div className='space-y-4'>
+					<div className='flex items-center gap-4 p-4 rounded-lg bg-muted/50'>
+						<Avatar className='h-14 w-14'>
+							<AvatarImage src={user?.avatarUrl ?? undefined} />
+							<AvatarFallback className='text-lg font-semibold'>
+								{initials}
+							</AvatarFallback>
+						</Avatar>
+						<div>
+							{user ? (
+								<>
+									<p className='text-base font-semibold'>
+										{user.firstName} {user.lastName}
+									</p>
+									<div className='flex items-center gap-1 text-sm text-muted-foreground'>
+										<Mail className='h-3 w-3' />
+										{user.email}
+									</div>
+									<div className='flex items-center gap-1 text-xs text-muted-foreground mt-1'>
+										<User className='h-3 w-3' />
+										{user.id}
+									</div>
+								</>
+							) : (
+								<>
+									<Skeleton className='h-4 w-32 mb-1' />
+									<Skeleton className='h-3 w-40' />
+								</>
+							)}
+						</div>
+					</div>
+
+					<Separator />
+
+					{/* Subscription Info */}
+					<div className='space-y-3'>
+						<h3 className='text-sm font-semibold text-muted-foreground uppercase tracking-wide'>
+							{t('admin.subscriptions.detail.subscription', 'Subscription')}
+						</h3>
+						<div className='grid grid-cols-2 gap-3'>
+							<div className='space-y-1'>
+								<p className='text-xs text-muted-foreground'>
+									{t('admin.subscriptions.table.plan', 'Plan')}
+								</p>
+								<Badge variant='outline' className='font-medium'>
+									{sub.planName}
+								</Badge>
+							</div>
+							<div className='space-y-1'>
+								<p className='text-xs text-muted-foreground'>
+									{t('admin.subscriptions.table.status', 'Status')}
+								</p>
+								{getStatusBadge(sub.status)}
+							</div>
+							<div className='space-y-1'>
+								<p className='text-xs text-muted-foreground flex items-center gap-1'>
+									<Calendar className='h-3 w-3' />
+									{t('admin.subscriptions.table.start_date', 'Start Date')}
+								</p>
+								<p className='text-sm font-medium'>
+									{startDate.toLocaleDateString()}
+								</p>
+							</div>
+							<div className='space-y-1'>
+								<p className='text-xs text-muted-foreground flex items-center gap-1'>
+									<Calendar className='h-3 w-3' />
+									{t('admin.subscriptions.table.end_date', 'End Date')}
+								</p>
+								<p className='text-sm font-medium'>
+									{endDate.toLocaleDateString()}
+								</p>
+							</div>
+							<div className='space-y-1'>
+								<p className='text-xs text-muted-foreground flex items-center gap-1'>
+									<Clock className='h-3 w-3' />
+									{t(
+										'admin.subscriptions.detail.months_subscribed',
+										'Months Subscribed'
+									)}
+								</p>
+								<p className='text-sm font-medium'>{monthsSubscribed}</p>
+							</div>
+							<div className='space-y-1'>
+								<p className='text-xs text-muted-foreground'>
+									{t('admin.subscriptions.detail.days_left', 'Days Left')}
+								</p>
+								<p
+									className={`text-sm font-medium ${daysLeft <= 7 ? 'text-destructive' : ''}`}
+								>
+									{daysLeft}
+								</p>
+							</div>
+						</div>
+					</div>
+
+					<Separator />
+
+					{/* AI Usage */}
+					<div className='space-y-3'>
+						<h3 className='text-sm font-semibold text-muted-foreground uppercase tracking-wide flex items-center gap-1'>
+							<Zap className='h-3.5 w-3.5' />
+							{t('admin.subscriptions.detail.ai_usage', 'AI Usage')}
+						</h3>
+						{aiLoading ? (
+							<div className='space-y-2'>
+								<Skeleton className='h-4 w-full' />
+								<Skeleton className='h-4 w-3/4' />
+							</div>
+						) : aiUsage ? (
+							<div className='grid grid-cols-2 gap-3'>
+								<div className='space-y-1'>
+									<p className='text-xs text-muted-foreground'>
+										{t(
+											'admin.subscriptions.detail.used_this_month',
+											'Used This Month'
+										)}
+									</p>
+									<p className='text-sm font-medium'>{aiUsage.usedCount}</p>
+								</div>
+								<div className='space-y-1'>
+									<p className='text-xs text-muted-foreground'>
+										{t('admin.subscriptions.detail.ai_limit', 'Limit')}
+									</p>
+									<p className='text-sm font-medium'>
+										{aiUsage.isUnlimited ? '∞' : aiUsage.maxAllowed}
+									</p>
+								</div>
+								{!aiUsage.isUnlimited && aiUsage.maxAllowed !== null && (
+									<div className='col-span-2 space-y-1'>
+										<div className='flex justify-between text-xs text-muted-foreground'>
+											<span>
+												{t('admin.subscriptions.detail.remaining', 'Remaining')}
+											</span>
+											<span>
+												{aiUsage.remaining} / {aiUsage.maxAllowed}
+											</span>
+										</div>
+										<div className='h-2 rounded-full bg-muted overflow-hidden'>
+											<div
+												className='h-full rounded-full bg-[var(--frog-700)]'
+												style={{
+													width: `${Math.min(100, (aiUsage.usedCount / aiUsage.maxAllowed) * 100)}%`,
+												}}
+											/>
+										</div>
+									</div>
+								)}
+							</div>
+						) : (
+							<p className='text-sm text-muted-foreground'>
+								{t(
+									'admin.subscriptions.detail.no_ai_data',
+									'No usage data available'
+								)}
+							</p>
+						)}
+					</div>
+
+					<Separator />
+
+					{/* IDs */}
+					<div className='space-y-2'>
+						<h3 className='text-sm font-semibold text-muted-foreground uppercase tracking-wide'>
+							{t('admin.subscriptions.detail.ids', 'Reference IDs')}
+						</h3>
+						<div className='space-y-1.5'>
+							<div className='flex justify-between text-xs'>
+								<span className='text-muted-foreground'>Subscription ID</span>
+								<span className='font-mono'>{sub.id.slice(0, 8)}…</span>
+							</div>
+							<div className='flex justify-between text-xs'>
+								<span className='text-muted-foreground'>User ID</span>
+								<span className='font-mono'>{sub.userId.slice(0, 8)}…</span>
+							</div>
+						</div>
+					</div>
+				</div>
+			</SheetContent>
+		</Sheet>
+	)
+}
 
 // ─── Status Badge Helper ───
 
@@ -137,6 +414,10 @@ const SubscriptionsPage = (): React.ReactElement => {
 	const [statusFilter, setStatusFilter] = useState<string>('all')
 	const [searchQuery, setSearchQuery] = useState('')
 	const [actionLoading, setActionLoading] = useState<string | null>(null)
+	const [selectedSub, setSelectedSub] = useState<AdminSubscriptionDto | null>(
+		null
+	)
+	const [sheetOpen, setSheetOpen] = useState(false)
 	const [confirmDialog, setConfirmDialog] = useState<{
 		open: boolean
 		title: string
@@ -153,14 +434,39 @@ const SubscriptionsPage = (): React.ReactElement => {
 	const { data: tiers, isLoading: tiersLoading } = useAdminTiers(true)
 	const { data: transactions, isLoading: txLoading } = useAdminTransactions()
 
-	// Filter subscriptions by search
+	// Fetch user data for all unique userIds in parallel
+	const uniqueUserIds = useMemo(
+		() => [...new Set(subscriptions?.map(s => s.userId) ?? [])],
+		[subscriptions]
+	)
+	const userQueries = useQueries({
+		queries: uniqueUserIds.map(userId => ({
+			queryKey: userKeys.detail(userId),
+			queryFn: () => userService.getUserById(userId),
+			staleTime: 5 * 60 * 1000,
+		})),
+	})
+	const userMap = useMemo(() => {
+		const map: Record<string, GetMeResponse> = {}
+		uniqueUserIds.forEach((id, i) => {
+			const data = userQueries[i]?.data
+			if (data) map[id] = data
+		})
+		return map
+	}, [uniqueUserIds, userQueries])
+
+	// Filter subscriptions by search (name, email, plan, id)
 	const filteredSubscriptions = subscriptions?.filter(sub => {
 		if (!searchQuery) return true
 		const q = searchQuery.toLowerCase()
+		const user = userMap[sub.userId]
 		return (
 			sub.userId.toLowerCase().includes(q) ||
 			sub.planName.toLowerCase().includes(q) ||
-			sub.id.toLowerCase().includes(q)
+			sub.id.toLowerCase().includes(q) ||
+			(user &&
+				(`${user.firstName} ${user.lastName}`.toLowerCase().includes(q) ||
+					user.email.toLowerCase().includes(q)))
 		)
 	})
 
@@ -206,12 +512,19 @@ const SubscriptionsPage = (): React.ReactElement => {
 		})
 	}
 
+	const getUserLabel = (sub: AdminSubscriptionDto) => {
+		const user = userMap[sub.userId]
+		return user
+			? `${user.firstName} ${user.lastName}`
+			: sub.userId.slice(0, 8) + '...'
+	}
+
 	const handleSuspend = (sub: AdminSubscriptionDto) => {
 		setConfirmDialog({
 			open: true,
 			title: t('admin.subscriptions.confirm_suspend'),
 			description: t('admin.subscriptions.confirm_suspend_desc', {
-				user: sub.userId,
+				user: getUserLabel(sub),
 			}),
 			action: async () => {
 				setActionLoading(sub.id)
@@ -233,7 +546,7 @@ const SubscriptionsPage = (): React.ReactElement => {
 			open: true,
 			title: t('admin.subscriptions.confirm_activate'),
 			description: t('admin.subscriptions.confirm_activate_desc', {
-				user: sub.userId,
+				user: getUserLabel(sub),
 			}),
 			action: async () => {
 				setActionLoading(sub.id)
@@ -357,7 +670,7 @@ const SubscriptionsPage = (): React.ReactElement => {
 									<TableHeader>
 										<TableRow>
 											<TableHead>
-												{t('admin.subscriptions.table.user_id')}
+												{t('admin.subscriptions.table.user', 'User')}
 											</TableHead>
 											<TableHead>
 												{t('admin.subscriptions.table.plan')}
@@ -380,9 +693,16 @@ const SubscriptionsPage = (): React.ReactElement => {
 										{filteredSubscriptions &&
 										filteredSubscriptions.length > 0 ? (
 											filteredSubscriptions.map(sub => (
-												<TableRow key={sub.id}>
-													<TableCell className='font-mono text-xs'>
-														{sub.userId.slice(0, 8)}...
+												<TableRow
+													key={sub.id}
+													className='cursor-pointer hover:bg-muted/50'
+													onClick={() => {
+														setSelectedSub(sub)
+														setSheetOpen(true)
+													}}
+												>
+													<TableCell>
+														<UserCell user={userMap[sub.userId]} />
 													</TableCell>
 													<TableCell>
 														<Badge variant='outline'>{sub.planName}</Badge>
@@ -394,7 +714,10 @@ const SubscriptionsPage = (): React.ReactElement => {
 													<TableCell className='text-sm'>
 														{new Date(sub.endDate).toLocaleDateString()}
 													</TableCell>
-													<TableCell className='text-right'>
+													<TableCell
+														className='text-right'
+														onClick={e => e.stopPropagation()}
+													>
 														<DropdownMenu>
 															<DropdownMenuTrigger asChild>
 																<Button
@@ -496,7 +819,7 @@ const SubscriptionsPage = (): React.ReactElement => {
 												</p>
 												<div className='flex items-baseline gap-1'>
 													<span className='text-3xl font-bold'>
-														${tier.price}
+														{tier.currency} {tier.price.toLocaleString()}
 													</span>
 													<span className='text-sm text-muted-foreground'>
 														/{tier.durationInDays} {t('common.days')}
@@ -657,6 +980,14 @@ const SubscriptionsPage = (): React.ReactElement => {
 					</DialogFooter>
 				</DialogContent>
 			</Dialog>
+
+			{/* Subscription Detail Sheet */}
+			<SubscriptionDetailSheet
+				sub={selectedSub}
+				user={selectedSub ? userMap[selectedSub.userId] : undefined}
+				open={sheetOpen}
+				onOpenChange={setSheetOpen}
+			/>
 		</div>
 	)
 }

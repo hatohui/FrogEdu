@@ -34,11 +34,15 @@ public class ExamsController(IMediator mediator, IExamRepository examRepository)
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<ActionResult<GetExamsResponse>> GetExams(
         [FromQuery] bool? isDraft,
+        [FromQuery] string? role,
         CancellationToken cancellationToken
     )
     {
         var userId = GetAuthenticatedUserId();
-        var query = new GetExamsQuery(isDraft, userId);
+        var jwtRole = GetUserRole();
+        // Allow admins to override their role for view-as simulation; non-admins always use their JWT role
+        var effectiveRole = jwtRole == "Admin" && !string.IsNullOrEmpty(role) ? role : jwtRole;
+        var query = new GetExamsQuery(isDraft, userId, effectiveRole);
         var response = await _mediator.Send(query, cancellationToken);
         return Ok(response);
     }

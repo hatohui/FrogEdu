@@ -80,6 +80,16 @@ class SubscriptionService {
 	}
 
 	/**
+	 * Get AI usage limit info for a specific user (admin/internal use)
+	 */
+	async getAIUsageLimitForUser(userId: string): Promise<AIUsageLimitInfo> {
+		const response = await axiosInstance.get<AIUsageLimitInfo>(
+			`${this.baseUrl}/ai-usage/check/${userId}`
+		)
+		return response.data
+	}
+
+	/**
 	 * Get current user's AI usage history
 	 */
 	async getAIUsageHistory(): Promise<AIUsageRecord[]> {
@@ -119,9 +129,7 @@ class SubscriptionService {
 	/**
 	 * Get all subscriptions (Admin only)
 	 */
-	async getAllSubscriptions(
-		status?: string
-	): Promise<AdminSubscriptionDto[]> {
+	async getAllSubscriptions(status?: string): Promise<AdminSubscriptionDto[]> {
 		const params = status ? { status } : {}
 		const response = await axiosInstance.get<AdminSubscriptionDto[]>(
 			`${this.baseUrl}/admin/subscriptions`,
@@ -133,9 +141,7 @@ class SubscriptionService {
 	/**
 	 * Get all tiers including inactive (Admin only)
 	 */
-	async getAllTiers(
-		includeInactive = true
-	): Promise<SubscriptionTier[]> {
+	async getAllTiers(includeInactive = true): Promise<SubscriptionTier[]> {
 		const response = await axiosInstance.get<SubscriptionTier[]>(
 			`${this.baseUrl}/admin/tiers`,
 			{ params: { includeInactive } }
@@ -187,9 +193,7 @@ class SubscriptionService {
 	}
 
 	async deactivateTier(id: string): Promise<void> {
-		await axiosInstance.post(
-			`${this.baseUrl}/admin/tiers/${id}/deactivate`
-		)
+		await axiosInstance.post(`${this.baseUrl}/admin/tiers/${id}/deactivate`)
 	}
 
 	/**
@@ -214,10 +218,7 @@ class SubscriptionService {
 		)
 	}
 
-	async renewSubscription(
-		id: string,
-		newEndDate: string
-	): Promise<void> {
+	async renewSubscription(id: string, newEndDate: string): Promise<void> {
 		await axiosInstance.post(
 			`${this.baseUrl}/admin/subscriptions/${id}/renew`,
 			{ newEndDate }

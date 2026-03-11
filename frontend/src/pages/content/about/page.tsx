@@ -32,7 +32,7 @@ const AboutPage = (): React.ReactElement => {
 				<div className='container max-w-4xl mx-auto text-center space-y-6'>
 					<div className='flex justify-center mb-6'>
 						<img
-							src='/frog.png'
+							src='/frog.svg'
 							alt={t('common.logo_alt')}
 							className='w-24 h-24 drop-shadow-lg'
 						/>

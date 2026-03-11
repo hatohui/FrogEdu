@@ -166,13 +166,13 @@ const AdminSidebar = ({
 				{/* Logo and Brand */}
 				<div className={cn('p-6 space-y-2 flex-shrink-0', collapsed && 'p-4')}>
 					<Link
-						to='/dashboard'
+						to='/'
 						className='flex items-center space-x-3 group'
 						onClick={onClose}
 					>
-						<div className='w-10 h-10 rounded-lg bg-primary flex items-center justify-center text-primary-foreground font-bold text-xl transition-transform group-hover:scale-105'>
+						<div className='w-10 h-10 rounded-lg flex items-center justify-center text-primary-foreground font-bold text-xl transition-transform group-hover:scale-105'>
 							<img
-								src='/frog.png'
+								src='/frog.svg'
 								alt={t('common.logo_alt')}
 								className='w-full h-full object-contain'
 							/>

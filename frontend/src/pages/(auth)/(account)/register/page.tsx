@@ -77,11 +77,9 @@ const RegisterPage = (): React.JSX.Element => {
 					role: z.enum(['Teacher', 'Student'], {
 						message: t('forms.auth.validation.role_required'),
 					}),
-					firstName: z
-						.string()
-						.min(1, {
-							message: t('forms.auth.validation.first_name_required'),
-						}),
+					firstName: z.string().min(1, {
+						message: t('forms.auth.validation.first_name_required'),
+					}),
 					lastName: z
 						.string()
 						.min(1, { message: t('forms.auth.validation.last_name_required') }),
@@ -134,7 +132,7 @@ const RegisterPage = (): React.JSX.Element => {
 					<CardHeader className='space-y-1 text-center'>
 						<div className='flex justify-center mb-4'>
 							<img
-								src='/frog.png'
+								src='/frog.svg'
 								alt={t('common.logo_alt')}
 								className='w-20 h-20'
 							/>

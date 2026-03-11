@@ -12,22 +12,29 @@ import type {
 	UpdateAssignmentRequest,
 } from '@/types/dtos/classes'
 import { examSessionKeys } from './useExamSessions'
+import { useEffectiveRole } from './useEffectiveRole'
 
 // Query keys
 export const classKeys = {
 	all: () => ['classes'] as const,
+	list: (role?: string | null) =>
+		[...classKeys.all(), 'list', role ?? null] as const,
 	detail: (id: string) => [...classKeys.all(), 'detail', id] as const,
 	assignments: (classId: string) =>
 		[...classKeys.all(), 'assignments', classId] as const,
 }
 
 /**
- * Hook to fetch classes for the current user (role-based: Admin→all, Teacher→own, Student→enrolled)
+ * Hook to fetch classes for the current user (role-based: Admin→all, Teacher→own, Student→enrolled).
+ * When an admin is using "view as", passes the overridden role so the backend filters accordingly.
  */
 export function useClasses() {
+	const { isViewingAs, effectiveRole } = useEffectiveRole()
+	const roleOverride = isViewingAs ? (effectiveRole ?? undefined) : undefined
+
 	return useQuery<ClassRoom[], Error>({
-		queryKey: classKeys.all(),
-		queryFn: () => classService.getMyClasses(),
+		queryKey: classKeys.list(roleOverride),
+		queryFn: () => classService.getMyClasses(roleOverride),
 	})
 }
 

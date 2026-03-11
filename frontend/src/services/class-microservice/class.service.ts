@@ -18,8 +18,13 @@ const baseUrl = '/classes'
 export const classService = {
 	// ─── Student / Teacher / Admin (role-based) ───
 
-	getMyClasses: async (): Promise<ClassRoom[]> => {
-		const response = await axiosInstance.get<ClassRoom[]>(`${baseUrl}/classes`)
+	getMyClasses: async (role?: string): Promise<ClassRoom[]> => {
+		const response = await axiosInstance.get<ClassRoom[]>(
+			`${baseUrl}/classes`,
+			{
+				params: role ? { role } : undefined,
+			}
+		)
 		return response.data
 	},
 

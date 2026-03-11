@@ -12,8 +12,6 @@ import {
 	Shield,
 	BookOpen,
 	GraduationCap,
-	Eye,
-	X,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
@@ -29,7 +27,6 @@ import { Link, useNavigate } from 'react-router'
 import { useTheme } from '@/config/theme'
 import { useMe } from '@/hooks/auth/useMe'
 import { useSubscription } from '@/hooks/useSubscription'
-import { useViewAsStore } from '@/stores/viewAsStore'
 import UserAvatar from '../common/UserAvatar'
 import { useTranslation } from 'react-i18next'
 import { useLanguage } from '@/config/i18n'
@@ -60,7 +57,6 @@ const Header = ({
 	const isAdmin = user?.role?.name === 'Admin'
 	const isTeacher = user?.role?.name === 'Teacher'
 	const isStudent = user?.role?.name === 'Student'
-	const { viewAs, setViewAs, clearViewAs } = useViewAsStore()
 
 	const handleSignOut = async () => {
 		await signOut()
@@ -173,55 +169,6 @@ const Header = ({
 						<SelectItem value='vi'>{t('languages.vietnamese')}</SelectItem>
 					</SelectContent>
 				</Select>
-
-				{/* Admin: View As Role Switcher */}
-				{isAdmin && (
-					<DropdownMenu>
-						<DropdownMenuTrigger asChild>
-							<Button
-								variant={viewAs ? 'default' : 'outline'}
-								size='sm'
-								className='hidden md:flex items-center gap-2'
-							>
-								<Eye className='h-4 w-4' />
-								<span>
-									{viewAs
-										? t('header.viewing_as', { role: viewAs })
-										: t('header.view_as')}
-								</span>
-							</Button>
-						</DropdownMenuTrigger>
-						<DropdownMenuContent align='end'>
-							<DropdownMenuLabel>
-								{t('header.preview_as_role')}
-							</DropdownMenuLabel>
-							<DropdownMenuSeparator />
-							<DropdownMenuItem
-								onClick={() => setViewAs('Teacher')}
-								className={viewAs === 'Teacher' ? 'bg-accent' : ''}
-							>
-								<BookOpen className='mr-2 h-4 w-4 text-blue-600' />
-								{t('roles.teacher')}
-							</DropdownMenuItem>
-							<DropdownMenuItem
-								onClick={() => setViewAs('Student')}
-								className={viewAs === 'Student' ? 'bg-accent' : ''}
-							>
-								<GraduationCap className='mr-2 h-4 w-4 text-green-600' />
-								{t('roles.student')}
-							</DropdownMenuItem>
-							{viewAs && (
-								<>
-									<DropdownMenuSeparator />
-									<DropdownMenuItem onClick={clearViewAs}>
-										<X className='mr-2 h-4 w-4' />
-										{t('header.exit_preview')}
-									</DropdownMenuItem>
-								</>
-							)}
-						</DropdownMenuContent>
-					</DropdownMenu>
-				)}
 
 				{/* Admin Navigation Buttons */}
 				{user?.role?.name === 'Admin' && (

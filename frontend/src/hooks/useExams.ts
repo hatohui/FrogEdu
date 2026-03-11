@@ -12,11 +12,13 @@ import type {
 import type { CognitiveLevel } from '@/types/model/exam-service'
 import { toast } from 'sonner'
 import examService from '@/services/exam-microservice/exam.service'
+import { useEffectiveRole } from './useEffectiveRole'
 
 export const examKeys = {
 	all: ['exams'] as const,
 	lists: () => [...examKeys.all, 'list'] as const,
-	list: (isDraft?: boolean) => [...examKeys.lists(), { isDraft }] as const,
+	list: (isDraft?: boolean, role?: string | null) =>
+		[...examKeys.lists(), { isDraft, role: role ?? null }] as const,
 	detail: (id: string) => [...examKeys.all, 'detail', id] as const,
 	subjects: (grade?: number) => ['subjects', { grade }] as const,
 	topics: (subjectId: string) => ['topics', subjectId] as const,
@@ -55,10 +57,13 @@ export function useTopics(subjectId: string) {
 }
 
 export function useExams(isDraft?: boolean) {
+	const { isViewingAs, effectiveRole } = useEffectiveRole()
+	const roleOverride = isViewingAs ? (effectiveRole ?? undefined) : undefined
+
 	return useQuery({
-		queryKey: examKeys.list(isDraft),
+		queryKey: examKeys.list(isDraft, roleOverride),
 		queryFn: async () => {
-			const response = await examService.getExams(isDraft)
+			const response = await examService.getExams(isDraft, roleOverride)
 			return response.data?.exams || []
 		},
 	})

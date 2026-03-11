@@ -89,9 +89,13 @@ class AssessmentService {
 		)
 	}
 
-	async getExams(isDraft?: boolean): Promise<ApiResponse<{ exams: Exam[] }>> {
+	async getExams(
+		isDraft?: boolean,
+		role?: string
+	): Promise<ApiResponse<{ exams: Exam[] }>> {
 		return apiService.get<{ exams: Exam[] }>(`${this.baseUrl}/exams`, {
 			...(isDraft !== undefined && { isDraft }),
+			...(role !== undefined && { role }),
 		})
 	}
 

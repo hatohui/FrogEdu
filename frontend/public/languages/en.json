@@ -55,7 +55,8 @@
 		"my_classes": "My Classes",
 		"content_library": "Content Library",
 		"quick_access": "Quick Access",
-		"admin_panel": "Admin Panel"
+		"admin_panel": "Admin Panel",
+		"calendar": "Calendar"
 	},
 	"roles": {
 		"admin": "Admin",

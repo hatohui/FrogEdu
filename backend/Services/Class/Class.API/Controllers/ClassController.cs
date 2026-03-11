@@ -28,21 +28,26 @@ public class ClassController(IMediator mediator) : BaseController
     [HttpGet]
     [Authorize]
     [ProducesResponseType(typeof(IReadOnlyList<ClassSummaryResponse>), StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetClasses(CancellationToken cancellationToken)
+    public async Task<IActionResult> GetClasses(
+        [FromQuery] string? role,
+        CancellationToken cancellationToken
+    )
     {
         var userId = GetAuthenticatedUserId();
-        var role = GetUserRole();
+        var jwtRole = GetUserRole();
+        // Allow admins to override their role for view-as simulation; non-admins always use their JWT role
+        var effectiveRole = jwtRole == "Admin" && !string.IsNullOrEmpty(role) ? role : jwtRole;
 
         var logger = HttpContext.RequestServices.GetRequiredService<ILogger<ClassController>>();
-        logger.LogInformation("GetClasses - UserId: {UserId}, Role: {Role}", userId, role);
+        logger.LogInformation("GetClasses - UserId: {UserId}, Role: {Role}", userId, effectiveRole);
 
-        var query = new GetMyClassesQuery(userId, role);
+        var query = new GetMyClassesQuery(userId, effectiveRole);
         var result = await _mediator.Send(query, cancellationToken);
 
         logger.LogInformation(
             "GetClasses result - Count: {Count}, Role: {Role}",
             result.Count,
-            role
+            effectiveRole
         );
         return Ok(result);
     }

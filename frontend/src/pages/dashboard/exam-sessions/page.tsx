@@ -1,6 +1,7 @@
-import React, { useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router'
 import { useTranslation } from 'react-i18next'
+import { useQueries } from '@tanstack/react-query'
 import {
 	Clock,
 	PlayCircle,
@@ -9,6 +10,8 @@ import {
 	Users,
 	BarChart3,
 	Eye,
+	ChevronsUpDown,
+	Check,
 } from 'lucide-react'
 import {
 	Card,
@@ -21,12 +24,19 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Skeleton } from '@/components/ui/skeleton'
 import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
-} from '@/components/ui/select'
+	Popover,
+	PopoverContent,
+	PopoverTrigger,
+} from '@/components/ui/popover'
+import {
+	Command,
+	CommandEmpty,
+	CommandGroup,
+	CommandInput,
+	CommandItem,
+	CommandList,
+} from '@/components/ui/command'
+import { cn } from '@/utils/cn'
 import {
 	Table,
 	TableBody,
@@ -38,6 +48,8 @@ import {
 import { format } from 'date-fns'
 import { useClasses } from '@/hooks/useClasses'
 import { useExamSessions, useSessionResults } from '@/hooks/useExamSessions'
+import { userKeys } from '@/hooks/useUsers'
+import userService from '@/services/user-microservice/user.service'
 import type { ExamSession } from '@/types/model/class-service'
 import { AttemptStatus } from '@/types/model/class-service'
 
@@ -47,12 +59,34 @@ const DashboardExamSessionsPage = (): React.ReactElement => {
 
 	const [selectedClassId, setSelectedClassId] = useState<string>('')
 	const [selectedSessionId, setSelectedSessionId] = useState<string>('')
+	const [classPickerOpen, setClassPickerOpen] = useState(false)
 
 	const { data: classes, isLoading: loadingClasses } = useClasses()
 	const { data: sessions, isLoading: loadingSessions } =
 		useExamSessions(selectedClassId)
 	const { data: results, isLoading: loadingResults } =
 		useSessionResults(selectedSessionId)
+
+	// Batch-fetch teacher data for all unique teacher IDs
+	const uniqueTeacherIds = useMemo(
+		() => [...new Set(classes?.map(c => c.teacherId) ?? [])],
+		[classes]
+	)
+	const teacherQueries = useQueries({
+		queries: uniqueTeacherIds.map(id => ({
+			queryKey: userKeys.detail(id),
+			queryFn: () => userService.getUserById(id),
+			staleTime: 5 * 60 * 1000,
+		})),
+	})
+	const teacherMap = useMemo(() => {
+		const map: Record<string, string> = {}
+		uniqueTeacherIds.forEach((id, i) => {
+			const user = teacherQueries[i]?.data
+			if (user) map[id] = `${user.firstName} ${user.lastName}`
+		})
+		return map
+	}, [uniqueTeacherIds, teacherQueries])
 
 	const selectedClass = classes?.find(c => c.id === selectedClassId)
 	const selectedSession = sessions?.find(s => s.id === selectedSessionId)
@@ -135,31 +169,95 @@ const DashboardExamSessionsPage = (): React.ReactElement => {
 					{loadingClasses ? (
 						<Skeleton className='h-10 w-72' />
 					) : (
-						<Select
-							value={selectedClassId}
-							onValueChange={val => {
-								setSelectedClassId(val)
-								setSelectedSessionId('')
-							}}
-						>
-							<SelectTrigger className='w-72'>
-								<SelectValue
-									placeholder={t(
-										'pages.dashboard.exam_sessions.select_class_placeholder'
-									)}
-								/>
-							</SelectTrigger>
-							<SelectContent>
-								{classes?.map(c => (
-									<SelectItem key={c.id} value={c.id}>
-										{c.name}{' '}
-										<span className='text-muted-foreground text-xs ml-1'>
-											(Grade {c.grade})
-										</span>
-									</SelectItem>
-								))}
-							</SelectContent>
-						</Select>
+						<Popover open={classPickerOpen} onOpenChange={setClassPickerOpen}>
+							<PopoverTrigger asChild>
+								<Button
+									variant='outline'
+									role='combobox'
+									aria-expanded={classPickerOpen}
+									className='w-80 justify-between'
+								>
+									<span className='truncate'>
+										{selectedClass
+											? `${selectedClass.name} · Grade ${selectedClass.grade} · ${selectedClass.inviteCode}`
+											: t(
+													'pages.dashboard.exam_sessions.select_class_placeholder'
+												)}
+									</span>
+									<ChevronsUpDown className='ml-2 h-4 w-4 shrink-0 opacity-50' />
+								</Button>
+							</PopoverTrigger>
+							<PopoverContent className='w-[560px] p-0' align='start'>
+								<Command>
+									<CommandInput placeholder='Search by name, grade, invite code, teacher, or ID…' />
+									<CommandList className='max-h-[380px]'>
+										<CommandEmpty>No classes found.</CommandEmpty>
+										<CommandGroup>
+											{classes?.map(c => {
+												const teacherName = teacherMap[c.teacherId]
+												return (
+													<CommandItem
+														key={c.id}
+														value={[
+															c.name,
+															`grade ${c.grade}`,
+															c.inviteCode,
+															c.id,
+															teacherName ?? c.teacherId,
+														].join(' ')}
+														onSelect={() => {
+															setSelectedClassId(c.id)
+															setSelectedSessionId('')
+															setClassPickerOpen(false)
+														}}
+													>
+														<Check
+															className={cn(
+																'mr-2 h-4 w-4 shrink-0',
+																selectedClassId === c.id
+																	? 'opacity-100'
+																	: 'opacity-0'
+															)}
+														/>
+														<div className='flex-1 min-w-0'>
+															<div className='flex items-center gap-2'>
+																<span className='font-medium truncate'>
+																	{c.name}
+																</span>
+																<Badge
+																	variant='secondary'
+																	className='shrink-0 text-xs'
+																>
+																	Grade {c.grade}
+																</Badge>
+																<code className='shrink-0 text-xs bg-muted px-1.5 py-0.5 rounded font-mono'>
+																	{c.inviteCode}
+																</code>
+															</div>
+															<div className='flex items-center gap-3 mt-0.5 text-xs text-muted-foreground'>
+																<span>
+																	{teacherName ?? (
+																		<span className='italic opacity-60'>
+																			{c.teacherId.slice(0, 8)}…
+																		</span>
+																	)}
+																</span>
+																<span>·</span>
+																<span>{c.studentCount} students</span>
+																<span>·</span>
+																<span className='font-mono'>
+																	{c.id.slice(0, 8)}…
+																</span>
+															</div>
+														</div>
+													</CommandItem>
+												)
+											})}
+										</CommandGroup>
+									</CommandList>
+								</Command>
+							</PopoverContent>
+						</Popover>
 					)}
 				</CardContent>
 			</Card>

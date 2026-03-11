@@ -18,18 +18,25 @@ public sealed class GetExamsQueryHandler(IExamRepository examRepository)
 
         IReadOnlyList<Domain.Entities.Exam> exams;
 
-        if (request.IsDraft.HasValue && request.IsDraft.Value)
+        var allExamsForAdmin =
+            request.Role == "Admin"
+                ? await _examRepository.GetAllExamsAsync(cancellationToken)
+                : null;
+
+        exams = request.Role switch
         {
-            exams = await _examRepository.GetDraftExamsAsync(userId, cancellationToken);
-        }
-        else if (request.IsDraft.HasValue && !request.IsDraft.Value)
-        {
-            exams = await _examRepository.GetActiveExamsAsync(cancellationToken);
-        }
-        else
-        {
-            exams = await _examRepository.GetByCreatorAsync(userId, cancellationToken);
-        }
+            "Admin" => request.IsDraft.HasValue && request.IsDraft.Value
+                ? allExamsForAdmin!.Where(e => e.IsDraft).ToList()
+            : request.IsDraft.HasValue && !request.IsDraft.Value
+                ? allExamsForAdmin!.Where(e => !e.IsDraft && e.IsActive).ToList()
+            : allExamsForAdmin!,
+            "Student" => await _examRepository.GetActiveExamsAsync(cancellationToken),
+            _ => request.IsDraft.HasValue && request.IsDraft.Value // Teacher + default
+                ? await _examRepository.GetDraftExamsAsync(userId, cancellationToken)
+            : request.IsDraft.HasValue && !request.IsDraft.Value
+                ? await _examRepository.GetActiveExamsAsync(cancellationToken)
+            : await _examRepository.GetByCreatorAsync(userId, cancellationToken),
+        };
 
         var examDtos = exams
             .Select(e => new ExamDto(

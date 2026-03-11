@@ -15,11 +15,16 @@ import {
 	ClipboardList,
 	CalendarDays,
 	CreditCard,
+	Eye,
+	GraduationCap,
+	PencilRuler,
+	ShieldCheck,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
 import { useMe } from '@/hooks/auth/useMe'
 import { useEffectiveRole } from '@/hooks/useEffectiveRole'
+import { useViewAsStore } from '@/stores/viewAsStore'
 import UserAvatar from '../common/UserAvatar'
 import {
 	Tooltip,
@@ -106,7 +111,9 @@ const Sidebar = ({
 }: SidebarProps): React.ReactElement => {
 	const location = useLocation()
 	const { user: me, signOut } = useMe()
-	const { effectiveRole } = useEffectiveRole()
+	const { effectiveRole, isActualAdmin, isViewingAs, viewAs } =
+		useEffectiveRole()
+	const { setViewAs, clearViewAs } = useViewAsStore()
 	const { t } = useTranslation()
 
 	const handleSignOut = async () => {
@@ -148,9 +155,9 @@ const Sidebar = ({
 						className='flex items-center space-x-3 group'
 						onClick={onClose}
 					>
-						<div className='w-10 h-10 rounded-lg bg-primary flex items-center justify-center text-primary-foreground font-bold text-xl transition-transform group-hover:scale-105'>
+						<div className='w-10 h-10 rounded-lg flex items-center justify-center text-primary-foreground font-bold text-xl transition-transform group-hover:scale-105'>
 							<img
-								src='/frog.png'
+								src='/frog.svg'
 								alt={t('common.logo_alt')}
 								className='w-full h-full object-contain'
 							/>
@@ -245,6 +252,114 @@ const Sidebar = ({
 							)
 						})}
 				</nav>
+
+				{/* View As — admin only */}
+				{isActualAdmin && (
+					<>
+						<Separator className='bg-sidebar-border flex-shrink-0' />
+						<div className='p-4 flex-shrink-0 space-y-2'>
+							{!collapsed && (
+								<p className='text-xs font-semibold text-sidebar-foreground/50 uppercase tracking-wide px-1 flex items-center gap-1.5'>
+									<Eye className='h-3 w-3' />
+									{t('navigation.view_as', 'View As')}
+								</p>
+							)}
+							<div
+								className={cn(
+									'flex gap-1',
+									collapsed ? 'flex-col items-center' : 'flex-row'
+								)}
+							>
+								{/* Admin button */}
+								{collapsed ? (
+									<Tooltip>
+										<TooltipTrigger asChild>
+											<Button
+												size='icon'
+												variant={!isViewingAs ? 'default' : 'ghost'}
+												className='h-8 w-8'
+												onClick={clearViewAs}
+											>
+												<ShieldCheck className='h-4 w-4' />
+											</Button>
+										</TooltipTrigger>
+										<TooltipContent side='right'>
+											<p>{t('navigation.view_as_admin', 'Admin')}</p>
+										</TooltipContent>
+									</Tooltip>
+								) : (
+									<Button
+										size='sm'
+										variant={!isViewingAs ? 'default' : 'ghost'}
+										className='flex-1 h-8 text-xs gap-1'
+										onClick={clearViewAs}
+									>
+										<ShieldCheck className='h-3.5 w-3.5' />
+										{t('navigation.view_as_admin', 'Admin')}
+									</Button>
+								)}
+
+								{/* Teacher button */}
+								{collapsed ? (
+									<Tooltip>
+										<TooltipTrigger asChild>
+											<Button
+												size='icon'
+												variant={viewAs === 'Teacher' ? 'default' : 'ghost'}
+												className='h-8 w-8'
+												onClick={() => setViewAs('Teacher')}
+											>
+												<PencilRuler className='h-4 w-4' />
+											</Button>
+										</TooltipTrigger>
+										<TooltipContent side='right'>
+											<p>{t('navigation.view_as_teacher', 'Teacher')}</p>
+										</TooltipContent>
+									</Tooltip>
+								) : (
+									<Button
+										size='sm'
+										variant={viewAs === 'Teacher' ? 'default' : 'ghost'}
+										className='flex-1 h-8 text-xs gap-1'
+										onClick={() => setViewAs('Teacher')}
+									>
+										<PencilRuler className='h-3.5 w-3.5' />
+										{t('navigation.view_as_teacher', 'Teacher')}
+									</Button>
+								)}
+
+								{/* Student button */}
+								{collapsed ? (
+									<Tooltip>
+										<TooltipTrigger asChild>
+											<Button
+												size='icon'
+												variant={viewAs === 'Student' ? 'default' : 'ghost'}
+												className='h-8 w-8'
+												onClick={() => setViewAs('Student')}
+											>
+												<GraduationCap className='h-4 w-4' />
+											</Button>
+										</TooltipTrigger>
+										<TooltipContent side='right'>
+											<p>{t('navigation.view_as_student', 'Student')}</p>
+										</TooltipContent>
+									</Tooltip>
+								) : (
+									<Button
+										size='sm'
+										variant={viewAs === 'Student' ? 'default' : 'ghost'}
+										className='flex-1 h-8 text-xs gap-1'
+										onClick={() => setViewAs('Student')}
+									>
+										<GraduationCap className='h-3.5 w-3.5' />
+										{t('navigation.view_as_student', 'Student')}
+									</Button>
+								)}
+							</div>
+						</div>
+					</>
+				)}
 
 				<Separator className='bg-sidebar-border flex-shrink-0' />
 

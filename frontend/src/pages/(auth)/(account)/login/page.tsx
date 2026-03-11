@@ -82,7 +82,7 @@ const LoginPage = (): React.JSX.Element => {
 					<CardHeader className='space-y-1 text-center'>
 						<div className='flex justify-center mb-4'>
 							<img
-								src='/frog.png'
+								src='/frog.svg'
 								alt={t('common.logo_alt')}
 								className='w-20 h-20'
 							/>

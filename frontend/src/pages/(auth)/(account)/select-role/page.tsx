@@ -102,7 +102,7 @@ const SelectRolePage = (): React.JSX.Element => {
 				<CardHeader className='text-center space-y-2'>
 					<div className='flex justify-center mb-4'>
 						<img
-							src='/frog.png'
+							src='/frog.svg'
 							alt={t('common.logo_alt')}
 							className='w-20 h-20'
 						/>

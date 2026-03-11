@@ -70,6 +70,16 @@ public class ExamRepository : IExamRepository
             .ToListAsync(cancellationToken);
     }
 
+    public async Task<IReadOnlyList<ExamEntity>> GetAllExamsAsync(
+        CancellationToken cancellationToken = default
+    )
+    {
+        return await _context
+            .Exams.Include(e => e.ExamQuestions)
+            .OrderByDescending(e => e.CreatedAt)
+            .ToListAsync(cancellationToken);
+    }
+
     public async Task AddAsync(ExamEntity exam, CancellationToken cancellationToken = default)
     {
         await _context.Exams.AddAsync(exam, cancellationToken);

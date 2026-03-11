@@ -23,7 +23,7 @@ const ProtectedRoute = ({
 					{/* Logo */}
 					<div className='flex justify-center mb-4'>
 						<img
-							src='/frog.png'
+							src='/frog.svg'
 							alt='FrogEdu logo'
 							className='w-20 h-20 animate-pulse'
 						/>

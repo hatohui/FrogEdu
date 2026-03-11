@@ -63,7 +63,7 @@ const AuthCallbackPage = (): React.JSX.Element => {
 			<div className='text-center'>
 				<div className='flex justify-center mb-4'>
 					<img
-						src='/frog.png'
+						src='/frog.svg'
 						alt={t('common.logo_alt')}
 						className='w-16 h-16'
 					/>

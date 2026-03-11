@@ -18,6 +18,9 @@ public interface IExamRepository
         Guid userId,
         CancellationToken cancellationToken = default
     );
+    Task<IReadOnlyList<Entities.Exam>> GetAllExamsAsync(
+        CancellationToken cancellationToken = default
+    );
     Task AddAsync(Entities.Exam exam, CancellationToken cancellationToken = default);
     void Update(Entities.Exam exam);
     void Delete(Entities.Exam exam);

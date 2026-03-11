@@ -73,9 +73,9 @@ const Navigation = (): React.JSX.Element => {
 						to='/'
 						className='flex items-center space-x-2 hover:opacity-80 transition-opacity flex-shrink-0'
 					>
-						<div className='w-8 h-8 rounded-lg bg-primary flex items-center justify-center text-primary-foreground font-bold text-lg'>
+						<div className='w-8 h-8 rounded-lg flex items-center justify-center text-primary-foreground font-bold text-lg'>
 							<img
-								src='/frog.png'
+								src='/frog.svg'
 								alt={t('common.logo_alt')}
 								className='w-full h-full object-contain'
 							/>
