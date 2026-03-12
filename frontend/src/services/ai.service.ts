@@ -7,6 +7,7 @@ import type {
 import type {
 	AIQuestionApiResponse,
 	AIGenerateQuestionsApiResponse,
+	ExplainQuestionRequest,
 } from '@/types/dtos/ai'
 import { CognitiveLevel, QuestionType } from '@/types/model/exam-service/enums'
 import axiosInstance from './axios'
@@ -147,6 +148,25 @@ class AIService {
 			}
 		)
 		return this.mapQuestion(response.data)
+	}
+
+	/**
+	 * Get a child-friendly explanation for a question and its correct answer.
+	 * Requires active subscription.
+	 */
+	async explainQuestion(request: ExplainQuestionRequest): Promise<string> {
+		const response = await axiosInstance.post<{ explanation: string }>(
+			`${this.baseUrl}/explain`,
+			{
+				question_content: request.questionContent,
+				correct_answer: request.correctAnswer,
+				grade: request.grade,
+				subject: request.subject,
+				student_answer: request.studentAnswer,
+				language: request.language ?? 'vi',
+			}
+		)
+		return response.data.explanation
 	}
 
 	/**

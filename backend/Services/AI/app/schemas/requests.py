@@ -90,3 +90,18 @@ class HealthResponse(BaseModel):
     status: str = Field(..., description="Service status")
     service_name: str = Field(..., description="Name of the service")
     gemini_connected: bool = Field(..., description="Whether Gemini API is accessible")
+
+
+class ExplainQuestionRequest(BaseModel):
+    """Request to get a child-friendly explanation for an exam question."""
+    question_content: str = Field(..., description="The question text")
+    correct_answer: str = Field(..., description="The correct answer text")
+    grade: int = Field(..., ge=1, le=5, description="Student grade level (1-5)")
+    subject: str = Field(..., description="Subject name")
+    student_answer: Optional[str] = Field(None, description="What the student answered (if wrong)")
+    language: str = Field(default="vi", description="Language for explanation (vi/en)")
+
+
+class ExplainQuestionResponse(BaseModel):
+    """Response with a child-friendly explanation."""
+    explanation: str = Field(..., description="Child-friendly explanation of the correct answer")

@@ -72,3 +72,40 @@ export interface AttemptSummary {
 	status: AttemptStatus
 	submittedAt: string | null
 }
+
+/** Full review of an attempt including question content and correct answers */
+export interface AttemptReview {
+	id: string
+	examSessionId: string
+	studentId: string
+	examName: string
+	startedAt: string
+	submittedAt: string | null
+	score: number
+	totalPoints: number
+	scorePercentage: number
+	attemptNumber: number
+	status: AttemptStatus
+	questions: QuestionReview[]
+}
+
+export interface QuestionReview {
+	questionId: string
+	content: string
+	type: string
+	point: number
+	imageUrl: string | null
+	answers: AnswerReview[]
+	studentSelectedAnswerIds: string[]
+	studentScore: number
+	isCorrect: boolean
+	isPartiallyCorrect: boolean
+}
+
+export interface AnswerReview {
+	id: string
+	content: string
+	isCorrect: boolean
+	explanation: string | null
+	wasSelectedByStudent: boolean
+}

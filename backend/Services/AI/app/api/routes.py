@@ -10,6 +10,8 @@ from app.schemas import (
     TutorChatRequest,
     TutorChatResponse,
     HealthResponse,
+    ExplainQuestionRequest,
+    ExplainQuestionResponse,
 )
 from app.services import GeminiService
 from app.config import get_settings, Settings
@@ -172,4 +174,43 @@ async def tutor_chat(
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Failed to process chat: {str(e)}"
+        )
+
+
+@router.post("/explain", response_model=ExplainQuestionResponse)
+async def explain_question(
+    request: ExplainQuestionRequest,
+    service: Annotated[GeminiService, Depends(get_gemini_service)],
+    user: Annotated[TokenUser, Depends(get_subscribed_user)]
+):
+    """
+    Get a child-friendly explanation for a question and its correct answer.
+
+    Designed for primary school students (grades 1-5) to understand why an
+    answer is correct. Can be triggered by the student after reviewing their
+    exam results.
+
+    **Requirements:**
+    - Active subscription (Teacher or Student role)
+
+    **Returns:**
+    - Simple, encouraging explanation suitable for the student's grade level
+    """
+    try:
+        logger.info(f"User {user.sub} requesting explanation for grade {request.grade} {request.subject}")
+        explanation = await service.explain_question(
+            question_content=request.question_content,
+            correct_answer=request.correct_answer,
+            grade=request.grade,
+            subject=request.subject,
+            student_answer=request.student_answer,
+            language=request.language,
+        )
+
+        return ExplainQuestionResponse(explanation=explanation)
+    except Exception as e:
+        logger.error(f"Failed to generate explanation: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to generate explanation: {str(e)}"
         )

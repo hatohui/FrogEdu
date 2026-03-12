@@ -5,6 +5,7 @@ import type {
 	ExamSession,
 	StudentExamAttempt,
 	ExamSessionResults,
+	AttemptReview,
 } from '@/types/model/class-service'
 import type {
 	CreateExamSessionRequest,
@@ -250,5 +251,17 @@ export function useSubmitExamAttempt() {
 		onError: (error: Error) => {
 			toast.error(error.message || 'Failed to submit exam')
 		},
+	})
+}
+
+/**
+ * Fetch the full review of an attempt including question content, correct answers, explanations.
+ * Used by students to review wrong answers and by teachers to see student performance.
+ */
+export function useAttemptReview(attemptId: string) {
+	return useQuery<AttemptReview, Error>({
+		queryKey: [...examSessionKeys.all, 'review', attemptId] as const,
+		queryFn: () => examSessionService.getAttemptReview(attemptId),
+		enabled: !!attemptId,
 	})
 }

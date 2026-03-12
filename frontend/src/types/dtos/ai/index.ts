@@ -14,4 +14,5 @@ export type {
 	GenerateQuestionsRequest,
 	GenerateSingleQuestionRequest,
 	AIMatrixTopicConfig,
+	ExplainQuestionRequest,
 } from './request'

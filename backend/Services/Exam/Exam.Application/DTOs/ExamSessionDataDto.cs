@@ -24,4 +24,4 @@ public sealed record SessionQuestionDto(
     IReadOnlyList<SessionAnswerDto> Answers
 );
 
-public sealed record SessionAnswerDto(Guid Id, string Content, bool IsCorrect);
+public sealed record SessionAnswerDto(Guid Id, string Content, bool IsCorrect, string? Explanation);

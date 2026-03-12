@@ -689,7 +689,8 @@
 					"actions": "Actions"
 				},
 				"empty": "No attempts recorded yet.",
-				"view_detail": "View Details"
+				"view_detail": "View Details",
+				"view_review": "Review Answers"
 			},
 			"take": {
 				"title": "Taking Exam",
@@ -730,10 +731,72 @@
 				"best_score": "Best Score",
 				"retries_left": "Retries Left",
 				"attempts_title": "My Attempts",
-				"no_attempts": "You have not submitted any attempts yet."
+				"no_attempts": "You have not submitted any attempts yet.",
+				"view_review": "Review Answers"
+			},
+			"review": {
+				"title": "Exam Review",
+				"subtitle": "See your answers, the correct answers, and explanations.",
+				"not_found": "Attempt not found.",
+				"score_card": {
+					"your_score": "Your Score",
+					"points": "{{score}} / {{total}} pts",
+					"percentage": "{{value}}%",
+					"attempt": "Attempt #{{number}}"
+				},
+				"question_of": "Question {{current}} of {{total}}",
+				"correct_badge": "Correct",
+				"incorrect_badge": "Incorrect",
+				"partial_badge": "Partial Credit",
+				"your_answer": "Your answer",
+				"correct_answer": "Correct answer",
+				"explanation_label": "Explanation",
+				"ai_explain_button": "Ask AI to Explain",
+				"ai_explaining": "Asking AI...",
+				"ai_explanation_title": "AI Explanation",
+				"ai_explanation_error": "Could not get explanation. Please try again.",
+				"retake_button": "Retake Exam",
+				"back_to_results": "Back to My Results",
+				"empty_answers": "No answers recorded for this attempt."
+			},
+			"history": {
+				"title": "My Exam History",
+				"subtitle": "Review all your past exam attempts and scores.",
+				"empty": "You haven't taken any exams yet.",
+				"no_history": "You haven't taken any exams yet.",
+				"all_exams": "All Exam Sessions",
+				"all_exams_description": "A full list of exam sessions assigned to you.",
+				"stats": {
+					"active": "Active Now",
+					"upcoming": "Upcoming",
+					"completed": "Completed"
+				},
+				"table": {
+					"exam": "Exam",
+					"exam_id": "Exam ID",
+					"date": "Date",
+					"start_time": "Start Time",
+					"end_time": "End Time",
+					"attempts": "Attempts",
+					"score": "Score",
+					"status": "Status",
+					"actions": "Actions"
+				},
+				"status": {
+					"active": "Active",
+					"upcoming": "Upcoming",
+					"ended": "Ended"
+				},
+				"actions": {
+					"take_exam": "Take Exam",
+					"view_results": "View Results"
+				},
+				"view_results": "View Results",
+				"ongoing": "Ongoing",
+				"upcoming": "Upcoming",
+				"completed": "Completed"
 			}
 		},
-		"dashboard": {
 			"exam_sessions": {
 				"title": "Exam Sessions",
 				"subtitle": "Monitor all exam sessions and student attempts across classes.",

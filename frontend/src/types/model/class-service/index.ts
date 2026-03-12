@@ -13,4 +13,7 @@ export {
 	type StudentAnswer,
 	type ExamSessionResults,
 	type AttemptSummary,
+	type AttemptReview,
+	type QuestionReview,
+	type AnswerReview,
 } from './examSession'

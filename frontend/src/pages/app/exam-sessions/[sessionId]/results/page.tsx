@@ -26,6 +26,7 @@ import {
 import {
 	ArrowLeft,
 	BarChart3,
+	Eye,
 	TrendingDown,
 	TrendingUp,
 	Users,
@@ -244,17 +245,31 @@ const SessionResultsPage = (): React.ReactElement => {
 												: '-'}
 										</TableCell>
 										<TableCell className='text-right'>
-											<Button
-												variant='ghost'
-												size='sm'
-												onClick={() =>
-													navigate(
-														`/app/exam-sessions/attempts/${attempt.attemptId}`
-													)
-												}
-											>
-												{t('pages.exam_sessions.results.view_detail')}
-											</Button>
+											<div className='flex items-center justify-end gap-2'>
+												<Button
+													variant='ghost'
+													size='sm'
+													onClick={() =>
+														navigate(
+															`/app/exam-sessions/attempts/${attempt.attemptId}`
+														)
+													}
+												>
+													{t('pages.exam_sessions.results.view_detail')}
+												</Button>
+												<Button
+													variant='secondary'
+													size='sm'
+													onClick={() =>
+														navigate(
+															`/app/exam-sessions/${sessionId}/attempts/${attempt.attemptId}/review`
+														)
+													}
+												>
+													<Eye className='h-4 w-4 mr-1' />
+													{t('pages.exam_sessions.results.view_review')}
+												</Button>
+											</div>
 										</TableCell>
 									</TableRow>
 								))}

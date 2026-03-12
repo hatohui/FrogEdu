@@ -2,6 +2,7 @@ import type {
 	ExamSession,
 	StudentExamAttempt,
 	ExamSessionResults,
+	AttemptReview,
 } from '@/types/model/class-service'
 import type {
 	CreateExamSessionRequest,
@@ -123,6 +124,16 @@ export const examSessionService = {
 	getSessionResults: async (sessionId: string): Promise<ExamSessionResults> => {
 		const response = await axiosInstance.get<ExamSessionResults>(
 			`${baseUrl}/${sessionId}/results`
+		)
+		return response.data
+	},
+
+	/**
+	 * Get full attempt review: question content, correct answers, explanations.
+	 */
+	getAttemptReview: async (attemptId: string): Promise<AttemptReview> => {
+		const response = await axiosInstance.get<AttemptReview>(
+			`${baseUrl}/attempts/${attemptId}/review`
 		)
 		return response.data
 	},

@@ -34,4 +34,4 @@ public sealed record ExamQuestionDto(
     List<ExamAnswerDto> Answers
 );
 
-public sealed record ExamAnswerDto(Guid Id, string Content, bool IsCorrect);
+public sealed record ExamAnswerDto(Guid Id, string Content, bool IsCorrect, string? Explanation);

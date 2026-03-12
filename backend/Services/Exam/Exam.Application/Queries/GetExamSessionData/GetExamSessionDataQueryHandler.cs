@@ -36,7 +36,8 @@ public sealed class GetExamSessionDataQueryHandler(
                 Answers: q.Answers.Select(a => new SessionAnswerDto(
                         Id: a.Id,
                         Content: a.Content,
-                        IsCorrect: a.IsCorrect
+                        IsCorrect: a.IsCorrect,
+                        Explanation: a.Explanation
                     ))
                     .ToList()
             ))

@@ -61,7 +61,13 @@ public sealed class ExamServiceClient : IExamServiceClient
                     q.Content,
                     q.Points,
                     MapQuestionType(q.QuestionType),
-                    q.Answers.Select(a => new ExamAnswerDto(a.Id, a.Content, a.IsCorrect)).ToList()
+                    q.Answers.Select(a => new ExamAnswerDto(
+                            a.Id,
+                            a.Content,
+                            a.IsCorrect,
+                            a.Explanation
+                        ))
+                        .ToList()
                 ))
                 .ToList();
 
@@ -151,5 +157,10 @@ public sealed class ExamServiceClient : IExamServiceClient
         List<SessionAnswerResponse> Answers
     );
 
-    private sealed record SessionAnswerResponse(Guid Id, string Content, bool IsCorrect);
+    private sealed record SessionAnswerResponse(
+        Guid Id,
+        string Content,
+        bool IsCorrect,
+        string? Explanation
+    );
 }

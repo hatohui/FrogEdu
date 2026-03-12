@@ -295,3 +295,54 @@ class GeminiService:
         except Exception as e:
             logger.error(f"Health check failed: {str(e)}")
             return False
+
+    async def explain_question(
+        self,
+        question_content: str,
+        correct_answer: str,
+        grade: int,
+        subject: str,
+        student_answer: Optional[str] = None,
+        language: str = "vi",
+    ) -> str:
+        """Generate a child-friendly explanation for a question and its correct answer.
+
+        Designed for primary school students (grades 1-5) who want to understand
+        why their answer was wrong and what the correct answer means.
+        """
+        try:
+            wrong_part = ""
+            if student_answer:
+                wrong_part = f"\nThe student answered: \"{student_answer}\" which is incorrect."
+
+            prompt = (
+                f"You are a friendly and encouraging teacher for a grade {grade} {subject} class. "
+                f"A student just finished an exam and got the following question wrong. "
+                f"Please explain the question and why the correct answer is right in a very simple, "
+                f"fun, and encouraging way that a {grade}-year-old primary school student can understand. "
+                f"Keep it short (2-4 sentences), use simple words, and end with an encouraging note.\n"
+                f"Language to respond in: {'Vietnamese' if language == 'vi' else 'English'}\n\n"
+                f"Question: {question_content}"
+                f"{wrong_part}\n"
+                f"Correct answer: {correct_answer}"
+            )
+
+            config = types.GenerateContentConfig(
+                temperature=0.7,
+            )
+
+            response = self.client.models.generate_content(
+                model=self.model_name,
+                contents=prompt,
+                config=config,
+            )
+
+            if response.text is None:
+                raise ValueError("No response text received from Gemini API")
+
+            logger.info(f"Explanation generated for grade {grade} {subject} question")
+            return response.text
+
+        except Exception as e:
+            logger.error(f"Error generating explanation: {str(e)}")
+            raise

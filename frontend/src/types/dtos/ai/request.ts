@@ -39,3 +39,15 @@ export interface GenerateSingleQuestionRequest {
 	language?: 'vi' | 'en'
 	topicDescription?: string
 }
+
+/**
+ * Request to explain a question in child-friendly terms
+ */
+export interface ExplainQuestionRequest {
+	questionContent: string
+	correctAnswer: string
+	grade: number
+	subject: string
+	studentAnswer?: string
+	language?: 'vi' | 'en'
+}

@@ -29,6 +29,7 @@ import {
 	Target,
 	RotateCcw,
 	CheckCircle2,
+	Eye,
 } from 'lucide-react'
 import { format } from 'date-fns'
 import { AttemptStatus } from '@/types/model/class-service'

@@ -14,7 +14,6 @@ import {
 	Card,
 	CardContent,
 	CardDescription,
-	CardFooter,
 	CardHeader,
 	CardTitle,
 } from '@/components/ui/card'
@@ -36,12 +35,10 @@ import { Progress } from '@/components/ui/progress'
 import {
 	ArrowLeft,
 	ArrowRight,
-	CheckCircle2,
 	Clock,
 	LayoutList,
 	List,
 	Send,
-	XCircle,
 } from 'lucide-react'
 import { QuestionType } from '@/types/model/exam-service'
 import type { StudentAnswerSubmission } from '@/types/dtos/classes'
@@ -76,12 +73,6 @@ const ExamTakePage = (): React.ReactElement => {
 	const [answers, setAnswers] = useState<AnswerState>({})
 	const [attemptId, setAttemptId] = useState<string | null>(null)
 	const [showSubmitDialog, setShowSubmitDialog] = useState(false)
-	const [isSubmitted, setIsSubmitted] = useState(false)
-	const [submittedResult, setSubmittedResult] = useState<{
-		score: number
-		totalPoints: number
-		scorePercentage: number
-	} | null>(null)
 
 	const questions = useMemo(() => examData?.questions || [], [examData])
 
@@ -171,18 +162,13 @@ const ExamTakePage = (): React.ReactElement => {
 		}))
 
 		try {
-			const result = await submitAttempt.mutateAsync({
+			await submitAttempt.mutateAsync({
 				sessionId,
 				attemptId,
 				data: { answers: submissionAnswers },
 			})
-			setIsSubmitted(true)
-			setSubmittedResult({
-				score: result.score,
-				totalPoints: result.totalPoints,
-				scorePercentage: result.scorePercentage,
-			})
 			setShowSubmitDialog(false)
+			navigate(`/app/exam-sessions/${sessionId}/attempts/${attemptId}/review`)
 		} catch {
 			// Error handled by hook
 		}
@@ -212,62 +198,6 @@ const ExamTakePage = (): React.ReactElement => {
 					<ArrowLeft className='h-4 w-4 mr-2' />
 					{t('pages.exam_sessions.attempt_result.back_to_sessions')}
 				</Button>
-			</div>
-		)
-	}
-
-	// ─── Result View (after submission) ───
-
-	if (isSubmitted && submittedResult) {
-		const percentage = submittedResult.scorePercentage
-		return (
-			<div className='p-6 space-y-6 max-w-2xl mx-auto'>
-				<Card>
-					<CardHeader className='text-center'>
-						<div className='mx-auto mb-4'>
-							{percentage >= 50 ? (
-								<CheckCircle2 className='h-16 w-16 text-green-500' />
-							) : (
-								<XCircle className='h-16 w-16 text-red-500' />
-							)}
-						</div>
-						<CardTitle className='text-2xl'>
-							{t('pages.exam_sessions.attempt_result.title')}
-						</CardTitle>
-					</CardHeader>
-					<CardContent className='space-y-4'>
-						<div className='grid grid-cols-2 gap-4 text-center'>
-							<div className='p-4 rounded-lg bg-muted'>
-								<p className='text-sm text-muted-foreground'>
-									{t('pages.exam_sessions.attempt_result.score')}
-								</p>
-								<p className='text-3xl font-bold'>
-									{submittedResult.score.toFixed(1)}
-								</p>
-							</div>
-							<div className='p-4 rounded-lg bg-muted'>
-								<p className='text-sm text-muted-foreground'>
-									{t('pages.exam_sessions.attempt_result.total_points')}
-								</p>
-								<p className='text-3xl font-bold'>
-									{submittedResult.totalPoints.toFixed(1)}
-								</p>
-							</div>
-						</div>
-						<div className='text-center p-4 rounded-lg bg-muted'>
-							<p className='text-sm text-muted-foreground'>
-								{t('pages.exam_sessions.attempt_result.percentage')}
-							</p>
-							<p className='text-4xl font-bold'>{percentage.toFixed(1)}%</p>
-						</div>
-					</CardContent>
-					<CardFooter className='justify-center'>
-						<Button onClick={() => navigate('/app/exam-sessions')}>
-							<ArrowLeft className='h-4 w-4 mr-2' />
-							{t('pages.exam_sessions.attempt_result.back_to_sessions')}
-						</Button>
-					</CardFooter>
-				</Card>
 			</div>
 		)
 	}

@@ -6,6 +6,7 @@ using FrogEdu.Class.Application.Commands.UpdateExamSession;
 using FrogEdu.Class.Application.Dtos;
 using FrogEdu.Class.Application.Dtos.requests;
 using FrogEdu.Class.Application.Queries.GetAttemptDetail;
+using FrogEdu.Class.Application.Queries.GetAttemptReview;
 using FrogEdu.Class.Application.Queries.GetExamSessionDetail;
 using FrogEdu.Class.Application.Queries.GetExamSessions;
 using FrogEdu.Class.Application.Queries.GetMySessionAttempts;
@@ -320,5 +321,27 @@ public class ExamSessionController(IMediator mediator) : BaseController
             return BadRequest(result.Error);
 
         return Ok(result.Value);
+    }
+
+    /// <summary>
+    /// Get a full review of an attempt: question content, correct answers, explanations.
+    /// Accessible by the student who owns the attempt or by a teacher.
+    /// </summary>
+    [HttpGet("attempts/{attemptId:guid}/review")]
+    [Authorize]
+    [ProducesResponseType(typeof(AttemptReviewResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetAttemptReview(
+        Guid attemptId,
+        CancellationToken cancellationToken
+    )
+    {
+        var query = new GetAttemptReviewQuery(attemptId);
+        var result = await _mediator.Send(query, cancellationToken);
+
+        if (result is null)
+            return NotFound("Attempt not found");
+
+        return Ok(result);
     }
 }

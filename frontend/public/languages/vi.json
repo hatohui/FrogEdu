@@ -891,7 +891,8 @@
 					"actions": "Hành động"
 				},
 				"empty": "Chưa có lượt thi nào.",
-				"view_detail": "Xem chi tiết"
+				"view_detail": "Xem chi tiết",
+				"view_review": "Xem lại câu trả lời"
 			},
 			"take": {
 				"title": "Đang làm bài thi",
@@ -932,7 +933,70 @@
 				"best_score": "Điểm cao nhất",
 				"retries_left": "Lượt thi còn lại",
 				"attempts_title": "Các lượt thi của tôi",
-				"no_attempts": "Bạn chưa nộp bài thi nào."
+				"no_attempts": "Bạn chưa nộp bài thi nào.",
+				"view_review": "Xem lại câu trả lời"
+			},
+			"review": {
+				"title": "Xem lại bài thi",
+				"subtitle": "Xem câu trả lời của bạn, đáp án đúng và giải thích.",
+				"not_found": "Không tìm thấy lượt thi.",
+				"score_card": {
+					"your_score": "Điểm của bạn",
+					"points": "{{score}} / {{total}} điểm",
+					"percentage": "{{value}}%",
+					"attempt": "Lượt thi #{{number}}"
+				},
+				"question_of": "Câu hỏi {{current}} / {{total}}",
+				"correct_badge": "Đúng",
+				"incorrect_badge": "Sai",
+				"partial_badge": "Đúng một phần",
+				"your_answer": "Câu trả lời của bạn",
+				"correct_answer": "Đáp án đúng",
+				"explanation_label": "Giải thích",
+				"ai_explain_button": "Nhờ AI giải thích",
+				"ai_explaining": "Đang hỏi AI...",
+				"ai_explanation_title": "Giải thích từ AI",
+				"ai_explanation_error": "Không thể lấy giải thích. Vui lòng thử lại.",
+				"retake_button": "Làm lại bài thi",
+				"back_to_results": "Quay lại kết quả",
+				"empty_answers": "Không có câu trả lời nào cho lượt thi này."
+			},
+			"history": {
+				"title": "Lịch sử bài thi của tôi",
+				"subtitle": "Xem lại tất cả các lượt thi và điểm số của bạn.",
+				"empty": "Bạn chưa làm bài thi nào.",
+				"no_history": "Bạn chưa làm bài thi nào.",
+				"all_exams": "Tất cả phiên thi",
+				"all_exams_description": "Danh sách đầy đủ các phiên thi được giao cho bạn.",
+				"stats": {
+					"active": "Đang diễn ra",
+					"upcoming": "Sắp tới",
+					"completed": "Đã hoàn thành"
+				},
+				"table": {
+					"exam": "Bài thi",
+					"exam_id": "Mã bài thi",
+					"date": "Ngày",
+					"start_time": "Thời gian bắt đầu",
+					"end_time": "Thời gian kết thúc",
+					"attempts": "Số lần thi",
+					"score": "Điểm",
+					"status": "Trạng thái",
+					"actions": "Thao tác"
+				},
+				"status": {
+					"active": "Đang mở",
+					"upcoming": "Sắp tới",
+					"ended": "Đã kết thúc"
+				},
+				"actions": {
+					"take_exam": "Làm bài thi",
+					"view_results": "Xem kết quả"
+				},
+				"view_results": "Xem kết quả",
+				"ongoing": "Đang diễn ra",
+				"upcoming": "Sắp tới",
+				"completed": "Đã kết thúc"
 			}
 		},
 		"dashboard": {
