@@ -311,24 +311,32 @@ class GeminiService:
         why their answer was wrong and what the correct answer means.
         """
         try:
-            wrong_part = ""
             if student_answer:
-                wrong_part = f"\nThe student answered: \"{student_answer}\" which is incorrect."
+                context = (
+                    f"The student answered: \"{student_answer}\" — this is WRONG.\n"
+                    f"Correct answer: {correct_answer}\n\n"
+                    f"Explain clearly:\n"
+                    f"1. Why the student's answer is incorrect.\n"
+                    f"2. Why the correct answer is right, with a simple reason or example.\n"
+                )
+            else:
+                context = (
+                    f"Correct answer: {correct_answer}\n\n"
+                    f"Explain why this answer is correct with a simple reason or example.\n"
+                )
 
             prompt = (
-                f"You are a friendly and encouraging teacher for a grade {grade} {subject} class. "
-                f"A student just finished an exam and got the following question wrong. "
-                f"Please explain the question and why the correct answer is right in a very simple, "
-                f"fun, and encouraging way that a {grade}-year-old primary school student can understand. "
-                f"Keep it short (2-4 sentences), use simple words, and end with an encouraging note.\n"
-                f"Language to respond in: {'Vietnamese' if language == 'vi' else 'English'}\n\n"
-                f"Question: {question_content}"
-                f"{wrong_part}\n"
-                f"Correct answer: {correct_answer}"
+                f"You are a {subject} teacher explaining a question to a grade {grade} primary school student.\n"
+                f"Respond in {'Vietnamese' if language == 'vi' else 'English'}.\n"
+                f"Be direct and educational. Do NOT compliment the student or add encouragement — "
+                f"focus only on the factual explanation. Use simple words a grade {grade} student can understand. "
+                f"Keep it to 2-4 sentences.\n\n"
+                f"Question: {question_content}\n"
+                f"{context}"
             )
 
             config = types.GenerateContentConfig(
-                temperature=0.7,
+                temperature=0.3,
             )
 
             response = self.client.models.generate_content(

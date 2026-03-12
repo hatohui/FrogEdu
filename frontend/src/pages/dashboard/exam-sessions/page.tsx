@@ -508,7 +508,7 @@ const DashboardExamSessionsPage = (): React.ReactElement => {
 															variant='outline'
 															onClick={() =>
 																navigate(
-																	`/app/exam-sessions/attempts/${attempt.attemptId}`
+																	`/app/exam-sessions/${selectedSessionId}/attempts/${attempt.attemptId}/review`
 																)
 															}
 														>

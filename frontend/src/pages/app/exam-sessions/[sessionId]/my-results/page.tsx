@@ -29,7 +29,6 @@ import {
 	Target,
 	RotateCcw,
 	CheckCircle2,
-	Eye,
 } from 'lucide-react'
 import { format } from 'date-fns'
 import { AttemptStatus } from '@/types/model/class-service'
@@ -166,7 +165,7 @@ const MySessionResultsPage = (): React.ReactElement => {
 					<CardContent>
 						<p className='text-3xl font-bold text-green-600'>
 							{bestAttempt !== null
-								? `${bestAttempt.scorePercentage.toFixed(1)}%`
+								? `${((bestAttempt.scorePercentage * 10) / 100).toFixed(1)} / 10`
 								: '—'}
 						</p>
 					</CardContent>
@@ -258,10 +257,12 @@ const MySessionResultsPage = (): React.ReactElement => {
 												size='sm'
 												variant='outline'
 												onClick={() =>
-													navigate(`/app/exam-sessions/attempts/${attempt.id}`)
+													navigate(
+														`/app/exam-sessions/${sessionId}/attempts/${attempt.id}/review`
+													)
 												}
 											>
-												{t('pages.exam_sessions.results.view_detail')}
+												{t('pages.exam_sessions.my_results.view_review')}
 											</Button>
 										</TableCell>
 									</TableRow>

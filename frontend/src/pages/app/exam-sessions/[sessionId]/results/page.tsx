@@ -251,7 +251,7 @@ const SessionResultsPage = (): React.ReactElement => {
 													size='sm'
 													onClick={() =>
 														navigate(
-															`/app/exam-sessions/attempts/${attempt.attemptId}`
+															`/app/exam-sessions/${sessionId}/attempts/${attempt.attemptId}/review`
 														)
 													}
 												>
