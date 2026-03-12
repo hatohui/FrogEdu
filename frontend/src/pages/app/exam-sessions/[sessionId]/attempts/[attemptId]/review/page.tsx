@@ -17,6 +17,7 @@ import {
 	BookOpen,
 	Trophy,
 	RotateCcw,
+	FileText,
 } from 'lucide-react'
 import { AttemptStatus } from '@/types/model/class-service'
 import type { QuestionReview } from '@/types/model/class-service'
@@ -41,6 +42,8 @@ const QuestionCard = ({
 	const { t } = useTranslation()
 	const explainMutation = useExplainQuestion()
 	const [aiExplanation, setAiExplanation] = useState<string | null>(null)
+
+	const isEssay = question.type?.toLowerCase() === 'essay'
 
 	const correctAnswers = question.answers.filter(a => a.isCorrect)
 	const correctAnswerText = correctAnswers.map(a => a.content).join(', ')
@@ -80,6 +83,82 @@ const QuestionCard = ({
 			{t('pages.exam_sessions.review.incorrect_badge')}
 		</Badge>
 	)
+
+	// ─── Essay question card ───
+	if (isEssay) {
+		return (
+			<Card
+				className={`border-l-4 ${
+					question.isCorrect
+						? 'border-l-green-500'
+						: question.studentScore > 0
+							? 'border-l-yellow-500'
+							: 'border-l-red-500'
+				}`}
+			>
+				<CardHeader className='pb-3'>
+					<div className='flex items-start justify-between gap-3'>
+						<div className='flex-1'>
+							<p className='text-xs text-muted-foreground mb-1 flex items-center gap-1'>
+								<FileText className='h-3 w-3' />
+								{t('pages.exam_sessions.review.essay_type_label')}
+							</p>
+							<p className='font-medium leading-relaxed'>{question.content}</p>
+						</div>
+						<div className='flex items-center gap-2 shrink-0'>
+							{statusBadge}
+							<span className='text-xs text-muted-foreground'>
+								{question.studentScore.toFixed(1)} / {question.point.toFixed(1)}{' '}
+								pts
+							</span>
+						</div>
+					</div>
+				</CardHeader>
+				<CardContent className='space-y-4'>
+					{/* Student's written answer */}
+					<div>
+						<p className='text-xs font-semibold text-muted-foreground mb-1'>
+							{t('pages.exam_sessions.review.essay_your_answer')}
+						</p>
+						{question.essayStudentText ? (
+							<div className='bg-muted/40 rounded-md p-3 text-sm whitespace-pre-wrap leading-relaxed'>
+								{question.essayStudentText}
+							</div>
+						) : (
+							<p className='text-sm text-muted-foreground italic'>
+								{t('pages.exam_sessions.review.essay_no_answer')}
+							</p>
+						)}
+					</div>
+
+					{/* Grading rubric */}
+					{correctAnswers.length > 0 && (
+						<div>
+							<p className='text-xs font-semibold text-muted-foreground mb-1'>
+								{t('pages.exam_sessions.review.essay_rubric_label')}
+							</p>
+							<div className='bg-blue-50 border border-blue-200 rounded-md p-3 text-sm text-blue-900'>
+								{correctAnswerText}
+							</div>
+						</div>
+					)}
+
+					{/* AI Feedback */}
+					{question.essayAiFeedback ? (
+						<div className='bg-purple-50 border border-purple-200 rounded-md p-3'>
+							<p className='text-xs font-semibold text-purple-800 mb-1 flex items-center gap-1'>
+								<Sparkles className='h-3 w-3' />
+								{t('pages.exam_sessions.review.essay_ai_feedback_title')}
+							</p>
+							<p className='text-sm text-purple-900 leading-relaxed'>
+								{question.essayAiFeedback}
+							</p>
+						</div>
+					) : null}
+				</CardContent>
+			</Card>
+		)
+	}
 
 	return (
 		<Card

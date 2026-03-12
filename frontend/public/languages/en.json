@@ -704,7 +704,9 @@
 				"next": "Next",
 				"previous": "Previous",
 				"answered": "Answered",
-				"unanswered": "Unanswered"
+				"unanswered": "Unanswered",
+				"essay_hint": "Write your response in the text area below.",
+				"essay_placeholder": "Type your essay answer here..."
 			},
 			"attempt_result": {
 				"title": "Exam Result",
@@ -757,7 +759,12 @@
 				"ai_explanation_error": "Could not get explanation. Please try again.",
 				"retake_button": "Retake Exam",
 				"back_to_results": "Back to My Results",
-				"empty_answers": "No answers recorded for this attempt."
+				"empty_answers": "No answers recorded for this attempt.",
+				"essay_type_label": "Essay Question",
+				"essay_your_answer": "Your Answer",
+				"essay_rubric_label": "Grading Rubric",
+				"essay_ai_feedback_title": "AI Feedback",
+				"essay_no_answer": "No answer provided"
 			},
 			"history": {
 				"title": "My Exam History",

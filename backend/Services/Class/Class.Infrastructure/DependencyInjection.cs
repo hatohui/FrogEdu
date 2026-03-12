@@ -63,6 +63,9 @@ public static class DependencyInjection
         // Register ExamServiceClient for fetching exam questions/answers for scoring
         services.AddHttpClient<IExamServiceClient, ExamServiceClient>();
 
+        // Register AIServiceClient for essay grading
+        services.AddHttpClient<IAIServiceClient, AIServiceClient>();
+
         return services;
     }
 }

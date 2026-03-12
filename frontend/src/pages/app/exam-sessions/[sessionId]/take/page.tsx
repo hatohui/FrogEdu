@@ -31,6 +31,7 @@ import {
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
 import { Progress } from '@/components/ui/progress'
 import {
@@ -46,6 +47,10 @@ import type { StudentAnswerSubmission } from '@/types/dtos/classes'
 
 interface AnswerState {
 	[questionId: string]: string[]
+}
+
+interface EssayAnswerState {
+	[questionId: string]: string
 }
 
 const ExamTakePage = (): React.ReactElement => {
@@ -72,14 +77,21 @@ const ExamTakePage = (): React.ReactElement => {
 		null
 	)
 	const [answers, setAnswers] = useState<AnswerState>({})
+	const [essayAnswers, setEssayAnswers] = useState<EssayAnswerState>({})
 	const [attemptId, setAttemptId] = useState<string | null>(null)
 	const [showSubmitDialog, setShowSubmitDialog] = useState(false)
 
 	const questions = useMemo(() => examData?.questions || [], [examData])
 
 	const answeredCount = useMemo(
-		() => Object.keys(answers).filter(k => answers[k].length > 0).length,
-		[answers]
+		() =>
+			questions.filter(q => {
+				if (q.questionType === QuestionType.Essay) {
+					return (essayAnswers[q.id] || '').trim().length > 0
+				}
+				return (answers[q.id] || []).length > 0
+			}).length,
+		[answers, essayAnswers, questions]
 	)
 
 	/** List of { id, index } for every question that has no answer yet */
@@ -87,8 +99,14 @@ const ExamTakePage = (): React.ReactElement => {
 		() =>
 			questions
 				.map((q, idx) => ({ id: q.id, index: idx }))
-				.filter(q => !answers[q.id] || answers[q.id].length === 0),
-		[questions, answers]
+				.filter(q => {
+					const question = questions[q.index]
+					if (question?.questionType === QuestionType.Essay) {
+						return !(essayAnswers[q.id] || '').trim()
+					}
+					return !answers[q.id] || answers[q.id].length === 0
+				}),
+		[questions, answers, essayAnswers]
 	)
 
 	const unansweredCount = unansweredQuestions.length
@@ -154,13 +172,26 @@ const ExamTakePage = (): React.ReactElement => {
 		}))
 	}, [])
 
+	const handleEssayChange = useCallback((questionId: string, value: string) => {
+		setEssayAnswers(prev => ({ ...prev, [questionId]: value }))
+	}, [])
+
 	const handleSubmit = useCallback(async () => {
 		if (!sessionId || !attemptId) return
 
-		const submissionAnswers: StudentAnswerSubmission[] = questions.map(q => ({
-			questionId: q.id,
-			selectedAnswerIds: answers[q.id] || [],
-		}))
+		const submissionAnswers: StudentAnswerSubmission[] = questions.map(q => {
+			if (q.questionType === QuestionType.Essay) {
+				return {
+					questionId: q.id,
+					selectedAnswerIds: [],
+					essayText: essayAnswers[q.id]?.trim() || '',
+				}
+			}
+			return {
+				questionId: q.id,
+				selectedAnswerIds: answers[q.id] || [],
+			}
+		})
 
 		try {
 			await submitAttempt.mutateAsync({
@@ -173,7 +204,15 @@ const ExamTakePage = (): React.ReactElement => {
 		} catch {
 			// Error handled by hook
 		}
-	}, [sessionId, attemptId, questions, answers, submitAttempt])
+	}, [
+		sessionId,
+		attemptId,
+		questions,
+		answers,
+		essayAnswers,
+		submitAttempt,
+		navigate,
+	])
 
 	// ─── Loading ───
 
@@ -470,6 +509,22 @@ const ExamTakePage = (): React.ReactElement => {
 										placeholder='Type your answer...'
 									/>
 								)}
+								{q.questionType === QuestionType.Essay && (
+									<div className='space-y-2'>
+										<p className='text-xs text-muted-foreground'>
+											{t('pages.exam_sessions.take.essay_hint')}
+										</p>
+										<Textarea
+											value={essayAnswers[q.id] || ''}
+											onChange={e => handleEssayChange(q.id, e.target.value)}
+											placeholder={t(
+												'pages.exam_sessions.take.essay_placeholder'
+											)}
+											rows={8}
+											className='resize-y'
+										/>
+									</div>
+								)}
 							</CardContent>
 						</Card>
 					))}
@@ -586,6 +641,22 @@ const ExamTakePage = (): React.ReactElement => {
 								value={answers[currentQ.id]?.[0] || ''}
 								onChange={e => handleFillInBlank(currentQ.id, e.target.value)}
 								placeholder='Type your answer...'
+							/>
+						</div>
+					)}
+
+					{/* Essay */}
+					{currentQ.questionType === QuestionType.Essay && (
+						<div className='space-y-2'>
+							<p className='text-xs text-muted-foreground'>
+								{t('pages.exam_sessions.take.essay_hint')}
+							</p>
+							<Textarea
+								value={essayAnswers[currentQ.id] || ''}
+								onChange={e => handleEssayChange(currentQ.id, e.target.value)}
+								placeholder={t('pages.exam_sessions.take.essay_placeholder')}
+								rows={10}
+								className='resize-y'
 							/>
 						</div>
 					)}

@@ -9,6 +9,8 @@ from app.schemas import (
     Question,
     GenerateQuestionsRequest,
     GenerateSingleQuestionRequest,
+    GradeEssayRequest,
+    GradeEssayResponse,
 )
 from app.models.enums import QuestionType
 from app.services.prompts import (
@@ -353,4 +355,73 @@ class GeminiService:
 
         except Exception as e:
             logger.error(f"Error generating explanation: {str(e)}")
+            raise
+
+    async def grade_essay(self, request: GradeEssayRequest) -> GradeEssayResponse:
+        """Grade a student's essay answer using AI.
+
+        Evaluates the student's free-text response against the grading rubric and
+        returns a score (0..max_points) plus constructive feedback.
+        """
+        try:
+            lang = "Vietnamese" if request.language == "vi" else "English"
+            prompt = (
+                f"You are a strict but fair {request.subject} teacher grading a "
+                f"grade {request.grade} student's essay answer.\n"
+                f"Respond in {lang}.\n\n"
+                f"QUESTION:\n{request.question_content}\n\n"
+                f"GRADING RUBRIC / EXPECTED ANSWER GUIDELINES:\n{request.grading_rubric}\n\n"
+                f"STUDENT'S ANSWER:\n{request.student_answer}\n\n"
+                f"MAXIMUM POINTS: {request.max_points}\n\n"
+                f"Instructions:\n"
+                f"1. Compare the student's answer to the rubric.\n"
+                f"2. Assign a score between 0 and {request.max_points} (decimals allowed).\n"
+                f"3. Write 2-4 sentences of constructive feedback explaining the score.\n"
+                f"4. Be factual and direct — do NOT add generic encouragement.\n\n"
+                f"Respond ONLY with a JSON object in this exact format:\n"
+                f'{{"score": <number>, "feedback": "<string>"}}'
+            )
+
+            grading_schema = {
+                "type": "OBJECT",
+                "properties": {
+                    "score": {"type": "NUMBER"},
+                    "feedback": {"type": "STRING"},
+                },
+                "required": ["score", "feedback"],
+            }
+
+            config = types.GenerateContentConfig(
+                response_mime_type="application/json",
+                response_schema=grading_schema,
+                temperature=0.2,
+            )
+
+            response = self.client.models.generate_content(
+                model=self.model_name,
+                contents=prompt,
+                config=config,
+            )
+
+            if response.text is None:
+                raise ValueError("No response text received from Gemini API")
+
+            result = json.loads(response.text)
+            raw_score = float(result.get("score", 0))
+            # Clamp to valid range
+            score = max(0.0, min(raw_score, request.max_points))
+            percentage = round((score / request.max_points) * 100, 2) if request.max_points > 0 else 0.0
+
+            logger.info(
+                f"Essay graded: score={score}/{request.max_points} ({percentage}%) "
+                f"for grade {request.grade} {request.subject}"
+            )
+            return GradeEssayResponse(
+                score=score,
+                feedback=result.get("feedback", ""),
+                score_percentage=percentage,
+            )
+
+        except Exception as e:
+            logger.error(f"Error grading essay: {str(e)}")
             raise

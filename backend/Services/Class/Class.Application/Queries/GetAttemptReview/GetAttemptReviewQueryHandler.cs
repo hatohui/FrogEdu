@@ -57,6 +57,41 @@ public sealed class GetAttemptReviewQueryHandler
             {
                 studentAnswerMap.TryGetValue(q.Id, out var studentAnswer);
 
+                bool isEssay = q.Type.Equals("Essay", StringComparison.OrdinalIgnoreCase);
+
+                if (isEssay)
+                {
+                    // For essay: SelectedAnswerIds stores the student's text; answers hold the rubric
+                    var essayText = studentAnswer?.SelectedAnswerIds ?? string.Empty;
+                    var essayFeedback = studentAnswer?.EssayFeedback;
+
+                    // Show the rubric as the "answer" for teacher/student reference
+                    var rubricAnswers = q
+                        .Answers.Select(a => new AnswerReviewDto(
+                            a.Id,
+                            a.Content,
+                            a.IsCorrect,
+                            a.Explanation,
+                            false
+                        ))
+                        .ToList();
+
+                    return new QuestionReviewDto(
+                        QuestionId: q.Id,
+                        Content: q.Content,
+                        Type: q.Type,
+                        Point: q.Point,
+                        ImageUrl: null,
+                        Answers: rubricAnswers,
+                        StudentSelectedAnswerIds: [],
+                        StudentScore: studentAnswer?.Score ?? 0,
+                        IsCorrect: studentAnswer?.IsCorrect ?? false,
+                        IsPartiallyCorrect: false,
+                        EssayStudentText: essayText,
+                        EssayAiFeedback: essayFeedback
+                    );
+                }
+
                 var selectedIds = studentAnswer is not null
                     ? studentAnswer
                         .SelectedAnswerIds.Split(',', StringSplitOptions.RemoveEmptyEntries)

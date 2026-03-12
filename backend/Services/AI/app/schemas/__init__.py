@@ -10,6 +10,8 @@ from .requests import (
     HealthResponse,
     ExplainQuestionRequest,
     ExplainQuestionResponse,
+    GradeEssayRequest,
+    GradeEssayResponse,
 )
 
 __all__ = [
@@ -24,4 +26,6 @@ __all__ = [
     "HealthResponse",
     "ExplainQuestionRequest",
     "ExplainQuestionResponse",
+    "GradeEssayRequest",
+    "GradeEssayResponse",
 ]

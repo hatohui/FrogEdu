@@ -20,5 +20,6 @@ public sealed record StudentAnswerResponse(
     string SelectedAnswerIds,
     double Score,
     bool IsCorrect,
-    bool IsPartiallyCorrect
+    bool IsPartiallyCorrect,
+    string? EssayFeedback = null
 );

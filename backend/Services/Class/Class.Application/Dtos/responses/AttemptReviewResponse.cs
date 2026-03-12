@@ -29,7 +29,11 @@ public sealed record QuestionReviewDto(
     List<string> StudentSelectedAnswerIds,
     double StudentScore,
     bool IsCorrect,
-    bool IsPartiallyCorrect
+    bool IsPartiallyCorrect,
+    /// <summary>For Essay questions: the student's written text.</summary>
+    string? EssayStudentText = null,
+    /// <summary>For Essay questions: AI-generated feedback.</summary>
+    string? EssayAiFeedback = null
 );
 
 public sealed record AnswerReviewDto(

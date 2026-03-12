@@ -14,18 +14,21 @@ public sealed class SubmitExamAttemptCommandHandler
     private readonly IStudentExamAttemptRepository _attemptRepository;
     private readonly IExamSessionRepository _examSessionRepository;
     private readonly IExamServiceClient _examServiceClient;
+    private readonly IAIServiceClient _aiServiceClient;
     private readonly ILogger<SubmitExamAttemptCommandHandler> _logger;
 
     public SubmitExamAttemptCommandHandler(
         IStudentExamAttemptRepository attemptRepository,
         IExamSessionRepository examSessionRepository,
         IExamServiceClient examServiceClient,
+        IAIServiceClient aiServiceClient,
         ILogger<SubmitExamAttemptCommandHandler> logger
     )
     {
         _attemptRepository = attemptRepository;
         _examSessionRepository = examSessionRepository;
         _examServiceClient = examServiceClient;
+        _aiServiceClient = aiServiceClient;
         _logger = logger;
     }
 
@@ -89,15 +92,71 @@ public sealed class SubmitExamAttemptCommandHandler
 
             foreach (var question in examData.Questions)
             {
-                // Skip Essay questions for MVP
-                if (question.Type.Equals("Essay", StringComparison.OrdinalIgnoreCase))
-                    continue;
-
                 totalPoints += question.Point;
 
                 var studentAnswer = request.Answers.FirstOrDefault(a =>
                     a.QuestionId == question.Id
                 );
+
+                // ─── Essay questions ───
+                if (question.Type.Equals("Essay", StringComparison.OrdinalIgnoreCase))
+                {
+                    var essayText = studentAnswer?.EssayText?.Trim() ?? string.Empty;
+
+                    var answer = StudentAnswer.Create(attempt.Id, question.Id, essayText);
+
+                    if (string.IsNullOrWhiteSpace(essayText))
+                    {
+                        answer.GradeEssay(0, string.Empty);
+                        attempt.AddAnswer(answer);
+                        answerResponses.Add(
+                            new StudentAnswerResponse(
+                                answer.Id,
+                                answer.QuestionId,
+                                essayText,
+                                0,
+                                false,
+                                false,
+                                null
+                            )
+                        );
+                        continue;
+                    }
+
+                    // The grading rubric is stored in the first answer's content
+                    var rubric = question.Answers.FirstOrDefault()?.Content ?? string.Empty;
+
+                    var gradingResult = await _aiServiceClient.GradeEssayAsync(
+                        questionContent: question.Content,
+                        gradingRubric: rubric,
+                        studentAnswer: essayText,
+                        maxPoints: question.Point,
+                        grade: 5, // default; enrich if exam metadata carries grade
+                        subject: "General",
+                        language: "vi",
+                        cancellationToken: cancellationToken
+                    );
+
+                    double essayScore = gradingResult?.Score ?? 0;
+                    string essayFeedback = gradingResult?.Feedback ?? string.Empty;
+
+                    answer.GradeEssay(essayScore, essayFeedback);
+                    attempt.AddAnswer(answer);
+                    totalScore += essayScore;
+
+                    answerResponses.Add(
+                        new StudentAnswerResponse(
+                            answer.Id,
+                            answer.QuestionId,
+                            essayText,
+                            essayScore,
+                            answer.IsCorrect,
+                            false,
+                            essayFeedback
+                        )
+                    );
+                    continue;
+                }
 
                 if (studentAnswer is null)
                 {
@@ -121,7 +180,7 @@ public sealed class SubmitExamAttemptCommandHandler
 
                 var selectedAnswerIdsStr = string.Join(",", studentAnswer.SelectedAnswerIds);
 
-                var answer = StudentAnswer.Create(attempt.Id, question.Id, selectedAnswerIdsStr);
+                var ans = StudentAnswer.Create(attempt.Id, question.Id, selectedAnswerIdsStr);
 
                 var (score, isCorrect, isPartial) = CalculateScore(
                     question,
@@ -129,15 +188,15 @@ public sealed class SubmitExamAttemptCommandHandler
                     session.AllowPartialScoring
                 );
 
-                answer.Grade(score, isCorrect, isPartial);
-                attempt.AddAnswer(answer);
+                ans.Grade(score, isCorrect, isPartial);
+                attempt.AddAnswer(ans);
                 totalScore += score;
 
                 answerResponses.Add(
                     new StudentAnswerResponse(
-                        answer.Id,
-                        answer.QuestionId,
-                        answer.SelectedAnswerIds,
+                        ans.Id,
+                        ans.QuestionId,
+                        ans.SelectedAnswerIds,
                         score,
                         isCorrect,
                         isPartial
@@ -243,14 +302,11 @@ public sealed class SubmitExamAttemptCommandHandler
 
             if (allowPartialScoring)
             {
-                // Partial scoring: (correct selected - incorrect selected) / total correct * points
-                // Minimum 0
                 var partialRatio = Math.Max(
                     0,
                     (double)(correctSelected - incorrectSelected) / totalCorrect
                 );
-                var partialScore = Math.Round(question.Point * partialRatio, 2);
-                return (partialScore, false, partialScore > 0);
+                return (Math.Round(question.Point * partialRatio, 2), false, partialRatio > 0);
             }
 
             return (0, false, false);

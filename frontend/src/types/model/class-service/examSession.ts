@@ -100,6 +100,10 @@ export interface QuestionReview {
 	studentScore: number
 	isCorrect: boolean
 	isPartiallyCorrect: boolean
+	/** Essay type only: the student's written text response. */
+	essayStudentText?: string | null
+	/** Essay type only: AI-generated feedback after grading. */
+	essayAiFeedback?: string | null
 }
 
 export interface AnswerReview {

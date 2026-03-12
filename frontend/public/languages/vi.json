@@ -906,7 +906,9 @@
 				"next": "Tiếp theo",
 				"previous": "Quay lại",
 				"answered": "Đã trả lời",
-				"unanswered": "Chưa trả lời"
+				"unanswered": "Chưa trả lời",
+				"essay_hint": "Viết câu trả lời của bạn vào ô bên dưới.",
+				"essay_placeholder": "Nhập bài luận của bạn tại đây..."
 			},
 			"attempt_result": {
 				"title": "Kết quả bài thi",
@@ -957,6 +959,11 @@
 				"ai_explaining": "Đang hỏi AI...",
 				"ai_explanation_title": "Giải thích từ AI",
 				"ai_explanation_error": "Không thể lấy giải thích. Vui lòng thử lại.",
+				"essay_type_label": "Câu hỏi tự luận",
+				"essay_your_answer": "Câu trả lời của bạn",
+				"essay_rubric_label": "Tiêu chí chấm điểm",
+				"essay_ai_feedback_title": "Phản hồi từ AI",
+				"essay_no_answer": "Không có câu trả lời",
 				"retake_button": "Làm lại bài thi",
 				"back_to_results": "Quay lại kết quả",
 				"empty_answers": "Không có câu trả lời nào cho lượt thi này."

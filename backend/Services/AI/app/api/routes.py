@@ -12,6 +12,8 @@ from app.schemas import (
     HealthResponse,
     ExplainQuestionRequest,
     ExplainQuestionResponse,
+    GradeEssayRequest,
+    GradeEssayResponse,
 )
 from app.services import GeminiService
 from app.config import get_settings, Settings
@@ -213,4 +215,39 @@ async def explain_question(
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Failed to generate explanation: {str(e)}"
+        )
+
+
+@router.post("/essay/grade", response_model=GradeEssayResponse)
+async def grade_essay(
+    request: GradeEssayRequest,
+    service: Annotated[GeminiService, Depends(get_gemini_service)],
+    user: Annotated[TokenUser, Depends(get_subscribed_user)]
+):
+    """
+    Grade a student's essay answer using AI.
+
+    Evaluates the free-text answer against the question's grading rubric and
+    returns a score (0..max_points) and constructive feedback.
+
+    This endpoint is called server-to-server by the Class service when a student
+    submits an exam attempt that contains essay questions.
+
+    **Requirements:**
+    - Active subscription (Teacher or Student role)
+
+    **Returns:**
+    - AI-assigned score and feedback string
+    """
+    try:
+        logger.info(
+            f"User {user.sub} requesting essay grading for grade {request.grade} {request.subject}"
+        )
+        result = await service.grade_essay(request)
+        return result
+    except Exception as e:
+        logger.error(f"Failed to grade essay: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to grade essay: {str(e)}"
         )

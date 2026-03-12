@@ -105,3 +105,21 @@ class ExplainQuestionRequest(BaseModel):
 class ExplainQuestionResponse(BaseModel):
     """Response with a child-friendly explanation."""
     explanation: str = Field(..., description="Child-friendly explanation of the correct answer")
+
+
+class GradeEssayRequest(BaseModel):
+    """Request to grade a student's essay answer with AI."""
+    question_content: str = Field(..., description="The essay question text")
+    grading_rubric: str = Field(..., description="Grading rubric / expected answer guidelines from the question's answer record")
+    student_answer: str = Field(..., description="The student's free-text essay response")
+    max_points: float = Field(..., gt=0, description="Maximum points available for this question")
+    grade: int = Field(..., ge=1, le=12, description="Student's grade level")
+    subject: str = Field(..., description="Subject name")
+    language: str = Field(default="vi", description="Language for feedback (vi/en)")
+
+
+class GradeEssayResponse(BaseModel):
+    """Response from AI essay grading."""
+    score: float = Field(..., ge=0, description="Points awarded (0 to max_points)")
+    feedback: str = Field(..., description="Constructive feedback explaining the score")
+    score_percentage: float = Field(..., ge=0, le=100, description="Score as a percentage of max_points")
