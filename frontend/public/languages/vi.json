@@ -55,7 +55,8 @@
 		"my_classes": "Lớp của tôi",
 		"content_library": "Thư viện nội dung",
 		"quick_access": "Truy cập nhanh",
-		"admin_panel": "Bảng quản trị"
+		"admin_panel": "Bảng quản trị",
+		"calendar": "Lịch trình"
 	},
 	"roles": {
 		"admin": "Quản trị",

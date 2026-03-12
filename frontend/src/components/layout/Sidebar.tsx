@@ -22,6 +22,7 @@ import {
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
+import { Skeleton } from '@/components/ui/skeleton'
 import { useMe } from '@/hooks/auth/useMe'
 import { useEffectiveRole } from '@/hooks/useEffectiveRole'
 import { useViewAsStore } from '@/stores/viewAsStore'
@@ -110,7 +111,7 @@ const Sidebar = ({
 	onToggleCollapse,
 }: SidebarProps): React.ReactElement => {
 	const location = useLocation()
-	const { user: me, signOut } = useMe()
+	const { user: me, signOut, isLoading } = useMe()
 	const { effectiveRole, isActualAdmin, isViewingAs, viewAs } =
 		useEffectiveRole()
 	const { setViewAs, clearViewAs } = useViewAsStore()
@@ -200,57 +201,70 @@ const Sidebar = ({
 
 				{/* Navigation Links */}
 				<nav className='flex-1 p-4 space-y-2 overflow-y-auto min-h-0'>
-					{navItems
-						.filter(item => {
-							const userRole = effectiveRole
-							const isAdmin = userRole === 'Admin'
-							const isTeacher = userRole === 'Teacher'
-							const isStudent = userRole === 'Student'
-
-							if (item.adminOnly) return isAdmin
-							if (item.teacherOnly) return isTeacher || isAdmin
-							if (item.studentOnly) return isStudent
-							if (item.roles) return item.roles.includes(userRole ?? '')
-							return true
-						})
-						.map(item => {
-							const isActive =
-								location.pathname === item.href ||
-								(item.href !== '/app' &&
-									item.href !== '/dashboard' &&
-									location.pathname.startsWith(item.href))
-							const Icon = item.icon
-							const label = t(item.labelKey)
-
-							const linkContent = (
-								<Link
-									key={item.href}
-									to={item.href}
-									onClick={onClose}
+					{isLoading
+						? Array.from({ length: 5 }).map((_, i) => (
+								<div
+									key={i}
 									className={cn(
-										'flex items-center px-4 py-3 rounded-lg transition-all',
-										'hover:bg-sidebar-accent text-sidebar-foreground hover:text-sidebar-accent-foreground',
-										isActive &&
-											'bg-sidebar-primary text-sidebar-primary-foreground font-medium shadow-sm',
+										'flex items-center px-4 py-3 rounded-lg',
 										collapsed ? 'justify-center' : 'space-x-3'
 									)}
 								>
-									<Icon className='h-5 w-5 flex-shrink-0' />
-									{!collapsed && <span>{label}</span>}
-								</Link>
-							)
+									<Skeleton className='h-5 w-5 rounded flex-shrink-0' />
+									{!collapsed && <Skeleton className='h-4 flex-1' />}
+								</div>
+							))
+						: navItems
+								.filter(item => {
+									const userRole = effectiveRole
+									const isAdmin = userRole === 'Admin'
+									const isTeacher = userRole === 'Teacher'
+									const isStudent = userRole === 'Student'
 
-							return collapsed ? (
-								<Tooltip key={item.href}>
-									<TooltipTrigger asChild>{linkContent}</TooltipTrigger>
-									<TooltipContent side='right'>
-										<p>{label}</p>
-									</TooltipContent>
-								</Tooltip>
-							) : (
-								linkContent
-							)
-						})}
+									if (item.adminOnly) return isAdmin
+									if (item.teacherOnly) return isTeacher || isAdmin
+									if (item.studentOnly) return isStudent
+									if (item.roles) return item.roles.includes(userRole ?? '')
+									return true
+								})
+								.map(item => {
+									const isActive =
+										location.pathname === item.href ||
+										(item.href !== '/app' &&
+											item.href !== '/dashboard' &&
+											location.pathname.startsWith(item.href))
+									const Icon = item.icon
+									const label = t(item.labelKey)
+
+									const linkContent = (
+										<Link
+											key={item.href}
+											to={item.href}
+											onClick={onClose}
+											className={cn(
+												'flex items-center px-4 py-3 rounded-lg transition-all',
+												'hover:bg-sidebar-accent text-sidebar-foreground hover:text-sidebar-accent-foreground',
+												isActive &&
+													'bg-sidebar-primary text-sidebar-primary-foreground font-medium shadow-sm',
+												collapsed ? 'justify-center' : 'space-x-3'
+											)}
+										>
+											<Icon className='h-5 w-5 flex-shrink-0' />
+											{!collapsed && <span>{label}</span>}
+										</Link>
+									)
+
+									return collapsed ? (
+										<Tooltip key={item.href}>
+											<TooltipTrigger asChild>{linkContent}</TooltipTrigger>
+											<TooltipContent side='right'>
+												<p>{label}</p>
+											</TooltipContent>
+										</Tooltip>
+									) : (
+										linkContent
+									)
+								})}
 				</nav>
 
 				{/* View As — admin only */}
@@ -368,17 +382,31 @@ const Sidebar = ({
 					{!collapsed ? (
 						<>
 							<div className='flex items-center space-x-3 px-4 py-3 rounded-lg bg-sidebar-accent/50'>
-								<UserAvatar user={me} />
+								{isLoading ? (
+									<Skeleton className='h-8 w-8 rounded-full flex-shrink-0' />
+								) : (
+									<UserAvatar user={me} />
+								)}
 								<div className='flex-1 min-w-0'>
-									<p className='text-sm font-medium text-sidebar-foreground truncate'>
-										{me
-											? [me.firstName, me.lastName].filter(Boolean).join(' ') ||
-												me.email
-											: t('roles.user')}
-									</p>
-									<p className='text-xs text-sidebar-foreground/60 truncate'>
-										{me?.role?.name || t('roles.user')}
-									</p>
+									{isLoading ? (
+										<div className='space-y-1.5'>
+											<Skeleton className='h-3.5 w-3/4' />
+											<Skeleton className='h-3 w-1/2' />
+										</div>
+									) : (
+										<>
+											<p className='text-sm font-medium text-sidebar-foreground truncate'>
+												{me
+													? [me.firstName, me.lastName]
+															.filter(Boolean)
+															.join(' ') || me.email
+													: t('roles.user')}
+											</p>
+											<p className='text-xs text-sidebar-foreground/60 truncate'>
+												{me?.role?.name || t('roles.user')}
+											</p>
+										</>
+									)}
 								</div>
 							</div>
 
@@ -396,7 +424,11 @@ const Sidebar = ({
 							<Tooltip>
 								<TooltipTrigger asChild>
 									<div className='flex justify-center'>
-										<UserAvatar user={me} />
+										{isLoading ? (
+											<Skeleton className='h-8 w-8 rounded-full' />
+										) : (
+											<UserAvatar user={me} />
+										)}
 									</div>
 								</TooltipTrigger>
 								<TooltipContent side='right'>

@@ -3,7 +3,6 @@ import { Link, useLocation } from 'react-router'
 import { cn } from '@/utils/shadcn'
 import {
 	Home,
-	BookOpen,
 	FileText,
 	User,
 	LogOut,
@@ -91,11 +90,6 @@ const appNavItems: NavItem[] = [
 		labelKey: 'navigation.my_classes',
 		href: '/app/classes',
 		icon: Users,
-	},
-	{
-		labelKey: 'navigation.content_library',
-		href: '/app/content',
-		icon: BookOpen,
 	},
 	{
 		labelKey: 'navigation.exams',

@@ -93,7 +93,7 @@ const AnalyticsPage = (): React.ReactElement => {
 	const statCards = [
 		{
 			title: t('analytics.total_revenue'),
-			value: subStats ? `$${subStats.totalRevenue.toLocaleString()}` : '$0',
+			value: subStats ? `${subStats.totalRevenue.toLocaleString()}` : '0',
 			icon: DollarSign,
 			color: 'text-green-600',
 			bgColor: 'bg-green-100 dark:bg-green-950',
