@@ -148,7 +148,7 @@ const CreateClassModal: React.FC<CreateClassModalProps> = ({
 											defaultValue={field.value}
 										>
 											<FormControl>
-												<SelectTrigger>
+												<SelectTrigger data-testid='grade-select'>
 													<SelectValue
 														placeholder={t(
 															'pages.classes.create_modal.placeholders.grade'

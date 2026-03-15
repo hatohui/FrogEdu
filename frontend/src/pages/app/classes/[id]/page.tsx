@@ -421,7 +421,10 @@ const ClassDetailPage: React.FC = () => {
 						</CardHeader>
 						<CardContent className='space-y-4'>
 							<div className='flex items-center justify-between bg-muted rounded-lg p-4'>
-								<code className='font-mono text-2xl font-bold tracking-[0.3em]'>
+								<code
+									data-testid='invite-code'
+									className='font-mono text-2xl font-bold tracking-[0.3em]'
+								>
 									{classDetail.inviteCode}
 								</code>
 								<Button variant='ghost' size='icon' onClick={copyInviteCode}>

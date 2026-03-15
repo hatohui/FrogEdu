@@ -36,7 +36,10 @@ const ClassCard: React.FC<ClassCardProps> = ({
 
 	return (
 		<Link to={`/app/classes/${classData.id}`}>
-			<Card className='hover:shadow-md transition-all duration-200 cursor-pointer group'>
+			<Card
+				data-testid='class-card'
+				className='hover:shadow-md transition-all duration-200 cursor-pointer group'
+			>
 				<CardHeader className='pb-3'>
 					<div className='flex items-start justify-between'>
 						<div className='flex-1'>
@@ -82,7 +85,10 @@ const ClassCard: React.FC<ClassCardProps> = ({
 								<span className='text-xs text-muted-foreground'>
 									{t('pages.classes.card.invite_label')}
 								</span>
-								<code className='font-mono font-semibold tracking-widest'>
+								<code
+									data-testid='invite-code'
+									className='font-mono font-semibold tracking-widest'
+								>
 									{classData.inviteCode}
 								</code>
 							</div>

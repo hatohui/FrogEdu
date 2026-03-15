@@ -8,6 +8,8 @@
     "test:report": "npx playwright show-report"
   },
   "devDependencies": {
-    "@playwright/test": "^1.52.0"
+    "@playwright/test": "^1.52.0",
+    "@types/node": "^25.5.0",
+    "dotenv": "^17.3.1"
   }
 }

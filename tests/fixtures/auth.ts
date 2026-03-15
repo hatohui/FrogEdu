@@ -31,6 +31,18 @@ function accounts(): TestAccounts {
   };
 }
 
+/** Handle subscription selection page if visible after navigation settles. */
+export async function handleSubscriptionIfNeeded(page: Page): Promise<void> {
+  // Wait for client-side route guards / SPA redirects to settle
+  await page.waitForLoadState("networkidle");
+  if (page.url().includes("select-subscription")) {
+    await page
+      .getByRole("button", { name: /continue.*free/i })
+      .click({ timeout: 5_000 });
+    await page.waitForURL(/\/(app|dashboard)/, { timeout: 15_000 });
+  }
+}
+
 /** Fill the /login form and wait for redirect. */
 async function loginViaUI(
   page: Page,
@@ -40,9 +52,13 @@ async function loginViaUI(
   await page.goto("/login");
   await page.getByRole("textbox", { name: /email/i }).fill(email);
   await page.locator('input[name="password"]').fill(password);
-  await page.getByRole("button", { name: /sign in|log in/i }).click();
-  // Wait for post-login redirect (either /app or /dashboard)
-  await page.waitForURL(/\/(app|dashboard)/, { timeout: 15_000 });
+  await page.locator('button[type="submit"]').click();
+  // Wait for post-login navigation to reach a known destination
+  await page.waitForURL(/\/(app|dashboard|select-subscription)/, {
+    timeout: 30_000,
+  });
+  // Handle subscription selection page if the account hasn't chosen a plan yet
+  await handleSubscriptionIfNeeded(page);
 }
 
 // --------------- Fixtures ---------------
