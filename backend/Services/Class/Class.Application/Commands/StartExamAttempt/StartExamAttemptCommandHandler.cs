@@ -67,8 +67,47 @@ public sealed class StartExamAttemptCommandHandler
                     "This exam session is not currently active"
                 );
 
-            // Check if student can attempt
-            if (!session.CanStudentAttempt(studentId))
+            // Resume existing InProgress attempt rather than blocking the student on page refresh
+            var existingAttempts = await _attemptRepository.GetByStudentAndSessionAsync(
+                studentId,
+                request.ExamSessionId,
+                cancellationToken
+            );
+            var inProgressAttempt = existingAttempts.FirstOrDefault(a =>
+                a.Status == Domain.Enums.AttemptStatus.InProgress
+            );
+            if (inProgressAttempt is not null)
+            {
+                _logger.LogInformation(
+                    "Resuming existing InProgress attempt {AttemptId} for student {StudentId}",
+                    inProgressAttempt.Id,
+                    studentId
+                );
+                return Result<StudentExamAttemptResponse>.Success(
+                    new StudentExamAttemptResponse(
+                        inProgressAttempt.Id,
+                        inProgressAttempt.ExamSessionId,
+                        inProgressAttempt.StudentId,
+                        inProgressAttempt.StartedAt,
+                        inProgressAttempt.SubmittedAt,
+                        inProgressAttempt.Score,
+                        inProgressAttempt.TotalPoints,
+                        inProgressAttempt.GetScorePercentage(),
+                        inProgressAttempt.AttemptNumber,
+                        inProgressAttempt.Status.ToString(),
+                        null
+                    )
+                );
+            }
+
+            // Check if student can start a new attempt (only counts completed/submitted attempts)
+            var completedAttemptCount = existingAttempts.Count(a =>
+                a.Status != Domain.Enums.AttemptStatus.InProgress
+            );
+            var canAttempt = session.IsRetryable
+                ? completedAttemptCount < session.RetryTimes
+                : completedAttemptCount == 0;
+            if (!canAttempt)
                 return Result<StudentExamAttemptResponse>.Failure(
                     "You have reached the maximum number of attempts for this exam"
                 );

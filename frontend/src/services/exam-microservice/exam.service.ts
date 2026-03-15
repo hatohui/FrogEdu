@@ -18,6 +18,7 @@ import type {
 	UpdateSubjectRequest,
 	CreateTopicRequest,
 	UpdateTopicRequest,
+	ExamDashboardStatsResponse,
 } from '@/types/dtos/exams'
 
 class AssessmentService {
@@ -314,6 +315,14 @@ class AssessmentService {
 		}>
 	> {
 		return apiService.get(`${this.baseUrl}/exams/${examId}/session-data`)
+	}
+
+	async getExamDashboardStats(): Promise<
+		ApiResponse<ExamDashboardStatsResponse>
+	> {
+		return apiService.get<ExamDashboardStatsResponse>(
+			`${this.baseUrl}/exams/dashboard/stats`
+		)
 	}
 }
 

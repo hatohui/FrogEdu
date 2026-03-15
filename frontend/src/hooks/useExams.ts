@@ -693,3 +693,14 @@ export function useExportMatrixToExcel() {
 		},
 	})
 }
+
+export function useExamDashboardStats() {
+	return useQuery({
+		queryKey: [...examKeys.all, 'dashboard-stats'],
+		queryFn: async () => {
+			const response = await examService.getExamDashboardStats()
+			return response.data
+		},
+		staleTime: 5 * 60 * 1000,
+	})
+}

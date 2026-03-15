@@ -249,3 +249,11 @@ export function useRemoveStudent() {
 		},
 	})
 }
+
+export function useClassDashboardStats() {
+	return useQuery({
+		queryKey: ['classes', 'dashboard-stats'],
+		queryFn: () => classService.getClassDashboardStats(),
+		staleTime: 5 * 60 * 1000,
+	})
+}

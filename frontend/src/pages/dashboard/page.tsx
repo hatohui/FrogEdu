@@ -9,6 +9,7 @@ import {
 	UserCheck,
 	CreditCard,
 	ArrowUpRight,
+	School,
 } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import {
@@ -24,6 +25,8 @@ import { useNavigate } from 'react-router'
 import { useMe } from '@/hooks/auth/useMe'
 import { useUserStatistics, useUserDashboardStats } from '@/hooks/useUsers'
 import { useSubscriptionDashboardStats } from '@/hooks/useSubscription'
+import { useExamDashboardStats } from '@/hooks/useExams'
+import { useClassDashboardStats } from '@/hooks/useClasses'
 import {
 	ChartContainer,
 	ChartTooltip,
@@ -92,6 +95,10 @@ const DashboardPage = (): React.ReactElement => {
 		useUserDashboardStats()
 	const { data: subStats, isLoading: isLoadingSubStats } =
 		useSubscriptionDashboardStats()
+	const { data: examStats, isLoading: isLoadingExamStats } =
+		useExamDashboardStats()
+	const { data: classStats, isLoading: isLoadingClassStats } =
+		useClassDashboardStats()
 
 	const statCards = [
 		{
@@ -101,6 +108,7 @@ const DashboardPage = (): React.ReactElement => {
 			icon: Users,
 			color: 'text-blue-600',
 			bgColor: 'bg-blue-100 dark:bg-blue-950',
+			loading: isLoadingStats,
 		},
 		{
 			title: t('analytics.total_revenue'),
@@ -108,6 +116,25 @@ const DashboardPage = (): React.ReactElement => {
 			icon: DollarSign,
 			color: 'text-green-600',
 			bgColor: 'bg-green-100 dark:bg-green-950',
+			loading: isLoadingSubStats,
+		},
+		{
+			title: t('dashboard.active_exams'),
+			value: examStats?.activeExams?.toString() ?? '0',
+			change: `${examStats?.totalExams ?? 0} ${t('common.total')}`,
+			icon: FileText,
+			color: 'text-orange-600',
+			bgColor: 'bg-orange-100 dark:bg-orange-950',
+			loading: isLoadingExamStats,
+		},
+		{
+			title: t('dashboard.active_classes'),
+			value: classStats?.activeClasses?.toString() ?? '0',
+			change: `${classStats?.totalClasses ?? 0} ${t('common.total')}`,
+			icon: School,
+			color: 'text-teal-600',
+			bgColor: 'bg-teal-100 dark:bg-teal-950',
+			loading: isLoadingClassStats,
 		},
 		{
 			title: t('analytics.active_subscriptions'),
@@ -115,6 +142,7 @@ const DashboardPage = (): React.ReactElement => {
 			icon: CreditCard,
 			color: 'text-purple-600',
 			bgColor: 'bg-purple-100 dark:bg-purple-950',
+			loading: isLoadingSubStats,
 		},
 		{
 			title: t('analytics.verified_users'),
@@ -122,6 +150,7 @@ const DashboardPage = (): React.ReactElement => {
 			icon: UserCheck,
 			color: 'text-emerald-600',
 			bgColor: 'bg-emerald-100 dark:bg-emerald-950',
+			loading: isLoadingStats,
 		},
 	]
 
@@ -195,7 +224,7 @@ const DashboardPage = (): React.ReactElement => {
 			</div>
 
 			{/* Stats Cards */}
-			<div className='grid gap-4 md:grid-cols-2 lg:grid-cols-4'>
+			<div className='grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6'>
 				{statCards.map((stat, index) => {
 					const Icon = stat.icon
 					return (
@@ -209,7 +238,7 @@ const DashboardPage = (): React.ReactElement => {
 								</div>
 							</CardHeader>
 							<CardContent>
-								{isLoadingStats || isLoadingSubStats ? (
+								{stat.loading ? (
 									<Skeleton className='h-8 w-24' />
 								) : (
 									<>
@@ -218,9 +247,6 @@ const DashboardPage = (): React.ReactElement => {
 											<p className='text-xs text-muted-foreground flex items-center mt-1'>
 												<ArrowUpRight className='h-3 w-3 text-green-600 mr-1' />
 												<span className='text-green-600'>{stat.change}</span>
-												<span className='ml-1'>
-													{t('dashboard.last_30_days')}
-												</span>
 											</p>
 										)}
 									</>

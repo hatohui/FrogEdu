@@ -8,6 +8,7 @@ using FrogEdu.Class.Application.Commands.UpdateAssignment;
 using FrogEdu.Class.Application.Dtos;
 using FrogEdu.Class.Application.Dtos.requests;
 using FrogEdu.Class.Application.Queries.GetClassAssignments;
+using FrogEdu.Class.Application.Queries.GetClassDashboardStats;
 using FrogEdu.Class.Application.Queries.GetClassDetail;
 using FrogEdu.Class.Application.Queries.GetMyClasses;
 using MediatR;
@@ -311,5 +312,24 @@ public class ClassController(IMediator mediator) : BaseController
             return BadRequest("Failed to remove student from class");
 
         return NoContent();
+    }
+
+    // ========== Dashboard Stats ==========
+
+    /// <summary>
+    /// Get class platform statistics for the admin dashboard (Admin only)
+    /// </summary>
+    [HttpGet("dashboard/stats")]
+    [Authorize(Roles = "Admin")]
+    [ProducesResponseType(typeof(ClassDashboardStatsResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    public async Task<ActionResult<ClassDashboardStatsResponse>> GetClassDashboardStats(
+        CancellationToken cancellationToken
+    )
+    {
+        var query = new GetClassDashboardStatsQuery();
+        var result = await _mediator.Send(query, cancellationToken);
+        return Ok(result);
     }
 }

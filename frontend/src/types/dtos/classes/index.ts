@@ -17,3 +17,13 @@ export type {
 	SubmitExamAttemptRequest,
 	StudentAnswerSubmission,
 } from './examSession.request'
+
+// Dashboard DTOs
+export interface ClassDashboardStatsResponse {
+	totalClasses: number
+	activeClasses: number
+	totalExamSessions: number
+	activeExamSessions: number
+	totalAttempts: number
+	submittedAttempts: number
+}

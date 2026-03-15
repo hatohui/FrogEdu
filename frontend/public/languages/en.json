@@ -31,7 +31,8 @@
 		"never": "Never",
 		"loading": "Loading...",
 		"days": "days",
-		"unknown": "Unknown"
+		"unknown": "Unknown",
+		"total": "total"
 	},
 	"navigation": {
 		"home": "Home",

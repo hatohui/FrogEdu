@@ -116,6 +116,16 @@ public class ExamSessionRepository : IExamSessionRepository
             .ToListAsync(cancellationToken);
     }
 
+    public async Task<IReadOnlyList<ExamSession>> GetAllAsync(
+        CancellationToken cancellationToken = default
+    )
+    {
+        return await _context
+            .ExamSessions.Include(e => e.Attempts)
+            .OrderByDescending(e => e.StartTime)
+            .ToListAsync(cancellationToken);
+    }
+
     public async Task AddAsync(ExamSession session, CancellationToken cancellationToken = default)
     {
         await _context.ExamSessions.AddAsync(session, cancellationToken);

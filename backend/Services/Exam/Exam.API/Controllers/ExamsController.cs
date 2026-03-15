@@ -10,6 +10,7 @@ using FrogEdu.Exam.Application.DTOs;
 using FrogEdu.Exam.Application.Queries.ExportExamToExcel;
 using FrogEdu.Exam.Application.Queries.ExportExamToPdf;
 using FrogEdu.Exam.Application.Queries.GetExamById;
+using FrogEdu.Exam.Application.Queries.GetExamDashboardStats;
 using FrogEdu.Exam.Application.Queries.GetExamPreview;
 using FrogEdu.Exam.Application.Queries.GetExamQuestions;
 using FrogEdu.Exam.Application.Queries.GetExams;
@@ -57,7 +58,7 @@ public class ExamsController(IMediator mediator, IExamRepository examRepository)
     )
     {
         var userId = GetAuthenticatedUserId();
-        var query = new GetExamByIdQuery(examId, userId);
+        var query = new GetExamByIdQuery(examId, userId, GetUserRole());
         var result = await _mediator.Send(query, cancellationToken);
 
         if (result is null)
@@ -151,7 +152,7 @@ public class ExamsController(IMediator mediator, IExamRepository examRepository)
     )
     {
         var userId = GetAuthenticatedUserId();
-        var query = new GetExamQuestionsQuery(examId, userId);
+        var query = new GetExamQuestionsQuery(examId, userId, GetUserRole());
         var response = await _mediator.Send(query, cancellationToken);
         return Ok(response);
     }
@@ -339,5 +340,24 @@ public class ExamsController(IMediator mediator, IExamRepository examRepository)
             "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
             $"exam-{examId}.xlsx"
         );
+    }
+
+    // ========== Dashboard Stats ==========
+
+    /// <summary>
+    /// Get exam platform statistics for the admin dashboard (Admin only)
+    /// </summary>
+    [HttpGet("dashboard/stats")]
+    [Authorize(Roles = "Admin")]
+    [ProducesResponseType(typeof(ExamDashboardStatsResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    public async Task<ActionResult<ExamDashboardStatsResponse>> GetExamDashboardStats(
+        CancellationToken cancellationToken
+    )
+    {
+        var query = new GetExamDashboardStatsQuery();
+        var result = await _mediator.Send(query, cancellationToken);
+        return Ok(result);
     }
 }

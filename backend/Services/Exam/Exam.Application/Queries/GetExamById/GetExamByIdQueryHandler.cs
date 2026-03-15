@@ -23,9 +23,10 @@ public sealed class GetExamByIdQueryHandler : IRequestHandler<GetExamByIdQuery, 
         if (exam is null)
             return null;
 
-        // Verify user has access (either creator or admin)
+        // Verify user has access: Admin sees all; creator sees their own drafts; others only see published
         var userId = Guid.Parse(request.UserId);
-        if (exam.CreatedBy != userId && !exam.IsActive)
+        var isAdmin = request.UserRole.Equals("Admin", StringComparison.OrdinalIgnoreCase);
+        if (!isAdmin && exam.CreatedBy != userId && !exam.IsActive)
         {
             // Only the creator can view draft exams
             return null;

@@ -31,7 +31,8 @@
 		"never": "Chưa bao giờ",
 		"loading": "Đang tải...",
 		"days": "ngày",
-		"unknown": "Không rõ"
+		"unknown": "Không rõ",
+		"total": "tổng"
 	},
 	"navigation": {
 		"home": "Trang chủ",

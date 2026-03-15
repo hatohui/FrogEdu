@@ -6,6 +6,7 @@ import type {
 import type { ExamSession } from '@/types/model/class-service'
 import type {
 	AssignExamRequest,
+	ClassDashboardStatsResponse,
 	CreateClassRequest,
 	CreateClassResponse,
 	JoinClassRequest,
@@ -109,6 +110,13 @@ export const classService = {
 		const response = await axiosInstance.post<ExamSession>(
 			`${baseUrl}/classes/admin/${classId}/assignments`,
 			data
+		)
+		return response.data
+	},
+
+	getClassDashboardStats: async (): Promise<ClassDashboardStatsResponse> => {
+		const response = await axiosInstance.get<ClassDashboardStatsResponse>(
+			`${baseUrl}/classes/dashboard/stats`
 		)
 		return response.data
 	},

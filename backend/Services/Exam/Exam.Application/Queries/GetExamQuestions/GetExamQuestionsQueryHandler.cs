@@ -29,9 +29,10 @@ public sealed class GetExamQuestionsQueryHandler
         if (exam is null)
             throw new InvalidOperationException($"Exam with ID {request.ExamId} not found");
 
-        // Verify user has access (either creator or if exam is active/published)
+        // Verify user has access: Admin bypasses all checks; others need to be creator or exam must be published
         var userId = Guid.Parse(request.UserId);
-        if (exam.CreatedBy != userId && !exam.IsActive)
+        var isAdmin = request.UserRole.Equals("Admin", StringComparison.OrdinalIgnoreCase);
+        if (!isAdmin && exam.CreatedBy != userId && !exam.IsActive)
         {
             throw new UnauthorizedAccessException(
                 "You do not have permission to view this exam's questions"

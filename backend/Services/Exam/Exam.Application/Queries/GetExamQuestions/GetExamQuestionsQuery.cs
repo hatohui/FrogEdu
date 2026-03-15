@@ -3,5 +3,5 @@ using MediatR;
 
 namespace FrogEdu.Exam.Application.Queries.GetExamQuestions;
 
-public sealed record GetExamQuestionsQuery(Guid ExamId, string UserId)
+public sealed record GetExamQuestionsQuery(Guid ExamId, string UserId, string UserRole = "Student")
     : IRequest<GetExamQuestionsResponse>;

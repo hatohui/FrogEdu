@@ -17,6 +17,8 @@ use #shadcn and #io.github.upstash/context7 to help me implement the flow where:
 "traceId": "00-6a464bcf1ab27a1d3dfcf35d9c9c054e-b0fc4f42ea6591c4-00"
 }
 
+When a user is taking the test and refreshes the page, the system prevents them from continuing the test. However, the system also marks the attempt as already completed. As a result, the user cannot resume the test, and the system does not display any score or result for that attempt.
+
 Rules to follow:
 
 - Strictly follows CLEAN architecture for backend
