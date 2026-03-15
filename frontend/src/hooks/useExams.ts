@@ -21,7 +21,9 @@ export const examKeys = {
 		[...examKeys.lists(), { isDraft, role: role ?? null }] as const,
 	detail: (id: string) => [...examKeys.all, 'detail', id] as const,
 	subjects: (grade?: number) => ['subjects', { grade }] as const,
+	subject: (id: string) => ['subjects', 'detail', id] as const,
 	topics: (subjectId: string) => ['topics', subjectId] as const,
+	topic: (id: string) => ['topics', 'detail', id] as const,
 	matrices: () => ['matrices'] as const,
 	matrix: (matrixId: string) => ['matrices', matrixId] as const,
 	matrixByExam: (examId: string) => ['matrices', 'exam', examId] as const,
@@ -29,6 +31,7 @@ export const examKeys = {
 		topicId?: string
 		cognitiveLevel?: CognitiveLevel
 		isPublic?: boolean
+		search?: string
 	}) => ['questions', params] as const,
 	questionDetail: (id: string) => ['questions', 'detail', id] as const,
 	examQuestions: (examId: string) => ['exams', examId, 'questions'] as const,
@@ -42,6 +45,17 @@ export function useSubjects(grade?: number, enabled: boolean = true) {
 			const response = await examService.getSubjects(grade)
 			return response.data?.subjects || []
 		},
+	})
+}
+
+export function useSubjectById(subjectId: string) {
+	return useQuery({
+		queryKey: examKeys.subject(subjectId),
+		queryFn: async () => {
+			const response = await examService.getSubjectById(subjectId)
+			return response.data
+		},
+		enabled: !!subjectId,
 	})
 }
 
@@ -321,6 +335,7 @@ export function useQuestions(params?: {
 	topicId?: string
 	cognitiveLevel?: CognitiveLevel
 	isPublic?: boolean
+	search?: string
 }) {
 	return useQuery({
 		queryKey: examKeys.questions(params),

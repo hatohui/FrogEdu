@@ -6,6 +6,7 @@ using FrogEdu.Class.Application.Commands.DeleteAssignment;
 using FrogEdu.Class.Application.Commands.JoinClass;
 using FrogEdu.Class.Application.Commands.RemoveStudent;
 using FrogEdu.Class.Application.Commands.UpdateAssignment;
+using FrogEdu.Class.Application.Commands.UpdateClass;
 using FrogEdu.Class.Application.Dtos;
 using FrogEdu.Class.Application.Dtos.requests;
 using FrogEdu.Class.Application.Dtos.responses;
@@ -111,6 +112,46 @@ public class ClassController(IMediator mediator) : BaseController
             new { id = result.Value!.ClassId },
             result.Value
         );
+    }
+
+    /// <summary>
+    /// Update an existing class (Teacher only)
+    /// </summary>
+    [HttpPut("{classId:guid}")]
+    [Authorize]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> UpdateClass(
+        Guid classId,
+        [FromBody] UpdateClassRequest request,
+        CancellationToken cancellationToken
+    )
+    {
+        var userId = GetAuthenticatedUserId();
+
+        var command = new UpdateClassCommand(
+            classId,
+            request.Name,
+            request.Grade,
+            request.MaxStudents,
+            userId,
+            request.BannerUrl
+        );
+
+        var result = await _mediator.Send(command, cancellationToken);
+
+        if (result.IsFailure)
+        {
+            if (result.Error == "Class not found")
+                return NotFound(result.Error);
+            if (result.Error.Contains("Unauthorized"))
+                return Forbid();
+            return BadRequest(result.Error);
+        }
+
+        return NoContent();
     }
 
     /// <summary>

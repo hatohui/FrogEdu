@@ -82,7 +82,7 @@ const CreateClassModal: React.FC<CreateClassModalProps> = ({
 		resolver: zodResolver(schema),
 		defaultValues: {
 			name: '',
-			grade: '10',
+			grade: '1',
 			description: '',
 			maxStudents: '30',
 			bannerUrl: '',
@@ -157,7 +157,7 @@ const CreateClassModal: React.FC<CreateClassModalProps> = ({
 												</SelectTrigger>
 											</FormControl>
 											<SelectContent>
-												{Array.from({ length: 12 }, (_, i) => i + 1).map(
+												{Array.from({ length: 5 }, (_, i) => i + 1).map(
 													grade => (
 														<SelectItem key={grade} value={grade.toString()}>
 															{t('pages.classes.create_modal.grade_option', {

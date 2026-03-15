@@ -1,5 +1,6 @@
 export type {
 	CreateClassRequest,
+	UpdateClassRequest,
 	JoinClassRequest,
 	AssignExamRequest,
 	UpdateAssignmentRequest,

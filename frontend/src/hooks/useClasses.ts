@@ -9,6 +9,7 @@ import type {
 import type {
 	AssignExamRequest,
 	CreateClassRequest,
+	UpdateClassRequest,
 	UpdateAssignmentRequest,
 } from '@/types/dtos/classes'
 import { examSessionKeys } from './useExamSessions'
@@ -63,6 +64,31 @@ export function useCreateClass() {
 		},
 		onError: (error: Error) => {
 			toast.error(error.message || 'Failed to create class')
+		},
+	})
+}
+
+/**
+ * Hook to update a class (Teacher)
+ */
+export function useUpdateClass() {
+	const queryClient = useQueryClient()
+
+	return useMutation({
+		mutationFn: ({
+			classId,
+			data,
+		}: {
+			classId: string
+			data: UpdateClassRequest
+		}) => classService.updateClass(classId, data),
+		onSuccess: (_, { classId }) => {
+			queryClient.invalidateQueries({ queryKey: classKeys.detail(classId) })
+			queryClient.invalidateQueries({ queryKey: classKeys.all() })
+			toast.success('Class updated successfully!')
+		},
+		onError: (error: Error) => {
+			toast.error(error.message || 'Failed to update class')
 		},
 	})
 }

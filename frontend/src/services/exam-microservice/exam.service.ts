@@ -51,6 +51,10 @@ class AssessmentService {
 		)
 	}
 
+	async getSubjectById(subjectId: string): Promise<ApiResponse<Subject>> {
+		return apiService.get<Subject>(`${this.baseUrl}/subjects/${subjectId}`)
+	}
+
 	async deleteSubject(subjectId: string): Promise<ApiResponse<void>> {
 		return apiService.delete(`${this.baseUrl}/subjects/${subjectId}`)
 	}
@@ -79,6 +83,10 @@ class AssessmentService {
 			`${this.baseUrl}/subjects/${subjectId}/topics/${topicId}`,
 			request
 		)
+	}
+
+	async getTopicById(topicId: string): Promise<ApiResponse<Topic>> {
+		return apiService.get<Topic>(`${this.baseUrl}/subjects/topics/${topicId}`)
 	}
 
 	async deleteTopic(
@@ -182,6 +190,7 @@ class AssessmentService {
 		topicId?: string
 		cognitiveLevel?: CognitiveLevel
 		isPublic?: boolean
+		search?: string
 	}): Promise<ApiResponse<{ questions: Question[] }>> {
 		return apiService.get<{ questions: Question[] }>(
 			`${this.baseUrl}/questions`,

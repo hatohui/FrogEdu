@@ -7,6 +7,7 @@ import {
 	useRemoveStudent,
 	useUpdateAssignment,
 	useDeleteAssignment,
+	useUpdateClass,
 } from '@/hooks/useClasses'
 import { useExamNames } from '@/hooks/useExams'
 import { useMe } from '@/hooks/auth/useMe'
@@ -66,6 +67,7 @@ import { useTranslation } from 'react-i18next'
 import type {
 	AssignExamRequest,
 	UpdateAssignmentRequest,
+	UpdateClassRequest,
 } from '@/types/dtos/classes'
 import type { ClassAssignment } from '@/types/model/class-service'
 import type { GetMeResponse } from '@/types/dtos/users/user'
@@ -87,6 +89,7 @@ const ClassDetailPage: React.FC = () => {
 	const removeStudentMutation = useRemoveStudent()
 	const updateAssignmentMutation = useUpdateAssignment()
 	const deleteAssignmentMutation = useDeleteAssignment()
+	const updateClassMutation = useUpdateClass()
 
 	// Assign exam dialog state
 	const [assignDialogOpen, setAssignDialogOpen] = useState(false)
@@ -117,6 +120,13 @@ const ClassDetailPage: React.FC = () => {
 	const [deleteAssignDialogOpen, setDeleteAssignDialogOpen] = useState(false)
 	const [assignmentToDelete, setAssignmentToDelete] =
 		useState<ClassAssignment | null>(null)
+
+	// Edit class dialog state
+	const [editClassOpen, setEditClassOpen] = useState(false)
+	const [editClassName, setEditClassName] = useState('')
+	const [editClassGrade, setEditClassGrade] = useState('')
+	const [editClassMaxStudents, setEditClassMaxStudents] = useState('')
+	const [editClassBannerUrl, setEditClassBannerUrl] = useState('')
 
 	const isTeacher =
 		user?.role?.name === 'Teacher' && classDetail?.teacherId === user?.cognitoId
@@ -339,7 +349,16 @@ const ClassDetailPage: React.FC = () => {
 								<ClipboardPlus className='h-4 w-4 mr-2' />
 								{t('pages.dashboard.classes.actions.assign_exam')}
 							</Button>
-							<Button variant='outline'>
+							<Button
+								variant='outline'
+								onClick={() => {
+									setEditClassName(classDetail.name)
+									setEditClassGrade(classDetail.grade)
+									setEditClassMaxStudents(String(classDetail.maxStudents))
+									setEditClassBannerUrl(classDetail.bannerUrl ?? '')
+									setEditClassOpen(true)
+								}}
+							>
 								<Edit className='h-4 w-4 mr-2' />
 								{t('pages.classes.detail.edit_details')}
 							</Button>
@@ -1013,6 +1032,106 @@ const ClassDetailPage: React.FC = () => {
 							disabled={deleteAssignmentMutation.isPending}
 						>
 							{deleteAssignmentMutation.isPending ? 'Deleting…' : 'Delete'}
+						</Button>
+					</DialogFooter>
+				</DialogContent>
+			</Dialog>
+
+			{/* Edit Class Dialog */}
+			<Dialog open={editClassOpen} onOpenChange={setEditClassOpen}>
+				<DialogContent>
+					<DialogHeader>
+						<DialogTitle>{t('pages.classes.detail.edit_details')}</DialogTitle>
+						<DialogDescription>
+							{t('pages.classes.detail.edit_class_description', {
+								defaultValue: 'Update the class information below.',
+							})}
+						</DialogDescription>
+					</DialogHeader>
+					<div className='grid gap-4 py-4'>
+						<div className='grid gap-2'>
+							<Label htmlFor='edit-class-name'>
+								{t('pages.dashboard.classes.form.name')}
+							</Label>
+							<Input
+								id='edit-class-name'
+								value={editClassName}
+								onChange={e => setEditClassName(e.target.value)}
+								placeholder={t(
+									'pages.dashboard.classes.form.name_placeholder',
+									{ defaultValue: 'Class name' }
+								)}
+							/>
+						</div>
+						<div className='grid gap-2'>
+							<Label htmlFor='edit-class-grade'>
+								{t('pages.dashboard.classes.form.grade')}
+							</Label>
+							<Input
+								id='edit-class-grade'
+								value={editClassGrade}
+								onChange={e => setEditClassGrade(e.target.value)}
+								placeholder={t(
+									'pages.dashboard.classes.form.grade_placeholder',
+									{ defaultValue: 'e.g. Grade 1' }
+								)}
+							/>
+						</div>
+						<div className='grid gap-2'>
+							<Label htmlFor='edit-class-max'>
+								{t('pages.dashboard.classes.form.max_students', {
+									defaultValue: 'Max Students',
+								})}
+							</Label>
+							<Input
+								id='edit-class-max'
+								type='number'
+								min={1}
+								value={editClassMaxStudents}
+								onChange={e => setEditClassMaxStudents(e.target.value)}
+							/>
+						</div>
+						<div className='grid gap-2'>
+							<Label htmlFor='edit-class-banner'>
+								{t('pages.dashboard.classes.form.banner_url', {
+									defaultValue: 'Banner URL',
+								})}
+							</Label>
+							<Input
+								id='edit-class-banner'
+								value={editClassBannerUrl}
+								onChange={e => setEditClassBannerUrl(e.target.value)}
+								placeholder='https://...'
+							/>
+						</div>
+					</div>
+					<DialogFooter>
+						<Button variant='outline' onClick={() => setEditClassOpen(false)}>
+							{t('common.cancel')}
+						</Button>
+						<Button
+							disabled={
+								!editClassName ||
+								!editClassGrade ||
+								updateClassMutation.isPending
+							}
+							onClick={() => {
+								if (!id) return
+								const data: UpdateClassRequest = {
+									name: editClassName,
+									grade: editClassGrade,
+									maxStudents: Number(editClassMaxStudents) || 30,
+									bannerUrl: editClassBannerUrl || undefined,
+								}
+								updateClassMutation.mutate(
+									{ classId: id, data },
+									{ onSuccess: () => setEditClassOpen(false) }
+								)
+							}}
+						>
+							{updateClassMutation.isPending
+								? t('pages.dashboard.classes.assign_dialog.submitting')
+								: t('common.save', { defaultValue: 'Save changes' })}
 						</Button>
 					</DialogFooter>
 				</DialogContent>

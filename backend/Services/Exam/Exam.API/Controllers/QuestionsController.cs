@@ -25,11 +25,12 @@ public class QuestionsController(IMediator mediator) : BaseController
         [FromQuery] Guid? topicId,
         [FromQuery] CognitiveLevel? cognitiveLevel,
         [FromQuery] bool? isPublic,
+        [FromQuery] string? search,
         CancellationToken cancellationToken
     )
     {
         var userId = GetAuthenticatedUserId();
-        var query = new GetQuestionsQuery(topicId, cognitiveLevel, isPublic, userId);
+        var query = new GetQuestionsQuery(topicId, cognitiveLevel, isPublic, userId, search);
         var response = await _mediator.Send(query, cancellationToken);
         return Ok(response);
     }

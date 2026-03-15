@@ -35,15 +35,35 @@ public sealed class GetQuestionsQueryHandler
                     .ToList();
             }
         }
+        else if (request.IsPublic == true)
+        {
+            // Return all public questions (curriculum bank + shared questions)
+            questions = await _questionRepository.GetPublicQuestionsAsync(cancellationToken);
+
+            if (request.CognitiveLevel.HasValue)
+            {
+                questions = questions
+                    .Where(q => q.CognitiveLevel == request.CognitiveLevel.Value)
+                    .ToList();
+            }
+        }
         else
         {
             var userId = Guid.Parse(request.UserId);
             questions = await _questionRepository.GetByCreatorAsync(userId, cancellationToken);
         }
 
-        if (request.IsPublic.HasValue)
+        if (request.IsPublic.HasValue && request.IsPublic != true)
         {
             questions = questions.Where(q => q.IsPublic == request.IsPublic.Value).ToList();
+        }
+
+        if (!string.IsNullOrWhiteSpace(request.Search))
+        {
+            var search = request.Search.ToLowerInvariant();
+            questions = questions
+                .Where(q => q.Content.ToLowerInvariant().Contains(search))
+                .ToList();
         }
 
         var questionDtos = questions

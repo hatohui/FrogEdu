@@ -8,5 +8,6 @@ public sealed record GetQuestionsQuery(
     Guid? TopicId,
     CognitiveLevel? CognitiveLevel,
     bool? IsPublic,
-    string UserId
+    string UserId,
+    string? Search = null
 ) : IRequest<GetQuestionsResponse>;

@@ -8,6 +8,7 @@ import type {
 	AssignExamRequest,
 	ClassDashboardStatsResponse,
 	CreateClassRequest,
+	UpdateClassRequest,
 	CreateClassResponse,
 	JoinClassRequest,
 	JoinClassResponse,
@@ -47,6 +48,13 @@ export const classService = {
 			data
 		)
 		return response.data
+	},
+
+	updateClass: async (
+		classId: string,
+		data: UpdateClassRequest
+	): Promise<void> => {
+		await axiosInstance.put(`${baseUrl}/classes/${classId}`, data)
 	},
 
 	joinClass: async (data: JoinClassRequest): Promise<JoinClassResponse> => {

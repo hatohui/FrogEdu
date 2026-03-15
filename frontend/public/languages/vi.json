@@ -1,1850 +1,1995 @@
 {
-	"config": {
-		"select_language": "Chọn ngôn ngữ"
-	},
-	"errors": {
-		"title": "Lỗi",
-		"browser_video_tag": "Trình duyệt của bạn không hỗ trợ thẻ video.",
-		"NO_FOODS_FOUND": "Không tìm thấy món ăn",
-		"NO_CATEGORIES_FOUND": "Không tìm thấy danh mục",
-		"NO_PEOPLE_FOUND": "Không tìm thấy người",
-		"ROUTE_NOT_FOUND": "Không tìm thấy tuyến đường",
-		"UNKNOWN_ERROR": "Đã xảy ra lỗi",
-		"internal_server_error": "Lỗi máy chủ nội bộ",
-		"not_found": "Không tìm thấy",
-		"unauthorized": "Không được phép",
-		"forbidden": "Bị cấm",
-		"validation_error": "Lỗi xác thực",
-		"timeout": "Hết thời gian chờ"
-	},
-	"common": {
-		"back": "Quay lại",
-		"confirm": "Xác nhận",
-		"cancel": "Hủy",
-		"all": "Tất cả",
-		"active": "Hoạt động",
-		"inactive": "Không hoạt động",
-		"app_name": "FrogEdu",
-		"learning_platform": "Nền tảng học tập",
-		"admin_dashboard": "Bảng điều khiển quản trị",
-		"logo_alt": "Logo FrogEdu",
-		"never": "Chưa bao giờ",
-		"loading": "Đang tải...",
-		"days": "ngày",
-		"unknown": "Không rõ",
-		"total": "tổng"
-	},
-	"navigation": {
-		"home": "Trang chủ",
-		"about": "Giới thiệu",
-		"dashboard": "Bảng điều khiển",
-		"app": "Ứng dụng",
-		"exams": "Bài thi",
-		"classes": "Lớp học",
-		"exam_sessions": "Phiên thi",
-		"matrices": "Ma trận",
-		"profile": "Hồ sơ",
-		"settings": "Cài đặt",
-		"subscription": "Gói đăng ký",
-		"transactions": "Giao dịch",
-		"security": "Bảo mật",
-		"overview": "Tổng quan",
-		"subjects": "Môn học",
-		"users": "Người dùng",
-		"analytics": "Thống kê",
-		"app_home": "Trang ứng dụng",
-		"my_classes": "Lớp của tôi",
-		"content_library": "Thư viện nội dung",
-		"quick_access": "Truy cập nhanh",
-		"admin_panel": "Bảng quản trị",
-		"calendar": "Lịch trình"
-	},
-	"roles": {
-		"admin": "Quản trị",
-		"teacher": "Giáo viên",
-		"student": "Học sinh",
-		"user": "Người dùng",
-		"administrator": "Quản trị viên"
-	},
-	"role": {
-		"admin": "Quản trị",
-		"teacher": "Giáo viên",
-		"student": "Học sinh"
-	},
-	"badges": {
-		"pro": "Pro",
-		"free": "Miễn phí",
-		"upgrade": "Nâng cấp",
-		"verified": "Đã xác minh",
-		"not_verified": "Chưa xác minh",
-		"unverified": "Chưa xác minh",
-		"active": "Đang hoạt động",
-		"inactive": "Không hoạt động"
-	},
-	"actions": {
-		"logout": "Đăng xuất",
-		"sign_out": "Đăng xuất",
-		"login": "Đăng nhập",
-		"sign_in": "Đăng nhập",
-		"signing_in": "Đang đăng nhập...",
-		"sign_in_google": "Đăng nhập với Google",
-		"creating_account": "Đang tạo tài khoản...",
-		"signing_up": "Đang đăng ký...",
-		"sign_up_google": "Đăng ký với Google",
-		"collapse": "Thu gọn",
-		"switch_to_dark": "Chuyển sang chế độ tối",
-		"switch_to_light": "Chuyển sang chế độ sáng",
-		"save_changes": "Lưu thay đổi",
-		"save_preferences": "Lưu tùy chọn",
-		"change_avatar": "Đổi ảnh đại diện",
-		"remove_avatar": "Xóa ảnh đại diện",
-		"verify_email": "Xác minh email",
-		"change_password": "Đổi mật khẩu",
-		"enable_two_factor": "Bật xác thực hai yếu tố",
-		"revoke_sessions": "Thu hồi tất cả phiên khác",
-		"saving": "Đang lưu...",
-		"sending": "Đang gửi...",
-		"send_reset_link": "Gửi liên kết đặt lại",
-		"reset_password": "Đặt lại mật khẩu",
-		"resetting_password": "Đang đặt lại mật khẩu...",
-		"confirm_email": "Xác nhận email",
-		"confirming": "Đang xác nhận...",
-		"resending": "Đang gửi lại...",
-		"resend_code": "Gửi lại mã",
-		"resend_email": "Gửi lại email",
-		"back_to_login": "Quay lại đăng nhập",
-		"back_to_register": "Quay lại đăng ký",
-		"go_to_home": "Về trang chủ",
-		"go_to_login": "Đến đăng nhập",
-		"continue_free": "Tiếp tục miễn phí",
-		"upgrade_to_pro": "Nâng cấp Pro",
-		"processing": "Đang xử lý...",
-		"skip_for_now": "Bỏ qua và quyết định sau",
-		"subscribe": "Đăng ký",
-		"back_to_home": "Quay lại trang chủ",
-		"edit": "Sửa",
-		"delete": "Xóa",
-		"add_user": "Thêm người dùng",
-		"search": "Tìm kiếm",
-		"filter": "Lọc",
-		"export": "Xuất",
-		"refresh": "Làm mới",
-		"view_details": "Xem chi tiết",
-		"manage": "Quản lý",
-		"view_all": "Xem tất cả"
-	},
-	"action": {
-		"cancel": "Hủy",
-		"save": "Lưu"
-	},
-	"messages": {
-		"sign_out_success": "Đã đăng xuất thành công",
-		"profile_updated": "Cập nhật hồ sơ thành công",
-		"profile_update_failed": "Cập nhật hồ sơ thất bại",
-		"verification_email_sent": "Đã gửi email xác minh! Vui lòng kiểm tra hộp thư.",
-		"verification_email_failed": "Gửi email xác minh thất bại",
-		"email_immutable": "Email không thể thay đổi",
-		"reset_email_sent": "Đã gửi email đặt lại mật khẩu",
-		"reset_email_failed": "Gửi email đặt lại mật khẩu thất bại",
-		"reset_email_failed_generic": "Gửi email đặt lại mật khẩu thất bại. Vui lòng thử lại.",
-		"reset_token_invalid": "Token đặt lại không hợp lệ hoặc bị thiếu",
-		"password_reset_success": "Đặt lại mật khẩu thành công!",
-		"password_reset_failed": "Đặt lại mật khẩu thất bại. Liên kết có thể đã hết hạn.",
-		"email_verified_success": "Xác minh email thành công!",
-		"email_verified_failed": "Xác minh email thất bại",
-		"email_verified_failed_generic": "Xác minh email thất bại. Liên kết có thể đã hết hạn.",
-		"email_confirmed_success": "Xác nhận email thành công! Vui lòng đăng nhập.",
-		"email_confirmed_failed": "Xác nhận email thất bại. Vui lòng thử lại.",
-		"verification_code_resent": "Đã gửi lại mã xác minh",
-		"verification_code_resend_failed": "Gửi lại mã thất bại. Vui lòng thử lại."
-	},
-	"languages": {
-		"english": "Tiếng Anh",
-		"vietnamese": "Tiếng Việt"
-	},
-	"options": {
-		"light": "Sáng",
-		"dark": "Tối",
-		"system": "Hệ thống"
-	},
-	"labels": {
-		"theme": "Chủ đề",
-		"language": "Ngôn ngữ",
-		"user": "Người dùng",
-		"email": "Email",
-		"role": "Vai trò",
-		"first_name": "Tên",
-		"last_name": "Họ",
-		"search_users": "Tìm kiếm người dùng...",
-		"filter_by_role": "Lọc theo vai trò",
-		"all_roles": "Tất cả vai trò",
-		"name": "Tên",
-		"created_at": "Ngày tạo",
-		"last_login": "Đăng nhập lần cuối",
-		"actions": "Hành động",
-		"status": "Trạng thái",
-		"email_address": "Địa chỉ email",
-		"phone_number": "Số điện thoại",
-		"bio": "Giới thiệu",
-		"timezone": "Múi giờ",
-		"email_notifications": "Thông báo qua email",
-		"push_notifications": "Thông báo đẩy",
-		"profile_picture": "Ảnh đại diện",
-		"password": "Mật khẩu",
-		"confirm_password": "Xác nhận mật khẩu",
-		"current_password": "Mật khẩu hiện tại",
-		"new_password": "Mật khẩu mới",
-		"confirm_new_password": "Xác nhận mật khẩu mới",
-		"verification_code": "Mã xác minh",
-		"theme_mode": "Chế độ chủ đề",
-		"compact_mode": "Chế độ gọn",
-		"show_animations": "Hiển thị hoạt ảnh",
-		"exam_reminders": "Nhắc nhở bài thi",
-		"class_updates": "Cập nhật lớp học",
-		"marketing_emails": "Email tiếp thị",
-		"authenticator_app": "Ứng dụng xác thực",
-		"current_session": "Phiên hiện tại"
-	},
-	"placeholders": {
-		"first_name": "Nam",
-		"last_name": "Nguyễn",
-		"first_name_full": "Nhập tên",
-		"last_name_full": "Nhập họ",
-		"email": "Nhập email",
-		"password": "Nhập mật khẩu",
-		"confirm_password": "Xác nhận mật khẩu",
-		"phone_number": "+84 912 345 678",
-		"bio": "Giới thiệu về bạn",
-		"current_password": "Nhập mật khẩu hiện tại",
-		"new_password": "Nhập mật khẩu mới",
-		"confirm_new_password": "Xác nhận mật khẩu mới",
-		"verification_code": "Nhập mã 6 chữ số"
-	},
-	"forms": {
-		"profile": {
-			"validation": {
-				"first_name_required": "Tên là bắt buộc",
-				"first_name_max": "Tên không được vượt quá 100 ký tự",
-				"last_name_required": "Họ là bắt buộc",
-				"last_name_max": "Họ không được vượt quá 100 ký tự"
-			}
-		},
-		"auth": {
-			"validation": {
-				"email_invalid": "Vui lòng nhập email hợp lệ",
-				"password_min": "Mật khẩu phải có ít nhất 8 ký tự",
-				"password_uppercase": "Mật khẩu phải có ít nhất một chữ hoa",
-				"password_lowercase": "Mật khẩu phải có ít nhất một chữ thường",
-				"password_number": "Mật khẩu phải có ít nhất một số",
-				"password_special": "Mật khẩu phải có ít nhất một ký tự đặc biệt",
-				"role_required": "Vui lòng chọn vai trò",
-				"first_name_required": "Tên là bắt buộc",
-				"last_name_required": "Họ là bắt buộc",
-				"passwords_match": "Mật khẩu không khớp",
-				"code_length": "Mã xác minh phải gồm 6 chữ số"
-			}
-		},
-		"classes": {
-			"validation": {
-				"name_required": "Tên lớp học là bắt buộc",
-				"name_max": "Tên lớp học không được vượt quá 200 ký tự",
-				"grade_required": "Khối lớp là bắt buộc",
-				"description_required": "Mô tả là bắt buộc",
-				"description_max": "Mô tả không được vượt quá 1000 ký tự",
-				"max_students_required": "Số học sinh tối đa là bắt buộc",
-				"max_students_positive": "Số học sinh tối đa phải là số dương",
-				"max_students_limit": "Số học sinh tối đa không vượt quá 100",
-				"banner_url_invalid": "Vui lòng nhập URL ảnh bìa hợp lệ",
-				"invite_length": "Mã mời phải có 6 ký tự",
-				"invite_format": "Mã mời chỉ được chứa chữ cái và số"
-			}
-		},
-		"exams": {
-			"validation": {
-				"name_min": "Tên bài thi phải có ít nhất 3 ký tự",
-				"name_max": "Tên bài thi không được vượt quá 200 ký tự",
-				"description_min": "Mô tả phải có ít nhất 10 ký tự",
-				"description_max": "Mô tả không được vượt quá 1000 ký tự",
-				"grade_range": "Khối lớp phải từ 1 đến 5",
-				"subject_required": "Môn học là bắt buộc"
-			}
-		}
-	},
-	"pages": {
-		"app_dashboard": {
-			"welcome": "Chào mừng trở lại, {{name}}!",
-			"subtitle": "Đây là những gì đang diễn ra với lớp học của bạn hôm nay.",
-			"stats": {
-				"active_classes": "Lớp đang hoạt động",
-				"students_enrolled": "Học sinh đã ghi danh",
-				"assignments": "Bài tập"
-			},
-			"recent_classes": "Lớp gần đây",
-			"view_all": "Xem tất cả",
-			"quick_actions": {
-				"title": "Thao tác nhanh",
-				"create_exam": "Tạo bài kiểm tra mới",
-				"browse_content": "Duyệt thư viện nội dung",
-				"manage_classes": "Quản lý lớp học",
-				"my_classes": "Lớp của tôi",
-				"view_calendar": "Xem lịch"
-			},
-			"recent_activity": "Hoạt động gần đây",
-			"trend_label": "{{value}}% so với tháng trước",
-			"subscription_status": "Trạng thái đăng ký",
-			"expires_on": "Hết hạn vào {{date}}",
-			"ai_usage": "Sử dụng AI",
-			"unlimited": "Không giới hạn",
-			"ai_used_count": "Đã dùng {{count}} lần tạo",
-			"generations": "lần tạo",
-			"remaining": "còn lại",
-			"ai_limit_reached": "Bạn đã đạt giới hạn gói miễn phí. Nâng cấp lên Pro để tạo AI không giới hạn.",
-			"upcoming_exams": "Bài thi sắp tới",
-			"view_calendar": "Xem lịch",
-			"exam_session": "Phiên thi",
-			"no_upcoming_exams": "Không có bài thi sắp tới. Hãy tận hưởng thời gian rảnh!",
-			"subtitle_preview": "Đang xem trước giao diện với vai trò {{role}}."
-		},
-		"profile": {
-			"title": "Hồ sơ của tôi",
-			"subtitle": "Quản lý cài đặt tài khoản và tùy chọn.",
-			"profile_information": "Thông tin hồ sơ",
-			"profile_description": "Cập nhật thông tin cá nhân và ảnh đại diện.",
-			"account_information": "Thông tin tài khoản",
-			"unable_to_load": "Không thể tải hồ sơ từ máy chủ",
-			"email_status": "Trạng thái email",
-			"member_since": "Thành viên từ",
-			"account_created": "Tài khoản tạo lúc",
-			"last_updated": "Cập nhật lần cuối",
-			"avatar_instructions": "Nhấn vào biểu tượng máy ảnh để tải ảnh mới.",
-			"avatar_formats": "JPG, PNG, GIF tối đa 5MB"
-		},
-		"settings": {
-			"title": "Cài đặt",
-			"subtitle": "Quản lý cài đặt tài khoản và tùy chọn",
-			"tabs": {
-				"profile": "Hồ sơ",
-				"security": "Bảo mật",
-				"notifications": "Thông báo",
-				"appearance": "Giao diện"
-			},
-			"profile_information": "Thông tin hồ sơ",
-			"profile_description": "Cập nhật thông tin cá nhân và hồ sơ công khai",
-			"avatar_limit": "JPG, PNG hoặc GIF. Tối đa 2MB.",
-			"preferences": "Tùy chọn",
-			"preferences_description": "Cấu hình ngôn ngữ và múi giờ",
-			"change_password": "Đổi mật khẩu",
-			"change_password_description": "Đảm bảo tài khoản sử dụng mật khẩu mạnh",
-			"two_factor": "Xác thực hai yếu tố",
-			"two_factor_description": "Thêm lớp bảo mật cho tài khoản",
-			"authenticator_description": "Sử dụng ứng dụng xác thực để tạo mã xác minh",
-			"authenticator_setup_title": "Thiết lập ứng dụng xác thực",
-			"authenticator_setup_description": "Quét mã QR bên dưới bằng ứng dụng xác thực",
-			"qr_placeholder": "Chỗ đặt mã QR",
-			"active_sessions": "Phiên đang hoạt động",
-			"active_sessions_description": "Quản lý phiên đang hoạt động trên các thiết bị",
-			"session_location": "Windows • Chrome • Hồ Chí Minh, Việt Nam",
-			"active_now": "Đang hoạt động",
-			"email_notifications": "Thông báo qua email",
-			"email_notifications_description": "Chọn loại email bạn muốn nhận",
-			"email_activity_updates": "Nhận cập nhật qua email về hoạt động của bạn",
-			"exam_reminders_description": "Nhận thông báo về kỳ thi sắp tới",
-			"class_updates_description": "Cập nhật về các lớp bạn đang tham gia",
-			"marketing_emails_description": "Tin tức, cập nhật và ưu đãi",
-			"push_notifications": "Thông báo đẩy",
-			"push_notifications_description": "Quản lý tùy chọn thông báo đẩy",
-			"push_notifications_devices": "Nhận thông báo đẩy trên thiết bị",
-			"theme": "Chủ đề",
-			"theme_description": "Chọn giao diện FrogEdu phù hợp",
-			"theme_hint": "Chọn chủ đề cho bảng điều khiển",
-			"display_preferences": "Tùy chọn hiển thị",
-			"display_preferences_description": "Tùy biến trải nghiệm xem",
-			"compact_mode_description": "Hiển thị nhiều nội dung trong ít không gian",
-			"show_animations_description": "Bật chuyển động và hoạt ảnh mượt mà",
-			"appearance": "Giao diện",
-			"appearance_description": "Tùy biến giao diện ứng dụng",
-			"notifications": "Thông báo",
-			"notifications_description": "Cấu hình tùy chọn thông báo",
-			"language": "Ngôn ngữ",
-			"language_description": "Đặt ngôn ngữ bạn ưa thích"
-		},
-		"auth": {
-			"login": {
-				"subtitle": "Nền tảng giáo dục cho học tập hiện đại",
-				"or_continue_with": "Hoặc tiếp tục với",
-				"forgot_password": "Quên mật khẩu?",
-				"no_account": "Chưa có tài khoản?",
-				"footer": "© {{year}} FrogEdu. Tất cả quyền được bảo lưu."
-			},
-			"register": {
-				"subtitle": "Nền tảng giáo dục cho học tập hiện đại",
-				"role_label": "Tôi là",
-				"role_placeholder": "Chọn vai trò",
-				"or_continue_with": "Hoặc tiếp tục với",
-				"have_account": "Đã có tài khoản?",
-				"footer": "© {{year}} FrogEdu. Tất cả quyền được bảo lưu."
-			},
-			"forgot": {
-				"title": "Quên mật khẩu?",
-				"subtitle": "Đừng lo! Nhập email và chúng tôi sẽ gửi hướng dẫn đặt lại.",
-				"check_email_title": "Kiểm tra email của bạn",
-				"check_email_description": "Chúng tôi đã gửi liên kết đặt lại mật khẩu tới",
-				"check_email_note": "Vui lòng kiểm tra email và bấm vào liên kết để đặt lại mật khẩu. Liên kết sẽ hết hạn trong 1 giờ."
-			},
-			"reset": {
-				"title": "Đặt lại mật khẩu",
-				"subtitle": "Nhập mật khẩu mới bên dưới",
-				"success_title": "Đặt lại mật khẩu thành công!",
-				"success_description": "Mật khẩu của bạn đã được đặt lại. Bạn có thể đăng nhập bằng mật khẩu mới."
-			},
-			"confirm": {
-				"title": "Xác nhận email của bạn",
-				"subtitle": "Chúng tôi đã gửi mã xác minh tới",
-				"no_code": "Không nhận được mã?"
-			},
-			"verify": {
-				"no_token": "Không có token xác minh",
-				"verifying_title": "Đang xác minh email của bạn",
-				"verifying_note": "Vui lòng chờ...",
-				"success_title": "Email đã được xác minh!",
-				"failed_title": "Xác minh thất bại",
-				"success_description": "Email của bạn đã được xác minh. Bạn có thể đăng nhập vào tài khoản.",
-				"failed_description": "Không thể xác minh email. Vui lòng thử lại."
-			},
-			"select_role": {
-				"title": "Chào mừng đến với FrogEdu!",
-				"subtitle": "Vui lòng chọn vai trò để tiếp tục",
-				"teacher_description": "Tạo và quản lý lớp học, giao bài tập và theo dõi tiến độ học sinh",
-				"student_description": "Tham gia lớp học, hoàn thành bài tập và học với trợ lý AI",
-				"footer_note": "Bạn có thể đổi vai trò sau trong cài đặt",
-				"profile_setup_failed": "Không thể thiết lập hồ sơ. Vui lòng thử lại."
-			},
-			"subscription": {
-				"title": "Chọn gói của bạn",
-				"subtitle": "Chào mừng {{name}}! Chọn gói đăng ký để mở khóa toàn bộ tiềm năng của FrogEdu.",
-				"free_title": "Gói Miễn phí",
-				"free_description": "Hoàn hảo để bắt đầu với FrogEdu",
-				"pro_title": "Gói Pro",
-				"pro_description": "Dành cho giáo viên muốn nhiều hơn",
-				"forever": "mãi mãi",
-				"footer_note": "Bạn có thể nâng cấp hoặc thay đổi gói bất cứ lúc nào trong cài đặt tài khoản.",
-				"features": {
-					"free": {
-						"create_classes": "Tạo tối đa 3 lớp học",
-						"basic_exam_generation": "Tạo đề thi cơ bản",
-						"ai_exams_limit": "5 đề thi tạo bởi AI mỗi tháng",
-						"digital_textbooks": "Truy cập sách giáo khoa số",
-						"community_support": "Hỗ trợ cộng đồng"
-					},
-					"pro": {
-						"unlimited_classes": "Không giới hạn lớp học",
-						"advanced_exam_generation": "Tạo đề thi nâng cao",
-						"unlimited_ai_exams": "Không giới hạn đề thi AI",
-						"priority_features": "Ưu tiên truy cập tính năng mới",
-						"advanced_analytics": "Phân tích và báo cáo nâng cao",
-						"export_formats": "Xuất đề thi PDF/Word",
-						"priority_support": "Hỗ trợ ưu tiên",
-						"custom_branding": "Tùy chọn thương hiệu"
-					}
-				}
-			},
-			"callback": {
-				"error_title": "Lỗi xác thực",
-				"completing_sign_in": "Đang hoàn tất đăng nhập...",
-				"redirecting": "Đang chuyển hướng..."
-			}
-		},
-		"landing": {
-			"hero": {
-				"badge_ai": "AI hỗ trợ",
-				"badge_curriculum": "Chương trình Việt Nam",
-				"title_prefix": "Chuyển đổi giáo dục với",
-				"title_emphasis": "Học tập hỗ trợ AI",
-				"subtitle": "FrogEdu kết hợp tạo đề thi thông minh, gia sư cá nhân hóa và sách giáo khoa số toàn diện để cách mạng hóa giáo dục tiểu học Việt Nam.",
-				"primary_cta": "Bắt đầu dạy ngay",
-				"secondary_cta": "Tôi đã có tài khoản",
-				"stats": {
-					"grade_levels": "Khối lớp",
-					"questions": "Câu hỏi",
-					"powered": "Hỗ trợ"
-				}
-			},
-			"features": {
-				"title": "Tính năng mạnh mẽ",
-				"subtitle": "Mọi thứ bạn cần để tạo, dạy và truyền cảm hứng",
-				"smart_exam": {
-					"tooltip": "Tạo đề cân bằng theo độ khó",
-					"title": "Trình tạo đề thi thông minh",
-					"description": "Định nghĩa ma trận đề và tạo bài kiểm tra cân bằng",
-					"bullets": {
-						"by_difficulty": "Tạo đề theo mức độ khó",
-						"auto_selection": "Tự động chọn câu hỏi",
-						"pdf_export": "Xuất PDF lên S3",
-						"manual_override": "Tùy chọn chỉnh thủ công"
-					}
-				},
-				"ai_tutor": {
-					"tooltip": "Phương pháp Socrates với phản hồi thông minh",
-					"title": "Gia sư AI cho học sinh",
-					"description": "Đối thoại Socrates với hướng dẫn thông minh",
-					"bullets": {
-						"realtime_chat": "Phản hồi chat thời gian thực",
-						"socratic": "Phương pháp đặt câu hỏi Socrates",
-						"textbook_refs": "Tham chiếu sách giáo khoa",
-						"history": "Theo dõi lịch sử hội thoại"
-					}
-				},
-				"textbook": {
-					"tooltip": "Sách giáo khoa Việt Nam lớp 1-5",
-					"title": "Thư viện sách giáo khoa số",
-					"description": "Nội dung chương trình Việt Nam toàn diện",
-					"bullets": {
-						"grade_textbooks": "Sách giáo khoa lớp 1-5",
-						"navigation": "Điều hướng theo chương",
-						"assets": "Tài liệu bổ trợ",
-						"search": "Tìm kiếm toàn văn"
-					}
-				},
-				"class_management": {
-					"tooltip": "Quản lý học sinh và theo dõi tiến độ",
-					"title": "Quản lý lớp học",
-					"description": "Tổ chức học sinh và theo dõi tiến độ",
-					"bullets": {
-						"create": "Tạo và quản lý lớp học",
-						"enrollment": "Mã tham gia lớp",
-						"progress": "Theo dõi tiến độ",
-						"analytics": "Phân tích hiệu suất"
-					}
-				}
-			},
-			"benefits": {
-				"title": "Vì sao chọn FrogEdu?",
-				"subtitle": "Được thiết kế bởi giáo viên, hỗ trợ bởi AI",
-				"save_time": {
-					"title": "Tiết kiệm thời gian",
-					"description": "Tạo đề thi toàn diện trong vài phút, không phải hàng giờ"
-				},
-				"improve_learning": {
-					"title": "Cải thiện học tập",
-					"description": "Gia sư AI hướng dẫn cá nhân hóa theo phương pháp Socrates"
-				},
-				"better_assessment": {
-					"title": "Đánh giá tốt hơn",
-					"description": "Đề thi cân bằng với tự động chọn câu hỏi theo độ khó"
-				},
-				"student_engagement": {
-					"title": "Tăng hứng thú học tập",
-					"description": "Nền tảng tương tác giúp học sinh hứng thú và gắn kết"
-				},
-				"data_driven": {
-					"title": "Quyết định dựa trên dữ liệu",
-					"description": "Theo dõi tiến độ và phát hiện lỗ hổng kiến thức"
-				},
-				"vietnamese_curriculum": {
-					"title": "Chương trình Việt Nam",
-					"description": "Nội dung phù hợp tiêu chuẩn giáo dục tiểu học Việt Nam"
-				}
-			},
-			"about": {
-				"title": "Xây dựng cho giáo dục Việt Nam",
-				"subtitle": "FrogEdu được thiết kế riêng cho tiểu học Việt Nam (Lớp 1-5), kết hợp công nghệ AI tiên tiến với phương pháp giáo dục đã được kiểm chứng để tạo nên nền tảng trực quan mà giáo viên và học sinh yêu thích.",
-				"stats": {
-					"curriculum": "Chương trình Việt Nam",
-					"support": "Hỗ trợ AI sẵn có",
-					"scalable": "Nền tảng mở rộng"
-				}
-			},
-			"cta": {
-				"title": "Sẵn sàng chuyển đổi lớp học của bạn?",
-				"subtitle": "Tham gia cùng giáo viên trên khắp Việt Nam sử dụng FrogEdu để tạo bài đánh giá thông minh hơn và nâng cao việc học của học sinh",
-				"primary_cta": "Tạo tài khoản miễn phí"
-			},
-			"faq": {
-				"title": "Câu hỏi thường gặp",
-				"subtitle": "Giải đáp các thắc mắc phổ biến về FrogEdu",
-				"q1": {
-					"question": "Trình tạo đề thi thông minh hoạt động như thế nào?",
-					"answer": "Trình tạo đề thi thông minh sử dụng AI để phân tích ma trận đề (phân bố độ khó và phạm vi chủ đề) và tự động chọn câu hỏi từ ngân hàng câu hỏi rộng lớn. Bạn luôn có thể chỉnh thủ công nếu cần."
-				},
-				"q2": {
-					"question": "FrogEdu phù hợp với tất cả khối lớp không?",
-					"answer": "Có! FrogEdu bao phủ giáo dục tiểu học Việt Nam lớp 1-5. Mỗi lớp có nội dung và mức độ khó phù hợp với tiêu chuẩn chương trình."
-				},
-				"q3": {
-					"question": "Tôi có thể xuất đề thi ở các định dạng khác nhau không?",
-					"answer": "Hiện tại, chúng tôi hỗ trợ xuất PDF và DOCX. Tất cả tệp được lưu an toàn trên AWS S3 và cung cấp qua URL ký số để truy cập an toàn."
-				},
-				"q4": {
-					"question": "Gia sư AI giúp học sinh như thế nào?",
-					"answer": "Gia sư AI sử dụng phương pháp Socrates để hướng dẫn học sinh giải bài mà không trả lời trực tiếp. Gia sư tham chiếu nội dung sách giáo khoa liên quan và lưu lịch sử hội thoại để giáo viên xem lại."
-				},
-				"q5": {
-					"question": "Có bản dùng thử miễn phí không?",
-					"answer": "Có! Chúng tôi có bản dùng thử miễn phí để bạn trải nghiệm tất cả tính năng. Không cần thẻ tín dụng để bắt đầu. Đăng ký ngay để bắt đầu chuyển đổi lớp học."
-				}
-			},
-			"newsletter": {
-				"title": "Cập nhật mới",
-				"subtitle": "Đăng ký nhận bản tin để nhận mẹo, cập nhật và tài nguyên độc quyền cho giáo viên"
-			},
-			"footer": {
-				"product": "Sản phẩm",
-				"features": "Tính năng",
-				"benefits": "Lợi ích",
-				"pricing": "Bảng giá",
-				"resources": "Tài nguyên",
-				"documentation": "Tài liệu",
-				"blog": "Blog",
-				"support": "Hỗ trợ",
-				"company": "Công ty",
-				"about": "Giới thiệu",
-				"contact": "Liên hệ",
-				"careers": "Tuyển dụng",
-				"legal": "Pháp lý",
-				"privacy": "Quyền riêng tư",
-				"terms": "Điều khoản",
-				"cookies": "Cookie",
-				"copyright": "© 2026 FrogEdu. Tất cả quyền được bảo lưu.",
-				"twitter": "Twitter",
-				"facebook": "Facebook",
-				"linkedin": "LinkedIn"
-			}
-		},
-		"about": {
-			"hero": {
-				"badge_ai": "AI hỗ trợ",
-				"badge_made_in": "Sản xuất tại Việt Nam",
-				"title_prefix": "Về",
-				"subtitle": "FrogEdu là nền tảng giáo dục tiên phong hỗ trợ bởi AI, được thiết kế riêng cho giáo dục tiểu học Việt Nam, kết hợp công nghệ hiện đại với sự xuất sắc về sư phạm."
-			},
-			"mission": {
-				"title": "Sứ mệnh của chúng tôi",
-				"paragraph_one": "Chúng tôi tin rằng mọi đứa trẻ đều xứng đáng có cơ hội tiếp cận giáo dục chất lượng. Sứ mệnh của chúng tôi là dân chủ hóa việc học bằng cách cung cấp cho giáo viên và học sinh các công cụ AI mạnh mẽ, giúp học tập hấp dẫn, cá nhân hóa và hiệu quả hơn.",
-				"paragraph_two": "Tập trung vào chương trình giáo dục tiểu học Việt Nam (Lớp 1-5), chúng tôi đảm bảo nền tảng phù hợp với tiêu chuẩn quốc gia trong khi tích hợp các phương pháp giảng dạy đổi mới."
-			},
-			"stats": {
-				"grade_levels": "Khối lớp",
-				"questions": "Câu hỏi",
-				"powered": "Hỗ trợ",
-				"available": "Sẵn sàng"
-			},
-			"features": {
-				"title": "Những gì chúng tôi cung cấp",
-				"subtitle": "Nền tảng cung cấp công cụ toàn diện cho cả giáo viên và học sinh",
-				"ai_exam": {
-					"title": "Tạo đề thi bằng AI",
-					"description": "Tạo đề thi tùy chỉnh phù hợp chương trình Việt Nam bằng AI tiên tiến. Tạo câu hỏi trắc nghiệm, điền vào chỗ trống và tự luận ngay lập tức."
-				},
-				"class_management": {
-					"title": "Quản lý lớp học",
-					"description": "Tạo và quản lý lớp học, giao bài tập, theo dõi tiến độ học sinh và giao tiếp với học sinh tại một nơi."
-				},
-				"textbooks": {
-					"title": "Sách giáo khoa số",
-					"description": "Truy cập sách giáo khoa số cho giáo dục tiểu học Việt Nam với nội dung tương tác và tài liệu học tập."
-				}
-			},
-			"team": {
-				"title": "Đội ngũ của chúng tôi",
-				"subtitle": "FrogEdu được xây dựng bởi đội ngũ đầy nhiệt huyết gồm giáo viên, kỹ sư và nhà thiết kế, tin vào sức mạnh công nghệ để chuyển đổi giáo dục.",
-				"dedicated_title": "Đội ngũ tận tâm",
-				"dedicated_description": "Giáo viên và kỹ sư cùng hợp tác",
-				"made_in_title": "Sản xuất tại Việt Nam",
-				"made_in_description": "Xây dựng với giáo dục Việt Nam trong tâm"
-			},
-			"contact": {
-				"title": "Liên hệ",
-				"subtitle": "Bạn có câu hỏi hoặc muốn tìm hiểu thêm về FrogEdu?",
-				"location_label": "Địa điểm",
-				"location_value": "Thành phố Hồ Chí Minh, Việt Nam",
-				"primary_cta": "Bắt đầu dạy ngay"
-			}
-		},
-		"classes": {
-			"title": "Lớp học",
-			"subtitle_teacher": "Quản lý lớp học và học sinh.",
-			"subtitle_student": "Xem các lớp học đã tham gia.",
-			"empty": {
-				"title": "Chưa có lớp học",
-				"teacher_description": "Tạo lớp học đầu tiên để bắt đầu.",
-				"student_description": "Tham gia lớp bằng mã mời để bắt đầu.",
-				"create_first": "Tạo lớp học đầu tiên"
-			},
-			"actions": {
-				"create": "Tạo lớp học",
-				"join": "Tham gia lớp"
-			},
-			"tabs": {
-				"active": "Đang hoạt động ({{count}})",
-				"archived": "Đã lưu trữ ({{count}})"
-			},
-			"archived_empty": "Không có lớp học lưu trữ.",
-			"sections": {
-				"enrolled": "Lớp đã tham gia"
-			},
-			"detail": {
-				"invite_copied": "Đã sao chép mã mời",
-				"back": "Quay lại",
-				"not_found": "Không tìm thấy lớp",
-				"back_to_classes": "Quay lại lớp học",
-				"archived": "Đã lưu trữ",
-				"info_title": "Thông tin lớp học",
-				"subject": "Môn học",
-				"not_specified": "Chưa xác định",
-				"grade_level": "Khối lớp",
-				"grade_label": "Khối {{grade}}",
-				"school": "Trường",
-				"created": "Ngày tạo",
-				"teacher": "Giáo viên",
-				"teacher_unknown": "Không rõ giáo viên",
-				"students": "Học sinh",
-				"invite_title": "Mời học sinh",
-				"invite_description": "Chia sẻ mã này để học sinh tham gia lớp.",
-				"code_expired": "Mã mời đã hết hạn",
-				"expires": "Hết hạn",
-				"regenerate": "Tạo lại mã",
-				"roster_title": "Danh sách lớp",
-				"roster_description": "Học sinh trong lớp này",
-				"assignments_title": "Bài tập",
-				"assignments_description": "Các bài thi được giao trong lớp này",
-				"no_assignments": "Chưa có bài tập",
-				"no_assignments_description": "Giao bài thi cho lớp này để bắt đầu.",
-				"assign_exam": "Giao bài thi",
-				"exam_label": "Bài thi",
-				"start_date": "Ngày bắt đầu",
-				"due_date": "Ngày hết hạn",
-				"mandatory": "Bắt buộc",
-				"optional": "Tùy chọn",
-				"weight": "Trọng số",
-				"status_active": "Đang diễn ra",
-				"status_overdue": "Quá hạn",
-				"status_upcoming": "Sắp tới",
-				"status_completed": "Hoàn thành"
-			},
-			"card": {
-				"grade_badge": "Khối {{grade}}",
-				"students_label": "học sinh",
-				"max_suffix": " / tối đa {{max}}",
-				"teacher_label": "Giáo viên: {{name}}",
-				"invite_label": "Mã mời",
-				"expired": "Hết hạn",
-				"view_details": "Xem chi tiết"
-			},
-			"create_modal": {
-				"title": "Tạo lớp học",
-				"description": "Thiết lập lớp học mới cho học sinh.",
-				"fields": {
-					"name": "Tên lớp",
-					"grade": "Khối lớp",
-					"max_students": "Số học sinh tối đa",
-					"description": "Mô tả",
-					"banner_url": "URL ảnh bìa"
-				},
-				"placeholders": {
-					"name": "VD: Toán lớp 4",
-					"grade": "Chọn khối",
-					"max_students": "30",
-					"description": "Thêm mô tả ngắn",
-					"banner_url": "https://example.com/banner.jpg"
-				},
-				"grade_option": "Khối {{grade}}",
-				"help": {
-					"max_students": "Để trống nếu không giới hạn.",
-					"banner_url": "URL ảnh bìa lớp học (tùy chọn)."
-				},
-				"actions": {
-					"create": "Tạo lớp học"
-				}
-			},
-			"join": {
-				"title": "Tham gia lớp",
-				"subtitle": "Nhập mã mời để tham gia lớp.",
-				"case_insensitive": "Mã mời không phân biệt chữ hoa/thường.",
-				"actions": {
-					"joining": "Đang tham gia...",
-					"join": "Tham gia lớp"
-				}
-			},
-			"roster": {
-				"teachers": "Giáo viên ({{count}})",
-				"teacher_badge": "Giáo viên",
-				"students": "Học sinh ({{count}})",
-				"empty_title": "Chưa có học sinh",
-				"empty_subtitle": "Chia sẻ mã mời để thêm học sinh.",
-				"table": {
-					"name": "Tên",
-					"role": "Vai trò",
-					"joined": "Ngày tham gia",
-					"student_id": "Mã học sinh",
-					"status": "Trạng thái"
-				}
-			}
-		},
-		"calendar": {
-			"title": "Lịch thi",
-			"subtitle": "Xem tất cả phiên thi sắp tới và đã qua.",
-			"has_exams": "Ngày có bài thi",
-			"exams_on": "Bài thi ngày {{date}}",
-			"select_date": "Chọn một ngày để xem bài thi",
-			"exam_session": "Phiên thi",
-			"practice_test": "Bài luyện tập",
-			"practice": "Luyện tập",
-			"no_exams": "Không có bài thi trong ngày này.",
-			"all_upcoming": "Tất cả bài thi sắp tới",
-			"retries_allowed": "Cho phép {{count}} lần thử lại",
-			"attempts": "{{count}} lần thử",
-			"attempts_of": "{{used}} / {{total}} lần thử",
-			"start_exam": "Bắt đầu thi",
-			"retry_exam": "Thử lại",
-			"view_results": "Xem kết quả"
-		},
-		"exam_sessions": {
-			"title": "Phiên thi",
-			"subtitle_teacher": "Quản lý các phiên thi cho lớp học của bạn.",
-			"subtitle_student": "Xem các phiên thi sắp tới và đang diễn ra.",
-			"empty": {
-				"title": "Chưa có phiên thi",
-				"teacher_description": "Tạo phiên thi để giao bài thi cho lớp.",
-				"student_description": "Không có phiên thi nào đang diễn ra hoặc sắp tới.",
-				"create_first": "Tạo phiên thi"
-			},
-			"status": {
-				"active": "Đang diễn ra",
-				"upcoming": "Sắp tới",
-				"ended": "Đã kết thúc",
-				"inactive": "Không hoạt động"
-			},
-			"tabs": {
-				"active": "Đang diễn ra ({{count}})",
-				"upcoming": "Sắp tới ({{count}})",
-				"ended": "Đã kết thúc ({{count}})"
-			},
-			"table": {
-				"exam": "Bài thi",
-				"start_time": "Thời gian bắt đầu",
-				"end_time": "Thời gian kết thúc",
-				"retries": "Số lần thử lại",
-				"attempts": "Lượt thi",
-				"status": "Trạng thái",
-				"actions": "Hành động"
-			},
-			"actions": {
-				"create": "Tạo phiên thi",
-				"edit": "Chỉnh sửa",
-				"delete": "Xóa",
-				"view_results": "Xem kết quả",
-				"start_exam": "Bắt đầu thi",
-				"retry_exam": "Thi lại",
-				"resume_exam": "Tiếp tục thi",
-				"view_attempt": "Xem bài làm",
-				"view_my_results": "Xem kết quả của tôi"
-			},
-			"create": {
-				"title": "Tạo phiên thi",
-				"description": "Thiết lập phiên thi mới cho lớp học này.",
-				"fields": {
-					"exam": "Bài thi",
-					"start_time": "Thời gian bắt đầu",
-					"end_time": "Thời gian kết thúc",
-					"retry_times": "Số lần thử lại tối đa",
-					"is_retryable": "Cho phép thi lại",
-					"shuffle_questions": "Xáo trộn câu hỏi",
-					"shuffle_answers": "Xáo trộn đáp án",
-					"partial_scoring": "Cho phép chấm điểm từng phần"
-				},
-				"placeholders": {
-					"exam": "Chọn bài thi",
-					"retry_times": "Số lần thi lại được phép"
-				},
-				"descriptions": {
-					"is_retryable": "Cho phép học sinh thi lại bài thi này.",
-					"shuffle_questions": "Xáo trộn thứ tự câu hỏi cho mỗi học sinh.",
-					"shuffle_answers": "Xáo trộn thứ tự các đáp án cho mỗi học sinh.",
-					"partial_scoring": "Cho điểm từng phần cho các câu trả lời đúng một phần."
-				},
-				"actions": {
-					"create": "Tạo phiên thi",
-					"creating": "Đang tạo..."
-				}
-			},
-			"edit": {
-				"title": "Chỉnh sửa phiên thi",
-				"description": "Cập nhật cài đặt phiên thi.",
-				"actions": {
-					"update": "Cập nhật phiên thi",
-					"updating": "Đang cập nhật..."
-				}
-			},
-			"delete": {
-				"title": "Xóa phiên thi?",
-				"description": "Thao tác này sẽ xóa vĩnh viễn phiên thi và tất cả bản ghi lượt thi. Không thể hoàn tác."
-			},
-			"results": {
-				"title": "Kết quả phiên thi",
-				"subtitle": "Xem điểm số và chi tiết lượt thi của học sinh.",
-				"summary": {
-					"total_attempts": "Tổng lượt thi",
-					"average_score": "Điểm trung bình",
-					"highest_score": "Điểm cao nhất",
-					"lowest_score": "Điểm thấp nhất"
-				},
-				"table": {
-					"student": "Học sinh",
-					"score": "Điểm",
-					"percentage": "Phần trăm",
-					"attempt_number": "Lượt thi #",
-					"status": "Trạng thái",
-					"submitted_at": "Nộp lúc",
-					"actions": "Hành động"
-				},
-				"empty": "Chưa có lượt thi nào.",
-				"view_detail": "Xem chi tiết",
-				"view_review": "Xem lại câu trả lời"
-			},
-			"take": {
-				"title": "Đang làm bài thi",
-				"question_of": "Câu {{current}} / {{total}}",
-				"time_remaining": "Thời gian còn lại",
-				"submit_exam": "Nộp bài",
-				"submit_confirm_title": "Nộp bài thi?",
-				"submit_confirm_description": "Bạn có chắc chắn muốn nộp bài? Bạn không thể thay đổi câu trả lời sau khi nộp.",
-				"submit_confirm_unanswered": "Bạn còn {{count}} câu chưa trả lời.",
-				"submitting": "Đang nộp...",
-				"next": "Tiếp theo",
-				"previous": "Quay lại",
-				"answered": "Đã trả lời",
-				"unanswered": "Chưa trả lời",
-				"essay_hint": "Viết câu trả lời của bạn vào ô bên dưới.",
-				"essay_placeholder": "Nhập bài luận của bạn tại đây..."
-			},
-			"attempt_result": {
-				"title": "Kết quả bài thi",
-				"score": "Điểm của bạn",
-				"total_points": "Tổng điểm",
-				"percentage": "Phần trăm",
-				"status": "Trạng thái",
-				"back_to_sessions": "Quay lại danh sách",
-				"correct": "Đúng",
-				"incorrect": "Sai",
-				"partial": "Đúng một phần"
-			},
-			"attempt_status": {
-				"in_progress": "Đang làm",
-				"submitted": "Đã nộp",
-				"graded": "Đã chấm điểm",
-				"timed_out": "Hết giờ"
-			},
-			"my_results": {
-				"title": "Kết quả bài thi của tôi",
-				"subtitle": "Xem lại điểm và các lượt thi của bạn trong phiên thi này.",
-				"not_found": "Không tìm thấy phiên thi.",
-				"total_attempts": "Số lượt đã thi",
-				"best_score": "Điểm cao nhất",
-				"retries_left": "Lượt thi còn lại",
-				"attempts_title": "Các lượt thi của tôi",
-				"no_attempts": "Bạn chưa nộp bài thi nào.",
-				"view_review": "Xem lại câu trả lời"
-			},
-			"review": {
-				"title": "Xem lại bài thi",
-				"subtitle": "Xem câu trả lời của bạn, đáp án đúng và giải thích.",
-				"not_found": "Không tìm thấy lượt thi.",
-				"score_card": {
-					"your_score": "Điểm của bạn",
-					"points": "{{score}} / {{total}} điểm",
-					"percentage": "{{value}}%",
-					"attempt": "Lượt thi #{{number}}"
-				},
-				"question_of": "Câu hỏi {{current}} / {{total}}",
-				"correct_badge": "Đúng",
-				"incorrect_badge": "Sai",
-				"partial_badge": "Đúng một phần",
-				"your_answer": "Câu trả lời của bạn",
-				"correct_answer": "Đáp án đúng",
-				"explanation_label": "Giải thích",
-				"ai_explain_button": "Nhờ AI giải thích",
-				"ai_explaining": "Đang hỏi AI...",
-				"ai_explanation_title": "Giải thích từ AI",
-				"ai_explanation_error": "Không thể lấy giải thích. Vui lòng thử lại.",
-				"socratic_title": "Gợi ý Socratic",
-				"socratic_button": "Lấy gợi ý giảng dạy",
-				"socratic_loading": "Đang tạo gợi ý...",
-				"socratic_error": "Không thể tạo gợi ý. Vui lòng thử lại.",
-				"teaching_note": "Ghi chú giảng dạy",
-				"essay_type_label": "Câu hỏi tự luận",
-				"essay_your_answer": "Câu trả lời của bạn",
-				"essay_rubric_label": "Tiêu chí chấm điểm",
-				"essay_ai_feedback_title": "Phản hồi từ AI",
-				"essay_no_answer": "Không có câu trả lời",
-				"retake_button": "Làm lại bài thi",
-				"back_to_results": "Quay lại kết quả",
-				"empty_answers": "Không có câu trả lời nào cho lượt thi này."
-			},
-			"history": {
-				"title": "Lịch sử bài thi của tôi",
-				"subtitle": "Xem lại tất cả các lượt thi và điểm số của bạn.",
-				"empty": "Bạn chưa làm bài thi nào.",
-				"no_history": "Bạn chưa làm bài thi nào.",
-				"all_exams": "Tất cả phiên thi",
-				"all_exams_description": "Danh sách đầy đủ các phiên thi được giao cho bạn.",
-				"stats": {
-					"active": "Đang diễn ra",
-					"upcoming": "Sắp tới",
-					"completed": "Đã hoàn thành"
-				},
-				"table": {
-					"exam": "Bài thi",
-					"exam_id": "Mã bài thi",
-					"date": "Ngày",
-					"start_time": "Thời gian bắt đầu",
-					"end_time": "Thời gian kết thúc",
-					"attempts": "Số lần thi",
-					"score": "Điểm",
-					"status": "Trạng thái",
-					"actions": "Thao tác"
-				},
-				"status": {
-					"active": "Đang mở",
-					"upcoming": "Sắp tới",
-					"ended": "Đã kết thúc"
-				},
-				"actions": {
-					"take_exam": "Làm bài thi",
-					"view_results": "Xem kết quả"
-				},
-				"view_results": "Xem kết quả",
-				"ongoing": "Đang diễn ra",
-				"upcoming": "Sắp tới",
-				"completed": "Đã kết thúc"
-			}
-		},
-		"dashboard": {
-			"exam_sessions": {
-				"title": "Phiên thi",
-				"subtitle": "Theo dõi tất cả phiên thi và lượt làm bài của học sinh trong các lớp.",
-				"select_class": "Chọn lớp học",
-				"select_class_placeholder": "Chọn một lớp...",
-				"sessions_in": "Phiên thi trong lớp {{class}}",
-				"click_session_to_see_results": "Nhấn 'Xem kết quả' để xem lượt thi và điểm số của học sinh.",
-				"no_sessions": "Không có phiên thi nào cho lớp này."
-			},
-			"classes": {
-				"title": "Quản lý lớp học",
-				"subtitle": "Xem và quản lý tất cả lớp học do giáo viên tạo.",
-				"search_placeholder": "Tìm kiếm lớp học theo tên hoặc khối...",
-				"filter_all": "Tất cả",
-				"filter_active": "Đang hoạt động",
-				"filter_inactive": "Không hoạt động",
-				"table": {
-					"name": "Tên lớp",
-					"grade": "Khối",
-					"teacher": "Giáo viên",
-					"students": "Học sinh",
-					"assignments": "Bài tập",
-					"status": "Trạng thái",
-					"created": "Ngày tạo",
-					"actions": "Thao tác",
-					"invite_code": "Mã mời"
-				},
-				"actions": {
-					"view_details": "Xem chi tiết",
-					"assign_exam": "Giao bài thi",
-					"view_students": "Xem học sinh",
-					"view_assignments": "Xem bài tập"
-				},
-				"stats": {
-					"total_classes": "Tổng lớp học",
-					"active_classes": "Lớp đang hoạt động",
-					"total_students": "Tổng học sinh",
-					"total_assignments": "Tổng bài tập"
-				},
-				"detail": {
-					"title": "Chi tiết lớp học",
-					"back": "Quay lại danh sách",
-					"enrollments_tab": "Học sinh",
-					"assignments_tab": "Bài tập",
-					"info_tab": "Thông tin",
-					"student": "Học sinh",
-					"joined_at": "Ngày tham gia",
-					"status": "Trạng thái",
-					"no_students": "Chưa có học sinh",
-					"no_assignments": "Chưa có bài tập"
-				},
-				"assign_dialog": {
-					"title": "Giao bài thi cho lớp",
-					"description": "Chọn bài thi và đặt lịch.",
-					"exam_id": "Mã bài thi",
-					"exam_id_placeholder": "Nhập mã bài thi",
-					"start_date": "Ngày bắt đầu",
-					"due_date": "Ngày hết hạn",
-					"mandatory": "Bắt buộc",
-					"weight": "Trọng số (0-100)",
-					"weight_placeholder": "100",
-					"submit": "Giao bài thi",
-					"submitting": "Đang giao..."
-				},
-				"empty": {
-					"title": "Không tìm thấy lớp học",
-					"description": "Không có lớp học phù hợp với tiêu chí."
-				}
-			}
-		},
-		"exams": {
-			"list": {
-				"title": "Bài thi",
-				"subtitle": "Quản lý bài thi của bạn.",
-				"actions": {
-					"new": "Bài thi mới",
-					"view": "Xem",
-					"edit": "Chỉnh sửa",
-					"delete": "Xóa"
-				},
-				"filters": {
-					"all": "Tất cả",
-					"draft": "Nháp",
-					"published": "Đã phát hành"
-				},
-				"table": {
-					"title": "Tất cả bài thi",
-					"name": "Tên",
-					"subject": "Môn học",
-					"grade": "Khối",
-					"status": "Trạng thái",
-					"created": "Ngày tạo",
-					"actions": "Thao tác"
-				},
-				"status": {
-					"draft": "Nháp",
-					"active": "Đã phát hành"
-				},
-				"empty": {
-					"title": "Chưa có bài thi",
-					"action": "Tạo bài thi đầu tiên"
-				},
-				"edit": {
-					"title": "Chỉnh sửa bài thi",
-					"description": "Cập nhật thông tin bài thi.",
-					"fields": {
-						"name": "Tên bài thi",
-						"description": "Mô tả",
-						"grade": "Khối",
-						"subject": "Môn học"
-					},
-					"placeholders": {
-						"name": "Nhập tên bài thi",
-						"description": "Mô tả ngắn",
-						"subject": "Chọn môn học"
-					},
-					"grade_option": "Khối {{grade}}",
-					"actions": {
-						"update": "Cập nhật bài thi"
-					}
-				},
-				"delete": {
-					"title": "Xóa bài thi?",
-					"description": "Thao tác này sẽ xóa vĩnh viễn bài thi."
-				}
-			},
-			"create": {
-				"title": "Tạo bài thi",
-				"subtitle": "Thiết lập thông tin cho bài thi mới.",
-				"form": {
-					"title": "Thông tin bài thi",
-					"fields": {
-						"name": "Tên bài thi",
-						"description": "Mô tả",
-						"grade": "Khối",
-						"subject": "Môn học"
-					},
-					"placeholders": {
-						"name": "Nhập tên bài thi",
-						"description": "Mô tả ngắn",
-						"grade": "Chọn khối",
-						"subject": "Chọn môn học"
-					},
-					"grade_option": "Khối {{grade}}",
-					"no_subjects": "Không có môn học",
-					"char_count": "{{count}} / {{max}} ký tự"
-				},
-				"actions": {
-					"create": "Tạo bài thi",
-					"creating": "Đang tạo..."
-				}
-			},
-			"matrix": {
-				"title_create": "Tạo ma trận",
-				"title_edit": "Chỉnh sửa ma trận",
-				"subtitle": "Xác định cấu trúc bài thi theo chủ đề và mức độ.",
-				"back_to_exams": "Quay lại bài thi",
-				"default_exam": "Bài thi chưa đặt tên",
-				"loading_exam": "Đang tải bài thi...",
-				"not_found": "Không tìm thấy bài thi",
-				"auto_name": "Ma trận {{exam}}",
-				"auto_description": "Ma trận tự động cho bài thi này.",
-				"table": {
-					"title": "Bảng ma trận",
-					"topic": "Chủ đề",
-					"select_topic": "Chọn chủ đề",
-					"total": "Tổng",
-					"total_questions": "Tổng số câu hỏi"
-				},
-				"actions": {
-					"add_row": "Thêm dòng",
-					"save_continue": "Lưu và tiếp tục",
-					"update_continue": "Cập nhật và tiếp tục",
-					"skip": "Bỏ qua",
-					"saving": "Đang lưu..."
-				},
-				"about": {
-					"title": "Về ma trận",
-					"description": "Cân bằng câu hỏi theo chủ đề và mức độ nhận thức.",
-					"levels_title": "Mức độ nhận thức",
-					"levels": {
-						"remember": "Nhận biết",
-						"understand": "Thông hiểu",
-						"apply": "Vận dụng",
-						"analyze": "Vận dụng cao"
-					}
-				}
-			},
-			"detail": {
-				"not_found": "Không tìm thấy bài thi",
-				"back_to_exams": "Quay lại bài thi",
-				"summary": "{{count}} câu hỏi - {{points}} điểm",
-				"actions": {
-					"preview": "Xem trước",
-					"edit": "Chỉnh sửa",
-					"export": "Xuất",
-					"export_pdf": "Xuất PDF",
-					"exporting_pdf": "Đang xuất PDF...",
-					"export_excel": "Xuất Excel",
-					"exporting_excel": "Đang xuất Excel...",
-					"publish": "Phát hành"
-				},
-				"publish": {
-					"title": "Phát hành bài thi?",
-					"description": "Bài thi sẽ được chia sẻ cho học sinh.",
-					"confirm": "Phát hành",
-					"publishing": "Đang phát hành...",
-					"no_questions": "Thêm ít nhất một câu hỏi trước khi phát hành."
-				},
-				"info": {
-					"title": "Thông tin bài thi",
-					"description": "Chi tiết về bài thi",
-					"subject": "Môn học",
-					"subject_unknown": "Không rõ môn học",
-					"grade": "Khối",
-					"grade_value": "Khối {{grade}}",
-					"created": "Ngày tạo"
-				},
-				"matrix": {
-					"title": "Ma trận bài thi",
-					"subtitle": "Phân bổ câu hỏi theo chủ đề và mức độ.",
-					"edit": "Chỉnh sửa ma trận",
-					"create": "Tạo ma trận",
-					"configured": "Đã cấu hình ma trận",
-					"summary": "{{count}} yêu cầu",
-					"total_questions": "{{count}} câu hỏi",
-					"topic_unknown": "Không rõ chủ đề",
-					"quantity": "{{count}} câu hỏi",
-					"more_combinations": "+{{count}} kết hợp khác",
-					"empty": "Chưa gắn ma trận.",
-					"attach_existing": "Gắn ma trận có sẵn",
-					"attach_title": "Gắn ma trận",
-					"attach_description": "Chọn ma trận để gắn vào bài thi.",
-					"attach_empty": "Không có ma trận.",
-					"search_placeholder": "Tìm ma trận...",
-					"search_empty": "Không tìm thấy ma trận.",
-					"attach_incompatible": "Ma trận không tương thích.",
-					"attach": "Gắn ma trận",
-					"attaching": "Đang gắn...",
-					"detach_title": "Gỡ ma trận?",
-					"detach_description": "Ma trận sẽ bị gỡ khỏi bài thi.",
-					"detach_confirm": "Gỡ",
-					"detach": "Gỡ ma trận",
-					"detaching": "Đang gỡ..."
-				},
-				"questions": {
-					"title": "Câu hỏi ({{count}})",
-					"add": "Thêm câu hỏi",
-					"empty": "Chưa có câu hỏi.",
-					"table": {
-						"question": "Câu hỏi",
-						"type": "Loại",
-						"level": "Mức độ",
-						"points": "Điểm",
-						"actions": "Thao tác"
-					},
-					"remove_title": "Xóa câu hỏi?",
-					"remove_description": "Hành động này sẽ xóa câu hỏi khỏi bài thi.",
-					"remove_confirm": "Xóa"
-				}
-			},
-			"edit": {
-				"title": "Chỉnh sửa bài thi",
-				"subtitle": "Cập nhật thông tin bài thi.",
-				"not_found": "Không tìm thấy bài thi",
-				"back_to_exams": "Quay lại bài thi",
-				"form": {
-					"title": "Thông tin bài thi",
-					"fields": {
-						"name": "Tên bài thi",
-						"description": "Mô tả",
-						"grade": "Khối",
-						"subject": "Môn học"
-					},
-					"placeholders": {
-						"name": "Nhập tên bài thi",
-						"description": "Mô tả ngắn",
-						"grade": "Chọn khối",
-						"subject": "Chọn môn học"
-					},
-					"help": {
-						"name": "Ngắn gọn và dễ hiểu.",
-						"description": "Mô tả ngắn về bài thi."
-					},
-					"grade_option": "Khối {{grade}}"
-				},
-				"actions": {
-					"save": "Lưu thay đổi",
-					"saving": "Đang lưu..."
-				}
-			},
-			"preview": {
-				"not_found": "Không tìm thấy bài thi",
-				"back_to_exams": "Quay lại bài thi",
-				"back_to_exam": "Quay lại bài thi",
-				"export_pdf": "Xuất PDF",
-				"exporting_pdf": "Đang xuất PDF...",
-				"export_excel": "Xuất Excel",
-				"exporting_excel": "Đang xuất Excel...",
-				"subject": "Môn học",
-				"grade": "Khối",
-				"questions": "Câu hỏi",
-				"total_points": "Tổng điểm",
-				"description": "Mô tả",
-				"questions_title": "Câu hỏi",
-				"question_number": "Câu {{number}}",
-				"points": "{{count}} điểm",
-				"correct": "Đúng"
-			},
-			"questions": {
-				"title": "Câu hỏi",
-				"subtitle": "Câu hỏi cho bài thi {{name}}",
-				"matrix_progress_label": "Tiến độ ma trận",
-				"tabs": {
-					"create": "Tạo câu hỏi",
-					"bank": "Ngân hàng câu hỏi"
-				},
-				"creation_mode": {
-					"label": "Chế độ tạo",
-					"manual": "Thủ công",
-					"ai": "AI",
-					"pro": "Pro",
-					"pro_required": "Yêu cầu Pro"
-				},
-				"actions": {
-					"clear": "Xóa",
-					"saving": "Đang lưu...",
-					"save_add": "Lưu và thêm câu hỏi"
-				},
-				"bank": {
-					"title": "Ngân hàng câu hỏi",
-					"subtitle": "Duyệt câu hỏi {{matrix}}",
-					"matrix_hint": "theo ma trận",
-					"view_label": "Xem",
-					"view_all": "Tất cả",
-					"view_matrix": "Ma trận",
-					"search_placeholder": "Tìm kiếm câu hỏi...",
-					"filters": {
-						"level": "Mức độ",
-						"all_levels": "Tất cả mức độ",
-						"topic": "Chủ đề",
-						"all_topics": "Tất cả chủ đề"
-					},
-					"loading": "Đang tải câu hỏi...",
-					"empty": "Không tìm thấy câu hỏi.",
-					"points": "{{count}} điểm",
-					"selected_count": "Đã chọn: {{count}}",
-					"adding": "Đang thêm...",
-					"add_selected": "Thêm đã chọn"
-				},
-				"sidebar": {
-					"questions_title": "Câu hỏi ({{count}})",
-					"matrix_title": "Yêu cầu ma trận",
-					"matrix_hint": "Nhấp vào yêu cầu để thêm câu hỏi."
-				},
-				"matrix_limit": {
-					"title": "Đã đủ theo ma trận",
-					"description": "Bạn đã đủ số câu hỏi yêu cầu cho ma trận này.",
-					"confirm": "Đã hiểu"
-				},
-				"delete_matrix": {
-					"title": "Xóa ma trận?",
-					"description": "Thao tác này sẽ xóa ma trận vĩnh viễn.",
-					"confirm": "Xóa"
-				},
-				"form": {
-					"title": "Chi tiết câu hỏi",
-					"fields": {
-						"content": "Nội dung câu hỏi",
-						"type": "Loại câu hỏi",
-						"cognitive_level": "Mức độ nhận thức",
-						"points": "Điểm",
-						"topic": "Chủ đề",
-						"public": "Câu hỏi công khai",
-						"media": "Tệp đính kèm"
-					},
-					"placeholders": {
-						"content": "Nhập nội dung câu hỏi...",
-						"topic": "Tìm và chọn chủ đề..."
-					},
-					"help": {
-						"topic": "Chọn chủ đề phù hợp nhất với câu hỏi.",
-						"public": "Cho phép người khác sử dụng câu hỏi này."
-					},
-					"actions": {
-						"upload": "Tải lên",
-						"uploading": "Đang tải..."
-					},
-					"media_uploaded": "Đã tải lên: {{url}}"
-				},
-				"answers": {
-					"title": {
-						"true_false": "Câu trả lời Đúng/Sai",
-						"single_choice": "Câu trả lời một lựa chọn",
-						"multiple_choice": "Câu trả lời nhiều lựa chọn",
-						"essay": "Câu trả lời tự luận",
-						"fill_blank": "Câu trả lời điền khuyết",
-						"default": "Câu trả lời"
-					},
-					"hint_simple": "Chọn đáp án đúng.",
-					"hint_multiple": "Chọn tất cả đáp án đúng.",
-					"common": {
-						"explanation_label": "Giải thích (tùy chọn)",
-						"explanation_placeholder": "Giải thích vì sao đáp án đúng.",
-						"remove_answer": "Xóa đáp án",
-						"min_two": "Cần ít nhất hai đáp án."
-					},
-					"select": {
-						"hint": "Chọn đúng một đáp án.",
-						"add_option": "Thêm lựa chọn",
-						"answer_label": "Đáp án {{index}}",
-						"answer_placeholder": "Nhập nội dung đáp án"
-					},
-					"multiple_choice": {
-						"hint": "Chọn một hoặc nhiều đáp án đúng.",
-						"add_option": "Thêm lựa chọn",
-						"answer_label": "Đáp án {{index}}",
-						"answer_placeholder": "Nhập nội dung đáp án"
-					},
-					"fill_blank": {
-						"tip": "Dùng [blank] trong câu hỏi để chỉ chỗ trống.",
-						"hint": "Cung cấp đáp án đúng và các đáp án chấp nhận được.",
-						"add_alternative": "Thêm đáp án khác",
-						"correct_label": "Đáp án đúng",
-						"alternative_label": "Đáp án khác {{index}}",
-						"correct_help": "Đây là đáp án chính xác.",
-						"alternative_help": "Các biến thể chấp nhận được.",
-						"correct_placeholder": "Nhập đáp án đúng",
-						"explanation_placeholder": "Giải thích đáp án đúng (tùy chọn)",
-						"remove_alternative": "Xóa đáp án khác"
-					},
-					"true_false": {
-						"hint": "Đánh dấu phương án đúng.",
-						"option_true": "Đúng",
-						"option_false": "Sai",
-						"explanation_placeholder": "Giải thích vì sao {{option}} là đúng."
-					},
-					"essay": {
-						"tip": "Cung cấp rubric hoặc hướng dẫn chấm.",
-						"rubric_label": "Rubric / Hướng dẫn",
-						"rubric_help": "Mô tả cách chấm điểm.",
-						"rubric_placeholder": "Nhập tiêu chí chấm...",
-						"sample_label": "Bài mẫu (tùy chọn)",
-						"sample_help": "Ví dụ về một câu trả lời tốt.",
-						"sample_placeholder": "Nhập bài mẫu..."
-					}
-				},
-				"toast": {
-					"prefill_manual": "Đã chuyển sang chế độ thủ công.",
-					"prefill_ai": "Đã chuyển sang chế độ AI.",
-					"created": "Đã tạo câu hỏi.",
-					"no_topic": "Vui lòng chọn chủ đề.",
-					"min_answers": "Cần ít nhất hai đáp án.",
-					"min_correct": "Chọn ít nhất một đáp án đúng.",
-					"ai_saved": "Đã lưu câu hỏi AI.",
-					"no_id": "Thiếu ID câu hỏi.",
-					"save_failed": "Lưu câu hỏi thất bại. {{message}}",
-					"ai_missing_topic": "Không tìm thấy chủ đề cho {{topic}}.",
-					"saved_count": "Đã lưu {{count}} câu hỏi.",
-					"failed_count": "Lưu thất bại {{count}} câu hỏi.",
-					"save_all_failed": "Lưu tất cả câu hỏi thất bại.",
-					"pro_required": "Cần gói Pro để dùng AI.",
-					"matrix_complete": "Đã hoàn thành yêu cầu ma trận.",
-					"matrix_generated": "Đã tạo ma trận với {{count}} câu hỏi.",
-					"matrix_failed": "Tạo ma trận thất bại.",
-					"matrix_deleted": "Đã xóa ma trận."
-				},
-				"ai": {
-					"matrix_title": "Tạo câu hỏi theo ma trận",
-					"matrix_description": "Tự động tạo câu hỏi dựa trên ma trận.",
-					"matrix_generating": "Đang tạo ma trận...",
-					"matrix_generate": "Tạo từ ma trận",
-					"matrix_hero_title": "Tạo từ Bản Thiết Kế Ma Trận",
-					"matrix_hero_description": "AI sẽ tự động tạo câu hỏi cho từng chủ đề theo phân phối ma trận. Tùy chọn đặt loại câu hỏi cho từng hàng, hoặc để là Ngẫu nhiên để AI tự chọn loại.",
-					"matrix_topic_table_topic": "Chủ đề",
-					"matrix_topic_table_level": "Mức độ",
-					"matrix_topic_table_count": "Số lượng",
-					"matrix_topic_table_type": "Loại câu hỏi",
-					"matrix_topic_table_status": "Trạng thái",
-					"matrix_question_type_random": "Ngẫu nhiên",
-					"matrix_questions_needed": "Cần {{count}} câu",
-					"matrix_questions_fulfilled": "Đã đủ",
-					"matrix_empty": "Chưa có ma trận. Hãy tạo hoặc gắn ma trận cho đề thi trước.",
-					"matrix_complete": "Tất cả yêu cầu ma trận đã được đáp ứng!",
-					"language_note": "Câu hỏi sẽ được tạo bằng {{language}}.",
-					"language_english": "Tiếng Anh",
-					"language_vietnamese": "Tiếng Việt",
-					"single_section_title": "Tạo câu hỏi đơn lẻ",
-					"single_section_description": "Cấu hình và tạo từng câu hỏi một với các thiết lập cụ thể.",
-					"title": "Trình tạo câu hỏi AI",
-					"fields": {
-						"topic": "Chủ đề",
-						"type": "Loại câu hỏi",
-						"cognitive_level": "Mức độ nhận thức",
-						"quantity": "Số lượng"
-					},
-					"placeholders": {
-						"topic": "Chọn chủ đề"
-					},
-					"generating": "Đang tạo...",
-					"generate": "Tạo {{count}} câu hỏi",
-					"generated_title": "Câu hỏi đã tạo ({{count}})",
-					"save_all": "Lưu tất cả ({{count}})",
-					"saving_all": "Đang lưu tất cả...",
-					"clear_all": "Xóa tất cả"
-				}
-			}
-		}
-	},
-	"timezones": {
-		"utc": "UTC (GMT+0)",
-		"eastern": "Giờ Miền Đông (GMT-5)",
-		"pacific": "Giờ Thái Bình Dương (GMT-8)",
-		"hcm": "Hồ Chí Minh (GMT+7)",
-		"london": "London (GMT+0)"
-	},
-	"health": {
-		"title": "Sức Khỏe Hệ Thống",
-		"subtitle": "Giám sát trạng thái của tất cả các dịch vụ hệ thống",
-		"overall_status": "Trạng Thái Hệ Thống Tổng Thể",
-		"healthy": "Khỏe Mạnh",
-		"unhealthy": "Không Khỏe",
-		"all_operational": "Tất cả hệ thống đang hoạt động",
-		"issues_detected": "Một hoặc nhiều dịch vụ đang gặp sự cố",
-		"database": "Cơ Sở Dữ Liệu",
-		"database_description": "Kết Nối PostgreSQL",
-		"redis": "Redis",
-		"redis_description": "Bộ Nhớ Cache & Phiên",
-		"status": "Trạng Thái",
-		"service": "Dịch Vụ",
-		"connection": "Kết Nối",
-		"active": "Hoạt Động",
-		"failed": "Thất Bại",
-		"unknown": "Không Rõ",
-		"system_info": "Thông Tin Hệ Thống",
-		"system_info_description": "Chi tiết dịch vụ bổ sung",
-		"services_monitored": "Dịch Vụ Được Giám Sát",
-		"healthy_services": "Dịch Vụ Khỏe Mạnh",
-		"last_checked": "Kiểm Tra Lần Cuối",
-		"loading": "Đang tải sức khỏe hệ thống..."
-	},
-	"dev": {
-		"title": "Kiểm Tra Phát Triển",
-		"subtitle": "Kiểm tra các thành phần và tiện ích khác nhau",
-		"lorem": "Con cáo nâu nhanh nhảy qua con chó lười. Đây là văn bản mẫu để chứng minh hệ thống dịch thuật hoạt động chính xác trên nhiều ngôn ngữ.",
-		"language_test": {
-			"title": "Kiểm Tra Ngôn Ngữ",
-			"description": "Kiểm tra chuyển đổi ngôn ngữ và bản dịch",
-			"select_language": "Chọn Ngôn Ngữ",
-			"current_language": "Ngôn Ngữ Hiện Tại",
-			"translation_test": "Kiểm tra bản dịch"
-		},
-		"theme_test": {
-			"title": "Kiểm Tra Chủ Đề",
-			"description": "Kiểm tra chức năng chuyển đổi chủ đề",
-			"select_theme": "Chọn Chủ Đề",
-			"current_theme": "Chủ Đề Hiện Tại",
-			"light": "Sáng",
-			"dark": "Tối"
-		},
-		"storage_test": {
-			"title": "Kiểm Tra LocalStorage",
-			"description": "Xem tất cả các khóa được lưu trữ trong localStorage",
-			"total_keys": "Tổng Số Khóa",
-			"no_keys": "Không có khóa trong localStorage"
-		},
-		"toast_test": {
-			"title": "Kiểm Tra Toast (Sonner)",
-			"description": "Kiểm tra các loại thông báo toast khác nhau",
-			"success": "Thành Công",
-			"success_message": "Thành công!",
-			"success_description": "Hoàn thành thao tác thành công",
-			"error": "Lỗi",
-			"error_message": "Lỗi!",
-			"error_description": "Đã xảy ra sự cố",
-			"info": "Thông Tin",
-			"info_message": "Thông tin",
-			"info_description": "Đây là một số thông tin",
-			"warning": "Cảnh Báo",
-			"warning_message": "Cảnh báo!",
-			"warning_description": "Vui lòng cẩn thận",
-			"promise": "Promise",
-			"promise_loading": "Đang tải...",
-			"promise_success": "Đã tải dữ liệu!",
-			"promise_error": "Không tải được",
-			"with_action": "Với Hành Động",
-			"event_created": "Sự Kiện Đã Tạo",
-			"undo_description": "Bạn có thể hoàn tác hành động này",
-			"undo": "Hoàn tác",
-			"action_undone": "Đã hoàn tác"
-		}
-	},
-	"components": {
-		"exams": {
-			"cognitive_level": {
-				"descriptions": {
-					"remember": "Nhớ lại sự kiện và khái niệm cơ bản",
-					"understand": "Giải thích ý tưởng hoặc khái niệm",
-					"apply": "Vận dụng thông tin trong tình huống mới",
-					"analyze": "Liên hệ và phân tích các ý tưởng"
-				}
-			},
-			"matrix_progress": {
-				"title": "Tiến độ ma trận",
-				"subtitle": "Theo dõi tiến độ tạo câu hỏi theo chủ đề và mức độ",
-				"actions": {
-					"export": "Xuất",
-					"export_pdf": "Xuất PDF",
-					"exporting_pdf": "Đang xuất PDF...",
-					"export_excel": "Xuất Excel",
-					"exporting_excel": "Đang xuất Excel...",
-					"delete": "Xóa",
-					"deleting": "Đang xóa..."
-				},
-				"overall": "Tổng quan",
-				"complete": "Hoàn thành"
-			},
-			"question_type": {
-				"select_placeholder": "Chọn loại câu hỏi",
-				"labels": {
-					"single_choice": "Một lựa chọn",
-					"multiple_choice": "Nhiều lựa chọn"
-				},
-				"descriptions": {
-					"true_false": "Chọn phương án đúng",
-					"single_choice": "Chọn đúng một đáp án",
-					"multiple_choice": "Chọn một hoặc nhiều đáp án đúng",
-					"essay": "Trả lời bằng bài viết",
-					"fill_blank": "Điền vào chỗ trống"
-				}
-			},
-			"questions_panel": {
-				"empty_title": "Chưa có câu hỏi",
-				"empty_subtitle": "Thêm câu hỏi để bắt đầu tạo bài thi",
-				"points": "{{count}} điểm",
-				"not_in_matrix": "Không trong ma trận",
-				"not_in_matrix_hint": "Câu hỏi này không phù hợp với yêu cầu ma trận.",
-				"view": "Xem",
-				"remove": "Xóa",
-				"remove_title": "Xóa câu hỏi?",
-				"remove_description": "Hành động này sẽ xóa câu hỏi khỏi bài thi.",
-				"remove_confirm": "Xóa"
-			}
-		}
-	},
-	"exams": {
-		"cognitive_levels": {
-			"remember": "Nhận biết",
-			"understand": "Thông hiểu",
-			"apply": "Vận dụng",
-			"analyze": "Vận dụng cao"
-		},
-		"cognitive_levels_vi": {
-			"remember": "Nhận biết",
-			"understand": "Thông hiểu",
-			"apply": "Vận dụng",
-			"analyze": "Vận dụng cao"
-		},
-		"question_types": {
-			"multiple_choice": "Trắc nghiệm",
-			"true_false": "Đúng/Sai",
-			"essay": "Tự luận",
-			"fill_in_blank": "Điền vào chỗ trống"
-		},
-		"topic_selector": {
-			"placeholder": "Chọn chủ đề",
-			"search_placeholder": "Tìm kiếm chủ đề...",
-			"empty": "Không tìm thấy chủ đề.",
-			"in_curriculum": "Theo chương trình",
-			"created_by_users": "Do người dùng tạo",
-			"curriculum_badge": "Chương trình",
-			"custom_badge": "Tùy chỉnh"
-		}
-	},
-	"header": {
-		"view_as": "Xem dưới dạng",
-		"viewing_as": "Đang xem với vai trò {{role}}",
-		"preview_as_role": "Xem trước giao diện theo vai trò",
-		"exit_preview": "Thoát xem trước"
-	},
-	"dashboard": {
-		"welcome": "Chào mừng trở lại, {{name}}!",
-		"subtitle": "Đây là những gì đang diễn ra hôm nay.",
-		"total_users": "Tổng số người dùng",
-		"active_exams": "Bài kiểm tra đang hoạt động",
-		"total_questions": "Tổng số câu hỏi",
-		"active_classes": "Lớp học đang hoạt động",
-		"manage_subjects": "Quản lý môn học",
-		"view_analytics": "Xem phân tích",
-		"manage_users": "Quản lý người dùng",
-		"create_exam": "Tạo bài kiểm tra",
-		"last_30_days": "30 ngày qua",
-		"new_registrations_trend": "Xu hướng đăng ký người dùng mới trong 30 ngày qua",
-		"users_by_role": "Phân bổ người dùng theo vai trò",
-		"email_verification_breakdown": "Phân tích trạng thái xác minh email",
-		"subscription_breakdown": "Phân bổ trạng thái đăng ký hiện tại",
-		"revenue_and_transactions": "Doanh thu và khối lượng giao dịch hàng tháng"
-	},
-	"analytics": {
-		"title": "Phân tích",
-		"subtitle": "Thống kê và hiệu suất nền tảng",
-		"time_range": {
-			"label": "Khoảng thời gian",
-			"last_7_days": "7 ngày qua",
-			"last_30_days": "30 ngày qua",
-			"last_90_days": "90 ngày qua",
-			"last_year": "Năm qua",
-			"all_time": "Tất cả"
-		},
-		"ai_usage": {
-			"title": "Sử dụng AI",
-			"total_requests": "Tổng yêu cầu AI",
-			"total_requests_description": "Tổng số yêu cầu sử dụng AI",
-			"over_time": "Sử dụng AI theo thời gian",
-			"over_time_description": "Số lượng yêu cầu AI theo thời gian",
-			"requests": "Yêu cầu"
-		},
-		"user_growth": "Tăng trưởng người dùng (30 ngày qua)",
-		"role_distribution": "Phân bố vai trò",
-		"verification_status": "Trạng thái xác minh",
-		"subscription_revenue": "Doanh thu đăng ký",
-		"subscription_status": "Trạng thái đăng ký",
-		"total_revenue": "Tổng doanh thu",
-		"total_subscriptions": "Tổng đăng ký",
-		"active_subscriptions": "Đăng ký đang hoạt động",
-		"verified_users": "Người dùng đã xác minh",
-		"new_users": "Người dùng mới",
-		"monthly_revenue": "Doanh thu hàng tháng",
-		"revenue": "Doanh thu",
-		"transactions": "Giao dịch",
-		"active": "Đang hoạt động",
-		"expired": "Đã hết hạn",
-		"cancelled": "Đã hủy",
-		"suspended": "Đã tạm ngưng",
-		"verified": "Đã xác minh",
-		"unverified": "Chưa xác minh",
-		"users": "Người dùng",
-		"subscriptions": "Đăng ký",
-		"overview": "Tổng quan",
-		"no_data": "Không có dữ liệu",
-		"loading": "Đang tải phân tích...",
-		"daily_registrations": "Đăng ký hàng ngày",
-		"from_last_period": "so với kỳ trước"
-	},
-	"user_management": {
-		"title": "Quản lý người dùng",
-		"description": "Quản lý tất cả người dùng và vai trò của họ",
-		"total_users": "Tổng số người dùng",
-		"active_today": "Hoạt động hôm nay",
-		"teachers": "Giáo viên",
-		"students": "Học sinh",
-		"add_new_user": "Thêm người dùng mới",
-		"export_users": "Xuất người dùng",
-		"search_placeholder": "Tìm kiếm theo tên hoặc email...",
-		"filter_by_role": "Lọc theo vai trò",
-		"all_roles": "Tất cả vai trò",
-		"edit_user": "Sửa người dùng",
-		"delete_user": "Xóa người dùng",
-		"delete_confirm_title": "Xóa người dùng",
-		"delete_confirm_message": "Bạn có chắc chắn muốn xóa người dùng này không? Hành động này không thể hoàn tác.",
-		"user_updated": "Cập nhật người dùng thành công",
-		"user_deleted": "Xóa người dùng thành công",
-		"update_failed": "Cập nhật người dùng thất bại",
-		"delete_failed": "Xóa người dùng thất bại",
-		"no_users_found": "Không tìm thấy người dùng",
-		"loading_users": "Đang tải người dùng...",
-		"showing_results": "Hiển thị {{from}}-{{to}} trong số {{total}} kết quả",
-		"previous_page": "Trước",
-		"next_page": "Tiếp theo",
-		"rows_per_page": "Số hàng mỗi trang"
-	},
-	"admin": {
-		"subscriptions": {
-			"title": "Quản lý đăng ký",
-			"subtitle": "Quản lý đăng ký, gói dịch vụ và xem giao dịch.",
-			"stats": {
-				"total_revenue": "Tổng doanh thu",
-				"active": "Đăng ký hoạt động",
-				"total": "Tổng đăng ký",
-				"monthly_growth": "Doanh thu tháng gần nhất"
-			},
-			"tabs": {
-				"subscriptions": "Đăng ký",
-				"tiers": "Gói dịch vụ",
-				"transactions": "Giao dịch"
-			},
-			"all_subscriptions": "Tất cả đăng ký",
-			"search_placeholder": "Tìm theo ID người dùng hoặc gói...",
-			"filter_status": "Lọc theo trạng thái",
-			"table": {
-				"user_id": "ID người dùng",
-				"plan": "Gói",
-				"status": "Trạng thái",
-				"start_date": "Ngày bắt đầu",
-				"end_date": "Ngày kết thúc",
-				"actions": "Thao tác"
-			},
-			"no_subscriptions": "Không tìm thấy đăng ký nào.",
-			"subscription_tiers": "Gói dịch vụ",
-			"target_role": "Vai trò mục tiêu",
-			"no_tiers": "Chưa có gói dịch vụ nào.",
-			"all_transactions": "Tất cả giao dịch",
-			"tx_table": {
-				"code": "Mã",
-				"amount": "Số tiền",
-				"provider": "Nhà cung cấp",
-				"status": "Trạng thái",
-				"plan": "Gói",
-				"date": "Ngày"
-			},
-			"no_transactions": "Không tìm thấy giao dịch nào.",
-			"actions": {
-				"suspend": "Tạm dừng",
-				"activate": "Kích hoạt",
-				"deactivate": "Vô hiệu hóa",
-				"renew": "Gia hạn"
-			},
-			"confirm_suspend": "Tạm dừng đăng ký",
-			"confirm_suspend_desc": "Bạn có chắc chắn muốn tạm dừng đăng ký của người dùng {{user}}?",
-			"confirm_activate": "Kích hoạt đăng ký",
-			"confirm_activate_desc": "Bạn có chắc chắn muốn kích hoạt đăng ký của người dùng {{user}}?",
-			"suspended_success": "Đã tạm dừng đăng ký thành công.",
-			"activated_success": "Đã kích hoạt đăng ký thành công.",
-			"tier_deactivated": "Đã vô hiệu hóa gói dịch vụ thành công.",
-			"tier_activated": "Đã kích hoạt gói dịch vụ thành công.",
-			"action_failed": "Thao tác thất bại. Vui lòng thử lại."
-		}
-	}
+  "config": {
+    "select_language": "Chọn ngôn ngữ"
+  },
+  "errors": {
+    "title": "Lỗi",
+    "browser_video_tag": "Trình duyệt của bạn không hỗ trợ thẻ video.",
+    "NO_FOODS_FOUND": "Không tìm thấy món ăn",
+    "NO_CATEGORIES_FOUND": "Không tìm thấy danh mục",
+    "NO_PEOPLE_FOUND": "Không tìm thấy người",
+    "ROUTE_NOT_FOUND": "Không tìm thấy tuyến đường",
+    "UNKNOWN_ERROR": "Đã xảy ra lỗi",
+    "internal_server_error": "Lỗi máy chủ nội bộ",
+    "not_found": "Không tìm thấy",
+    "unauthorized": "Không được phép",
+    "forbidden": "Bị cấm",
+    "validation_error": "Lỗi xác thực",
+    "timeout": "Hết thời gian chờ"
+  },
+  "common": {
+    "back": "Quay lại",
+    "confirm": "Xác nhận",
+    "cancel": "Hủy",
+    "all": "Tất cả",
+    "active": "Hoạt động",
+    "inactive": "Không hoạt động",
+    "app_name": "FrogEdu",
+    "learning_platform": "Nền tảng học tập",
+    "admin_dashboard": "Bảng điều khiển quản trị",
+    "logo_alt": "Logo FrogEdu",
+    "never": "Chưa bao giờ",
+    "loading": "Đang tải...",
+    "days": "ngày",
+    "unknown": "Không rõ",
+    "total": "tổng"
+  },
+  "navigation": {
+    "home": "Trang chủ",
+    "about": "Giới thiệu",
+    "dashboard": "Bảng điều khiển",
+    "app": "Ứng dụng",
+    "exams": "Bài thi",
+    "classes": "Lớp học",
+    "exam_sessions": "Phiên thi",
+    "matrices": "Ma trận",
+    "profile": "Hồ sơ",
+    "settings": "Cài đặt",
+    "subscription": "Gói đăng ký",
+    "transactions": "Giao dịch",
+    "security": "Bảo mật",
+    "overview": "Tổng quan",
+    "subjects": "Môn học",
+    "users": "Người dùng",
+    "analytics": "Thống kê",
+    "app_home": "Trang ứng dụng",
+    "my_classes": "Lớp của tôi",
+    "content_library": "Thư viện nội dung",
+    "quick_access": "Truy cập nhanh",
+    "admin_panel": "Bảng quản trị",
+    "calendar": "Lịch trình",
+    "questions": "Ngân hàng câu hỏi"
+  },
+  "roles": {
+    "admin": "Quản trị",
+    "teacher": "Giáo viên",
+    "student": "Học sinh",
+    "user": "Người dùng",
+    "administrator": "Quản trị viên"
+  },
+  "role": {
+    "admin": "Quản trị",
+    "teacher": "Giáo viên",
+    "student": "Học sinh"
+  },
+  "badges": {
+    "pro": "Pro",
+    "free": "Miễn phí",
+    "upgrade": "Nâng cấp",
+    "verified": "Đã xác minh",
+    "not_verified": "Chưa xác minh",
+    "unverified": "Chưa xác minh",
+    "active": "Đang hoạt động",
+    "inactive": "Không hoạt động"
+  },
+  "actions": {
+    "logout": "Đăng xuất",
+    "sign_out": "Đăng xuất",
+    "login": "Đăng nhập",
+    "sign_in": "Đăng nhập",
+    "signing_in": "Đang đăng nhập...",
+    "sign_in_google": "Đăng nhập với Google",
+    "creating_account": "Đang tạo tài khoản...",
+    "signing_up": "Đang đăng ký...",
+    "sign_up_google": "Đăng ký với Google",
+    "collapse": "Thu gọn",
+    "switch_to_dark": "Chuyển sang chế độ tối",
+    "switch_to_light": "Chuyển sang chế độ sáng",
+    "save_changes": "Lưu thay đổi",
+    "save_preferences": "Lưu tùy chọn",
+    "change_avatar": "Đổi ảnh đại diện",
+    "remove_avatar": "Xóa ảnh đại diện",
+    "verify_email": "Xác minh email",
+    "change_password": "Đổi mật khẩu",
+    "enable_two_factor": "Bật xác thực hai yếu tố",
+    "revoke_sessions": "Thu hồi tất cả phiên khác",
+    "saving": "Đang lưu...",
+    "sending": "Đang gửi...",
+    "send_reset_link": "Gửi liên kết đặt lại",
+    "reset_password": "Đặt lại mật khẩu",
+    "resetting_password": "Đang đặt lại mật khẩu...",
+    "confirm_email": "Xác nhận email",
+    "confirming": "Đang xác nhận...",
+    "resending": "Đang gửi lại...",
+    "resend_code": "Gửi lại mã",
+    "resend_email": "Gửi lại email",
+    "back_to_login": "Quay lại đăng nhập",
+    "back_to_register": "Quay lại đăng ký",
+    "go_to_home": "Về trang chủ",
+    "go_to_login": "Đến đăng nhập",
+    "continue_free": "Tiếp tục miễn phí",
+    "upgrade_to_pro": "Nâng cấp Pro",
+    "processing": "Đang xử lý...",
+    "skip_for_now": "Bỏ qua và quyết định sau",
+    "subscribe": "Đăng ký",
+    "back_to_home": "Quay lại trang chủ",
+    "edit": "Sửa",
+    "delete": "Xóa",
+    "add_user": "Thêm người dùng",
+    "search": "Tìm kiếm",
+    "filter": "Lọc",
+    "export": "Xuất",
+    "refresh": "Làm mới",
+    "view_details": "Xem chi tiết",
+    "manage": "Quản lý",
+    "view_all": "Xem tất cả"
+  },
+  "action": {
+    "cancel": "Hủy",
+    "save": "Lưu"
+  },
+  "messages": {
+    "sign_out_success": "Đã đăng xuất thành công",
+    "profile_updated": "Cập nhật hồ sơ thành công",
+    "profile_update_failed": "Cập nhật hồ sơ thất bại",
+    "verification_email_sent": "Đã gửi email xác minh! Vui lòng kiểm tra hộp thư.",
+    "verification_email_failed": "Gửi email xác minh thất bại",
+    "email_immutable": "Email không thể thay đổi",
+    "reset_email_sent": "Đã gửi email đặt lại mật khẩu",
+    "reset_email_failed": "Gửi email đặt lại mật khẩu thất bại",
+    "reset_email_failed_generic": "Gửi email đặt lại mật khẩu thất bại. Vui lòng thử lại.",
+    "reset_token_invalid": "Token đặt lại không hợp lệ hoặc bị thiếu",
+    "password_reset_success": "Đặt lại mật khẩu thành công!",
+    "password_reset_failed": "Đặt lại mật khẩu thất bại. Liên kết có thể đã hết hạn.",
+    "email_verified_success": "Xác minh email thành công!",
+    "email_verified_failed": "Xác minh email thất bại",
+    "email_verified_failed_generic": "Xác minh email thất bại. Liên kết có thể đã hết hạn.",
+    "email_confirmed_success": "Xác nhận email thành công! Vui lòng đăng nhập.",
+    "email_confirmed_failed": "Xác nhận email thất bại. Vui lòng thử lại.",
+    "verification_code_resent": "Đã gửi lại mã xác minh",
+    "verification_code_resend_failed": "Gửi lại mã thất bại. Vui lòng thử lại."
+  },
+  "languages": {
+    "english": "Tiếng Anh",
+    "vietnamese": "Tiếng Việt"
+  },
+  "options": {
+    "light": "Sáng",
+    "dark": "Tối",
+    "system": "Hệ thống"
+  },
+  "labels": {
+    "theme": "Chủ đề",
+    "language": "Ngôn ngữ",
+    "user": "Người dùng",
+    "email": "Email",
+    "role": "Vai trò",
+    "first_name": "Tên",
+    "last_name": "Họ",
+    "search_users": "Tìm kiếm người dùng...",
+    "filter_by_role": "Lọc theo vai trò",
+    "all_roles": "Tất cả vai trò",
+    "name": "Tên",
+    "created_at": "Ngày tạo",
+    "last_login": "Đăng nhập lần cuối",
+    "actions": "Hành động",
+    "status": "Trạng thái",
+    "email_address": "Địa chỉ email",
+    "phone_number": "Số điện thoại",
+    "bio": "Giới thiệu",
+    "timezone": "Múi giờ",
+    "email_notifications": "Thông báo qua email",
+    "push_notifications": "Thông báo đẩy",
+    "profile_picture": "Ảnh đại diện",
+    "password": "Mật khẩu",
+    "confirm_password": "Xác nhận mật khẩu",
+    "current_password": "Mật khẩu hiện tại",
+    "new_password": "Mật khẩu mới",
+    "confirm_new_password": "Xác nhận mật khẩu mới",
+    "verification_code": "Mã xác minh",
+    "theme_mode": "Chế độ chủ đề",
+    "compact_mode": "Chế độ gọn",
+    "show_animations": "Hiển thị hoạt ảnh",
+    "exam_reminders": "Nhắc nhở bài thi",
+    "class_updates": "Cập nhật lớp học",
+    "marketing_emails": "Email tiếp thị",
+    "authenticator_app": "Ứng dụng xác thực",
+    "current_session": "Phiên hiện tại"
+  },
+  "placeholders": {
+    "first_name": "Nam",
+    "last_name": "Nguyễn",
+    "first_name_full": "Nhập tên",
+    "last_name_full": "Nhập họ",
+    "email": "Nhập email",
+    "password": "Nhập mật khẩu",
+    "confirm_password": "Xác nhận mật khẩu",
+    "phone_number": "+84 912 345 678",
+    "bio": "Giới thiệu về bạn",
+    "current_password": "Nhập mật khẩu hiện tại",
+    "new_password": "Nhập mật khẩu mới",
+    "confirm_new_password": "Xác nhận mật khẩu mới",
+    "verification_code": "Nhập mã 6 chữ số"
+  },
+  "forms": {
+    "profile": {
+      "validation": {
+        "first_name_required": "Tên là bắt buộc",
+        "first_name_max": "Tên không được vượt quá 100 ký tự",
+        "last_name_required": "Họ là bắt buộc",
+        "last_name_max": "Họ không được vượt quá 100 ký tự"
+      }
+    },
+    "auth": {
+      "validation": {
+        "email_invalid": "Vui lòng nhập email hợp lệ",
+        "password_min": "Mật khẩu phải có ít nhất 8 ký tự",
+        "password_uppercase": "Mật khẩu phải có ít nhất một chữ hoa",
+        "password_lowercase": "Mật khẩu phải có ít nhất một chữ thường",
+        "password_number": "Mật khẩu phải có ít nhất một số",
+        "password_special": "Mật khẩu phải có ít nhất một ký tự đặc biệt",
+        "role_required": "Vui lòng chọn vai trò",
+        "first_name_required": "Tên là bắt buộc",
+        "last_name_required": "Họ là bắt buộc",
+        "passwords_match": "Mật khẩu không khớp",
+        "code_length": "Mã xác minh phải gồm 6 chữ số"
+      }
+    },
+    "classes": {
+      "validation": {
+        "name_required": "Tên lớp học là bắt buộc",
+        "name_max": "Tên lớp học không được vượt quá 200 ký tự",
+        "grade_required": "Khối lớp là bắt buộc",
+        "description_required": "Mô tả là bắt buộc",
+        "description_max": "Mô tả không được vượt quá 1000 ký tự",
+        "max_students_required": "Số học sinh tối đa là bắt buộc",
+        "max_students_positive": "Số học sinh tối đa phải là số dương",
+        "max_students_limit": "Số học sinh tối đa không vượt quá 100",
+        "banner_url_invalid": "Vui lòng nhập URL ảnh bìa hợp lệ",
+        "invite_length": "Mã mời phải có 6 ký tự",
+        "invite_format": "Mã mời chỉ được chứa chữ cái và số"
+      }
+    },
+    "exams": {
+      "validation": {
+        "name_min": "Tên bài thi phải có ít nhất 3 ký tự",
+        "name_max": "Tên bài thi không được vượt quá 200 ký tự",
+        "description_min": "Mô tả phải có ít nhất 10 ký tự",
+        "description_max": "Mô tả không được vượt quá 1000 ký tự",
+        "grade_range": "Khối lớp phải từ 1 đến 5",
+        "subject_required": "Môn học là bắt buộc"
+      }
+    }
+  },
+  "pages": {
+    "app_dashboard": {
+      "welcome": "Chào mừng trở lại, {{name}}!",
+      "subtitle": "Đây là những gì đang diễn ra với lớp học của bạn hôm nay.",
+      "stats": {
+        "active_classes": "Lớp đang hoạt động",
+        "students_enrolled": "Học sinh đã ghi danh",
+        "assignments": "Bài tập"
+      },
+      "recent_classes": "Lớp gần đây",
+      "view_all": "Xem tất cả",
+      "quick_actions": {
+        "title": "Thao tác nhanh",
+        "create_exam": "Tạo bài kiểm tra mới",
+        "browse_content": "Duyệt thư viện nội dung",
+        "manage_classes": "Quản lý lớp học",
+        "my_classes": "Lớp của tôi",
+        "view_calendar": "Xem lịch"
+      },
+      "recent_activity": "Hoạt động gần đây",
+      "trend_label": "{{value}}% so với tháng trước",
+      "subscription_status": "Trạng thái đăng ký",
+      "expires_on": "Hết hạn vào {{date}}",
+      "ai_usage": "Sử dụng AI",
+      "unlimited": "Không giới hạn",
+      "ai_used_count": "Đã dùng {{count}} lần tạo",
+      "generations": "lần tạo",
+      "remaining": "còn lại",
+      "ai_limit_reached": "Bạn đã đạt giới hạn gói miễn phí. Nâng cấp lên Pro để tạo AI không giới hạn.",
+      "upcoming_exams": "Bài thi sắp tới",
+      "view_calendar": "Xem lịch",
+      "exam_session": "Phiên thi",
+      "no_upcoming_exams": "Không có bài thi sắp tới. Hãy tận hưởng thời gian rảnh!",
+      "subtitle_preview": "Đang xem trước giao diện với vai trò {{role}}."
+    },
+    "profile": {
+      "title": "Hồ sơ của tôi",
+      "subtitle": "Quản lý cài đặt tài khoản và tùy chọn.",
+      "profile_information": "Thông tin hồ sơ",
+      "profile_description": "Cập nhật thông tin cá nhân và ảnh đại diện.",
+      "account_information": "Thông tin tài khoản",
+      "unable_to_load": "Không thể tải hồ sơ từ máy chủ",
+      "email_status": "Trạng thái email",
+      "member_since": "Thành viên từ",
+      "account_created": "Tài khoản tạo lúc",
+      "last_updated": "Cập nhật lần cuối",
+      "avatar_instructions": "Nhấn vào biểu tượng máy ảnh để tải ảnh mới.",
+      "avatar_formats": "JPG, PNG, GIF tối đa 5MB"
+    },
+    "settings": {
+      "title": "Cài đặt",
+      "subtitle": "Quản lý cài đặt tài khoản và tùy chọn",
+      "tabs": {
+        "profile": "Hồ sơ",
+        "security": "Bảo mật",
+        "notifications": "Thông báo",
+        "appearance": "Giao diện"
+      },
+      "profile_information": "Thông tin hồ sơ",
+      "profile_description": "Cập nhật thông tin cá nhân và hồ sơ công khai",
+      "avatar_limit": "JPG, PNG hoặc GIF. Tối đa 2MB.",
+      "preferences": "Tùy chọn",
+      "preferences_description": "Cấu hình ngôn ngữ và múi giờ",
+      "change_password": "Đổi mật khẩu",
+      "change_password_description": "Đảm bảo tài khoản sử dụng mật khẩu mạnh",
+      "two_factor": "Xác thực hai yếu tố",
+      "two_factor_description": "Thêm lớp bảo mật cho tài khoản",
+      "authenticator_description": "Sử dụng ứng dụng xác thực để tạo mã xác minh",
+      "authenticator_setup_title": "Thiết lập ứng dụng xác thực",
+      "authenticator_setup_description": "Quét mã QR bên dưới bằng ứng dụng xác thực",
+      "qr_placeholder": "Chỗ đặt mã QR",
+      "active_sessions": "Phiên đang hoạt động",
+      "active_sessions_description": "Quản lý phiên đang hoạt động trên các thiết bị",
+      "session_location": "Windows • Chrome • Hồ Chí Minh, Việt Nam",
+      "active_now": "Đang hoạt động",
+      "email_notifications": "Thông báo qua email",
+      "email_notifications_description": "Chọn loại email bạn muốn nhận",
+      "email_activity_updates": "Nhận cập nhật qua email về hoạt động của bạn",
+      "exam_reminders_description": "Nhận thông báo về kỳ thi sắp tới",
+      "class_updates_description": "Cập nhật về các lớp bạn đang tham gia",
+      "marketing_emails_description": "Tin tức, cập nhật và ưu đãi",
+      "push_notifications": "Thông báo đẩy",
+      "push_notifications_description": "Quản lý tùy chọn thông báo đẩy",
+      "push_notifications_devices": "Nhận thông báo đẩy trên thiết bị",
+      "theme": "Chủ đề",
+      "theme_description": "Chọn giao diện FrogEdu phù hợp",
+      "theme_hint": "Chọn chủ đề cho bảng điều khiển",
+      "display_preferences": "Tùy chọn hiển thị",
+      "display_preferences_description": "Tùy biến trải nghiệm xem",
+      "compact_mode_description": "Hiển thị nhiều nội dung trong ít không gian",
+      "show_animations_description": "Bật chuyển động và hoạt ảnh mượt mà",
+      "appearance": "Giao diện",
+      "appearance_description": "Tùy biến giao diện ứng dụng",
+      "notifications": "Thông báo",
+      "notifications_description": "Cấu hình tùy chọn thông báo",
+      "language": "Ngôn ngữ",
+      "language_description": "Đặt ngôn ngữ bạn ưa thích"
+    },
+    "auth": {
+      "login": {
+        "subtitle": "Nền tảng giáo dục cho học tập hiện đại",
+        "or_continue_with": "Hoặc tiếp tục với",
+        "forgot_password": "Quên mật khẩu?",
+        "no_account": "Chưa có tài khoản?",
+        "footer": "© {{year}} FrogEdu. Tất cả quyền được bảo lưu."
+      },
+      "register": {
+        "subtitle": "Nền tảng giáo dục cho học tập hiện đại",
+        "role_label": "Tôi là",
+        "role_placeholder": "Chọn vai trò",
+        "or_continue_with": "Hoặc tiếp tục với",
+        "have_account": "Đã có tài khoản?",
+        "footer": "© {{year}} FrogEdu. Tất cả quyền được bảo lưu."
+      },
+      "forgot": {
+        "title": "Quên mật khẩu?",
+        "subtitle": "Đừng lo! Nhập email và chúng tôi sẽ gửi hướng dẫn đặt lại.",
+        "check_email_title": "Kiểm tra email của bạn",
+        "check_email_description": "Chúng tôi đã gửi liên kết đặt lại mật khẩu tới",
+        "check_email_note": "Vui lòng kiểm tra email và bấm vào liên kết để đặt lại mật khẩu. Liên kết sẽ hết hạn trong 1 giờ."
+      },
+      "reset": {
+        "title": "Đặt lại mật khẩu",
+        "subtitle": "Nhập mật khẩu mới bên dưới",
+        "success_title": "Đặt lại mật khẩu thành công!",
+        "success_description": "Mật khẩu của bạn đã được đặt lại. Bạn có thể đăng nhập bằng mật khẩu mới."
+      },
+      "confirm": {
+        "title": "Xác nhận email của bạn",
+        "subtitle": "Chúng tôi đã gửi mã xác minh tới",
+        "no_code": "Không nhận được mã?"
+      },
+      "verify": {
+        "no_token": "Không có token xác minh",
+        "verifying_title": "Đang xác minh email của bạn",
+        "verifying_note": "Vui lòng chờ...",
+        "success_title": "Email đã được xác minh!",
+        "failed_title": "Xác minh thất bại",
+        "success_description": "Email của bạn đã được xác minh. Bạn có thể đăng nhập vào tài khoản.",
+        "failed_description": "Không thể xác minh email. Vui lòng thử lại."
+      },
+      "select_role": {
+        "title": "Chào mừng đến với FrogEdu!",
+        "subtitle": "Vui lòng chọn vai trò để tiếp tục",
+        "teacher_description": "Tạo và quản lý lớp học, giao bài tập và theo dõi tiến độ học sinh",
+        "student_description": "Tham gia lớp học, hoàn thành bài tập và học với trợ lý AI",
+        "footer_note": "Bạn có thể đổi vai trò sau trong cài đặt",
+        "profile_setup_failed": "Không thể thiết lập hồ sơ. Vui lòng thử lại."
+      },
+      "subscription": {
+        "title": "Chọn gói của bạn",
+        "subtitle": "Chào mừng {{name}}! Chọn gói đăng ký để mở khóa toàn bộ tiềm năng của FrogEdu.",
+        "free_title": "Gói Miễn phí",
+        "free_description": "Hoàn hảo để bắt đầu với FrogEdu",
+        "pro_title": "Gói Pro",
+        "pro_description": "Dành cho giáo viên muốn nhiều hơn",
+        "forever": "mãi mãi",
+        "footer_note": "Bạn có thể nâng cấp hoặc thay đổi gói bất cứ lúc nào trong cài đặt tài khoản.",
+        "features": {
+          "free": {
+            "create_classes": "Tạo tối đa 3 lớp học",
+            "basic_exam_generation": "Tạo đề thi cơ bản",
+            "ai_exams_limit": "5 đề thi tạo bởi AI mỗi tháng",
+            "digital_textbooks": "Truy cập sách giáo khoa số",
+            "community_support": "Hỗ trợ cộng đồng"
+          },
+          "pro": {
+            "unlimited_classes": "Không giới hạn lớp học",
+            "advanced_exam_generation": "Tạo đề thi nâng cao",
+            "unlimited_ai_exams": "Không giới hạn đề thi AI",
+            "priority_features": "Ưu tiên truy cập tính năng mới",
+            "advanced_analytics": "Phân tích và báo cáo nâng cao",
+            "export_formats": "Xuất đề thi PDF/Word",
+            "priority_support": "Hỗ trợ ưu tiên",
+            "custom_branding": "Tùy chọn thương hiệu"
+          }
+        }
+      },
+      "callback": {
+        "error_title": "Lỗi xác thực",
+        "completing_sign_in": "Đang hoàn tất đăng nhập...",
+        "redirecting": "Đang chuyển hướng..."
+      }
+    },
+    "landing": {
+      "hero": {
+        "badge_ai": "AI hỗ trợ",
+        "badge_curriculum": "Chương trình Việt Nam",
+        "title_prefix": "Chuyển đổi giáo dục với",
+        "title_emphasis": "Học tập hỗ trợ AI",
+        "subtitle": "FrogEdu kết hợp tạo đề thi thông minh, gia sư cá nhân hóa và sách giáo khoa số toàn diện để cách mạng hóa giáo dục tiểu học Việt Nam.",
+        "primary_cta": "Bắt đầu dạy ngay",
+        "secondary_cta": "Tôi đã có tài khoản",
+        "stats": {
+          "grade_levels": "Khối lớp",
+          "questions": "Câu hỏi",
+          "powered": "Hỗ trợ"
+        }
+      },
+      "features": {
+        "title": "Tính năng mạnh mẽ",
+        "subtitle": "Mọi thứ bạn cần để tạo, dạy và truyền cảm hứng",
+        "smart_exam": {
+          "tooltip": "Tạo đề cân bằng theo độ khó",
+          "title": "Trình tạo đề thi thông minh",
+          "description": "Định nghĩa ma trận đề và tạo bài kiểm tra cân bằng",
+          "bullets": {
+            "by_difficulty": "Tạo đề theo mức độ khó",
+            "auto_selection": "Tự động chọn câu hỏi",
+            "pdf_export": "Xuất PDF lên S3",
+            "manual_override": "Tùy chọn chỉnh thủ công"
+          }
+        },
+        "ai_tutor": {
+          "tooltip": "Phương pháp Socrates với phản hồi thông minh",
+          "title": "Gia sư AI cho học sinh",
+          "description": "Đối thoại Socrates với hướng dẫn thông minh",
+          "bullets": {
+            "realtime_chat": "Phản hồi chat thời gian thực",
+            "socratic": "Phương pháp đặt câu hỏi Socrates",
+            "textbook_refs": "Tham chiếu sách giáo khoa",
+            "history": "Theo dõi lịch sử hội thoại"
+          }
+        },
+        "textbook": {
+          "tooltip": "Sách giáo khoa Việt Nam lớp 1-5",
+          "title": "Thư viện sách giáo khoa số",
+          "description": "Nội dung chương trình Việt Nam toàn diện",
+          "bullets": {
+            "grade_textbooks": "Sách giáo khoa lớp 1-5",
+            "navigation": "Điều hướng theo chương",
+            "assets": "Tài liệu bổ trợ",
+            "search": "Tìm kiếm toàn văn"
+          }
+        },
+        "class_management": {
+          "tooltip": "Quản lý học sinh và theo dõi tiến độ",
+          "title": "Quản lý lớp học",
+          "description": "Tổ chức học sinh và theo dõi tiến độ",
+          "bullets": {
+            "create": "Tạo và quản lý lớp học",
+            "enrollment": "Mã tham gia lớp",
+            "progress": "Theo dõi tiến độ",
+            "analytics": "Phân tích hiệu suất"
+          }
+        }
+      },
+      "benefits": {
+        "title": "Vì sao chọn FrogEdu?",
+        "subtitle": "Được thiết kế bởi giáo viên, hỗ trợ bởi AI",
+        "save_time": {
+          "title": "Tiết kiệm thời gian",
+          "description": "Tạo đề thi toàn diện trong vài phút, không phải hàng giờ"
+        },
+        "improve_learning": {
+          "title": "Cải thiện học tập",
+          "description": "Gia sư AI hướng dẫn cá nhân hóa theo phương pháp Socrates"
+        },
+        "better_assessment": {
+          "title": "Đánh giá tốt hơn",
+          "description": "Đề thi cân bằng với tự động chọn câu hỏi theo độ khó"
+        },
+        "student_engagement": {
+          "title": "Tăng hứng thú học tập",
+          "description": "Nền tảng tương tác giúp học sinh hứng thú và gắn kết"
+        },
+        "data_driven": {
+          "title": "Quyết định dựa trên dữ liệu",
+          "description": "Theo dõi tiến độ và phát hiện lỗ hổng kiến thức"
+        },
+        "vietnamese_curriculum": {
+          "title": "Chương trình Việt Nam",
+          "description": "Nội dung phù hợp tiêu chuẩn giáo dục tiểu học Việt Nam"
+        }
+      },
+      "about": {
+        "title": "Xây dựng cho giáo dục Việt Nam",
+        "subtitle": "FrogEdu được thiết kế riêng cho tiểu học Việt Nam (Lớp 1-5), kết hợp công nghệ AI tiên tiến với phương pháp giáo dục đã được kiểm chứng để tạo nên nền tảng trực quan mà giáo viên và học sinh yêu thích.",
+        "stats": {
+          "curriculum": "Chương trình Việt Nam",
+          "support": "Hỗ trợ AI sẵn có",
+          "scalable": "Nền tảng mở rộng"
+        }
+      },
+      "cta": {
+        "title": "Sẵn sàng chuyển đổi lớp học của bạn?",
+        "subtitle": "Tham gia cùng giáo viên trên khắp Việt Nam sử dụng FrogEdu để tạo bài đánh giá thông minh hơn và nâng cao việc học của học sinh",
+        "primary_cta": "Tạo tài khoản miễn phí"
+      },
+      "faq": {
+        "title": "Câu hỏi thường gặp",
+        "subtitle": "Giải đáp các thắc mắc phổ biến về FrogEdu",
+        "q1": {
+          "question": "Trình tạo đề thi thông minh hoạt động như thế nào?",
+          "answer": "Trình tạo đề thi thông minh sử dụng AI để phân tích ma trận đề (phân bố độ khó và phạm vi chủ đề) và tự động chọn câu hỏi từ ngân hàng câu hỏi rộng lớn. Bạn luôn có thể chỉnh thủ công nếu cần."
+        },
+        "q2": {
+          "question": "FrogEdu phù hợp với tất cả khối lớp không?",
+          "answer": "Có! FrogEdu bao phủ giáo dục tiểu học Việt Nam lớp 1-5. Mỗi lớp có nội dung và mức độ khó phù hợp với tiêu chuẩn chương trình."
+        },
+        "q3": {
+          "question": "Tôi có thể xuất đề thi ở các định dạng khác nhau không?",
+          "answer": "Hiện tại, chúng tôi hỗ trợ xuất PDF và DOCX. Tất cả tệp được lưu an toàn trên AWS S3 và cung cấp qua URL ký số để truy cập an toàn."
+        },
+        "q4": {
+          "question": "Gia sư AI giúp học sinh như thế nào?",
+          "answer": "Gia sư AI sử dụng phương pháp Socrates để hướng dẫn học sinh giải bài mà không trả lời trực tiếp. Gia sư tham chiếu nội dung sách giáo khoa liên quan và lưu lịch sử hội thoại để giáo viên xem lại."
+        },
+        "q5": {
+          "question": "Có bản dùng thử miễn phí không?",
+          "answer": "Có! Chúng tôi có bản dùng thử miễn phí để bạn trải nghiệm tất cả tính năng. Không cần thẻ tín dụng để bắt đầu. Đăng ký ngay để bắt đầu chuyển đổi lớp học."
+        }
+      },
+      "newsletter": {
+        "title": "Cập nhật mới",
+        "subtitle": "Đăng ký nhận bản tin để nhận mẹo, cập nhật và tài nguyên độc quyền cho giáo viên"
+      },
+      "footer": {
+        "product": "Sản phẩm",
+        "features": "Tính năng",
+        "benefits": "Lợi ích",
+        "pricing": "Bảng giá",
+        "resources": "Tài nguyên",
+        "documentation": "Tài liệu",
+        "blog": "Blog",
+        "support": "Hỗ trợ",
+        "company": "Công ty",
+        "about": "Giới thiệu",
+        "contact": "Liên hệ",
+        "careers": "Tuyển dụng",
+        "legal": "Pháp lý",
+        "privacy": "Quyền riêng tư",
+        "terms": "Điều khoản",
+        "cookies": "Cookie",
+        "copyright": "© 2026 FrogEdu. Tất cả quyền được bảo lưu.",
+        "twitter": "Twitter",
+        "facebook": "Facebook",
+        "linkedin": "LinkedIn"
+      }
+    },
+    "about": {
+      "hero": {
+        "badge_ai": "AI hỗ trợ",
+        "badge_made_in": "Sản xuất tại Việt Nam",
+        "title_prefix": "Về",
+        "subtitle": "FrogEdu là nền tảng giáo dục tiên phong hỗ trợ bởi AI, được thiết kế riêng cho giáo dục tiểu học Việt Nam, kết hợp công nghệ hiện đại với sự xuất sắc về sư phạm."
+      },
+      "mission": {
+        "title": "Sứ mệnh của chúng tôi",
+        "paragraph_one": "Chúng tôi tin rằng mọi đứa trẻ đều xứng đáng có cơ hội tiếp cận giáo dục chất lượng. Sứ mệnh của chúng tôi là dân chủ hóa việc học bằng cách cung cấp cho giáo viên và học sinh các công cụ AI mạnh mẽ, giúp học tập hấp dẫn, cá nhân hóa và hiệu quả hơn.",
+        "paragraph_two": "Tập trung vào chương trình giáo dục tiểu học Việt Nam (Lớp 1-5), chúng tôi đảm bảo nền tảng phù hợp với tiêu chuẩn quốc gia trong khi tích hợp các phương pháp giảng dạy đổi mới."
+      },
+      "stats": {
+        "grade_levels": "Khối lớp",
+        "questions": "Câu hỏi",
+        "powered": "Hỗ trợ",
+        "available": "Sẵn sàng"
+      },
+      "features": {
+        "title": "Những gì chúng tôi cung cấp",
+        "subtitle": "Nền tảng cung cấp công cụ toàn diện cho cả giáo viên và học sinh",
+        "ai_exam": {
+          "title": "Tạo đề thi bằng AI",
+          "description": "Tạo đề thi tùy chỉnh phù hợp chương trình Việt Nam bằng AI tiên tiến. Tạo câu hỏi trắc nghiệm, điền vào chỗ trống và tự luận ngay lập tức."
+        },
+        "class_management": {
+          "title": "Quản lý lớp học",
+          "description": "Tạo và quản lý lớp học, giao bài tập, theo dõi tiến độ học sinh và giao tiếp với học sinh tại một nơi."
+        },
+        "textbooks": {
+          "title": "Sách giáo khoa số",
+          "description": "Truy cập sách giáo khoa số cho giáo dục tiểu học Việt Nam với nội dung tương tác và tài liệu học tập."
+        }
+      },
+      "team": {
+        "title": "Đội ngũ của chúng tôi",
+        "subtitle": "FrogEdu được xây dựng bởi đội ngũ đầy nhiệt huyết gồm giáo viên, kỹ sư và nhà thiết kế, tin vào sức mạnh công nghệ để chuyển đổi giáo dục.",
+        "dedicated_title": "Đội ngũ tận tâm",
+        "dedicated_description": "Giáo viên và kỹ sư cùng hợp tác",
+        "made_in_title": "Sản xuất tại Việt Nam",
+        "made_in_description": "Xây dựng với giáo dục Việt Nam trong tâm"
+      },
+      "contact": {
+        "title": "Liên hệ",
+        "subtitle": "Bạn có câu hỏi hoặc muốn tìm hiểu thêm về FrogEdu?",
+        "location_label": "Địa điểm",
+        "location_value": "Thành phố Hồ Chí Minh, Việt Nam",
+        "primary_cta": "Bắt đầu dạy ngay"
+      }
+    },
+    "classes": {
+      "title": "Lớp học",
+      "subtitle_teacher": "Quản lý lớp học và học sinh.",
+      "subtitle_student": "Xem các lớp học đã tham gia.",
+      "empty": {
+        "title": "Chưa có lớp học",
+        "teacher_description": "Tạo lớp học đầu tiên để bắt đầu.",
+        "student_description": "Tham gia lớp bằng mã mời để bắt đầu.",
+        "create_first": "Tạo lớp học đầu tiên"
+      },
+      "actions": {
+        "create": "Tạo lớp học",
+        "join": "Tham gia lớp"
+      },
+      "tabs": {
+        "active": "Đang hoạt động ({{count}})",
+        "archived": "Đã lưu trữ ({{count}})"
+      },
+      "archived_empty": "Không có lớp học lưu trữ.",
+      "sections": {
+        "enrolled": "Lớp đã tham gia"
+      },
+      "detail": {
+        "invite_copied": "Đã sao chép mã mời",
+        "back": "Quay lại",
+        "not_found": "Không tìm thấy lớp",
+        "back_to_classes": "Quay lại lớp học",
+        "archived": "Đã lưu trữ",
+        "info_title": "Thông tin lớp học",
+        "subject": "Môn học",
+        "not_specified": "Chưa xác định",
+        "grade_level": "Khối lớp",
+        "grade_label": "Khối {{grade}}",
+        "school": "Trường",
+        "created": "Ngày tạo",
+        "teacher": "Giáo viên",
+        "teacher_unknown": "Không rõ giáo viên",
+        "students": "Học sinh",
+        "invite_title": "Mời học sinh",
+        "invite_description": "Chia sẻ mã này để học sinh tham gia lớp.",
+        "code_expired": "Mã mời đã hết hạn",
+        "expires": "Hết hạn",
+        "regenerate": "Tạo lại mã",
+        "roster_title": "Danh sách lớp",
+        "roster_description": "Học sinh trong lớp này",
+        "assignments_title": "Bài tập",
+        "assignments_description": "Các bài thi được giao trong lớp này",
+        "no_assignments": "Chưa có bài tập",
+        "no_assignments_description": "Giao bài thi cho lớp này để bắt đầu.",
+        "assign_exam": "Giao bài thi",
+        "exam_label": "Bài thi",
+        "start_date": "Ngày bắt đầu",
+        "due_date": "Ngày hết hạn",
+        "mandatory": "Bắt buộc",
+        "optional": "Tùy chọn",
+        "weight": "Trọng số",
+        "status_active": "Đang diễn ra",
+        "status_overdue": "Quá hạn",
+        "status_upcoming": "Sắp tới",
+        "status_completed": "Hoàn thành"
+      },
+      "card": {
+        "grade_badge": "Khối {{grade}}",
+        "students_label": "học sinh",
+        "max_suffix": " / tối đa {{max}}",
+        "teacher_label": "Giáo viên: {{name}}",
+        "invite_label": "Mã mời",
+        "expired": "Hết hạn",
+        "view_details": "Xem chi tiết"
+      },
+      "create_modal": {
+        "title": "Tạo lớp học",
+        "description": "Thiết lập lớp học mới cho học sinh.",
+        "fields": {
+          "name": "Tên lớp",
+          "grade": "Khối lớp",
+          "max_students": "Số học sinh tối đa",
+          "description": "Mô tả",
+          "banner_url": "URL ảnh bìa"
+        },
+        "placeholders": {
+          "name": "VD: Toán lớp 4",
+          "grade": "Chọn khối",
+          "max_students": "30",
+          "description": "Thêm mô tả ngắn",
+          "banner_url": "https://example.com/banner.jpg"
+        },
+        "grade_option": "Khối {{grade}}",
+        "help": {
+          "max_students": "Để trống nếu không giới hạn.",
+          "banner_url": "URL ảnh bìa lớp học (tùy chọn)."
+        },
+        "actions": {
+          "create": "Tạo lớp học"
+        }
+      },
+      "join": {
+        "title": "Tham gia lớp",
+        "subtitle": "Nhập mã mời để tham gia lớp.",
+        "case_insensitive": "Mã mời không phân biệt chữ hoa/thường.",
+        "actions": {
+          "joining": "Đang tham gia...",
+          "join": "Tham gia lớp"
+        }
+      },
+      "roster": {
+        "teachers": "Giáo viên ({{count}})",
+        "teacher_badge": "Giáo viên",
+        "students": "Học sinh ({{count}})",
+        "empty_title": "Chưa có học sinh",
+        "empty_subtitle": "Chia sẻ mã mời để thêm học sinh.",
+        "table": {
+          "name": "Tên",
+          "role": "Vai trò",
+          "joined": "Ngày tham gia",
+          "student_id": "Mã học sinh",
+          "status": "Trạng thái"
+        }
+      }
+    },
+    "calendar": {
+      "title": "Lịch thi",
+      "subtitle": "Xem tất cả phiên thi sắp tới và đã qua.",
+      "has_exams": "Ngày có bài thi",
+      "exams_on": "Bài thi ngày {{date}}",
+      "select_date": "Chọn một ngày để xem bài thi",
+      "exam_session": "Phiên thi",
+      "practice_test": "Bài luyện tập",
+      "practice": "Luyện tập",
+      "no_exams": "Không có bài thi trong ngày này.",
+      "all_upcoming": "Tất cả bài thi sắp tới",
+      "retries_allowed": "Cho phép {{count}} lần thử lại",
+      "attempts": "{{count}} lần thử",
+      "attempts_of": "{{used}} / {{total}} lần thử",
+      "start_exam": "Bắt đầu thi",
+      "retry_exam": "Thử lại",
+      "view_results": "Xem kết quả"
+    },
+    "exam_sessions": {
+      "title": "Phiên thi",
+      "subtitle_teacher": "Quản lý các phiên thi cho lớp học của bạn.",
+      "subtitle_student": "Xem các phiên thi sắp tới và đang diễn ra.",
+      "empty": {
+        "title": "Chưa có phiên thi",
+        "teacher_description": "Tạo phiên thi để giao bài thi cho lớp.",
+        "student_description": "Không có phiên thi nào đang diễn ra hoặc sắp tới.",
+        "create_first": "Tạo phiên thi"
+      },
+      "status": {
+        "active": "Đang diễn ra",
+        "upcoming": "Sắp tới",
+        "ended": "Đã kết thúc",
+        "inactive": "Không hoạt động"
+      },
+      "tabs": {
+        "active": "Đang diễn ra ({{count}})",
+        "upcoming": "Sắp tới ({{count}})",
+        "ended": "Đã kết thúc ({{count}})"
+      },
+      "table": {
+        "exam": "Bài thi",
+        "start_time": "Thời gian bắt đầu",
+        "end_time": "Thời gian kết thúc",
+        "retries": "Số lần thử lại",
+        "attempts": "Lượt thi",
+        "status": "Trạng thái",
+        "actions": "Hành động"
+      },
+      "actions": {
+        "create": "Tạo phiên thi",
+        "edit": "Chỉnh sửa",
+        "delete": "Xóa",
+        "view_results": "Xem kết quả",
+        "start_exam": "Bắt đầu thi",
+        "retry_exam": "Thi lại",
+        "resume_exam": "Tiếp tục thi",
+        "view_attempt": "Xem bài làm",
+        "view_my_results": "Xem kết quả của tôi"
+      },
+      "create": {
+        "title": "Tạo phiên thi",
+        "description": "Thiết lập phiên thi mới cho lớp học này.",
+        "fields": {
+          "exam": "Bài thi",
+          "start_time": "Thời gian bắt đầu",
+          "end_time": "Thời gian kết thúc",
+          "retry_times": "Số lần thử lại tối đa",
+          "is_retryable": "Cho phép thi lại",
+          "shuffle_questions": "Xáo trộn câu hỏi",
+          "shuffle_answers": "Xáo trộn đáp án",
+          "partial_scoring": "Cho phép chấm điểm từng phần"
+        },
+        "placeholders": {
+          "exam": "Chọn bài thi",
+          "retry_times": "Số lần thi lại được phép"
+        },
+        "descriptions": {
+          "is_retryable": "Cho phép học sinh thi lại bài thi này.",
+          "shuffle_questions": "Xáo trộn thứ tự câu hỏi cho mỗi học sinh.",
+          "shuffle_answers": "Xáo trộn thứ tự các đáp án cho mỗi học sinh.",
+          "partial_scoring": "Cho điểm từng phần cho các câu trả lời đúng một phần."
+        },
+        "actions": {
+          "create": "Tạo phiên thi",
+          "creating": "Đang tạo..."
+        }
+      },
+      "edit": {
+        "title": "Chỉnh sửa phiên thi",
+        "description": "Cập nhật cài đặt phiên thi.",
+        "actions": {
+          "update": "Cập nhật phiên thi",
+          "updating": "Đang cập nhật..."
+        }
+      },
+      "delete": {
+        "title": "Xóa phiên thi?",
+        "description": "Thao tác này sẽ xóa vĩnh viễn phiên thi và tất cả bản ghi lượt thi. Không thể hoàn tác."
+      },
+      "results": {
+        "title": "Kết quả phiên thi",
+        "subtitle": "Xem điểm số và chi tiết lượt thi của học sinh.",
+        "summary": {
+          "total_attempts": "Tổng lượt thi",
+          "average_score": "Điểm trung bình",
+          "highest_score": "Điểm cao nhất",
+          "lowest_score": "Điểm thấp nhất"
+        },
+        "table": {
+          "student": "Học sinh",
+          "score": "Điểm",
+          "percentage": "Phần trăm",
+          "attempt_number": "Lượt thi #",
+          "status": "Trạng thái",
+          "submitted_at": "Nộp lúc",
+          "actions": "Hành động"
+        },
+        "empty": "Chưa có lượt thi nào.",
+        "view_detail": "Xem chi tiết",
+        "view_review": "Xem lại câu trả lời"
+      },
+      "take": {
+        "title": "Đang làm bài thi",
+        "question_of": "Câu {{current}} / {{total}}",
+        "time_remaining": "Thời gian còn lại",
+        "submit_exam": "Nộp bài",
+        "submit_confirm_title": "Nộp bài thi?",
+        "submit_confirm_description": "Bạn có chắc chắn muốn nộp bài? Bạn không thể thay đổi câu trả lời sau khi nộp.",
+        "submit_confirm_unanswered": "Bạn còn {{count}} câu chưa trả lời.",
+        "submitting": "Đang nộp...",
+        "next": "Tiếp theo",
+        "previous": "Quay lại",
+        "answered": "Đã trả lời",
+        "unanswered": "Chưa trả lời",
+        "essay_hint": "Viết câu trả lời của bạn vào ô bên dưới.",
+        "essay_placeholder": "Nhập bài luận của bạn tại đây..."
+      },
+      "attempt_result": {
+        "title": "Kết quả bài thi",
+        "score": "Điểm của bạn",
+        "total_points": "Tổng điểm",
+        "percentage": "Phần trăm",
+        "status": "Trạng thái",
+        "back_to_sessions": "Quay lại danh sách",
+        "correct": "Đúng",
+        "incorrect": "Sai",
+        "partial": "Đúng một phần"
+      },
+      "attempt_status": {
+        "in_progress": "Đang làm",
+        "submitted": "Đã nộp",
+        "graded": "Đã chấm điểm",
+        "timed_out": "Hết giờ"
+      },
+      "my_results": {
+        "title": "Kết quả bài thi của tôi",
+        "subtitle": "Xem lại điểm và các lượt thi của bạn trong phiên thi này.",
+        "not_found": "Không tìm thấy phiên thi.",
+        "total_attempts": "Số lượt đã thi",
+        "best_score": "Điểm cao nhất",
+        "retries_left": "Lượt thi còn lại",
+        "attempts_title": "Các lượt thi của tôi",
+        "no_attempts": "Bạn chưa nộp bài thi nào.",
+        "view_review": "Xem lại câu trả lời"
+      },
+      "review": {
+        "title": "Xem lại bài thi",
+        "subtitle": "Xem câu trả lời của bạn, đáp án đúng và giải thích.",
+        "not_found": "Không tìm thấy lượt thi.",
+        "score_card": {
+          "your_score": "Điểm của bạn",
+          "points": "{{score}} / {{total}} điểm",
+          "percentage": "{{value}}%",
+          "attempt": "Lượt thi #{{number}}"
+        },
+        "question_of": "Câu hỏi {{current}} / {{total}}",
+        "correct_badge": "Đúng",
+        "incorrect_badge": "Sai",
+        "partial_badge": "Đúng một phần",
+        "your_answer": "Câu trả lời của bạn",
+        "correct_answer": "Đáp án đúng",
+        "explanation_label": "Giải thích",
+        "ai_explain_button": "Nhờ AI giải thích",
+        "ai_explaining": "Đang hỏi AI...",
+        "ai_explanation_title": "Giải thích từ AI",
+        "ai_explanation_error": "Không thể lấy giải thích. Vui lòng thử lại.",
+        "socratic_title": "Gợi ý Socratic",
+        "socratic_button": "Lấy gợi ý giảng dạy",
+        "socratic_loading": "Đang tạo gợi ý...",
+        "socratic_error": "Không thể tạo gợi ý. Vui lòng thử lại.",
+        "teaching_note": "Ghi chú giảng dạy",
+        "essay_type_label": "Câu hỏi tự luận",
+        "essay_your_answer": "Câu trả lời của bạn",
+        "essay_rubric_label": "Tiêu chí chấm điểm",
+        "essay_ai_feedback_title": "Phản hồi từ AI",
+        "essay_no_answer": "Không có câu trả lời",
+        "retake_button": "Làm lại bài thi",
+        "back_to_results": "Quay lại kết quả",
+        "empty_answers": "Không có câu trả lời nào cho lượt thi này."
+      },
+      "history": {
+        "title": "Lịch sử bài thi của tôi",
+        "subtitle": "Xem lại tất cả các lượt thi và điểm số của bạn.",
+        "empty": "Bạn chưa làm bài thi nào.",
+        "no_history": "Bạn chưa làm bài thi nào.",
+        "all_exams": "Tất cả phiên thi",
+        "all_exams_description": "Danh sách đầy đủ các phiên thi được giao cho bạn.",
+        "stats": {
+          "active": "Đang diễn ra",
+          "upcoming": "Sắp tới",
+          "completed": "Đã hoàn thành"
+        },
+        "table": {
+          "exam": "Bài thi",
+          "exam_id": "Mã bài thi",
+          "date": "Ngày",
+          "start_time": "Thời gian bắt đầu",
+          "end_time": "Thời gian kết thúc",
+          "attempts": "Số lần thi",
+          "score": "Điểm",
+          "status": "Trạng thái",
+          "actions": "Thao tác"
+        },
+        "status": {
+          "active": "Đang mở",
+          "upcoming": "Sắp tới",
+          "ended": "Đã kết thúc"
+        },
+        "actions": {
+          "take_exam": "Làm bài thi",
+          "view_results": "Xem kết quả"
+        },
+        "view_results": "Xem kết quả",
+        "ongoing": "Đang diễn ra",
+        "upcoming": "Sắp tới",
+        "completed": "Đã kết thúc"
+      }
+    },
+    "dashboard": {
+      "exam_sessions": {
+        "title": "Phiên thi",
+        "subtitle": "Theo dõi tất cả phiên thi và lượt làm bài của học sinh trong các lớp.",
+        "select_class": "Chọn lớp học",
+        "select_class_placeholder": "Chọn một lớp...",
+        "sessions_in": "Phiên thi trong lớp {{class}}",
+        "click_session_to_see_results": "Nhấn 'Xem kết quả' để xem lượt thi và điểm số của học sinh.",
+        "no_sessions": "Không có phiên thi nào cho lớp này."
+      },
+      "classes": {
+        "title": "Quản lý lớp học",
+        "subtitle": "Xem và quản lý tất cả lớp học do giáo viên tạo.",
+        "search_placeholder": "Tìm kiếm lớp học theo tên hoặc khối...",
+        "filter_all": "Tất cả",
+        "filter_active": "Đang hoạt động",
+        "filter_inactive": "Không hoạt động",
+        "table": {
+          "name": "Tên lớp",
+          "grade": "Khối",
+          "teacher": "Giáo viên",
+          "students": "Học sinh",
+          "assignments": "Bài tập",
+          "status": "Trạng thái",
+          "created": "Ngày tạo",
+          "actions": "Thao tác",
+          "invite_code": "Mã mời"
+        },
+        "actions": {
+          "view_details": "Xem chi tiết",
+          "assign_exam": "Giao bài thi",
+          "view_students": "Xem học sinh",
+          "view_assignments": "Xem bài tập"
+        },
+        "stats": {
+          "total_classes": "Tổng lớp học",
+          "active_classes": "Lớp đang hoạt động",
+          "total_students": "Tổng học sinh",
+          "total_assignments": "Tổng bài tập"
+        },
+        "detail": {
+          "title": "Chi tiết lớp học",
+          "back": "Quay lại danh sách",
+          "enrollments_tab": "Học sinh",
+          "assignments_tab": "Bài tập",
+          "info_tab": "Thông tin",
+          "student": "Học sinh",
+          "joined_at": "Ngày tham gia",
+          "status": "Trạng thái",
+          "no_students": "Chưa có học sinh",
+          "no_assignments": "Chưa có bài tập"
+        },
+        "assign_dialog": {
+          "title": "Giao bài thi cho lớp",
+          "description": "Chọn bài thi và đặt lịch.",
+          "exam_id": "Mã bài thi",
+          "exam_id_placeholder": "Nhập mã bài thi",
+          "start_date": "Ngày bắt đầu",
+          "due_date": "Ngày hết hạn",
+          "mandatory": "Bắt buộc",
+          "weight": "Trọng số (0-100)",
+          "weight_placeholder": "100",
+          "submit": "Giao bài thi",
+          "submitting": "Đang giao..."
+        },
+        "empty": {
+          "title": "Không tìm thấy lớp học",
+          "description": "Không có lớp học phù hợp với tiêu chí."
+        }
+      },
+      "subjects": {
+        "title": "Môn học",
+        "subtitle": "Quản lý môn học và chủ đề.",
+        "search_placeholder": "Tìm kiếm theo tên hoặc mã...",
+        "filter_all_grades": "Tất cả lớp",
+        "grade_filter_label": "Lọc theo lớp",
+        "new_subject": "Thêm môn học",
+        "table": {
+          "code": "Mã môn",
+          "name": "Tên",
+          "description": "Mô tả",
+          "grade": "Lớp",
+          "topics": "Chủ đề",
+          "actions": "Thao tác"
+        },
+        "empty": {
+          "title": "Không tìm thấy môn học",
+          "description": "Tạo môn học đầu tiên để bắt đầu."
+        },
+        "delete_dialog": {
+          "title": "Xóa môn học",
+          "description": "Bạn có chắc muốn xóa '{{name}}'? Thao tác này sẽ xóa tất cả chủ đề và câu hỏi liên quan.",
+          "confirm": "Xóa",
+          "cancel": "Hủy"
+        },
+        "create_dialog": {
+          "title": "Thêm môn học",
+          "description": "Thêm môn học mới vào chương trình.",
+          "fields": {
+            "code": "Mã môn học",
+            "name": "Tên",
+            "description": "Mô tả",
+            "grade": "Lớp",
+            "image_url": "URL hình ảnh"
+          },
+          "submit": "Thêm môn học",
+          "submitting": "Đang thêm..."
+        },
+        "edit_dialog": {
+          "title": "Chỉnh sửa môn học",
+          "description": "Cập nhật thông tin môn học.",
+          "submit": "Lưu thay đổi",
+          "submitting": "Đang lưu..."
+        }
+      },
+      "subject_detail": {
+        "back": "Quay lại danh sách môn học",
+        "not_found": "Không tìm thấy môn học",
+        "edit_subject": "Chỉnh sửa môn học",
+        "info_title": "Thông tin môn học",
+        "grade_badge": "Lớp {{grade}}",
+        "topics_title": "Chủ đề ({{count}})",
+        "topics_subtitle": "Các chủ đề trong chương trình môn học này.",
+        "new_topic": "Thêm chủ đề",
+        "search_topics": "Tìm kiếm chủ đề...",
+        "topic_curriculum": "Chương trình",
+        "topic_custom": "Tùy chỉnh",
+        "table": {
+          "title": "Tiêu đề",
+          "description": "Mô tả",
+          "type": "Loại",
+          "actions": "Thao tác"
+        },
+        "topics_empty": {
+          "title": "Chưa có chủ đề",
+          "description": "Thêm chủ đề cho môn học này."
+        },
+        "delete_topic_dialog": {
+          "title": "Xóa chủ đề",
+          "description": "Bạn có chắc muốn xóa '{{name}}'?",
+          "confirm": "Xóa",
+          "cancel": "Hủy"
+        },
+        "create_topic_dialog": {
+          "title": "Thêm chủ đề",
+          "description": "Thêm chủ đề mới cho môn học.",
+          "fields": {
+            "title": "Tiêu đề",
+            "description": "Mô tả",
+            "is_curriculum": "Chủ đề chương trình"
+          },
+          "submit": "Thêm chủ đề",
+          "submitting": "Đang thêm..."
+        },
+        "edit_topic_dialog": {
+          "title": "Chỉnh sửa chủ đề",
+          "description": "Cập nhật thông tin chủ đề.",
+          "submit": "Lưu thay đổi",
+          "submitting": "Đang lưu..."
+        }
+      },
+      "questions": {
+        "title": "Ngân hàng câu hỏi",
+        "subtitle": "Xem và quản lý tất cả câu hỏi trong chương trình.",
+        "new_question": "Thêm câu hỏi",
+        "search_placeholder": "Tìm kiếm câu hỏi...",
+        "filter_topic": "Lọc theo chủ đề",
+        "filter_cognitive": "Lọc theo cấp độ",
+        "filter_type": "Lọc theo loại",
+        "all_topics": "Tất cả chủ đề",
+        "all_levels": "Tất cả cấp độ",
+        "all_types": "Tất cả loại",
+        "all_subjects": "Tất cả môn học",
+        "filter_subject": "Lọc theo môn học",
+        "table": {
+          "content": "Nội dung",
+          "type": "Loại",
+          "cognitive_level": "Cấp độ",
+          "topic": "Chủ đề",
+          "point": "Điểm",
+          "source": "Nguồn",
+          "public": "Công khai",
+          "actions": "Thao tác"
+        },
+        "empty": {
+          "title": "Không tìm thấy câu hỏi",
+          "description": "Thử thay đổi bộ lọc hoặc thêm câu hỏi mới."
+        },
+        "delete_dialog": {
+          "title": "Xóa câu hỏi",
+          "description": "Bạn có chắc muốn xóa câu hỏi này? Không thể hoàn tác.",
+          "confirm": "Xóa",
+          "cancel": "Hủy"
+        },
+        "cognitive_levels": {
+          "remember": "Nhận biết",
+          "understand": "Thông hiểu",
+          "apply": "Vận dụng",
+          "analyze": "Vận dụng cao"
+        },
+        "question_types": {
+          "multiple_choice": "Trắc nghiệm",
+          "multiple_answer": "Nhiều đáp án",
+          "true_false": "Đúng/Sai",
+          "essay": "Tự luận",
+          "fill_in_blank": "Điền từ"
+        },
+        "sources": {
+          "manual": "Thủ công",
+          "ai_generated": "AI tạo",
+          "imported": "Nhập khẩu",
+          "curriculum_bank": "Ngân hàng CT"
+        }
+      }
+    },
+    "exams": {
+      "list": {
+        "title": "Bài thi",
+        "subtitle": "Quản lý bài thi của bạn.",
+        "actions": {
+          "new": "Bài thi mới",
+          "view": "Xem",
+          "edit": "Chỉnh sửa",
+          "delete": "Xóa"
+        },
+        "filters": {
+          "all": "Tất cả",
+          "draft": "Nháp",
+          "published": "Đã phát hành"
+        },
+        "table": {
+          "title": "Tất cả bài thi",
+          "name": "Tên",
+          "subject": "Môn học",
+          "grade": "Khối",
+          "status": "Trạng thái",
+          "created": "Ngày tạo",
+          "actions": "Thao tác"
+        },
+        "status": {
+          "draft": "Nháp",
+          "active": "Đã phát hành"
+        },
+        "empty": {
+          "title": "Chưa có bài thi",
+          "action": "Tạo bài thi đầu tiên"
+        },
+        "edit": {
+          "title": "Chỉnh sửa bài thi",
+          "description": "Cập nhật thông tin bài thi.",
+          "fields": {
+            "name": "Tên bài thi",
+            "description": "Mô tả",
+            "grade": "Khối",
+            "subject": "Môn học"
+          },
+          "placeholders": {
+            "name": "Nhập tên bài thi",
+            "description": "Mô tả ngắn",
+            "subject": "Chọn môn học"
+          },
+          "grade_option": "Khối {{grade}}",
+          "actions": {
+            "update": "Cập nhật bài thi"
+          }
+        },
+        "delete": {
+          "title": "Xóa bài thi?",
+          "description": "Thao tác này sẽ xóa vĩnh viễn bài thi."
+        }
+      },
+      "create": {
+        "title": "Tạo bài thi",
+        "subtitle": "Thiết lập thông tin cho bài thi mới.",
+        "form": {
+          "title": "Thông tin bài thi",
+          "fields": {
+            "name": "Tên bài thi",
+            "description": "Mô tả",
+            "grade": "Khối",
+            "subject": "Môn học"
+          },
+          "placeholders": {
+            "name": "Nhập tên bài thi",
+            "description": "Mô tả ngắn",
+            "grade": "Chọn khối",
+            "subject": "Chọn môn học"
+          },
+          "grade_option": "Khối {{grade}}",
+          "no_subjects": "Không có môn học",
+          "char_count": "{{count}} / {{max}} ký tự"
+        },
+        "actions": {
+          "create": "Tạo bài thi",
+          "creating": "Đang tạo..."
+        }
+      },
+      "matrix": {
+        "title_create": "Tạo ma trận",
+        "title_edit": "Chỉnh sửa ma trận",
+        "subtitle": "Xác định cấu trúc bài thi theo chủ đề và mức độ.",
+        "back_to_exams": "Quay lại bài thi",
+        "default_exam": "Bài thi chưa đặt tên",
+        "loading_exam": "Đang tải bài thi...",
+        "not_found": "Không tìm thấy bài thi",
+        "auto_name": "Ma trận {{exam}}",
+        "auto_description": "Ma trận tự động cho bài thi này.",
+        "table": {
+          "title": "Bảng ma trận",
+          "topic": "Chủ đề",
+          "select_topic": "Chọn chủ đề",
+          "total": "Tổng",
+          "total_questions": "Tổng số câu hỏi"
+        },
+        "actions": {
+          "add_row": "Thêm dòng",
+          "save_continue": "Lưu và tiếp tục",
+          "update_continue": "Cập nhật và tiếp tục",
+          "skip": "Bỏ qua",
+          "saving": "Đang lưu..."
+        },
+        "about": {
+          "title": "Về ma trận",
+          "description": "Cân bằng câu hỏi theo chủ đề và mức độ nhận thức.",
+          "levels_title": "Mức độ nhận thức",
+          "levels": {
+            "remember": "Nhận biết",
+            "understand": "Thông hiểu",
+            "apply": "Vận dụng",
+            "analyze": "Vận dụng cao"
+          }
+        }
+      },
+      "detail": {
+        "not_found": "Không tìm thấy bài thi",
+        "back_to_exams": "Quay lại bài thi",
+        "summary": "{{count}} câu hỏi - {{points}} điểm",
+        "actions": {
+          "preview": "Xem trước",
+          "edit": "Chỉnh sửa",
+          "export": "Xuất",
+          "export_pdf": "Xuất PDF",
+          "exporting_pdf": "Đang xuất PDF...",
+          "export_excel": "Xuất Excel",
+          "exporting_excel": "Đang xuất Excel...",
+          "publish": "Phát hành"
+        },
+        "publish": {
+          "title": "Phát hành bài thi?",
+          "description": "Bài thi sẽ được chia sẻ cho học sinh.",
+          "confirm": "Phát hành",
+          "publishing": "Đang phát hành...",
+          "no_questions": "Thêm ít nhất một câu hỏi trước khi phát hành."
+        },
+        "info": {
+          "title": "Thông tin bài thi",
+          "description": "Chi tiết về bài thi",
+          "subject": "Môn học",
+          "subject_unknown": "Không rõ môn học",
+          "grade": "Khối",
+          "grade_value": "Khối {{grade}}",
+          "created": "Ngày tạo"
+        },
+        "matrix": {
+          "title": "Ma trận bài thi",
+          "subtitle": "Phân bổ câu hỏi theo chủ đề và mức độ.",
+          "edit": "Chỉnh sửa ma trận",
+          "create": "Tạo ma trận",
+          "configured": "Đã cấu hình ma trận",
+          "summary": "{{count}} yêu cầu",
+          "total_questions": "{{count}} câu hỏi",
+          "topic_unknown": "Không rõ chủ đề",
+          "quantity": "{{count}} câu hỏi",
+          "more_combinations": "+{{count}} kết hợp khác",
+          "empty": "Chưa gắn ma trận.",
+          "attach_existing": "Gắn ma trận có sẵn",
+          "attach_title": "Gắn ma trận",
+          "attach_description": "Chọn ma trận để gắn vào bài thi.",
+          "attach_empty": "Không có ma trận.",
+          "search_placeholder": "Tìm ma trận...",
+          "search_empty": "Không tìm thấy ma trận.",
+          "attach_incompatible": "Ma trận không tương thích.",
+          "attach": "Gắn ma trận",
+          "attaching": "Đang gắn...",
+          "detach_title": "Gỡ ma trận?",
+          "detach_description": "Ma trận sẽ bị gỡ khỏi bài thi.",
+          "detach_confirm": "Gỡ",
+          "detach": "Gỡ ma trận",
+          "detaching": "Đang gỡ..."
+        },
+        "questions": {
+          "title": "Câu hỏi ({{count}})",
+          "add": "Thêm câu hỏi",
+          "empty": "Chưa có câu hỏi.",
+          "table": {
+            "question": "Câu hỏi",
+            "type": "Loại",
+            "level": "Mức độ",
+            "points": "Điểm",
+            "actions": "Thao tác"
+          },
+          "remove_title": "Xóa câu hỏi?",
+          "remove_description": "Hành động này sẽ xóa câu hỏi khỏi bài thi.",
+          "remove_confirm": "Xóa"
+        }
+      },
+      "edit": {
+        "title": "Chỉnh sửa bài thi",
+        "subtitle": "Cập nhật thông tin bài thi.",
+        "not_found": "Không tìm thấy bài thi",
+        "back_to_exams": "Quay lại bài thi",
+        "form": {
+          "title": "Thông tin bài thi",
+          "fields": {
+            "name": "Tên bài thi",
+            "description": "Mô tả",
+            "grade": "Khối",
+            "subject": "Môn học"
+          },
+          "placeholders": {
+            "name": "Nhập tên bài thi",
+            "description": "Mô tả ngắn",
+            "grade": "Chọn khối",
+            "subject": "Chọn môn học"
+          },
+          "help": {
+            "name": "Ngắn gọn và dễ hiểu.",
+            "description": "Mô tả ngắn về bài thi."
+          },
+          "grade_option": "Khối {{grade}}"
+        },
+        "actions": {
+          "save": "Lưu thay đổi",
+          "saving": "Đang lưu..."
+        }
+      },
+      "preview": {
+        "not_found": "Không tìm thấy bài thi",
+        "back_to_exams": "Quay lại bài thi",
+        "back_to_exam": "Quay lại bài thi",
+        "export_pdf": "Xuất PDF",
+        "exporting_pdf": "Đang xuất PDF...",
+        "export_excel": "Xuất Excel",
+        "exporting_excel": "Đang xuất Excel...",
+        "subject": "Môn học",
+        "grade": "Khối",
+        "questions": "Câu hỏi",
+        "total_points": "Tổng điểm",
+        "description": "Mô tả",
+        "questions_title": "Câu hỏi",
+        "question_number": "Câu {{number}}",
+        "points": "{{count}} điểm",
+        "correct": "Đúng"
+      },
+      "questions": {
+        "title": "Câu hỏi",
+        "subtitle": "Câu hỏi cho bài thi {{name}}",
+        "matrix_progress_label": "Tiến độ ma trận",
+        "tabs": {
+          "create": "Tạo câu hỏi",
+          "bank": "Ngân hàng câu hỏi"
+        },
+        "creation_mode": {
+          "label": "Chế độ tạo",
+          "manual": "Thủ công",
+          "ai": "AI",
+          "pro": "Pro",
+          "pro_required": "Yêu cầu Pro"
+        },
+        "actions": {
+          "clear": "Xóa",
+          "saving": "Đang lưu...",
+          "save_add": "Lưu và thêm câu hỏi"
+        },
+        "bank": {
+          "title": "Ngân hàng câu hỏi",
+          "subtitle": "Duyệt câu hỏi {{matrix}}",
+          "matrix_hint": "theo ma trận",
+          "view_label": "Xem",
+          "view_all": "Tất cả",
+          "view_matrix": "Ma trận",
+          "search_placeholder": "Tìm kiếm câu hỏi...",
+          "filters": {
+            "level": "Mức độ",
+            "all_levels": "Tất cả mức độ",
+            "topic": "Chủ đề",
+            "all_topics": "Tất cả chủ đề"
+          },
+          "loading": "Đang tải câu hỏi...",
+          "empty": "Không tìm thấy câu hỏi.",
+          "points": "{{count}} điểm",
+          "selected_count": "Đã chọn: {{count}}",
+          "adding": "Đang thêm...",
+          "add_selected": "Thêm đã chọn"
+        },
+        "sidebar": {
+          "questions_title": "Câu hỏi ({{count}})",
+          "matrix_title": "Yêu cầu ma trận",
+          "matrix_hint": "Nhấp vào yêu cầu để thêm câu hỏi."
+        },
+        "matrix_limit": {
+          "title": "Đã đủ theo ma trận",
+          "description": "Bạn đã đủ số câu hỏi yêu cầu cho ma trận này.",
+          "confirm": "Đã hiểu"
+        },
+        "delete_matrix": {
+          "title": "Xóa ma trận?",
+          "description": "Thao tác này sẽ xóa ma trận vĩnh viễn.",
+          "confirm": "Xóa"
+        },
+        "form": {
+          "title": "Chi tiết câu hỏi",
+          "fields": {
+            "content": "Nội dung câu hỏi",
+            "type": "Loại câu hỏi",
+            "cognitive_level": "Mức độ nhận thức",
+            "points": "Điểm",
+            "topic": "Chủ đề",
+            "public": "Câu hỏi công khai",
+            "media": "Tệp đính kèm"
+          },
+          "placeholders": {
+            "content": "Nhập nội dung câu hỏi...",
+            "topic": "Tìm và chọn chủ đề..."
+          },
+          "help": {
+            "topic": "Chọn chủ đề phù hợp nhất với câu hỏi.",
+            "public": "Cho phép người khác sử dụng câu hỏi này."
+          },
+          "actions": {
+            "upload": "Tải lên",
+            "uploading": "Đang tải..."
+          },
+          "media_uploaded": "Đã tải lên: {{url}}"
+        },
+        "answers": {
+          "title": {
+            "true_false": "Câu trả lời Đúng/Sai",
+            "single_choice": "Câu trả lời một lựa chọn",
+            "multiple_choice": "Câu trả lời nhiều lựa chọn",
+            "essay": "Câu trả lời tự luận",
+            "fill_blank": "Câu trả lời điền khuyết",
+            "default": "Câu trả lời"
+          },
+          "hint_simple": "Chọn đáp án đúng.",
+          "hint_multiple": "Chọn tất cả đáp án đúng.",
+          "common": {
+            "explanation_label": "Giải thích (tùy chọn)",
+            "explanation_placeholder": "Giải thích vì sao đáp án đúng.",
+            "remove_answer": "Xóa đáp án",
+            "min_two": "Cần ít nhất hai đáp án."
+          },
+          "select": {
+            "hint": "Chọn đúng một đáp án.",
+            "add_option": "Thêm lựa chọn",
+            "answer_label": "Đáp án {{index}}",
+            "answer_placeholder": "Nhập nội dung đáp án"
+          },
+          "multiple_choice": {
+            "hint": "Chọn một hoặc nhiều đáp án đúng.",
+            "add_option": "Thêm lựa chọn",
+            "answer_label": "Đáp án {{index}}",
+            "answer_placeholder": "Nhập nội dung đáp án"
+          },
+          "fill_blank": {
+            "tip": "Dùng [blank] trong câu hỏi để chỉ chỗ trống.",
+            "hint": "Cung cấp đáp án đúng và các đáp án chấp nhận được.",
+            "add_alternative": "Thêm đáp án khác",
+            "correct_label": "Đáp án đúng",
+            "alternative_label": "Đáp án khác {{index}}",
+            "correct_help": "Đây là đáp án chính xác.",
+            "alternative_help": "Các biến thể chấp nhận được.",
+            "correct_placeholder": "Nhập đáp án đúng",
+            "explanation_placeholder": "Giải thích đáp án đúng (tùy chọn)",
+            "remove_alternative": "Xóa đáp án khác"
+          },
+          "true_false": {
+            "hint": "Đánh dấu phương án đúng.",
+            "option_true": "Đúng",
+            "option_false": "Sai",
+            "explanation_placeholder": "Giải thích vì sao {{option}} là đúng."
+          },
+          "essay": {
+            "tip": "Cung cấp rubric hoặc hướng dẫn chấm.",
+            "rubric_label": "Rubric / Hướng dẫn",
+            "rubric_help": "Mô tả cách chấm điểm.",
+            "rubric_placeholder": "Nhập tiêu chí chấm...",
+            "sample_label": "Bài mẫu (tùy chọn)",
+            "sample_help": "Ví dụ về một câu trả lời tốt.",
+            "sample_placeholder": "Nhập bài mẫu..."
+          }
+        },
+        "toast": {
+          "prefill_manual": "Đã chuyển sang chế độ thủ công.",
+          "prefill_ai": "Đã chuyển sang chế độ AI.",
+          "created": "Đã tạo câu hỏi.",
+          "no_topic": "Vui lòng chọn chủ đề.",
+          "min_answers": "Cần ít nhất hai đáp án.",
+          "min_correct": "Chọn ít nhất một đáp án đúng.",
+          "ai_saved": "Đã lưu câu hỏi AI.",
+          "no_id": "Thiếu ID câu hỏi.",
+          "save_failed": "Lưu câu hỏi thất bại. {{message}}",
+          "ai_missing_topic": "Không tìm thấy chủ đề cho {{topic}}.",
+          "saved_count": "Đã lưu {{count}} câu hỏi.",
+          "failed_count": "Lưu thất bại {{count}} câu hỏi.",
+          "save_all_failed": "Lưu tất cả câu hỏi thất bại.",
+          "pro_required": "Cần gói Pro để dùng AI.",
+          "matrix_complete": "Đã hoàn thành yêu cầu ma trận.",
+          "matrix_generated": "Đã tạo ma trận với {{count}} câu hỏi.",
+          "matrix_failed": "Tạo ma trận thất bại.",
+          "matrix_deleted": "Đã xóa ma trận."
+        },
+        "ai": {
+          "matrix_title": "Tạo câu hỏi theo ma trận",
+          "matrix_description": "Tự động tạo câu hỏi dựa trên ma trận.",
+          "matrix_generating": "Đang tạo ma trận...",
+          "matrix_generate": "Tạo từ ma trận",
+          "matrix_hero_title": "Tạo từ Bản Thiết Kế Ma Trận",
+          "matrix_hero_description": "AI sẽ tự động tạo câu hỏi cho từng chủ đề theo phân phối ma trận. Tùy chọn đặt loại câu hỏi cho từng hàng, hoặc để là Ngẫu nhiên để AI tự chọn loại.",
+          "matrix_topic_table_topic": "Chủ đề",
+          "matrix_topic_table_level": "Mức độ",
+          "matrix_topic_table_count": "Số lượng",
+          "matrix_topic_table_type": "Loại câu hỏi",
+          "matrix_topic_table_status": "Trạng thái",
+          "matrix_question_type_random": "Ngẫu nhiên",
+          "matrix_questions_needed": "Cần {{count}} câu",
+          "matrix_questions_fulfilled": "Đã đủ",
+          "matrix_empty": "Chưa có ma trận. Hãy tạo hoặc gắn ma trận cho đề thi trước.",
+          "matrix_complete": "Tất cả yêu cầu ma trận đã được đáp ứng!",
+          "language_note": "Câu hỏi sẽ được tạo bằng {{language}}.",
+          "language_english": "Tiếng Anh",
+          "language_vietnamese": "Tiếng Việt",
+          "single_section_title": "Tạo câu hỏi đơn lẻ",
+          "single_section_description": "Cấu hình và tạo từng câu hỏi một với các thiết lập cụ thể.",
+          "title": "Trình tạo câu hỏi AI",
+          "fields": {
+            "topic": "Chủ đề",
+            "type": "Loại câu hỏi",
+            "cognitive_level": "Mức độ nhận thức",
+            "quantity": "Số lượng"
+          },
+          "placeholders": {
+            "topic": "Chọn chủ đề"
+          },
+          "generating": "Đang tạo...",
+          "generate": "Tạo {{count}} câu hỏi",
+          "generated_title": "Câu hỏi đã tạo ({{count}})",
+          "save_all": "Lưu tất cả ({{count}})",
+          "saving_all": "Đang lưu tất cả...",
+          "clear_all": "Xóa tất cả"
+        }
+      }
+    }
+  },
+  "timezones": {
+    "utc": "UTC (GMT+0)",
+    "eastern": "Giờ Miền Đông (GMT-5)",
+    "pacific": "Giờ Thái Bình Dương (GMT-8)",
+    "hcm": "Hồ Chí Minh (GMT+7)",
+    "london": "London (GMT+0)"
+  },
+  "health": {
+    "title": "Sức Khỏe Hệ Thống",
+    "subtitle": "Giám sát trạng thái của tất cả các dịch vụ hệ thống",
+    "overall_status": "Trạng Thái Hệ Thống Tổng Thể",
+    "healthy": "Khỏe Mạnh",
+    "unhealthy": "Không Khỏe",
+    "all_operational": "Tất cả hệ thống đang hoạt động",
+    "issues_detected": "Một hoặc nhiều dịch vụ đang gặp sự cố",
+    "database": "Cơ Sở Dữ Liệu",
+    "database_description": "Kết Nối PostgreSQL",
+    "redis": "Redis",
+    "redis_description": "Bộ Nhớ Cache & Phiên",
+    "status": "Trạng Thái",
+    "service": "Dịch Vụ",
+    "connection": "Kết Nối",
+    "active": "Hoạt Động",
+    "failed": "Thất Bại",
+    "unknown": "Không Rõ",
+    "system_info": "Thông Tin Hệ Thống",
+    "system_info_description": "Chi tiết dịch vụ bổ sung",
+    "services_monitored": "Dịch Vụ Được Giám Sát",
+    "healthy_services": "Dịch Vụ Khỏe Mạnh",
+    "last_checked": "Kiểm Tra Lần Cuối",
+    "loading": "Đang tải sức khỏe hệ thống..."
+  },
+  "dev": {
+    "title": "Kiểm Tra Phát Triển",
+    "subtitle": "Kiểm tra các thành phần và tiện ích khác nhau",
+    "lorem": "Con cáo nâu nhanh nhảy qua con chó lười. Đây là văn bản mẫu để chứng minh hệ thống dịch thuật hoạt động chính xác trên nhiều ngôn ngữ.",
+    "language_test": {
+      "title": "Kiểm Tra Ngôn Ngữ",
+      "description": "Kiểm tra chuyển đổi ngôn ngữ và bản dịch",
+      "select_language": "Chọn Ngôn Ngữ",
+      "current_language": "Ngôn Ngữ Hiện Tại",
+      "translation_test": "Kiểm tra bản dịch"
+    },
+    "theme_test": {
+      "title": "Kiểm Tra Chủ Đề",
+      "description": "Kiểm tra chức năng chuyển đổi chủ đề",
+      "select_theme": "Chọn Chủ Đề",
+      "current_theme": "Chủ Đề Hiện Tại",
+      "light": "Sáng",
+      "dark": "Tối"
+    },
+    "storage_test": {
+      "title": "Kiểm Tra LocalStorage",
+      "description": "Xem tất cả các khóa được lưu trữ trong localStorage",
+      "total_keys": "Tổng Số Khóa",
+      "no_keys": "Không có khóa trong localStorage"
+    },
+    "toast_test": {
+      "title": "Kiểm Tra Toast (Sonner)",
+      "description": "Kiểm tra các loại thông báo toast khác nhau",
+      "success": "Thành Công",
+      "success_message": "Thành công!",
+      "success_description": "Hoàn thành thao tác thành công",
+      "error": "Lỗi",
+      "error_message": "Lỗi!",
+      "error_description": "Đã xảy ra sự cố",
+      "info": "Thông Tin",
+      "info_message": "Thông tin",
+      "info_description": "Đây là một số thông tin",
+      "warning": "Cảnh Báo",
+      "warning_message": "Cảnh báo!",
+      "warning_description": "Vui lòng cẩn thận",
+      "promise": "Promise",
+      "promise_loading": "Đang tải...",
+      "promise_success": "Đã tải dữ liệu!",
+      "promise_error": "Không tải được",
+      "with_action": "Với Hành Động",
+      "event_created": "Sự Kiện Đã Tạo",
+      "undo_description": "Bạn có thể hoàn tác hành động này",
+      "undo": "Hoàn tác",
+      "action_undone": "Đã hoàn tác"
+    }
+  },
+  "components": {
+    "exams": {
+      "cognitive_level": {
+        "descriptions": {
+          "remember": "Nhớ lại sự kiện và khái niệm cơ bản",
+          "understand": "Giải thích ý tưởng hoặc khái niệm",
+          "apply": "Vận dụng thông tin trong tình huống mới",
+          "analyze": "Liên hệ và phân tích các ý tưởng"
+        }
+      },
+      "matrix_progress": {
+        "title": "Tiến độ ma trận",
+        "subtitle": "Theo dõi tiến độ tạo câu hỏi theo chủ đề và mức độ",
+        "actions": {
+          "export": "Xuất",
+          "export_pdf": "Xuất PDF",
+          "exporting_pdf": "Đang xuất PDF...",
+          "export_excel": "Xuất Excel",
+          "exporting_excel": "Đang xuất Excel...",
+          "delete": "Xóa",
+          "deleting": "Đang xóa..."
+        },
+        "overall": "Tổng quan",
+        "complete": "Hoàn thành"
+      },
+      "question_type": {
+        "select_placeholder": "Chọn loại câu hỏi",
+        "labels": {
+          "single_choice": "Một lựa chọn",
+          "multiple_choice": "Nhiều lựa chọn"
+        },
+        "descriptions": {
+          "true_false": "Chọn phương án đúng",
+          "single_choice": "Chọn đúng một đáp án",
+          "multiple_choice": "Chọn một hoặc nhiều đáp án đúng",
+          "essay": "Trả lời bằng bài viết",
+          "fill_blank": "Điền vào chỗ trống"
+        }
+      },
+      "questions_panel": {
+        "empty_title": "Chưa có câu hỏi",
+        "empty_subtitle": "Thêm câu hỏi để bắt đầu tạo bài thi",
+        "points": "{{count}} điểm",
+        "not_in_matrix": "Không trong ma trận",
+        "not_in_matrix_hint": "Câu hỏi này không phù hợp với yêu cầu ma trận.",
+        "view": "Xem",
+        "remove": "Xóa",
+        "remove_title": "Xóa câu hỏi?",
+        "remove_description": "Hành động này sẽ xóa câu hỏi khỏi bài thi.",
+        "remove_confirm": "Xóa"
+      }
+    }
+  },
+  "exams": {
+    "cognitive_levels": {
+      "remember": "Nhận biết",
+      "understand": "Thông hiểu",
+      "apply": "Vận dụng",
+      "analyze": "Vận dụng cao"
+    },
+    "cognitive_levels_vi": {
+      "remember": "Nhận biết",
+      "understand": "Thông hiểu",
+      "apply": "Vận dụng",
+      "analyze": "Vận dụng cao"
+    },
+    "question_types": {
+      "multiple_choice": "Trắc nghiệm",
+      "true_false": "Đúng/Sai",
+      "essay": "Tự luận",
+      "fill_in_blank": "Điền vào chỗ trống"
+    },
+    "topic_selector": {
+      "placeholder": "Chọn chủ đề",
+      "search_placeholder": "Tìm kiếm chủ đề...",
+      "empty": "Không tìm thấy chủ đề.",
+      "in_curriculum": "Theo chương trình",
+      "created_by_users": "Do người dùng tạo",
+      "curriculum_badge": "Chương trình",
+      "custom_badge": "Tùy chỉnh"
+    }
+  },
+  "header": {
+    "view_as": "Xem dưới dạng",
+    "viewing_as": "Đang xem với vai trò {{role}}",
+    "preview_as_role": "Xem trước giao diện theo vai trò",
+    "exit_preview": "Thoát xem trước"
+  },
+  "dashboard": {
+    "welcome": "Chào mừng trở lại, {{name}}!",
+    "subtitle": "Đây là những gì đang diễn ra hôm nay.",
+    "total_users": "Tổng số người dùng",
+    "active_exams": "Bài kiểm tra đang hoạt động",
+    "total_questions": "Tổng số câu hỏi",
+    "active_classes": "Lớp học đang hoạt động",
+    "manage_subjects": "Quản lý môn học",
+    "view_analytics": "Xem phân tích",
+    "manage_users": "Quản lý người dùng",
+    "create_exam": "Tạo bài kiểm tra",
+    "last_30_days": "30 ngày qua",
+    "new_registrations_trend": "Xu hướng đăng ký người dùng mới trong 30 ngày qua",
+    "users_by_role": "Phân bổ người dùng theo vai trò",
+    "email_verification_breakdown": "Phân tích trạng thái xác minh email",
+    "subscription_breakdown": "Phân bổ trạng thái đăng ký hiện tại",
+    "revenue_and_transactions": "Doanh thu và khối lượng giao dịch hàng tháng"
+  },
+  "analytics": {
+    "title": "Phân tích",
+    "subtitle": "Thống kê và hiệu suất nền tảng",
+    "time_range": {
+      "label": "Khoảng thời gian",
+      "last_7_days": "7 ngày qua",
+      "last_30_days": "30 ngày qua",
+      "last_90_days": "90 ngày qua",
+      "last_year": "Năm qua",
+      "all_time": "Tất cả"
+    },
+    "ai_usage": {
+      "title": "Sử dụng AI",
+      "total_requests": "Tổng yêu cầu AI",
+      "total_requests_description": "Tổng số yêu cầu sử dụng AI",
+      "over_time": "Sử dụng AI theo thời gian",
+      "over_time_description": "Số lượng yêu cầu AI theo thời gian",
+      "requests": "Yêu cầu"
+    },
+    "user_growth": "Tăng trưởng người dùng (30 ngày qua)",
+    "role_distribution": "Phân bố vai trò",
+    "verification_status": "Trạng thái xác minh",
+    "subscription_revenue": "Doanh thu đăng ký",
+    "subscription_status": "Trạng thái đăng ký",
+    "total_revenue": "Tổng doanh thu",
+    "total_subscriptions": "Tổng đăng ký",
+    "active_subscriptions": "Đăng ký đang hoạt động",
+    "verified_users": "Người dùng đã xác minh",
+    "new_users": "Người dùng mới",
+    "monthly_revenue": "Doanh thu hàng tháng",
+    "revenue": "Doanh thu",
+    "transactions": "Giao dịch",
+    "active": "Đang hoạt động",
+    "expired": "Đã hết hạn",
+    "cancelled": "Đã hủy",
+    "suspended": "Đã tạm ngưng",
+    "verified": "Đã xác minh",
+    "unverified": "Chưa xác minh",
+    "users": "Người dùng",
+    "subscriptions": "Đăng ký",
+    "overview": "Tổng quan",
+    "no_data": "Không có dữ liệu",
+    "loading": "Đang tải phân tích...",
+    "daily_registrations": "Đăng ký hàng ngày",
+    "from_last_period": "so với kỳ trước"
+  },
+  "user_management": {
+    "title": "Quản lý người dùng",
+    "description": "Quản lý tất cả người dùng và vai trò của họ",
+    "total_users": "Tổng số người dùng",
+    "active_today": "Hoạt động hôm nay",
+    "teachers": "Giáo viên",
+    "students": "Học sinh",
+    "add_new_user": "Thêm người dùng mới",
+    "export_users": "Xuất người dùng",
+    "search_placeholder": "Tìm kiếm theo tên hoặc email...",
+    "filter_by_role": "Lọc theo vai trò",
+    "all_roles": "Tất cả vai trò",
+    "edit_user": "Sửa người dùng",
+    "delete_user": "Xóa người dùng",
+    "delete_confirm_title": "Xóa người dùng",
+    "delete_confirm_message": "Bạn có chắc chắn muốn xóa người dùng này không? Hành động này không thể hoàn tác.",
+    "user_updated": "Cập nhật người dùng thành công",
+    "user_deleted": "Xóa người dùng thành công",
+    "update_failed": "Cập nhật người dùng thất bại",
+    "delete_failed": "Xóa người dùng thất bại",
+    "no_users_found": "Không tìm thấy người dùng",
+    "loading_users": "Đang tải người dùng...",
+    "showing_results": "Hiển thị {{from}}-{{to}} trong số {{total}} kết quả",
+    "previous_page": "Trước",
+    "next_page": "Tiếp theo",
+    "rows_per_page": "Số hàng mỗi trang"
+  },
+  "admin": {
+    "subscriptions": {
+      "title": "Quản lý đăng ký",
+      "subtitle": "Quản lý đăng ký, gói dịch vụ và xem giao dịch.",
+      "stats": {
+        "total_revenue": "Tổng doanh thu",
+        "active": "Đăng ký hoạt động",
+        "total": "Tổng đăng ký",
+        "monthly_growth": "Doanh thu tháng gần nhất"
+      },
+      "tabs": {
+        "subscriptions": "Đăng ký",
+        "tiers": "Gói dịch vụ",
+        "transactions": "Giao dịch"
+      },
+      "all_subscriptions": "Tất cả đăng ký",
+      "search_placeholder": "Tìm theo ID người dùng hoặc gói...",
+      "filter_status": "Lọc theo trạng thái",
+      "table": {
+        "user_id": "ID người dùng",
+        "plan": "Gói",
+        "status": "Trạng thái",
+        "start_date": "Ngày bắt đầu",
+        "end_date": "Ngày kết thúc",
+        "actions": "Thao tác"
+      },
+      "no_subscriptions": "Không tìm thấy đăng ký nào.",
+      "subscription_tiers": "Gói dịch vụ",
+      "target_role": "Vai trò mục tiêu",
+      "no_tiers": "Chưa có gói dịch vụ nào.",
+      "all_transactions": "Tất cả giao dịch",
+      "tx_table": {
+        "code": "Mã",
+        "amount": "Số tiền",
+        "provider": "Nhà cung cấp",
+        "status": "Trạng thái",
+        "plan": "Gói",
+        "date": "Ngày"
+      },
+      "no_transactions": "Không tìm thấy giao dịch nào.",
+      "actions": {
+        "suspend": "Tạm dừng",
+        "activate": "Kích hoạt",
+        "deactivate": "Vô hiệu hóa",
+        "renew": "Gia hạn"
+      },
+      "confirm_suspend": "Tạm dừng đăng ký",
+      "confirm_suspend_desc": "Bạn có chắc chắn muốn tạm dừng đăng ký của người dùng {{user}}?",
+      "confirm_activate": "Kích hoạt đăng ký",
+      "confirm_activate_desc": "Bạn có chắc chắn muốn kích hoạt đăng ký của người dùng {{user}}?",
+      "suspended_success": "Đã tạm dừng đăng ký thành công.",
+      "activated_success": "Đã kích hoạt đăng ký thành công.",
+      "tier_deactivated": "Đã vô hiệu hóa gói dịch vụ thành công.",
+      "tier_activated": "Đã kích hoạt gói dịch vụ thành công.",
+      "action_failed": "Thao tác thất bại. Vui lòng thử lại."
+    }
+  }
 }

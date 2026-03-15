@@ -18,6 +18,7 @@ import {
 	Grid3x3,
 	Clock,
 	CreditCard,
+	HelpCircle,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
@@ -47,6 +48,11 @@ const adminNavItems: NavItem[] = [
 		labelKey: 'navigation.subjects',
 		href: '/dashboard/subjects',
 		icon: GraduationCap,
+	},
+	{
+		labelKey: 'navigation.questions',
+		href: '/dashboard/questions',
+		icon: HelpCircle,
 	},
 	{
 		labelKey: 'navigation.users',

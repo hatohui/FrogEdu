@@ -25,6 +25,12 @@ namespace FrogEdu.Exam.Infrastructure.Persistence.Migrations
                 keyColumn: "Id",
                 keyValue: new Guid("00000000-0000-0000-0000-000000000050"));
 
+            // Drop unique index temporarily to allow SubjectCode reshuffling without constraint violations
+            migrationBuilder.DropIndex(
+                name: "IX_Subjects_SubjectCode_Grade",
+                schema: "public",
+                table: "Subjects");
+
             migrationBuilder.UpdateData(
                 schema: "public",
                 table: "Subjects",
@@ -1606,6 +1612,14 @@ namespace FrogEdu.Exam.Infrastructure.Persistence.Migrations
                     { new Guid("10000000-0000-0000-0000-000000000349"), new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, "Chiến dịch Hồ Chí Minh, giải phóng miền Nam 30/4/1975, thống nhất đất nước.", true, new Guid("00000000-0000-0000-0000-000000000048"), "Kháng chiến chống Mỹ", null, null },
                     { new Guid("10000000-0000-0000-0000-000000000350"), new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, "Thời kỳ đổi mới từ 1986, hội nhập quốc tế, thành tựu phát triển.", true, new Guid("00000000-0000-0000-0000-000000000048"), "Xây dựng và đổi mới", null, null }
                 });
+
+            // Recreate unique index after all subject code updates are complete
+            migrationBuilder.CreateIndex(
+                name: "IX_Subjects_SubjectCode_Grade",
+                schema: "public",
+                table: "Subjects",
+                columns: new[] { "SubjectCode", "Grade" },
+                unique: true);
         }
 
         /// <inheritdoc />

@@ -6,6 +6,13 @@ export interface CreateClassRequest {
 	bannerUrl?: string
 }
 
+export interface UpdateClassRequest {
+	name: string
+	grade: string
+	maxStudents: number
+	bannerUrl?: string
+}
+
 export interface JoinClassRequest {
 	inviteCode: string
 }
