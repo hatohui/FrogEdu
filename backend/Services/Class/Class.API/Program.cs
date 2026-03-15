@@ -4,6 +4,7 @@ using FrogEdu.Class.Application;
 using FrogEdu.Class.Infrastructure;
 using FrogEdu.Shared.Kernel;
 using FrogEdu.Shared.Kernel.Authorization;
+using Microsoft.EntityFrameworkCore;
 
 Env.Load();
 

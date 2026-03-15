@@ -14,6 +14,15 @@ export default defineConfig({
     screenshot: "only-on-failure",
     video: "on-first-retry",
   },
+  webServer: process.env.BASE_URL
+    ? undefined
+    : {
+        command: "npm run dev",
+        url: "http://localhost:5173",
+        reuseExistingServer: !process.env.CI,
+        cwd: "../frontend",
+        timeout: 120_000,
+      },
   projects: [
     {
       name: "chromium",
