@@ -7,6 +7,7 @@ export interface CreateExamSessionRequest {
 	shouldShuffleQuestions: boolean
 	shouldShuffleAnswers: boolean
 	allowPartialScoring: boolean
+	isPractice?: boolean
 }
 
 export interface UpdateExamSessionRequest {
@@ -17,6 +18,7 @@ export interface UpdateExamSessionRequest {
 	shouldShuffleQuestions?: boolean
 	shouldShuffleAnswers?: boolean
 	allowPartialScoring?: boolean
+	isPractice?: boolean
 }
 
 export interface SubmitExamAttemptRequest {

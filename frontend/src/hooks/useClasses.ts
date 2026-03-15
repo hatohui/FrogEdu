@@ -257,3 +257,54 @@ export function useClassDashboardStats() {
 		staleTime: 5 * 60 * 1000,
 	})
 }
+
+// ─── Gamification / Badges ───
+
+export const badgeKeys = {
+	all: () => ['badges'] as const,
+	list: (activeOnly?: boolean) =>
+		[...badgeKeys.all(), 'list', activeOnly] as const,
+	student: (studentId: string, classId?: string) =>
+		[...badgeKeys.all(), 'student', studentId, classId] as const,
+	me: (classId?: string) => [...badgeKeys.all(), 'me', classId] as const,
+}
+
+export function useBadges(activeOnly = true) {
+	return useQuery({
+		queryKey: badgeKeys.list(activeOnly),
+		queryFn: () => classService.getBadges(activeOnly),
+		staleTime: 10 * 60 * 1000,
+	})
+}
+
+export function useStudentBadges(studentId: string, classId?: string) {
+	return useQuery({
+		queryKey: badgeKeys.student(studentId, classId),
+		queryFn: () => classService.getStudentBadges(studentId, classId),
+		enabled: !!studentId,
+		staleTime: 5 * 60 * 1000,
+	})
+}
+
+export function useMyBadges(classId?: string) {
+	return useQuery({
+		queryKey: badgeKeys.me(classId),
+		queryFn: () => classService.getMyBadges(classId),
+		staleTime: 5 * 60 * 1000,
+	})
+}
+
+export function useAwardBadge() {
+	const queryClient = useQueryClient()
+
+	return useMutation({
+		mutationFn: classService.awardBadge,
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: badgeKeys.all() })
+			toast.success('Badge awarded successfully!')
+		},
+		onError: (error: Error) => {
+			toast.error(error.message || 'Failed to award badge')
+		},
+	})
+}

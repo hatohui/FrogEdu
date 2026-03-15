@@ -42,6 +42,7 @@ public sealed class GetExamSessionsQueryHandler
             session.ShouldShuffleQuestions,
             session.ShouldShuffleAnswers,
             session.AllowPartialScoring,
+            session.IsPractice,
             session.IsCurrentlyActive(),
             session.IsUpcoming(),
             session.HasEnded(),

@@ -18,6 +18,12 @@ export type {
 	StudentAnswerSubmission,
 } from './examSession.request'
 
+export type {
+	BadgeDto,
+	StudentBadgeDto,
+	AwardBadgeRequest,
+} from './gamification'
+
 // Dashboard DTOs
 export interface ClassDashboardStatsResponse {
 	totalClasses: number

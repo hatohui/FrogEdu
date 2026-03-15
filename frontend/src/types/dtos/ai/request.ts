@@ -51,3 +51,23 @@ export interface ExplainQuestionRequest {
 	studentAnswer?: string
 	language?: 'vi' | 'en'
 }
+
+/**
+ * Request to generate Socratic method hints for a teacher
+ */
+export interface SocraticHintsRequest {
+	questionContent: string
+	studentAnswer: string
+	correctAnswer: string
+	subject: string
+	grade: number
+	language?: 'vi' | 'en'
+}
+
+/**
+ * Response containing Socratic method guiding questions
+ */
+export interface SocraticHintsResponse {
+	hints: string[]
+	teachingNote: string
+}

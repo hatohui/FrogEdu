@@ -8,6 +8,8 @@ import type {
 	AIQuestionApiResponse,
 	AIGenerateQuestionsApiResponse,
 	ExplainQuestionRequest,
+	SocraticHintsRequest,
+	SocraticHintsResponse,
 } from '@/types/dtos/ai'
 import { CognitiveLevel, QuestionType } from '@/types/model/exam-service/enums'
 import axiosInstance from './axios'
@@ -186,6 +188,30 @@ class AIService {
 			status: response.data.status,
 			serviceName: response.data.service_name,
 			geminiConnected: response.data.gemini_connected,
+		}
+	}
+
+	/**
+	 * Generate Socratic method guiding questions for a teacher.
+	 * Requires Teacher role with active Pro subscription.
+	 */
+	async getSocraticHints(
+		request: SocraticHintsRequest
+	): Promise<SocraticHintsResponse> {
+		const response = await axiosInstance.post<{
+			hints: string[]
+			teaching_note: string
+		}>(`${this.baseUrl}/socratic-hints`, {
+			question_content: request.questionContent,
+			student_answer: request.studentAnswer,
+			correct_answer: request.correctAnswer,
+			subject: request.subject,
+			grade: request.grade,
+			language: request.language ?? 'vi',
+		})
+		return {
+			hints: response.data.hints,
+			teachingNote: response.data.teaching_note,
 		}
 	}
 

@@ -12,6 +12,7 @@ public sealed record ExamSessionResponse(
     bool ShouldShuffleQuestions,
     bool ShouldShuffleAnswers,
     bool AllowPartialScoring,
+    bool IsPractice,
     bool IsCurrentlyActive,
     bool IsUpcoming,
     bool HasEnded,

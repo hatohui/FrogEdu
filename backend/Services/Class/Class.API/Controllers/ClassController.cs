@@ -1,5 +1,6 @@
 using FrogEdu.Class.Application.Commands.AdminAssignExam;
 using FrogEdu.Class.Application.Commands.AssignExam;
+using FrogEdu.Class.Application.Commands.AwardBadge;
 using FrogEdu.Class.Application.Commands.CreateClass;
 using FrogEdu.Class.Application.Commands.DeleteAssignment;
 using FrogEdu.Class.Application.Commands.JoinClass;
@@ -7,10 +8,13 @@ using FrogEdu.Class.Application.Commands.RemoveStudent;
 using FrogEdu.Class.Application.Commands.UpdateAssignment;
 using FrogEdu.Class.Application.Dtos;
 using FrogEdu.Class.Application.Dtos.requests;
+using FrogEdu.Class.Application.Dtos.responses;
+using FrogEdu.Class.Application.Queries.GetBadges;
 using FrogEdu.Class.Application.Queries.GetClassAssignments;
 using FrogEdu.Class.Application.Queries.GetClassDashboardStats;
 using FrogEdu.Class.Application.Queries.GetClassDetail;
 using FrogEdu.Class.Application.Queries.GetMyClasses;
+using FrogEdu.Class.Application.Queries.GetStudentBadges;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -331,5 +335,96 @@ public class ClassController(IMediator mediator) : BaseController
         var query = new GetClassDashboardStatsQuery();
         var result = await _mediator.Send(query, cancellationToken);
         return Ok(result);
+    }
+
+    // ==================== GAMIFICATION ENDPOINTS ====================
+
+    /// <summary>
+    /// Get all available badges
+    /// </summary>
+    [HttpGet("badges")]
+    [Authorize]
+    [ProducesResponseType(typeof(IReadOnlyList<BadgeDto>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetBadges(
+        [FromQuery] bool activeOnly = true,
+        CancellationToken cancellationToken = default
+    )
+    {
+        var query = new GetBadgesQuery(activeOnly);
+        var result = await _mediator.Send(query, cancellationToken);
+        return Ok(result);
+    }
+
+    /// <summary>
+    /// Get badges earned by a student
+    /// </summary>
+    [HttpGet("students/{studentId:guid}/badges")]
+    [Authorize]
+    [ProducesResponseType(typeof(IReadOnlyList<StudentBadgeDto>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetStudentBadges(
+        Guid studentId,
+        [FromQuery] Guid? classId = null,
+        CancellationToken cancellationToken = default
+    )
+    {
+        var query = new GetStudentBadgesQuery(studentId, classId);
+        var result = await _mediator.Send(query, cancellationToken);
+        return Ok(result);
+    }
+
+    /// <summary>
+    /// Get current user's badges
+    /// </summary>
+    [HttpGet("badges/me")]
+    [Authorize]
+    [ProducesResponseType(typeof(IReadOnlyList<StudentBadgeDto>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetMyBadges(
+        [FromQuery] Guid? classId = null,
+        CancellationToken cancellationToken = default
+    )
+    {
+        var userIdStr = GetAuthenticatedUserId();
+        if (!Guid.TryParse(userIdStr, out var userId))
+            return Unauthorized();
+
+        var query = new GetStudentBadgesQuery(userId, classId);
+        var result = await _mediator.Send(query, cancellationToken);
+        return Ok(result);
+    }
+
+    /// <summary>
+    /// Award a badge to a student (Teacher only)
+    /// </summary>
+    [HttpPost("badges/award")]
+    [Authorize]
+    [ProducesResponseType(typeof(object), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> AwardBadge(
+        [FromBody] AwardBadgeRequest request,
+        CancellationToken cancellationToken
+    )
+    {
+        var userIdStr = GetAuthenticatedUserId();
+        if (!Guid.TryParse(userIdStr, out var userId))
+            return Unauthorized();
+
+        var userRole = GetUserRole();
+        if (userRole != "Teacher" && userRole != "Admin")
+            return Forbid();
+
+        var command = new AwardBadgeCommand(
+            request.StudentId,
+            request.BadgeId,
+            request.ClassId,
+            request.ExamSessionId,
+            userId,
+            request.CustomPraise
+        );
+
+        var result = await _mediator.Send(command, cancellationToken);
+        if (result.IsFailure)
+            return BadRequest(new { error = result.Error });
+
+        return Ok(new { id = result.Value, message = "Badge awarded successfully" });
     }
 }

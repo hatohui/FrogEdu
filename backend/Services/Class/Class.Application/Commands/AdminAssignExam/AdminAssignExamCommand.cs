@@ -119,6 +119,7 @@ public sealed class AdminAssignExamCommandHandler
                     session.ShouldShuffleQuestions,
                     session.ShouldShuffleAnswers,
                     session.AllowPartialScoring,
+                    session.IsPractice,
                     session.IsCurrentlyActive(),
                     session.IsUpcoming(),
                     session.HasEnded(),

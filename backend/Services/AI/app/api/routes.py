@@ -14,6 +14,8 @@ from app.schemas import (
     ExplainQuestionResponse,
     GradeEssayRequest,
     GradeEssayResponse,
+    SocraticHintsRequest,
+    SocraticHintsResponse,
 )
 from app.services import GeminiService
 from app.config import get_settings, Settings
@@ -250,4 +252,54 @@ async def grade_essay(
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Failed to grade essay: {str(e)}"
+        )
+
+
+@router.post("/socratic-hints", response_model=SocraticHintsResponse)
+async def generate_socratic_hints(
+    request: SocraticHintsRequest,
+    service: Annotated[GeminiService, Depends(get_gemini_service)],
+    user: Annotated[TokenUser, Depends(get_subscribed_user)]
+):
+    """
+    Generate Socratic method guiding questions for a teacher.
+
+    When a student answers incorrectly, this endpoint produces 3-5 progressive
+    questions the teacher can use to guide the student toward the correct answer
+    without revealing it directly.
+
+    **Requirements:**
+    - Teacher role with active Pro subscription
+
+    **Returns:**
+    - List of Socratic guiding questions
+    - A brief teaching note on the pedagogical approach
+    """
+    if user.role and user.role.lower() not in ["teacher", "admin"]:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Only teachers can generate Socratic hints"
+        )
+
+    try:
+        logger.info(
+            f"User {user.sub} requesting Socratic hints for grade {request.grade} {request.subject}"
+        )
+        result = await service.generate_socratic_hints(
+            question_content=request.question_content,
+            student_answer=request.student_answer,
+            correct_answer=request.correct_answer,
+            subject=request.subject,
+            grade=request.grade,
+            language=request.language,
+        )
+        return SocraticHintsResponse(
+            hints=result.get("hints", []),
+            teaching_note=result.get("teaching_note", ""),
+        )
+    except Exception as e:
+        logger.error(f"Failed to generate Socratic hints: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to generate Socratic hints: {str(e)}"
         )

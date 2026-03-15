@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import {
 	TrendingUp,
 	Users,
@@ -6,6 +6,7 @@ import {
 	ShieldCheck,
 	DollarSign,
 	UserCheck,
+	Bot,
 } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import {
@@ -17,6 +18,13 @@ import {
 } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Skeleton } from '@/components/ui/skeleton'
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from '@/components/ui/select'
 import {
 	ChartContainer,
 	ChartTooltip,
@@ -73,6 +81,13 @@ const revenueChartConfig = {
 	transactions: { label: 'Transactions', color: 'hsl(262, 83%, 58%)' },
 } satisfies ChartConfig
 
+const aiUsageChartConfig = {
+	count: {
+		label: 'AI Requests',
+		color: 'hsl(160, 84%, 39%)',
+	},
+} satisfies ChartConfig
+
 const ChartSkeleton = () => (
 	<div className='space-y-3'>
 		<Skeleton className='h-[350px] w-full' />
@@ -81,11 +96,12 @@ const ChartSkeleton = () => (
 
 const AnalyticsPage = (): React.ReactElement => {
 	const { t } = useTranslation()
+	const [timeRange, setTimeRange] = useState('30d')
 	const { data: userStats, isLoading: isLoadingUserStats } = useUserStatistics()
 	const { data: userDashboard, isLoading: isLoadingUserDashboard } =
-		useUserDashboardStats()
+		useUserDashboardStats(timeRange)
 	const { data: subStats, isLoading: isLoadingSubStats } =
-		useSubscriptionDashboardStats()
+		useSubscriptionDashboardStats(timeRange)
 
 	const isLoading =
 		isLoadingUserStats || isLoadingUserDashboard || isLoadingSubStats
@@ -118,6 +134,13 @@ const AnalyticsPage = (): React.ReactElement => {
 			icon: UserCheck,
 			color: 'text-emerald-600',
 			bgColor: 'bg-emerald-100 dark:bg-emerald-950',
+		},
+		{
+			title: t('analytics.ai_usage'),
+			value: subStats?.totalAIUsageCount?.toString() ?? '0',
+			icon: Bot,
+			color: 'text-teal-600',
+			bgColor: 'bg-teal-100 dark:bg-teal-950',
 		},
 	]
 
@@ -160,6 +183,15 @@ const AnalyticsPage = (): React.ReactElement => {
 			transactions: item.transactionCount,
 		})) ?? []
 
+	const aiUsageChartData =
+		subStats?.aiUsageOverTime?.map(item => ({
+			date: new Date(item.date).toLocaleDateString(undefined, {
+				month: 'short',
+				day: 'numeric',
+			}),
+			count: item.count,
+		})) ?? []
+
 	const totalUsers = roleDistributionData.reduce(
 		(sum, item) => sum + item.value,
 		0
@@ -168,15 +200,29 @@ const AnalyticsPage = (): React.ReactElement => {
 	return (
 		<div className='space-y-6 p-6'>
 			{/* Header */}
-			<div>
-				<h1 className='text-3xl font-bold tracking-tight'>
-					{t('analytics.title')}
-				</h1>
-				<p className='text-muted-foreground'>{t('analytics.subtitle')}</p>
+			<div className='flex items-center justify-between'>
+				<div>
+					<h1 className='text-3xl font-bold tracking-tight'>
+						{t('analytics.title')}
+					</h1>
+					<p className='text-muted-foreground'>{t('analytics.subtitle')}</p>
+				</div>
+				<Select value={timeRange} onValueChange={setTimeRange}>
+					<SelectTrigger className='w-[160px]'>
+						<SelectValue />
+					</SelectTrigger>
+					<SelectContent>
+						<SelectItem value='7d'>{t('analytics.last_7_days')}</SelectItem>
+						<SelectItem value='30d'>{t('analytics.last_30_days')}</SelectItem>
+						<SelectItem value='90d'>{t('analytics.last_90_days')}</SelectItem>
+						<SelectItem value='1y'>{t('analytics.last_year')}</SelectItem>
+						<SelectItem value='all'>{t('analytics.all_time')}</SelectItem>
+					</SelectContent>
+				</Select>
 			</div>
 
 			{/* Stats Cards */}
-			<div className='grid gap-4 md:grid-cols-2 lg:grid-cols-4'>
+			<div className='grid gap-4 md:grid-cols-2 lg:grid-cols-5'>
 				{statCards.map((stat, index) => {
 					const Icon = stat.icon
 					return (
@@ -209,6 +255,7 @@ const AnalyticsPage = (): React.ReactElement => {
 					<TabsTrigger value='subscriptions'>
 						{t('analytics.subscriptions')}
 					</TabsTrigger>
+					<TabsTrigger value='ai-usage'>{t('analytics.ai_usage')}</TabsTrigger>
 				</TabsList>
 
 				{/* Overview Tab */}
@@ -851,6 +898,100 @@ const AnalyticsPage = (): React.ReactElement => {
 							)}
 						</CardContent>
 					</Card>
+				</TabsContent>
+
+				{/* AI Usage Tab */}
+				<TabsContent value='ai-usage' className='space-y-4'>
+					<Card>
+						<CardHeader>
+							<CardTitle className='flex items-center gap-2'>
+								<Bot className='h-5 w-5' />
+								{t('analytics.ai_usage_over_time')}
+							</CardTitle>
+							<CardDescription>
+								{t('analytics.ai_usage_description')}
+							</CardDescription>
+						</CardHeader>
+						<CardContent>
+							{isLoadingSubStats ? (
+								<ChartSkeleton />
+							) : aiUsageChartData.length === 0 ? (
+								<div className='flex h-[400px] items-center justify-center text-muted-foreground'>
+									{t('analytics.no_data')}
+								</div>
+							) : (
+								<ChartContainer
+									config={aiUsageChartConfig}
+									className='h-[400px] w-full'
+								>
+									<AreaChart
+										accessibilityLayer
+										data={aiUsageChartData}
+										margin={{ top: 10, right: 10, left: 0, bottom: 0 }}
+									>
+										<CartesianGrid vertical={false} />
+										<XAxis
+											dataKey='date'
+											tickLine={false}
+											axisLine={false}
+											tickMargin={8}
+											interval='preserveStartEnd'
+											tick={{ fontSize: 12 }}
+										/>
+										<YAxis
+											allowDecimals={false}
+											tickLine={false}
+											axisLine={false}
+										/>
+										<ChartTooltip content={<ChartTooltipContent />} />
+										<defs>
+											<linearGradient
+												id='fillAIUsage'
+												x1='0'
+												y1='0'
+												x2='0'
+												y2='1'
+											>
+												<stop
+													offset='5%'
+													stopColor='var(--color-count)'
+													stopOpacity={0.8}
+												/>
+												<stop
+													offset='95%'
+													stopColor='var(--color-count)'
+													stopOpacity={0.1}
+												/>
+											</linearGradient>
+										</defs>
+										<Area
+											dataKey='count'
+											type='natural'
+											fill='url(#fillAIUsage)'
+											stroke='var(--color-count)'
+											strokeWidth={2}
+										/>
+									</AreaChart>
+								</ChartContainer>
+							)}
+						</CardContent>
+					</Card>
+
+					<div className='grid gap-4 md:grid-cols-2'>
+						<Card>
+							<CardHeader>
+								<CardTitle>{t('analytics.ai_total_requests')}</CardTitle>
+							</CardHeader>
+							<CardContent>
+								<div className='text-4xl font-bold'>
+									{subStats?.totalAIUsageCount?.toLocaleString() ?? '0'}
+								</div>
+								<p className='text-sm text-muted-foreground mt-1'>
+									{t('analytics.ai_total_requests_description')}
+								</p>
+							</CardContent>
+						</Card>
+					</div>
 				</TabsContent>
 			</Tabs>
 		</div>

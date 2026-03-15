@@ -20,11 +20,21 @@ public sealed class GetUserDashboardStatsQueryHandler(
     {
         var users = await _userRepository.GetAllAsync(cancellationToken);
         var now = DateTime.UtcNow;
-        var thirtyDaysAgo = now.AddDays(-30).Date;
 
-        // User growth: daily registration counts for the last 30 days
+        var daysBack = request.TimeRange switch
+        {
+            "7d" => 7,
+            "30d" => 30,
+            "90d" => 90,
+            "1y" => 365,
+            "all" => 3650,
+            _ => 30,
+        };
+        var startDate = now.AddDays(-daysBack).Date;
+
+        // User growth: daily registration counts for the selected range
         var growthData = new List<DailyUserCount>();
-        for (var day = thirtyDaysAgo; day <= now.Date; day = day.AddDays(1))
+        for (var day = startDate; day <= now.Date; day = day.AddDays(1))
         {
             var count = users.Count(u => u.CreatedAt.Date == day);
             growthData.Add(new DailyUserCount(day.ToString("yyyy-MM-dd"), count));

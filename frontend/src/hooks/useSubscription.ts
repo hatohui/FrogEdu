@@ -128,10 +128,10 @@ export const useTransactions = () => {
 /**
  * Hook for fetching subscription dashboard statistics (Admin only)
  */
-export const useSubscriptionDashboardStats = () => {
+export const useSubscriptionDashboardStats = (timeRange: string = '30d') => {
 	return useQuery({
-		queryKey: ['subscription', 'dashboard-stats'],
-		queryFn: () => subscriptionService.getDashboardStats(),
+		queryKey: ['subscription', 'dashboard-stats', timeRange],
+		queryFn: () => subscriptionService.getDashboardStats(timeRange),
 		staleTime: 5 * 60 * 1000,
 	})
 }

@@ -52,7 +52,8 @@ public class ExamSessionController(IMediator mediator) : BaseController
             request.ShouldShuffleQuestions,
             request.ShouldShuffleAnswers,
             request.AllowPartialScoring,
-            userId
+            userId,
+            request.IsPractice
         );
 
         var result = await _mediator.Send(command, cancellationToken);
@@ -91,7 +92,8 @@ public class ExamSessionController(IMediator mediator) : BaseController
             request.ShouldShuffleQuestions,
             request.ShouldShuffleAnswers,
             request.AllowPartialScoring,
-            userId
+            userId,
+            request.IsPractice
         );
 
         var result = await _mediator.Send(command, cancellationToken);

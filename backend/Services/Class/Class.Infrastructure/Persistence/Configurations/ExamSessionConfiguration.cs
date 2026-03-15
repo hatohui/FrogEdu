@@ -23,6 +23,7 @@ public class ExamSessionConfiguration : IEntityTypeConfiguration<ExamSession>
         builder.Property(e => e.ShouldShuffleQuestions).IsRequired().HasDefaultValue(false);
         builder.Property(e => e.ShouldShuffleAnswers).IsRequired().HasDefaultValue(false);
         builder.Property(e => e.AllowPartialScoring).IsRequired().HasDefaultValue(true);
+        builder.Property(e => e.IsPractice).IsRequired().HasDefaultValue(false);
 
         // Auditing
         builder.Property(e => e.CreatedAt).IsRequired();

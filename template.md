@@ -2,22 +2,14 @@ As #file:backend-spec.md
 
 use #shadcn and #io.github.upstash/context7 to help me implement the flow where:
 
-- in `/app/exams/:id`, i got
-  `System.UnauthorizedAccessException: You do not have permission to view this exam's questions`
-  though i was admin
-
-- in `/app/exams/:id/questions`, i got
-  `System.UnauthorizedAccessException: You do not have permission to view this exam's questions`
-  though i was admin
-
-{
-"type": "https://tools.ietf.org/html/rfc9110#section-15.5.5",
-"title": "Not Found",
-"status": 404,
-"traceId": "00-6a464bcf1ab27a1d3dfcf35d9c9c054e-b0fc4f42ea6591c4-00"
-}
-
-When a user is taking the test and refreshes the page, the system prevents them from continuing the test. However, the system also marks the attempt as already completed. As a result, the user cannot resume the test, and the system does not display any score or result for that attempt.
+- analysis thì phải có thể chọn trong vòng tuần, tháng, năm, etc và biểu đồ phải update theo đó
+- Cái gói pro chưa có match với cái feature của mình.
+- không có analytic AI usage, không có lưu lại là những user nào đã xài bao nhiêu trong khoảng thời gian nào đó cho admin và người dùng cũng không xem được usage của mình.
+- Cần bổ sung thêm API để lấy thống kê usage của AI cho người dùng và admin, có thể theo ngày, tuần, tháng.
+- Cần bổ sung thêm UI để hiển thị thống kê usage của AI cho người dùng và admin trong dashboard analytics, có thể là một tab riêng hoặc một phần trong tab overview.
+- Need to have usage statistics for AI features, including number of times used, time spent, and user breakdown. This will help us understand how users are engaging with AI features and identify areas for improvement.
+  Let users see it in their dashboard so they can track their own usage and set goals for themselves. Admins can use this data to monitor overall usage trends and make informed decisions about future AI feature development.
+- Cần chạy EF migrations để cập nhật database nếu có thay đổi về schema cho phần thống kê usage
 
 Rules to follow:
 

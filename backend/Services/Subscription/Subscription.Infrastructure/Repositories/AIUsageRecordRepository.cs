@@ -14,7 +14,20 @@ public class AIUsageRecordRepository : IAIUsageRecordRepository
         _context = context;
     }
 
-    public async Task<int> GetUsageCountAsync(Guid userId, string? actionType = null, CancellationToken cancellationToken = default)
+    public async Task<IReadOnlyList<AIUsageRecord>> GetAllAsync(
+        CancellationToken cancellationToken = default
+    )
+    {
+        return await _context
+            .AIUsageRecords.OrderByDescending(r => r.UsedAt)
+            .ToListAsync(cancellationToken);
+    }
+
+    public async Task<int> GetUsageCountAsync(
+        Guid userId,
+        string? actionType = null,
+        CancellationToken cancellationToken = default
+    )
     {
         var query = _context.AIUsageRecords.Where(r => r.UserId == userId);
         if (!string.IsNullOrWhiteSpace(actionType))
@@ -22,7 +35,12 @@ public class AIUsageRecordRepository : IAIUsageRecordRepository
         return await query.CountAsync(cancellationToken);
     }
 
-    public async Task<int> GetUsageCountSinceAsync(Guid userId, DateTime since, string? actionType = null, CancellationToken cancellationToken = default)
+    public async Task<int> GetUsageCountSinceAsync(
+        Guid userId,
+        DateTime since,
+        string? actionType = null,
+        CancellationToken cancellationToken = default
+    )
     {
         var query = _context.AIUsageRecords.Where(r => r.UserId == userId && r.UsedAt >= since);
         if (!string.IsNullOrWhiteSpace(actionType))
@@ -30,18 +48,25 @@ public class AIUsageRecordRepository : IAIUsageRecordRepository
         return await query.CountAsync(cancellationToken);
     }
 
-    public async Task<IReadOnlyList<AIUsageRecord>> GetByUserIdAsync(Guid userId, CancellationToken cancellationToken = default)
+    public async Task<IReadOnlyList<AIUsageRecord>> GetByUserIdAsync(
+        Guid userId,
+        CancellationToken cancellationToken = default
+    )
     {
-        return await _context.AIUsageRecords
-            .Where(r => r.UserId == userId)
+        return await _context
+            .AIUsageRecords.Where(r => r.UserId == userId)
             .OrderByDescending(r => r.UsedAt)
             .ToListAsync(cancellationToken);
     }
 
-    public async Task<IReadOnlyList<AIUsageRecord>> GetByUserIdSinceAsync(Guid userId, DateTime since, CancellationToken cancellationToken = default)
+    public async Task<IReadOnlyList<AIUsageRecord>> GetByUserIdSinceAsync(
+        Guid userId,
+        DateTime since,
+        CancellationToken cancellationToken = default
+    )
     {
-        return await _context.AIUsageRecords
-            .Where(r => r.UserId == userId && r.UsedAt >= since)
+        return await _context
+            .AIUsageRecords.Where(r => r.UserId == userId && r.UsedAt >= since)
             .OrderByDescending(r => r.UsedAt)
             .ToListAsync(cancellationToken);
     }

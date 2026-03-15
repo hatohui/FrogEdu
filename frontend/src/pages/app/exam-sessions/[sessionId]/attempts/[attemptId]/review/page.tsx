@@ -3,6 +3,8 @@ import { useParams, useNavigate, Link } from 'react-router'
 import { useTranslation } from 'react-i18next'
 import { useAttemptReview } from '@/hooks/useExamSessions'
 import { useExplainQuestion } from '@/hooks/useAIExplain'
+import { useSocraticHints } from '@/hooks/useSocraticHints'
+import { useEffectiveRole } from '@/hooks/useEffectiveRole'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Skeleton } from '@/components/ui/skeleton'
@@ -18,6 +20,7 @@ import {
 	Trophy,
 	RotateCcw,
 	FileText,
+	Lightbulb,
 } from 'lucide-react'
 import { AttemptStatus } from '@/types/model/class-service'
 import type { QuestionReview } from '@/types/model/class-service'
@@ -31,6 +34,7 @@ interface QuestionCardProps {
 	index: number
 	grade: number
 	subject: string
+	isTeacher?: boolean
 }
 
 const QuestionCard = ({
@@ -38,10 +42,14 @@ const QuestionCard = ({
 	index,
 	grade,
 	subject,
+	isTeacher,
 }: QuestionCardProps) => {
 	const { t } = useTranslation()
 	const explainMutation = useExplainQuestion()
+	const socraticMutation = useSocraticHints()
 	const [aiExplanation, setAiExplanation] = useState<string | null>(null)
+	const [socraticHints, setSocraticHints] = useState<string[] | null>(null)
+	const [teachingNote, setTeachingNote] = useState<string | null>(null)
 
 	const isEssay = question.type?.toLowerCase() === 'essay'
 
@@ -64,6 +72,27 @@ const QuestionCard = ({
 			setAiExplanation(explanation)
 		} catch {
 			toast.error(t('pages.exam_sessions.review.ai_explanation_error'))
+		}
+	}
+
+	const handleSocraticHints = async () => {
+		try {
+			const studentAnswerText = question.answers
+				.filter(a => a.wasSelectedByStudent)
+				.map(a => a.content)
+				.join(', ')
+			const result = await socraticMutation.mutateAsync({
+				questionContent: question.content,
+				studentAnswer: studentAnswerText || '(no answer)',
+				correctAnswer: correctAnswerText,
+				subject,
+				grade,
+				language: 'vi',
+			})
+			setSocraticHints(result.hints)
+			setTeachingNote(result.teachingNote)
+		} catch {
+			toast.error(t('pages.exam_sessions.review.socratic_error'))
 		}
 	}
 
@@ -260,6 +289,50 @@ const QuestionCard = ({
 						)}
 					</>
 				)}
+
+				{/* Socratic Hints (Teacher only) */}
+				{isTeacher && !question.isCorrect && (
+					<>
+						<Separator />
+						{socraticHints ? (
+							<div className='bg-amber-50 border border-amber-200 rounded-md p-3 space-y-2'>
+								<p className='text-xs font-semibold text-amber-800 flex items-center gap-1'>
+									<Lightbulb className='h-3 w-3' />
+									{t('pages.exam_sessions.review.socratic_title')}
+								</p>
+								<ol className='list-decimal list-inside space-y-1'>
+									{socraticHints.map((hint, i) => (
+										<li
+											key={i}
+											className='text-sm text-amber-900 leading-relaxed'
+										>
+											{hint}
+										</li>
+									))}
+								</ol>
+								{teachingNote && (
+									<p className='text-xs text-amber-700 italic mt-2 border-t border-amber-200 pt-2'>
+										{t('pages.exam_sessions.review.teaching_note')}:{' '}
+										{teachingNote}
+									</p>
+								)}
+							</div>
+						) : (
+							<Button
+								variant='outline'
+								size='sm'
+								onClick={handleSocraticHints}
+								disabled={socraticMutation.isPending}
+								className='gap-2 text-amber-700 border-amber-300 hover:bg-amber-50'
+							>
+								<Lightbulb className='h-4 w-4' />
+								{socraticMutation.isPending
+									? t('pages.exam_sessions.review.socratic_loading')
+									: t('pages.exam_sessions.review.socratic_button')}
+							</Button>
+						)}
+					</>
+				)}
 			</CardContent>
 		</Card>
 	)
@@ -275,6 +348,7 @@ const AttemptReviewPage = (): React.ReactElement => {
 	}>()
 	const navigate = useNavigate()
 
+	const { isTeacher, isAdmin } = useEffectiveRole()
 	const { data: review, isLoading } = useAttemptReview(attemptId || '')
 
 	if (isLoading) {
@@ -429,6 +503,7 @@ const AttemptReviewPage = (): React.ReactElement => {
 							index={idx}
 							grade={3}
 							subject='General'
+							isTeacher={isTeacher || isAdmin}
 						/>
 					))}
 				</div>

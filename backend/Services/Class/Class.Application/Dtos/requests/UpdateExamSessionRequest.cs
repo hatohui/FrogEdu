@@ -7,5 +7,6 @@ public sealed record UpdateExamSessionRequest(
     bool IsRetryable,
     bool ShouldShuffleQuestions,
     bool ShouldShuffleAnswers,
-    bool AllowPartialScoring
+    bool AllowPartialScoring,
+    bool IsPractice = false
 );

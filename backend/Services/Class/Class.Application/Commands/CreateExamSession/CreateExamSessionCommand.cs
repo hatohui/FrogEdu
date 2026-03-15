@@ -14,5 +14,6 @@ public sealed record CreateExamSessionCommand(
     bool ShouldShuffleQuestions,
     bool ShouldShuffleAnswers,
     bool AllowPartialScoring,
-    string UserId
+    string UserId,
+    bool IsPractice = false
 ) : IRequest<Result<ExamSessionResponse>>;

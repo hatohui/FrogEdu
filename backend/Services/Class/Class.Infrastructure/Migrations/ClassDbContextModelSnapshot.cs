@@ -64,6 +64,52 @@ namespace FrogEdu.Class.Infrastructure.Migrations
                     b.ToTable("Assignments", "public");
                 });
 
+            modelBuilder.Entity("FrogEdu.Class.Domain.Entities.Badge", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("BadgeType")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
+                    b.Property<string>("IconUrl")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
+                    b.Property<bool>("IsActive")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(true);
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<int>("RequiredScore")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasDefaultValue(0);
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BadgeType")
+                        .HasDatabaseName("IX_Badges_BadgeType");
+
+                    b.HasIndex("IsActive")
+                        .HasDatabaseName("IX_Badges_IsActive");
+
+                    b.ToTable("Badges", "public");
+                });
+
             modelBuilder.Entity("FrogEdu.Class.Domain.Entities.ClassEnrollment", b =>
                 {
                     b.Property<Guid>("Id")
@@ -202,6 +248,11 @@ namespace FrogEdu.Class.Infrastructure.Migrations
                         .HasColumnType("boolean")
                         .HasDefaultValue(true);
 
+                    b.Property<bool>("IsPractice")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(false);
+
                     b.Property<bool>("IsRetryable")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("boolean")
@@ -299,6 +350,50 @@ namespace FrogEdu.Class.Infrastructure.Migrations
                         .HasDatabaseName("IX_StudentAnswers_AttemptId_QuestionId");
 
                     b.ToTable("StudentAnswers", "public");
+                });
+
+            modelBuilder.Entity("FrogEdu.Class.Domain.Entities.StudentBadge", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("AwardedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid?>("AwardedByTeacherId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("BadgeId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("ClassId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("CustomPraise")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
+                    b.Property<Guid?>("ExamSessionId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("StudentId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BadgeId")
+                        .HasDatabaseName("IX_StudentBadges_BadgeId");
+
+                    b.HasIndex("ClassId")
+                        .HasDatabaseName("IX_StudentBadges_ClassId");
+
+                    b.HasIndex("StudentId")
+                        .HasDatabaseName("IX_StudentBadges_StudentId");
+
+                    b.HasIndex("StudentId", "ClassId")
+                        .HasDatabaseName("IX_StudentBadges_StudentId_ClassId");
+
+                    b.ToTable("StudentBadges", "public");
                 });
 
             modelBuilder.Entity("FrogEdu.Class.Domain.Entities.StudentExamAttempt", b =>

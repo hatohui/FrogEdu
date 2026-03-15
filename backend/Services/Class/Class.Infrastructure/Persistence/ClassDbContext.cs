@@ -15,6 +15,8 @@ public class ClassDbContext : DbContext
     public DbSet<ExamSession> ExamSessions => Set<ExamSession>();
     public DbSet<StudentExamAttempt> StudentExamAttempts => Set<StudentExamAttempt>();
     public DbSet<StudentAnswer> StudentAnswers => Set<StudentAnswer>();
+    public DbSet<Badge> Badges => Set<Badge>();
+    public DbSet<StudentBadge> StudentBadges => Set<StudentBadge>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -27,6 +29,8 @@ public class ClassDbContext : DbContext
         modelBuilder.ApplyConfiguration(new ExamSessionConfiguration());
         modelBuilder.ApplyConfiguration(new StudentExamAttemptConfiguration());
         modelBuilder.ApplyConfiguration(new StudentAnswerConfiguration());
+        modelBuilder.ApplyConfiguration(new BadgeConfiguration());
+        modelBuilder.ApplyConfiguration(new StudentBadgeConfiguration());
 
         // Auto-set timestamps for auditable entities
         foreach (var entityType in modelBuilder.Model.GetEntityTypes())

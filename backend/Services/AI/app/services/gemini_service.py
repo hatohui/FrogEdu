@@ -17,6 +17,7 @@ from app.services.prompts import (
     build_matrix_prompt,
     build_single_question_prompt,
     build_tutor_system_instruction,
+    build_socratic_hints_prompt,
 )
 
 logger = logging.getLogger(__name__)
@@ -424,4 +425,62 @@ class GeminiService:
 
         except Exception as e:
             logger.error(f"Error grading essay: {str(e)}")
+            raise
+
+    async def generate_socratic_hints(
+        self,
+        question_content: str,
+        student_answer: str,
+        correct_answer: str,
+        subject: str,
+        grade: int,
+        language: str = "vi",
+    ) -> dict[str, Any]:
+        """Generate Socratic method guiding questions for a teacher."""
+        try:
+            prompt = build_socratic_hints_prompt(
+                question_content=question_content,
+                student_answer=student_answer,
+                correct_answer=correct_answer,
+                subject=subject,
+                grade=grade,
+                language=language,
+            )
+
+            hints_schema = {
+                "type": "OBJECT",
+                "properties": {
+                    "hints": {
+                        "type": "ARRAY",
+                        "items": {"type": "STRING"},
+                    },
+                    "teaching_note": {"type": "STRING"},
+                },
+                "required": ["hints", "teaching_note"],
+            }
+
+            config = types.GenerateContentConfig(
+                response_mime_type="application/json",
+                response_schema=hints_schema,
+                temperature=0.6,
+            )
+
+            response = self.client.models.generate_content(
+                model=self.model_name,
+                contents=prompt,
+                config=config,
+            )
+
+            if response.text is None:
+                raise ValueError("No response text received from Gemini API")
+
+            result = json.loads(response.text)
+            logger.info(
+                f"Generated {len(result.get('hints', []))} Socratic hints "
+                f"for grade {grade} {subject}"
+            )
+            return result
+
+        except Exception as e:
+            logger.error(f"Error generating Socratic hints: {str(e)}")
             raise

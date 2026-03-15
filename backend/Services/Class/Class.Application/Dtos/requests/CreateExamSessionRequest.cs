@@ -8,5 +8,6 @@ public sealed record CreateExamSessionRequest(
     bool IsRetryable,
     bool ShouldShuffleQuestions,
     bool ShouldShuffleAnswers,
-    bool AllowPartialScoring = true
+    bool AllowPartialScoring = true,
+    bool IsPractice = false
 );

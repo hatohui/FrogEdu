@@ -123,3 +123,19 @@ class GradeEssayResponse(BaseModel):
     score: float = Field(..., ge=0, description="Points awarded (0 to max_points)")
     feedback: str = Field(..., description="Constructive feedback explaining the score")
     score_percentage: float = Field(..., ge=0, le=100, description="Score as a percentage of max_points")
+
+
+class SocraticHintsRequest(BaseModel):
+    """Request to generate Socratic method hints for a teacher."""
+    question_content: str = Field(..., description="The original question text")
+    student_answer: str = Field(..., description="The student's incorrect answer")
+    correct_answer: str = Field(..., description="The correct answer text")
+    subject: str = Field(..., description="Subject name")
+    grade: int = Field(..., ge=1, le=12, description="Student grade level")
+    language: str = Field(default="vi", description="Language for hints (vi/en)")
+
+
+class SocraticHintsResponse(BaseModel):
+    """Response containing Socratic method guiding questions."""
+    hints: list[str] = Field(..., description="List of Socratic guiding questions for the teacher")
+    teaching_note: str = Field(..., description="Brief note on the pedagogical approach")

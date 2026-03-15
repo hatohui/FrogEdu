@@ -7,8 +7,8 @@ using FrogEdu.Subscription.Application.Commands.CreateSubscriptionTier;
 using FrogEdu.Subscription.Application.Commands.DeactivateSubscriptionTier;
 using FrogEdu.Subscription.Application.Commands.DeleteSubscription;
 using FrogEdu.Subscription.Application.Commands.DeleteSubscriptionTier;
-using FrogEdu.Subscription.Application.Commands.RenewSubscription;
 using FrogEdu.Subscription.Application.Commands.RecordAIUsage;
+using FrogEdu.Subscription.Application.Commands.RenewSubscription;
 using FrogEdu.Subscription.Application.Commands.SubscribeToPro;
 using FrogEdu.Subscription.Application.Commands.SuspendSubscription;
 using FrogEdu.Subscription.Application.Commands.UpdateSubscriptionTier;
@@ -255,7 +255,8 @@ public class SubscriptionController : BaseController
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<IActionResult> RecordAIUsage(
         [FromBody] RecordAIUsageRequest request,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken
+    )
     {
         var userId = GetUserIdFromClaims();
         if (userId is null)
@@ -278,7 +279,10 @@ public class SubscriptionController : BaseController
     [HttpGet("ai-usage/check/{userId:guid}")]
     [AllowAnonymous]
     [ProducesResponseType(typeof(AIUsageLimitDto), StatusCodes.Status200OK)]
-    public async Task<IActionResult> CheckUserAIUsageLimit(Guid userId, CancellationToken cancellationToken)
+    public async Task<IActionResult> CheckUserAIUsageLimit(
+        Guid userId,
+        CancellationToken cancellationToken
+    )
     {
         var query = new GetAIUsageLimitQuery(userId);
         var result = await _mediator.Send(query, cancellationToken);
@@ -299,7 +303,10 @@ public class SubscriptionController : BaseController
     [ProducesResponseType(typeof(SubscriptionDashboardStatsResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    public async Task<IActionResult> GetDashboardStats(CancellationToken cancellationToken)
+    public async Task<IActionResult> GetDashboardStats(
+        [FromQuery] string timeRange = "30d",
+        CancellationToken cancellationToken = default
+    )
     {
         var userRole = GetUserRole();
         if (userRole != "Admin")
@@ -307,7 +314,7 @@ public class SubscriptionController : BaseController
             return Forbid();
         }
 
-        var query = new GetSubscriptionDashboardStatsQuery();
+        var query = new GetSubscriptionDashboardStatsQuery(timeRange);
         var result = await _mediator.Send(query, cancellationToken);
         return Ok(result);
     }

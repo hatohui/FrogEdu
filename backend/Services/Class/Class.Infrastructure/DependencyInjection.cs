@@ -47,6 +47,8 @@ public static class DependencyInjection
         services.AddScoped<IAssignmentRepository, AssignmentRepository>();
         services.AddScoped<IExamSessionRepository, ExamSessionRepository>();
         services.AddScoped<IStudentExamAttemptRepository, StudentExamAttemptRepository>();
+        services.AddScoped<IBadgeRepository, BadgeRepository>();
+        services.AddScoped<IStudentBadgeRepository, StudentBadgeRepository>();
 
         // Register database health service
         services.AddScoped<IDatabaseHealthService, DatabaseHealthService>();

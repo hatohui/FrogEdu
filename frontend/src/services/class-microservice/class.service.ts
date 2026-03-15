@@ -11,6 +11,9 @@ import type {
 	CreateClassResponse,
 	JoinClassRequest,
 	JoinClassResponse,
+	BadgeDto,
+	StudentBadgeDto,
+	AwardBadgeRequest,
 } from '@/types/dtos/classes'
 import axiosInstance from '../axios'
 
@@ -119,5 +122,37 @@ export const classService = {
 			`${baseUrl}/classes/dashboard/stats`
 		)
 		return response.data
+	},
+
+	// ─── Gamification / Badges ───
+
+	getBadges: async (activeOnly = true): Promise<BadgeDto[]> => {
+		const response = await axiosInstance.get<BadgeDto[]>(`${baseUrl}/badges`, {
+			params: { activeOnly },
+		})
+		return response.data
+	},
+
+	getStudentBadges: async (
+		studentId: string,
+		classId?: string
+	): Promise<StudentBadgeDto[]> => {
+		const response = await axiosInstance.get<StudentBadgeDto[]>(
+			`${baseUrl}/students/${studentId}/badges`,
+			{ params: classId ? { classId } : undefined }
+		)
+		return response.data
+	},
+
+	getMyBadges: async (classId?: string): Promise<StudentBadgeDto[]> => {
+		const response = await axiosInstance.get<StudentBadgeDto[]>(
+			`${baseUrl}/badges/me`,
+			{ params: classId ? { classId } : undefined }
+		)
+		return response.data
+	},
+
+	awardBadge: async (data: AwardBadgeRequest): Promise<void> => {
+		await axiosInstance.post(`${baseUrl}/badges/award`, data)
 	},
 }

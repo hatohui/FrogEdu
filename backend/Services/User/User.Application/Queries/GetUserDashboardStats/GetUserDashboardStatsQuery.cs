@@ -2,7 +2,11 @@ using MediatR;
 
 namespace FrogEdu.User.Application.Queries.GetUserDashboardStats;
 
-public sealed record GetUserDashboardStatsQuery() : IRequest<UserDashboardStatsResponse>;
+/// <summary>
+/// TimeRange: "7d" | "30d" | "90d" | "1y" | "all"
+/// </summary>
+public sealed record GetUserDashboardStatsQuery(string TimeRange = "30d")
+    : IRequest<UserDashboardStatsResponse>;
 
 /// <summary>
 /// Daily user creation count for growth chart

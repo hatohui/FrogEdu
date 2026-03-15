@@ -14,6 +14,7 @@ public sealed class ExamSession : AuditableEntity
     public bool ShouldShuffleQuestions { get; private set; }
     public bool ShouldShuffleAnswers { get; private set; }
     public bool AllowPartialScoring { get; private set; }
+    public bool IsPractice { get; private set; }
 
     private readonly List<StudentExamAttempt> _attempts = [];
     public IReadOnlyCollection<StudentExamAttempt> Attempts => _attempts.AsReadOnly();
@@ -29,7 +30,8 @@ public sealed class ExamSession : AuditableEntity
         bool isRetryable,
         bool shouldShuffleQuestions,
         bool shouldShuffleAnswers,
-        bool allowPartialScoring
+        bool allowPartialScoring,
+        bool isPractice
     )
     {
         ClassId = classId;
@@ -42,6 +44,7 @@ public sealed class ExamSession : AuditableEntity
         ShouldShuffleQuestions = shouldShuffleQuestions;
         ShouldShuffleAnswers = shouldShuffleAnswers;
         AllowPartialScoring = allowPartialScoring;
+        IsPractice = isPractice;
     }
 
     public static ExamSession Create(
@@ -54,7 +57,8 @@ public sealed class ExamSession : AuditableEntity
         bool shouldShuffleQuestions,
         bool shouldShuffleAnswers,
         bool allowPartialScoring,
-        Guid createdBy
+        Guid createdBy,
+        bool isPractice = false
     )
     {
         if (classId == Guid.Empty)
@@ -80,7 +84,8 @@ public sealed class ExamSession : AuditableEntity
             isRetryable,
             shouldShuffleQuestions,
             shouldShuffleAnswers,
-            allowPartialScoring
+            allowPartialScoring,
+            isPractice
         );
         session.MarkAsCreated(createdBy);
         return session;
@@ -94,7 +99,8 @@ public sealed class ExamSession : AuditableEntity
         bool shouldShuffleQuestions,
         bool shouldShuffleAnswers,
         bool allowPartialScoring,
-        Guid updatedBy
+        Guid updatedBy,
+        bool isPractice = false
     )
     {
         if (startTime >= endTime)
@@ -114,6 +120,7 @@ public sealed class ExamSession : AuditableEntity
         ShouldShuffleQuestions = shouldShuffleQuestions;
         ShouldShuffleAnswers = shouldShuffleAnswers;
         AllowPartialScoring = allowPartialScoring;
+        IsPractice = isPractice;
         MarkAsUpdated(updatedBy);
     }
 

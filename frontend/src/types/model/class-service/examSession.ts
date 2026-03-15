@@ -17,6 +17,7 @@ export interface ExamSession {
 	shouldShuffleQuestions: boolean
 	shouldShuffleAnswers: boolean
 	allowPartialScoring: boolean
+	isPractice: boolean
 	isCurrentlyActive: boolean
 	isUpcoming: boolean
 	hasEnded: boolean

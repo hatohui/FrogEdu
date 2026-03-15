@@ -10,6 +10,11 @@ export interface SubscriptionStatusItem {
 	percentage: number
 }
 
+export interface AIUsageSummaryItem {
+	date: string
+	count: number
+}
+
 export interface SubscriptionDashboardStatsResponse {
 	totalRevenue: number
 	totalSubscriptions: number
@@ -19,4 +24,6 @@ export interface SubscriptionDashboardStatsResponse {
 	suspendedSubscriptions: number
 	monthlyRevenue: MonthlyRevenueItem[]
 	statusDistribution: SubscriptionStatusItem[]
+	totalAIUsageCount: number
+	aiUsageOverTime: AIUsageSummaryItem[]
 }

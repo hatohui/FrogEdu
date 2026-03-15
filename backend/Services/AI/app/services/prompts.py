@@ -261,3 +261,34 @@ Teaching style:
 - Break down complex topics
 - Check understanding frequently
 - Use analogies and real-world examples"""
+
+
+def build_socratic_hints_prompt(
+    question_content: str,
+    student_answer: str,
+    correct_answer: str,
+    subject: str,
+    grade: int,
+    language: str = "vi",
+) -> str:
+    """Build prompt for generating Socratic method guiding questions."""
+    lang = "Vietnamese" if language == "vi" else "English"
+    return (
+        f"You are an expert {subject} pedagogy coach helping a primary school teacher.\n"
+        f"Respond entirely in {lang}.\n\n"
+        f"A grade {grade} student answered a question incorrectly.\n\n"
+        f"QUESTION: {question_content}\n"
+        f"STUDENT'S WRONG ANSWER: {student_answer}\n"
+        f"CORRECT ANSWER: {correct_answer}\n\n"
+        f"Generate 3-5 Socratic guiding questions that the teacher can ask the student "
+        f"to lead them toward the correct answer WITHOUT revealing it directly.\n\n"
+        f"Rules:\n"
+        f"1. Start from what the student likely knows.\n"
+        f"2. Each question should build on the previous one, narrowing the gap.\n"
+        f"3. Use simple language appropriate for grade {grade}.\n"
+        f"4. Do NOT state the correct answer in any question.\n"
+        f"5. The last question should almost lead to the 'aha!' moment.\n\n"
+        f"Also provide a one-sentence teaching note explaining the pedagogical approach.\n\n"
+        f"Respond ONLY with JSON in this exact format:\n"
+        f'{{"hints": ["question1", "question2", ...], "teaching_note": "..."}}'
+    )

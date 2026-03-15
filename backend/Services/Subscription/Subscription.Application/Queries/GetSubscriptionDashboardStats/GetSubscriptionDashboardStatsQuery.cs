@@ -2,7 +2,10 @@ using MediatR;
 
 namespace FrogEdu.Subscription.Application.Queries.GetSubscriptionDashboardStats;
 
-public sealed record GetSubscriptionDashboardStatsQuery()
+/// <summary>
+/// TimeRange: "7d" | "30d" | "90d" | "1y" | "all"
+/// </summary>
+public sealed record GetSubscriptionDashboardStatsQuery(string TimeRange = "30d")
     : IRequest<SubscriptionDashboardStatsResponse>;
 
 /// <summary>
@@ -16,6 +19,11 @@ public sealed record MonthlyRevenueItem(string Month, decimal Revenue, int Trans
 public sealed record SubscriptionStatusItem(string Status, int Count, double Percentage);
 
 /// <summary>
+/// AI usage summary for dashboard
+/// </summary>
+public sealed record AIUsageSummaryItem(string Date, int Count);
+
+/// <summary>
 /// Combined subscription dashboard statistics
 /// </summary>
 public sealed record SubscriptionDashboardStatsResponse(
@@ -26,5 +34,7 @@ public sealed record SubscriptionDashboardStatsResponse(
     int CancelledSubscriptions,
     int SuspendedSubscriptions,
     IReadOnlyList<MonthlyRevenueItem> MonthlyRevenue,
-    IReadOnlyList<SubscriptionStatusItem> StatusDistribution
+    IReadOnlyList<SubscriptionStatusItem> StatusDistribution,
+    int TotalAIUsageCount = 0,
+    IReadOnlyList<AIUsageSummaryItem>? AIUsageOverTime = null
 );

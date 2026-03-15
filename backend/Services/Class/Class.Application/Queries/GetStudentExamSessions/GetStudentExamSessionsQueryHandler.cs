@@ -95,6 +95,7 @@ public sealed class GetStudentExamSessionsQueryHandler
                     s.ShouldShuffleQuestions,
                     s.ShouldShuffleAnswers,
                     s.AllowPartialScoring,
+                    s.IsPractice,
                     s.IsCurrentlyActive(),
                     s.IsUpcoming(),
                     s.HasEnded(),

@@ -108,7 +108,10 @@ public class UserController : BaseController
     [ProducesResponseType(typeof(UserDashboardStatsResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    public async Task<IActionResult> GetUserDashboardStats(CancellationToken cancellationToken)
+    public async Task<IActionResult> GetUserDashboardStats(
+        [FromQuery] string timeRange = "30d",
+        CancellationToken cancellationToken = default
+    )
     {
         var userRole = GetUserRole();
         if (userRole != "Admin")
@@ -116,7 +119,7 @@ public class UserController : BaseController
             return Forbid();
         }
 
-        var query = new GetUserDashboardStatsQuery();
+        var query = new GetUserDashboardStatsQuery(timeRange);
         var result = await _mediator.Send(query, cancellationToken);
 
         return Ok(result);

@@ -18,7 +18,7 @@ namespace FrogEdu.Exam.Infrastructure.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasDefaultSchema("public")
-                .HasAnnotation("ProductVersion", "9.0.12")
+                .HasAnnotation("ProductVersion", "9.0.14")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -344,7 +344,7 @@ namespace FrogEdu.Exam.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000001"),
-                            Description = "Study of numbers, quantities, and shapes",
+                            Description = "Toán học – Nghiên cứu về số, phép tính và hình học",
                             Grade = 1,
                             Name = "Mathematics",
                             SubjectCode = "math"
@@ -352,15 +352,15 @@ namespace FrogEdu.Exam.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000002"),
-                            Description = "Study of past events and Earth's features",
+                            Description = "Tiếng Việt – Đọc, viết, nghe, nói và kiến thức ngôn ngữ",
                             Grade = 1,
-                            Name = "History & Geography",
-                            SubjectCode = "history_geography"
+                            Name = "Literature",
+                            SubjectCode = "literature"
                         },
                         new
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000003"),
-                            Description = "English language and literature",
+                            Description = "Tiếng Anh – Ngôn ngữ và giao tiếp quốc tế",
                             Grade = 1,
                             Name = "English",
                             SubjectCode = "english"
@@ -368,183 +368,183 @@ namespace FrogEdu.Exam.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000004"),
-                            Description = "Study of written works and literary analysis",
+                            Description = "Đạo đức – Giáo dục giá trị sống và kỹ năng ứng xử",
                             Grade = 1,
-                            Name = "Literature",
-                            SubjectCode = "literature"
+                            Name = "Ethics",
+                            SubjectCode = "ethics"
                         },
                         new
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000005"),
-                            Description = "Computer science and digital technology",
+                            Description = "Tự nhiên và Xã hội – Khám phá thế giới tự nhiên và đời sống xã hội",
                             Grade = 1,
-                            Name = "Information Technology",
-                            SubjectCode = "it"
+                            Name = "Nature & Society",
+                            SubjectCode = "nature_and_society"
                         },
                         new
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000006"),
-                            Description = "Applied science and engineering",
+                            Description = "Mĩ thuật – Nghệ thuật tạo hình và thẩm mỹ",
                             Grade = 1,
-                            Name = "Technology",
-                            SubjectCode = "technology"
+                            Name = "Art",
+                            SubjectCode = "art"
                         },
                         new
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000007"),
-                            Description = "Visual arts and creative expression",
+                            Description = "Âm nhạc – Lý thuyết âm nhạc và biểu diễn",
                             Grade = 1,
-                            Name = "Art",
-                            SubjectCode = "art"
+                            Name = "Music",
+                            SubjectCode = "music"
                         },
                         new
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000008"),
-                            Description = "Study of natural world and physical phenomena",
-                            Grade = 1,
-                            Name = "Science",
-                            SubjectCode = "science"
-                        },
-                        new
-                        {
-                            Id = new Guid("00000000-0000-0000-0000-000000000009"),
-                            Description = "Musical theory and performance",
-                            Grade = 1,
-                            Name = "Music",
-                            SubjectCode = "music"
-                        },
-                        new
-                        {
-                            Id = new Guid("00000000-0000-0000-0000-000000000010"),
-                            Description = "Hands-on learning and practical experiences",
+                            Description = "Hoạt động trải nghiệm – Học tập thực hành và kỹ năng sống",
                             Grade = 1,
                             Name = "Experiential Activities",
                             SubjectCode = "experiential_activities"
                         },
                         new
                         {
-                            Id = new Guid("00000000-0000-0000-0000-000000000011"),
-                            Description = "Study of numbers, quantities, and shapes",
+                            Id = new Guid("00000000-0000-0000-0000-000000000009"),
+                            Description = "Toán học – Nghiên cứu về số, phép tính và hình học",
                             Grade = 2,
                             Name = "Mathematics",
                             SubjectCode = "math"
                         },
                         new
                         {
-                            Id = new Guid("00000000-0000-0000-0000-000000000012"),
-                            Description = "Study of past events and Earth's features",
-                            Grade = 2,
-                            Name = "History & Geography",
-                            SubjectCode = "history_geography"
-                        },
-                        new
-                        {
-                            Id = new Guid("00000000-0000-0000-0000-000000000013"),
-                            Description = "English language and literature",
-                            Grade = 2,
-                            Name = "English",
-                            SubjectCode = "english"
-                        },
-                        new
-                        {
-                            Id = new Guid("00000000-0000-0000-0000-000000000014"),
-                            Description = "Study of written works and literary analysis",
+                            Id = new Guid("00000000-0000-0000-0000-000000000010"),
+                            Description = "Tiếng Việt – Đọc, viết, nghe, nói và kiến thức ngôn ngữ",
                             Grade = 2,
                             Name = "Literature",
                             SubjectCode = "literature"
                         },
                         new
                         {
-                            Id = new Guid("00000000-0000-0000-0000-000000000015"),
-                            Description = "Computer science and digital technology",
+                            Id = new Guid("00000000-0000-0000-0000-000000000011"),
+                            Description = "Tiếng Anh – Ngôn ngữ và giao tiếp quốc tế",
                             Grade = 2,
-                            Name = "Information Technology",
-                            SubjectCode = "it"
+                            Name = "English",
+                            SubjectCode = "english"
                         },
                         new
                         {
-                            Id = new Guid("00000000-0000-0000-0000-000000000016"),
-                            Description = "Applied science and engineering",
+                            Id = new Guid("00000000-0000-0000-0000-000000000012"),
+                            Description = "Đạo đức – Giáo dục giá trị sống và kỹ năng ứng xử",
                             Grade = 2,
-                            Name = "Technology",
-                            SubjectCode = "technology"
+                            Name = "Ethics",
+                            SubjectCode = "ethics"
                         },
                         new
                         {
-                            Id = new Guid("00000000-0000-0000-0000-000000000017"),
-                            Description = "Visual arts and creative expression",
+                            Id = new Guid("00000000-0000-0000-0000-000000000013"),
+                            Description = "Tự nhiên và Xã hội – Khám phá thế giới tự nhiên và đời sống xã hội",
+                            Grade = 2,
+                            Name = "Nature & Society",
+                            SubjectCode = "nature_and_society"
+                        },
+                        new
+                        {
+                            Id = new Guid("00000000-0000-0000-0000-000000000014"),
+                            Description = "Mĩ thuật – Nghệ thuật tạo hình và thẩm mỹ",
                             Grade = 2,
                             Name = "Art",
                             SubjectCode = "art"
                         },
                         new
                         {
-                            Id = new Guid("00000000-0000-0000-0000-000000000018"),
-                            Description = "Study of natural world and physical phenomena",
-                            Grade = 2,
-                            Name = "Science",
-                            SubjectCode = "science"
-                        },
-                        new
-                        {
-                            Id = new Guid("00000000-0000-0000-0000-000000000019"),
-                            Description = "Musical theory and performance",
+                            Id = new Guid("00000000-0000-0000-0000-000000000015"),
+                            Description = "Âm nhạc – Lý thuyết âm nhạc và biểu diễn",
                             Grade = 2,
                             Name = "Music",
                             SubjectCode = "music"
                         },
                         new
                         {
-                            Id = new Guid("00000000-0000-0000-0000-000000000020"),
-                            Description = "Hands-on learning and practical experiences",
+                            Id = new Guid("00000000-0000-0000-0000-000000000016"),
+                            Description = "Hoạt động trải nghiệm – Học tập thực hành và kỹ năng sống",
                             Grade = 2,
                             Name = "Experiential Activities",
                             SubjectCode = "experiential_activities"
                         },
                         new
                         {
-                            Id = new Guid("00000000-0000-0000-0000-000000000021"),
-                            Description = "Study of numbers, quantities, and shapes",
+                            Id = new Guid("00000000-0000-0000-0000-000000000017"),
+                            Description = "Toán học – Nghiên cứu về số, phép tính và hình học",
                             Grade = 3,
                             Name = "Mathematics",
                             SubjectCode = "math"
                         },
                         new
                         {
-                            Id = new Guid("00000000-0000-0000-0000-000000000022"),
-                            Description = "Study of past events and Earth's features",
-                            Grade = 3,
-                            Name = "History & Geography",
-                            SubjectCode = "history_geography"
-                        },
-                        new
-                        {
-                            Id = new Guid("00000000-0000-0000-0000-000000000023"),
-                            Description = "English language and literature",
-                            Grade = 3,
-                            Name = "English",
-                            SubjectCode = "english"
-                        },
-                        new
-                        {
-                            Id = new Guid("00000000-0000-0000-0000-000000000024"),
-                            Description = "Study of written works and literary analysis",
+                            Id = new Guid("00000000-0000-0000-0000-000000000018"),
+                            Description = "Tiếng Việt – Đọc, viết, nghe, nói và kiến thức ngôn ngữ",
                             Grade = 3,
                             Name = "Literature",
                             SubjectCode = "literature"
                         },
                         new
                         {
+                            Id = new Guid("00000000-0000-0000-0000-000000000019"),
+                            Description = "Tiếng Anh – Ngôn ngữ và giao tiếp quốc tế",
+                            Grade = 3,
+                            Name = "English",
+                            SubjectCode = "english"
+                        },
+                        new
+                        {
+                            Id = new Guid("00000000-0000-0000-0000-000000000020"),
+                            Description = "Đạo đức – Giáo dục giá trị sống và kỹ năng ứng xử",
+                            Grade = 3,
+                            Name = "Ethics",
+                            SubjectCode = "ethics"
+                        },
+                        new
+                        {
+                            Id = new Guid("00000000-0000-0000-0000-000000000021"),
+                            Description = "Tự nhiên và Xã hội – Khám phá thế giới tự nhiên và đời sống xã hội",
+                            Grade = 3,
+                            Name = "Nature & Society",
+                            SubjectCode = "nature_and_society"
+                        },
+                        new
+                        {
+                            Id = new Guid("00000000-0000-0000-0000-000000000022"),
+                            Description = "Mĩ thuật – Nghệ thuật tạo hình và thẩm mỹ",
+                            Grade = 3,
+                            Name = "Art",
+                            SubjectCode = "art"
+                        },
+                        new
+                        {
+                            Id = new Guid("00000000-0000-0000-0000-000000000023"),
+                            Description = "Âm nhạc – Lý thuyết âm nhạc và biểu diễn",
+                            Grade = 3,
+                            Name = "Music",
+                            SubjectCode = "music"
+                        },
+                        new
+                        {
+                            Id = new Guid("00000000-0000-0000-0000-000000000024"),
+                            Description = "Hoạt động trải nghiệm – Học tập thực hành và kỹ năng sống",
+                            Grade = 3,
+                            Name = "Experiential Activities",
+                            SubjectCode = "experiential_activities"
+                        },
+                        new
+                        {
                             Id = new Guid("00000000-0000-0000-0000-000000000025"),
-                            Description = "Computer science and digital technology",
+                            Description = "Tin học – Khoa học máy tính và công nghệ số",
                             Grade = 3,
                             Name = "Information Technology",
-                            SubjectCode = "it"
+                            SubjectCode = "information_technology"
                         },
                         new
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000026"),
-                            Description = "Applied science and engineering",
+                            Description = "Công nghệ – Khoa học ứng dụng và kỹ thuật",
                             Grade = 3,
                             Name = "Technology",
                             SubjectCode = "technology"
@@ -552,79 +552,79 @@ namespace FrogEdu.Exam.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000027"),
-                            Description = "Visual arts and creative expression",
-                            Grade = 3,
-                            Name = "Art",
-                            SubjectCode = "art"
-                        },
-                        new
-                        {
-                            Id = new Guid("00000000-0000-0000-0000-000000000028"),
-                            Description = "Study of natural world and physical phenomena",
-                            Grade = 3,
-                            Name = "Science",
-                            SubjectCode = "science"
-                        },
-                        new
-                        {
-                            Id = new Guid("00000000-0000-0000-0000-000000000029"),
-                            Description = "Musical theory and performance",
-                            Grade = 3,
-                            Name = "Music",
-                            SubjectCode = "music"
-                        },
-                        new
-                        {
-                            Id = new Guid("00000000-0000-0000-0000-000000000030"),
-                            Description = "Hands-on learning and practical experiences",
-                            Grade = 3,
-                            Name = "Experiential Activities",
-                            SubjectCode = "experiential_activities"
-                        },
-                        new
-                        {
-                            Id = new Guid("00000000-0000-0000-0000-000000000031"),
-                            Description = "Study of numbers, quantities, and shapes",
+                            Description = "Toán học – Nghiên cứu về số, phép tính và hình học",
                             Grade = 4,
                             Name = "Mathematics",
                             SubjectCode = "math"
                         },
                         new
                         {
-                            Id = new Guid("00000000-0000-0000-0000-000000000032"),
-                            Description = "Study of past events and Earth's features",
-                            Grade = 4,
-                            Name = "History & Geography",
-                            SubjectCode = "history_geography"
-                        },
-                        new
-                        {
-                            Id = new Guid("00000000-0000-0000-0000-000000000033"),
-                            Description = "English language and literature",
-                            Grade = 4,
-                            Name = "English",
-                            SubjectCode = "english"
-                        },
-                        new
-                        {
-                            Id = new Guid("00000000-0000-0000-0000-000000000034"),
-                            Description = "Study of written works and literary analysis",
+                            Id = new Guid("00000000-0000-0000-0000-000000000028"),
+                            Description = "Tiếng Việt – Đọc, viết, nghe, nói và kiến thức ngôn ngữ",
                             Grade = 4,
                             Name = "Literature",
                             SubjectCode = "literature"
                         },
                         new
                         {
+                            Id = new Guid("00000000-0000-0000-0000-000000000029"),
+                            Description = "Tiếng Anh – Ngôn ngữ và giao tiếp quốc tế",
+                            Grade = 4,
+                            Name = "English",
+                            SubjectCode = "english"
+                        },
+                        new
+                        {
+                            Id = new Guid("00000000-0000-0000-0000-000000000030"),
+                            Description = "Đạo đức – Giáo dục giá trị sống và kỹ năng ứng xử",
+                            Grade = 4,
+                            Name = "Ethics",
+                            SubjectCode = "ethics"
+                        },
+                        new
+                        {
+                            Id = new Guid("00000000-0000-0000-0000-000000000031"),
+                            Description = "Khoa học – Khám phá thế giới tự nhiên và hiện tượng vật lý",
+                            Grade = 4,
+                            Name = "Science",
+                            SubjectCode = "science"
+                        },
+                        new
+                        {
+                            Id = new Guid("00000000-0000-0000-0000-000000000032"),
+                            Description = "Mĩ thuật – Nghệ thuật tạo hình và thẩm mỹ",
+                            Grade = 4,
+                            Name = "Art",
+                            SubjectCode = "art"
+                        },
+                        new
+                        {
+                            Id = new Guid("00000000-0000-0000-0000-000000000033"),
+                            Description = "Âm nhạc – Lý thuyết âm nhạc và biểu diễn",
+                            Grade = 4,
+                            Name = "Music",
+                            SubjectCode = "music"
+                        },
+                        new
+                        {
+                            Id = new Guid("00000000-0000-0000-0000-000000000034"),
+                            Description = "Hoạt động trải nghiệm – Học tập thực hành và kỹ năng sống",
+                            Grade = 4,
+                            Name = "Experiential Activities",
+                            SubjectCode = "experiential_activities"
+                        },
+                        new
+                        {
                             Id = new Guid("00000000-0000-0000-0000-000000000035"),
-                            Description = "Computer science and digital technology",
+                            Description = "Tin học – Khoa học máy tính và công nghệ số",
                             Grade = 4,
                             Name = "Information Technology",
-                            SubjectCode = "it"
+                            SubjectCode = "information_technology"
                         },
                         new
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000036"),
-                            Description = "Applied science and engineering",
+                            Description = "Công nghệ – Khoa học ứng dụng và kỹ thuật",
                             Grade = 4,
                             Name = "Technology",
                             SubjectCode = "technology"
@@ -632,114 +632,98 @@ namespace FrogEdu.Exam.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000037"),
-                            Description = "Visual arts and creative expression",
+                            Description = "Lịch sử và Địa lí – Nghiên cứu lịch sử và địa lý Việt Nam",
                             Grade = 4,
-                            Name = "Art",
-                            SubjectCode = "art"
+                            Name = "History & Geography",
+                            SubjectCode = "history_geography"
                         },
                         new
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000038"),
-                            Description = "Study of natural world and physical phenomena",
-                            Grade = 4,
-                            Name = "Science",
-                            SubjectCode = "science"
-                        },
-                        new
-                        {
-                            Id = new Guid("00000000-0000-0000-0000-000000000039"),
-                            Description = "Musical theory and performance",
-                            Grade = 4,
-                            Name = "Music",
-                            SubjectCode = "music"
-                        },
-                        new
-                        {
-                            Id = new Guid("00000000-0000-0000-0000-000000000040"),
-                            Description = "Hands-on learning and practical experiences",
-                            Grade = 4,
-                            Name = "Experiential Activities",
-                            SubjectCode = "experiential_activities"
-                        },
-                        new
-                        {
-                            Id = new Guid("00000000-0000-0000-0000-000000000041"),
-                            Description = "Study of numbers, quantities, and shapes",
+                            Description = "Toán học – Nghiên cứu về số, phép tính và hình học",
                             Grade = 5,
                             Name = "Mathematics",
                             SubjectCode = "math"
                         },
                         new
                         {
-                            Id = new Guid("00000000-0000-0000-0000-000000000042"),
-                            Description = "Study of past events and Earth's features",
-                            Grade = 5,
-                            Name = "History & Geography",
-                            SubjectCode = "history_geography"
-                        },
-                        new
-                        {
-                            Id = new Guid("00000000-0000-0000-0000-000000000043"),
-                            Description = "English language and literature",
-                            Grade = 5,
-                            Name = "English",
-                            SubjectCode = "english"
-                        },
-                        new
-                        {
-                            Id = new Guid("00000000-0000-0000-0000-000000000044"),
-                            Description = "Study of written works and literary analysis",
+                            Id = new Guid("00000000-0000-0000-0000-000000000039"),
+                            Description = "Tiếng Việt – Đọc, viết, nghe, nói và kiến thức ngôn ngữ",
                             Grade = 5,
                             Name = "Literature",
                             SubjectCode = "literature"
                         },
                         new
                         {
-                            Id = new Guid("00000000-0000-0000-0000-000000000045"),
-                            Description = "Computer science and digital technology",
+                            Id = new Guid("00000000-0000-0000-0000-000000000040"),
+                            Description = "Tiếng Anh – Ngôn ngữ và giao tiếp quốc tế",
                             Grade = 5,
-                            Name = "Information Technology",
-                            SubjectCode = "it"
+                            Name = "English",
+                            SubjectCode = "english"
                         },
                         new
                         {
-                            Id = new Guid("00000000-0000-0000-0000-000000000046"),
-                            Description = "Applied science and engineering",
+                            Id = new Guid("00000000-0000-0000-0000-000000000041"),
+                            Description = "Đạo đức – Giáo dục giá trị sống và kỹ năng ứng xử",
                             Grade = 5,
-                            Name = "Technology",
-                            SubjectCode = "technology"
+                            Name = "Ethics",
+                            SubjectCode = "ethics"
                         },
                         new
                         {
-                            Id = new Guid("00000000-0000-0000-0000-000000000047"),
-                            Description = "Visual arts and creative expression",
-                            Grade = 5,
-                            Name = "Art",
-                            SubjectCode = "art"
-                        },
-                        new
-                        {
-                            Id = new Guid("00000000-0000-0000-0000-000000000048"),
-                            Description = "Study of natural world and physical phenomena",
+                            Id = new Guid("00000000-0000-0000-0000-000000000042"),
+                            Description = "Khoa học – Khám phá thế giới tự nhiên và hiện tượng vật lý",
                             Grade = 5,
                             Name = "Science",
                             SubjectCode = "science"
                         },
                         new
                         {
-                            Id = new Guid("00000000-0000-0000-0000-000000000049"),
-                            Description = "Musical theory and performance",
+                            Id = new Guid("00000000-0000-0000-0000-000000000043"),
+                            Description = "Mĩ thuật – Nghệ thuật tạo hình và thẩm mỹ",
+                            Grade = 5,
+                            Name = "Art",
+                            SubjectCode = "art"
+                        },
+                        new
+                        {
+                            Id = new Guid("00000000-0000-0000-0000-000000000044"),
+                            Description = "Âm nhạc – Lý thuyết âm nhạc và biểu diễn",
                             Grade = 5,
                             Name = "Music",
                             SubjectCode = "music"
                         },
                         new
                         {
-                            Id = new Guid("00000000-0000-0000-0000-000000000050"),
-                            Description = "Hands-on learning and practical experiences",
+                            Id = new Guid("00000000-0000-0000-0000-000000000045"),
+                            Description = "Hoạt động trải nghiệm – Học tập thực hành và kỹ năng sống",
                             Grade = 5,
                             Name = "Experiential Activities",
                             SubjectCode = "experiential_activities"
+                        },
+                        new
+                        {
+                            Id = new Guid("00000000-0000-0000-0000-000000000046"),
+                            Description = "Tin học – Khoa học máy tính và công nghệ số",
+                            Grade = 5,
+                            Name = "Information Technology",
+                            SubjectCode = "information_technology"
+                        },
+                        new
+                        {
+                            Id = new Guid("00000000-0000-0000-0000-000000000047"),
+                            Description = "Công nghệ – Khoa học ứng dụng và kỹ thuật",
+                            Grade = 5,
+                            Name = "Technology",
+                            SubjectCode = "technology"
+                        },
+                        new
+                        {
+                            Id = new Guid("00000000-0000-0000-0000-000000000048"),
+                            Description = "Lịch sử và Địa lí – Nghiên cứu lịch sử và địa lý Việt Nam",
+                            Grade = 5,
+                            Name = "History & Geography",
+                            SubjectCode = "history_geography"
                         });
                 });
 
@@ -795,1081 +779,3151 @@ namespace FrogEdu.Exam.Infrastructure.Migrations
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000001"),
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Nhận biết và đọc số 0, 1, 2, 3, 4, 5. Tập viết số. Đếm số lượng đồ vật.",
+                            Description = "Nhận biết, đọc, viết, đếm xuôi ngược các số 0-10. So sánh bằng >, <, =. Cấu tạo số (tách-gộp).",
                             IsCurriculum = true,
                             SubjectId = new Guid("00000000-0000-0000-0000-000000000001"),
-                            Title = "1.1 - Các số 0, 1, 2, 3, 4, 5"
+                            Title = "Các số từ 0 đến 10"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000002"),
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Nhận biết và đọc số 6, 7, 8, 9, 10. Tập viết số.",
+                            Description = "Nhận biết hình vuông, hình tròn, hình tam giác, hình chữ nhật. Thực hành lắp ghép, xếp hình.",
                             IsCurriculum = true,
                             SubjectId = new Guid("00000000-0000-0000-0000-000000000001"),
-                            Title = "1.2 - Các số 6, 7, 8, 9, 10"
+                            Title = "Làm quen với một số hình phẳng"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000003"),
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "So sánh số lượng. Xác định: Nhiều hơn, ít hơn, bằng nhau.",
+                            Description = "Phép cộng (gộp lại), phép trừ (bớt đi) trong phạm vi 10. Bảng cộng trừ, mối quan hệ cộng-trừ.",
                             IsCurriculum = true,
                             SubjectId = new Guid("00000000-0000-0000-0000-000000000001"),
-                            Title = "1.3 - Nhiều hơn, ít hơn, bằng nhau"
+                            Title = "Phép cộng, phép trừ trong phạm vi 10"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000004"),
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Dấu lớn hơn (>), bé hơn (<), bằng (=). Ví dụ: 4 > 3, 2 < 5, 4 = 4",
+                            Description = "Khối lập phương, khối hộp chữ nhật. Vị trí và định hướng trong không gian: trên-dưới, phải-trái, trước-sau.",
                             IsCurriculum = true,
                             SubjectId = new Guid("00000000-0000-0000-0000-000000000001"),
-                            Title = "1.4 - So sánh số"
+                            Title = "Làm quen với một số hình khối"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000005"),
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Phân tích cấu tạo số. Ví dụ: 5 gồm 3 và 2",
+                            Description = "Ôn tập: đếm, đọc, viết số và so sánh số đến 10; cộng trừ phạm vi 10; nhận biết hình phẳng, hình khối và vị trí.",
                             IsCurriculum = true,
                             SubjectId = new Guid("00000000-0000-0000-0000-000000000001"),
-                            Title = "1.5 - Mấy và mấy"
+                            Title = "Ôn tập học kì 1"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000006"),
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Ôn tập và luyện tập các số từ 0 đến 10",
+                            Description = "Số có hai chữ số, hệ thập phân (chục và đơn vị). So sánh, sắp xếp số đến 100.",
                             IsCurriculum = true,
                             SubjectId = new Guid("00000000-0000-0000-0000-000000000001"),
-                            Title = "1.6 - Luyện tập chung"
+                            Title = "Các số đến 100"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000007"),
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Nhận biết các hình phẳng cơ bản",
+                            Description = "Đơn vị xăng-ti-mét (cm). Sử dụng thước kẻ để đo và vẽ đoạn thẳng.",
                             IsCurriculum = true,
                             SubjectId = new Guid("00000000-0000-0000-0000-000000000001"),
-                            Title = "2.1 - Hình vuông, hình tròn, hình tam giác, hình chữ nhật"
+                            Title = "Độ dài và đo độ dài"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000008"),
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Thực hành với các hình phẳng",
+                            Description = "Phép cộng, trừ không nhớ trong phạm vi 100. Cộng trừ dọc.",
                             IsCurriculum = true,
                             SubjectId = new Guid("00000000-0000-0000-0000-000000000001"),
-                            Title = "2.2 - Thực hành lắp ghép, xếp hình"
+                            Title = "Cộng, trừ trong phạm vi 100"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000009"),
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Ôn tập các hình phẳng",
+                            Description = "Đọc giờ đúng trên đồng hồ. Ngày trong tuần, tờ lịch. Thời gian sinh hoạt hàng ngày.",
                             IsCurriculum = true,
                             SubjectId = new Guid("00000000-0000-0000-0000-000000000001"),
-                            Title = "2.3 - Luyện tập chung"
+                            Title = "Thời gian, giờ và lịch"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000010"),
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Ý nghĩa: Gộp lại. Ví dụ: 3 + 2 = 5",
+                            Description = "Ôn tập tổng hợp: số đến 100, cộng trừ phạm vi 100, đo độ dài, đọc giờ, hình phẳng và hình khối.",
                             IsCurriculum = true,
                             SubjectId = new Guid("00000000-0000-0000-0000-000000000001"),
-                            Title = "3.1 - Phép cộng trong phạm vi 10"
+                            Title = "Ôn tập cuối năm"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000011"),
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Ý nghĩa: Bớt đi. Ví dụ: 6 - 1 = 5",
+                            Description = "Phần 1: 25 bài học âm, chữ cái Tiếng Việt. Nhận diện mặt chữ, phát âm, tập viết.",
                             IsCurriculum = true,
-                            SubjectId = new Guid("00000000-0000-0000-0000-000000000001"),
-                            Title = "3.2 - Phép trừ trong phạm vi 10"
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000002"),
+                            Title = "Học âm và chữ cái"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000012"),
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Học thuộc bảng cộng trừ trong phạm vi 10",
+                            Description = "Phần 2: Học vần trơn (ai, oi, ui...), vần có âm cuối (an, on, un, at, ot...). Ghép vần tạo từ.",
                             IsCurriculum = true,
-                            SubjectId = new Guid("00000000-0000-0000-0000-000000000001"),
-                            Title = "3.3 - Bảng cộng, bảng trừ trong phạm vi 10"
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000002"),
+                            Title = "Học vần"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000013"),
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Ôn tập phép cộng, phép trừ",
+                            Description = "Phần 3: Đọc bài khóa ngắn, kể chuyện theo tranh. Luyện kỹ năng nghe-nói-đọc-viết.",
                             IsCurriculum = true,
-                            SubjectId = new Guid("00000000-0000-0000-0000-000000000001"),
-                            Title = "3.4 - Luyện tập chung"
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000002"),
+                            Title = "Kể chuyện và luyện đọc"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000014"),
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Nhận biết các hình khối cơ bản",
+                            Description = "Chủ điểm 1 Tập 2: 4 bài đọc về tình bạn, sẻ chia, giúp đỡ nhau.",
                             IsCurriculum = true,
-                            SubjectId = new Guid("00000000-0000-0000-0000-000000000001"),
-                            Title = "4.1 - Khối lập phương, khối hộp chữ nhật"
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000002"),
+                            Title = "Tôi và các bạn"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000015"),
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Phải - Trái, Trên - Dưới, Trước - Sau",
+                            Description = "Chủ điểm 2 Tập 2: 4 bài đọc về gia đình, yêu thương, chăm sóc lẫn nhau.",
                             IsCurriculum = true,
-                            SubjectId = new Guid("00000000-0000-0000-0000-000000000001"),
-                            Title = "4.2 - Vị trí, định hướng trong không gian"
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000002"),
+                            Title = "Mái ấm gia đình"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000016"),
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Ôn tập hình khối và vị trí",
+                            Description = "Chủ điểm 3 Tập 2: 4 bài đọc về trường học, thầy cô, bạn bè.",
                             IsCurriculum = true,
-                            SubjectId = new Guid("00000000-0000-0000-0000-000000000001"),
-                            Title = "4.3 - Luyện tập chung"
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000002"),
+                            Title = "Mái trường thân yêu"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000017"),
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Ôn tập tổng hợp các số 0-10",
+                            Description = "Chủ điểm 4 Tập 2: 5 bài đọc về thiên nhiên, động vật, thực vật.",
                             IsCurriculum = true,
-                            SubjectId = new Guid("00000000-0000-0000-0000-000000000001"),
-                            Title = "5.1 - Ôn tập các số trong phạm vi 10"
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000002"),
+                            Title = "Thiên nhiên quanh ta"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000018"),
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Ôn tập các phép tính",
+                            Description = "Chủ điểm 5 Tập 2: 5 bài đọc về quê hương, đất nước, danh lam thắng cảnh.",
                             IsCurriculum = true,
-                            SubjectId = new Guid("00000000-0000-0000-0000-000000000001"),
-                            Title = "5.2 - Ôn tập phép cộng, phép trừ"
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000002"),
+                            Title = "Đất nước và con người"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000019"),
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Ôn tập hình phẳng và hình khối",
+                            Description = "Phonics: /b/, /k/, /æ/, /d/. Từ vựng: bear, cat, apple, dog. Mẫu câu: This is a bear. I have an apple.",
                             IsCurriculum = true,
-                            SubjectId = new Guid("00000000-0000-0000-0000-000000000001"),
-                            Title = "5.3 - Ôn tập hình học"
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000003"),
+                            Title = "Unit 1-4: Letters Bb, Cc, Aa, Dd"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000020"),
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Ôn tập tổng hợp học kì 1",
+                            Description = "Phonics: /f/, /g/, /h/, /ɪ/. Từ vựng: fish, goat, hat, igloo. Mẫu câu: I like fish. Here's a hat.",
                             IsCurriculum = true,
-                            SubjectId = new Guid("00000000-0000-0000-0000-000000000001"),
-                            Title = "5.4 - Ôn tập chung học kì 1"
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000003"),
+                            Title = "Unit 5-8: Letters Ff, Gg, Hh, Ii"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000021"),
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Nhận biết Chục và Đơn vị. Cách đọc: 24 = hai mươi tư",
+                            Description = "Ôn tập tổng hợp các âm A-I, từ vựng và mẫu câu đã học.",
                             IsCurriculum = true,
-                            SubjectId = new Guid("00000000-0000-0000-0000-000000000001"),
-                            Title = "6.1 - Số có hai chữ số"
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000003"),
+                            Title = "Review 1 (Units 1-8)"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000022"),
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "So sánh hàng chục trước. Ví dụ: 42 > 25",
+                            Description = "Phonics: /dʒ/, /k/, /l/, /m/. Từ vựng: jelly, kite, lion, monkey. Mẫu câu cơ bản.",
                             IsCurriculum = true,
-                            SubjectId = new Guid("00000000-0000-0000-0000-000000000001"),
-                            Title = "6.2 - So sánh số có hai chữ số"
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000003"),
+                            Title = "Unit 9-12: Letters Jj, Kk, Ll, Mm"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000023"),
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Số 100 = một trăm. Làm quen với bảng số",
+                            Description = "Phonics: /n/, /ɒ/, /p/, /kw/. Từ vựng: nest, orange, pen, queen.",
                             IsCurriculum = true,
-                            SubjectId = new Guid("00000000-0000-0000-0000-000000000001"),
-                            Title = "6.3 - Bảng các số từ 1 đến 100"
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000003"),
+                            Title = "Unit 13-16: Letters Nn, Oo, Pp, Qq"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000024"),
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Ôn tập các số đến 100",
+                            Description = "Ôn tập tổng hợp các âm J-Q, từ vựng và mẫu câu đã học.",
                             IsCurriculum = true,
-                            SubjectId = new Guid("00000000-0000-0000-0000-000000000001"),
-                            Title = "6.4 - Luyện tập chung"
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000003"),
+                            Title = "Review 2 (Units 9-16)"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000025"),
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "So sánh độ dài của các vật",
+                            Description = "Bài 1-2: Nhận biết sự quan tâm, chăm sóc của các thành viên. Thể hiện tình yêu thương gia đình.",
                             IsCurriculum = true,
-                            SubjectId = new Guid("00000000-0000-0000-0000-000000000001"),
-                            Title = "7.1 - Dài hơn, ngắn hơn"
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000004"),
+                            Title = "Yêu thương gia đình"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000026"),
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Làm quen với đơn vị cm",
+                            Description = "Bài 3: Nhận biết các việc cá nhân cần tự làm. Rèn tính tự giác trong sinh hoạt hàng ngày.",
                             IsCurriculum = true,
-                            SubjectId = new Guid("00000000-0000-0000-0000-000000000001"),
-                            Title = "7.2 - Đơn vị đo độ dài (cm)"
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000004"),
+                            Title = "Tự giác làm việc của mình"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000027"),
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Thực hành đo đạc",
+                            Description = "Bài 4: Ý nghĩa của sự thật thà. Trung thực trong học tập và cuộc sống.",
                             IsCurriculum = true,
-                            SubjectId = new Guid("00000000-0000-0000-0000-000000000001"),
-                            Title = "7.3 - Thực hành ước lượng và đo độ dài"
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000004"),
+                            Title = "Thật thà"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000028"),
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Ôn tập đo độ dài",
+                            Description = "Bài 5-6: Giữ gìn đồ dùng cá nhân và đồ dùng chung. Sắp xếp ngăn nắp.",
                             IsCurriculum = true,
-                            SubjectId = new Guid("00000000-0000-0000-0000-000000000001"),
-                            Title = "7.4 - Luyện tập chung"
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000004"),
+                            Title = "Giữ gìn đồ dùng"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000029"),
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Cộng số có hai chữ số với một chữ số",
+                            Description = "Bài 7: Biết quan tâm, giúp đỡ láng giềng. Lễ phép, thân thiện với mọi người.",
                             IsCurriculum = true,
-                            SubjectId = new Guid("00000000-0000-0000-0000-000000000001"),
-                            Title = "8.1 - Phép cộng (2 chữ số + 1 chữ số)"
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000004"),
+                            Title = "Quan tâm hàng xóm"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000030"),
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Cộng hai số có hai chữ số",
+                            Description = "Bài 8-9: Nhận diện nguy hiểm, phòng tránh tai nạn thương tích. An toàn ở nhà và ở trường.",
                             IsCurriculum = true,
-                            SubjectId = new Guid("00000000-0000-0000-0000-000000000001"),
-                            Title = "8.2 - Phép cộng (2 chữ số + 2 chữ số)"
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000004"),
+                            Title = "Phòng tránh tai nạn"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000031"),
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Trừ số có hai chữ số cho một chữ số",
+                            Description = "Bài 10-11: Thực hiện nếp sống văn minh, đúng giờ, gọn gàng ngăn nắp.",
                             IsCurriculum = true,
-                            SubjectId = new Guid("00000000-0000-0000-0000-000000000001"),
-                            Title = "8.3 - Phép trừ (2 chữ số - 1 chữ số)"
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000004"),
+                            Title = "Sinh hoạt nền nếp"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000032"),
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Trừ hai số có hai chữ số",
+                            Description = "Bài 1-4: Các thành viên trong gia đình, ngôi nhà, an toàn khi ở nhà.",
                             IsCurriculum = true,
-                            SubjectId = new Guid("00000000-0000-0000-0000-000000000001"),
-                            Title = "8.4 - Phép trừ (2 chữ số - 2 chữ số)"
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000005"),
+                            Title = "Gia đình"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000033"),
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Ôn tập cộng trừ",
+                            Description = "Bài 5-8: Đồ dùng học tập, các phòng trong trường, giữ sạch trường lớp.",
                             IsCurriculum = true,
-                            SubjectId = new Guid("00000000-0000-0000-0000-000000000001"),
-                            Title = "8.5 - Luyện tập chung"
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000005"),
+                            Title = "Trường học"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000034"),
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Học cách xem giờ",
+                            Description = "Bài 9-11: Đường đi an toàn, phương tiện giao thông, nơi công cộng.",
                             IsCurriculum = true,
-                            SubjectId = new Guid("00000000-0000-0000-0000-000000000001"),
-                            Title = "9.1 - Xem giờ đúng trên đồng hồ"
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000005"),
+                            Title = "Cộng đồng địa phương"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000035"),
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Tên các ngày trong tuần",
+                            Description = "Bài 12-14: Nhận biết cây cối, con vật xung quanh. Bảo vệ cây xanh, động vật.",
                             IsCurriculum = true,
-                            SubjectId = new Guid("00000000-0000-0000-0000-000000000001"),
-                            Title = "9.2 - Các ngày trong tuần"
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000005"),
+                            Title = "Thực vật và động vật"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000036"),
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Thực hành với lịch và đồng hồ",
+                            Description = "Bài 15-17: Các bộ phận cơ thể, giữ vệ sinh, ăn uống đủ chất.",
                             IsCurriculum = true,
-                            SubjectId = new Guid("00000000-0000-0000-0000-000000000001"),
-                            Title = "9.3 - Thực hành xem lịch và giờ"
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000005"),
+                            Title = "Con người và sức khỏe"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000037"),
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Ôn tập về thời gian",
+                            Description = "Bài 18-19: Thời tiết (nắng, mưa, gió), bầu trời ngày và đêm.",
                             IsCurriculum = true,
-                            SubjectId = new Guid("00000000-0000-0000-0000-000000000001"),
-                            Title = "9.4 - Luyện tập chung"
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000005"),
+                            Title = "Trái Đất và bầu trời"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000038"),
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Ôn tập các số và phép tính trong phạm vi 10",
+                            Description = "Bài 1-2: Làm quen với đồ dùng mĩ thuật, các hoạt động mĩ thuật cơ bản.",
                             IsCurriculum = true,
-                            SubjectId = new Guid("00000000-0000-0000-0000-000000000001"),
-                            Title = "10.1 - Ôn tập các số và phép tính (0-10)"
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000006"),
+                            Title = "Mĩ thuật trong nhà trường"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000039"),
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Ôn tập các số và phép tính trong phạm vi 100",
+                            Description = "Bài 3-4: Nhận biết chấm trong tự nhiên và nghệ thuật. Tạo hình từ chấm.",
                             IsCurriculum = true,
-                            SubjectId = new Guid("00000000-0000-0000-0000-000000000001"),
-                            Title = "10.2 - Ôn tập các số và phép tính (0-100)"
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000006"),
+                            Title = "Sự thú vị đến từ những chấm"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000040"),
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Ôn tập hình học, độ dài, thời gian",
+                            Description = "Bài 5-6: Các loại đường nét (thẳng, cong, gấp khúc). Sáng tạo với đường nét.",
                             IsCurriculum = true,
-                            SubjectId = new Guid("00000000-0000-0000-0000-000000000001"),
-                            Title = "10.3 - Ôn tập hình học và đo lường"
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000006"),
+                            Title = "Sự quyến rũ của đường nét"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000041"),
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Ôn tập tổng hợp toàn bộ chương trình lớp 1",
+                            Description = "Bài 7-8: Hình phẳng và khối 3D cơ bản. Tạo sản phẩm từ hình khối.",
                             IsCurriculum = true,
-                            SubjectId = new Guid("00000000-0000-0000-0000-000000000001"),
-                            Title = "10.4 - Ôn tập chung cuối năm"
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000006"),
+                            Title = "Sáng tạo với hình và khối"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000042"),
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Ôn tập kiến thức lớp 1",
+                            Description = "Bài 9-10: Nhận biết 3 màu cơ bản (Đỏ, Vàng, Xanh). Vẽ tranh với màu sắc.",
                             IsCurriculum = true,
-                            SubjectId = new Guid("00000000-0000-0000-0000-000000000011"),
-                            Title = "1.1 - Ôn tập các số đến 100"
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000006"),
+                            Title = "Màu sắc quanh em"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000043"),
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Ôn tập các phép tính cơ bản",
+                            Description = "Bài 11-12: Mĩ thuật trong đời sống, vật liệu tái chế, trưng bày tác phẩm.",
                             IsCurriculum = true,
-                            SubjectId = new Guid("00000000-0000-0000-0000-000000000011"),
-                            Title = "1.2 - Ôn tập phép cộng, phép trừ không nhớ"
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000006"),
+                            Title = "Thế giới mĩ thuật quanh em"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000044"),
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Phương pháp: Tách số để tròn chục. Ví dụ: 9 + 5 = 9 + 1 + 4 = 14",
+                            Description = "Làm quen nốt Đô-Rê-Mi. Phân biệt âm thanh cao-thấp, mạnh-nhẹ.",
                             IsCurriculum = true,
-                            SubjectId = new Guid("00000000-0000-0000-0000-000000000011"),
-                            Title = "2.1 - Phép cộng qua 10 trong phạm vi 20"
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000007"),
+                            Title = "Âm thanh kì diệu"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000045"),
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Thực hành phép cộng qua 10",
+                            Description = "Trống: loại nhạc cụ gõ. Quốc ca Việt Nam. Cảm nhận nhịp hành khúc.",
                             IsCurriculum = true,
-                            SubjectId = new Guid("00000000-0000-0000-0000-000000000011"),
-                            Title = "2.2 - Luyện tập phép cộng qua 10"
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000007"),
+                            Title = "Việt Nam yêu thương"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000046"),
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Phương pháp: Trừ để tròn chục. Ví dụ: 12 - 5 = 12 - 2 - 3 = 7",
+                            Description = "Kí hiệu tay nốt Đô-Rê-Mi. Bài hát về trường lớp.",
                             IsCurriculum = true,
-                            SubjectId = new Guid("00000000-0000-0000-0000-000000000011"),
-                            Title = "2.3 - Phép trừ qua 10 trong phạm vi 20"
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000007"),
+                            Title = "Mái trường thân yêu"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000047"),
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Thực hành phép trừ qua 10",
+                            Description = "Thưởng thức: Hồ Thiên Nga (Tchaikovsky). Hát và vận động theo nhạc.",
                             IsCurriculum = true,
-                            SubjectId = new Guid("00000000-0000-0000-0000-000000000011"),
-                            Title = "2.4 - Luyện tập phép trừ qua 10"
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000007"),
+                            Title = "Vòng tay bè bạn"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000048"),
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Ôn tập cộng trừ qua 10",
+                            Description = "Nốt Pha, Son. Nhạc phẩm thiếu nhi Mozart. Nhịp 2/4.",
                             IsCurriculum = true,
-                            SubjectId = new Guid("00000000-0000-0000-0000-000000000011"),
-                            Title = "2.5 - Luyện tập chung - Cộng trừ qua 10"
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000007"),
+                            Title = "Nhịp điệu mùa xuân"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000049"),
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Khối trụ: Hai mặt đáy tròn (hộp sữa). Khối cầu: Tròn đều (quả bóng)",
+                            Description = "Dân ca Việt Nam. Nhạc cụ dân tộc: thanh phách.",
                             IsCurriculum = true,
-                            SubjectId = new Guid("00000000-0000-0000-0000-000000000011"),
-                            Title = "3.1 - Khối trụ, khối cầu"
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000007"),
+                            Title = "Về miền dân ca"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000050"),
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Thực hành nhận biết khối trụ, khối cầu",
+                            Description = "Thang 5 âm (Đô-Rê-Mi-Pha-Son). Bài hát về gia đình.",
                             IsCurriculum = true,
-                            SubjectId = new Guid("00000000-0000-0000-0000-000000000011"),
-                            Title = "3.2 - Luyện tập - Hình khối"
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000007"),
+                            Title = "Gia đình yêu thương"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000051"),
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Phép cộng có nhớ trong phạm vi 100. Ví dụ: 38 + 25 = 63",
+                            Description = "Nhạc cụ: kèn Triangle. Ôn tập tổng hợp cuối năm.",
                             IsCurriculum = true,
-                            SubjectId = new Guid("00000000-0000-0000-0000-000000000011"),
-                            Title = "4.1 - Phép cộng có nhớ"
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000007"),
+                            Title = "Vui đón hè"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000052"),
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Thực hành phép cộng có nhớ",
+                            Description = "Tuần 1-4: Làm quen trường mới, bạn mới, thầy cô. Nội quy trường học.",
                             IsCurriculum = true,
-                            SubjectId = new Guid("00000000-0000-0000-0000-000000000011"),
-                            Title = "4.2 - Luyện tập phép cộng có nhớ"
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000008"),
+                            Title = "Em và trường tiểu học"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000053"),
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Phép trừ có nhớ trong phạm vi 100. Ví dụ: 52 - 27 = 25",
+                            Description = "Tuần 5-8: Nhận biết đặc điểm, sở thích cá nhân. Tự tin giới thiệu bản thân.",
                             IsCurriculum = true,
-                            SubjectId = new Guid("00000000-0000-0000-0000-000000000011"),
-                            Title = "4.3 - Phép trừ có nhớ"
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000008"),
+                            Title = "Khám phá bản thân"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000054"),
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Thực hành phép trừ có nhớ",
+                            Description = "Tuần 9-12: Tri ân thầy cô nhân ngày 20/11. Làm thiệp, tập biểu diễn.",
                             IsCurriculum = true,
-                            SubjectId = new Guid("00000000-0000-0000-0000-000000000011"),
-                            Title = "4.4 - Luyện tập phép trừ có nhớ"
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000008"),
+                            Title = "Mừng ngày nhà giáo"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000055"),
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Ôn tập cộng trừ có nhớ",
+                            Description = "Tuần 13-16: Tự chuẩn bị sách vở, vệ sinh cá nhân, ăn uống đúng cách.",
                             IsCurriculum = true,
-                            SubjectId = new Guid("00000000-0000-0000-0000-000000000011"),
-                            Title = "4.5 - Luyện tập chung - Cộng trừ có nhớ"
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000008"),
+                            Title = "Tự phục vụ bản thân"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000056"),
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Nhận biết các loại đường",
+                            Description = "Tuần 17-20: Tình cảm gia đình, phong tục Tết, trò chơi dân gian.",
                             IsCurriculum = true,
-                            SubjectId = new Guid("00000000-0000-0000-0000-000000000011"),
-                            Title = "5.1 - Đường thẳng, đường cong, đường gấp khúc"
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000008"),
+                            Title = "Gia đình yêu thương và Tết"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000057"),
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Thực hành vẽ và nhận biết",
+                            Description = "Tuần 21-24: Hàng xóm láng giềng, nghề nghiệp trong cộng đồng.",
                             IsCurriculum = true,
-                            SubjectId = new Guid("00000000-0000-0000-0000-000000000011"),
-                            Title = "5.2 - Luyện tập - Các loại đường"
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000008"),
+                            Title = "Em với cộng đồng"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000058"),
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "1 giờ = 60 phút. Chuyển đổi đơn vị thời gian",
+                            Description = "Tuần 25-28: Giữ gìn vệ sinh, bảo vệ cây xanh, tiết kiệm nước.",
                             IsCurriculum = true,
-                            SubjectId = new Guid("00000000-0000-0000-0000-000000000011"),
-                            Title = "6.1 - Ngày - Giờ, Giờ - Phút"
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000008"),
+                            Title = "Em với môi trường"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000059"),
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Số ngày trong các tháng",
+                            Description = "Tuần 29-32: An toàn giao thông, phòng cháy, đuối nước.",
                             IsCurriculum = true,
-                            SubjectId = new Guid("00000000-0000-0000-0000-000000000011"),
-                            Title = "6.2 - Ngày - Tháng"
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000008"),
+                            Title = "Phòng tránh tai nạn"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000060"),
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Ôn tập về thời gian",
+                            Description = "Tuần 33-35: Ôn tập, trưng bày sản phẩm, liên hoan cuối năm.",
                             IsCurriculum = true,
-                            SubjectId = new Guid("00000000-0000-0000-0000-000000000011"),
-                            Title = "6.3 - Luyện tập - Thời gian"
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000008"),
+                            Title = "Tổng kết năm học"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000061"),
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Ôn tập tổng hợp chương trình lớp 2",
+                            Description = "Ôn tập số đến 100, cộng trừ không nhớ trong phạm vi 100. Bổ sung kiến thức.",
                             IsCurriculum = true,
-                            SubjectId = new Guid("00000000-0000-0000-0000-000000000011"),
-                            Title = "6.4 - Ôn tập cuối năm lớp 2"
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000009"),
+                            Title = "Ôn tập và bổ sung - Số đến 100"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000062"),
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Đọc, viết, so sánh số đến 1000",
+                            Description = "Cộng trừ có nhớ qua 10. Ví dụ: 9+5=14, 14-6=8.",
                             IsCurriculum = true,
-                            SubjectId = new Guid("00000000-0000-0000-0000-000000000021"),
-                            Title = "1.1 - Các số đến 1000"
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000009"),
+                            Title = "Phép cộng, phép trừ qua 10 trong phạm vi 20"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000063"),
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Cộng trừ số có 3 chữ số",
+                            Description = "Nhận biết khối trụ (lon nước), khối cầu (quả bóng). Phân loại hình khối.",
                             IsCurriculum = true,
-                            SubjectId = new Guid("00000000-0000-0000-0000-000000000021"),
-                            Title = "1.2 - Phép cộng, phép trừ trong phạm vi 1000"
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000009"),
+                            Title = "Làm quen với khối trụ, khối cầu"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000064"),
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Ôn tập bảng nhân chia 2 và 5",
+                            Description = "Cộng trừ có nhớ dạng cột dọc. Ví dụ: 47+25=72, 63-28=35.",
                             IsCurriculum = true,
-                            SubjectId = new Guid("00000000-0000-0000-0000-000000000021"),
-                            Title = "1.3 - Bảng nhân 2, 5 và Bảng chia 2, 5"
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000009"),
+                            Title = "Phép cộng, phép trừ có nhớ trong phạm vi 100"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000065"),
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Học thuộc bảng nhân 3, 4",
+                            Description = "Nhận biết và vẽ đường thẳng, đoạn thẳng, đường gấp khúc, ba điểm thẳng hàng.",
                             IsCurriculum = true,
-                            SubjectId = new Guid("00000000-0000-0000-0000-000000000021"),
-                            Title = "2.1 - Bảng nhân 3, 4"
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000009"),
+                            Title = "Hình phẳng - Đường thẳng, đoạn thẳng, đường gấp khúc"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000066"),
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Học thuộc bảng nhân 6, 7, 8, 9",
+                            Description = "Đọc giờ đúng, giờ rưỡi. Ngày trong tuần, tháng trong năm.",
                             IsCurriculum = true,
-                            SubjectId = new Guid("00000000-0000-0000-0000-000000000021"),
-                            Title = "2.2 - Bảng nhân 6, 7, 8, 9"
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000009"),
+                            Title = "Thời gian - Giờ, ngày, tháng"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000067"),
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Nhân số có 2-3 chữ số với 1 chữ số",
+                            Description = "Ôn tập: cộng trừ có nhớ phạm vi 100, nhận biết khối trụ/cầu, đường thẳng, giờ.",
                             IsCurriculum = true,
-                            SubjectId = new Guid("00000000-0000-0000-0000-000000000021"),
-                            Title = "2.3 - Phép nhân (2-3 chữ số x 1 chữ số)"
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000009"),
+                            Title = "Ôn tập học kì 1"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000068"),
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Chia số có 2-3 chữ số cho 1 chữ số",
+                            Description = "Ý nghĩa phép nhân (gom nhóm bằng nhau), phép chia (chia đều). Bảng nhân chia 2, 3, 4, 5.",
                             IsCurriculum = true,
-                            SubjectId = new Guid("00000000-0000-0000-0000-000000000021"),
-                            Title = "2.4 - Phép chia (2-3 chữ số ÷ 1 chữ số)"
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000009"),
+                            Title = "Phép nhân và phép chia"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000069"),
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Nhận biết và đo các loại góc",
+                            Description = "Số có 3 chữ số: hàng trăm, hàng chục, hàng đơn vị. Đọc, viết, so sánh.",
                             IsCurriculum = true,
-                            SubjectId = new Guid("00000000-0000-0000-0000-000000000021"),
-                            Title = "3.1 - Góc: Vuông, nhọn, tù"
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000009"),
+                            Title = "Các số đến 1000"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000070"),
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Tính chất và nhận biết các hình",
+                            Description = "Mét (m), ki-lô-mét (km), mi-li-mét (mm). Ki-lô-gam (kg). Ước lượng độ dài.",
                             IsCurriculum = true,
-                            SubjectId = new Guid("00000000-0000-0000-0000-000000000021"),
-                            Title = "3.2 - Hình: Tam giác, tứ giác, chữ nhật, vuông, tròn"
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000009"),
+                            Title = "Độ dài và khối lượng"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000071"),
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Các đơn vị đo độ dài và chuyển đổi",
+                            Description = "Cộng trừ có nhớ trong phạm vi 1000. Tính nhẩm, tính viết.",
                             IsCurriculum = true,
-                            SubjectId = new Guid("00000000-0000-0000-0000-000000000021"),
-                            Title = "3.3 - Đơn vị đo độ dài: mm, cm, dm, m, km"
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000009"),
+                            Title = "Phép cộng, phép trừ trong phạm vi 1000"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000072"),
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Đơn vị đo khối lượng",
+                            Description = "Thu thập dữ liệu, biểu đồ tranh đơn giản. Chắc chắn, có thể, không thể.",
                             IsCurriculum = true,
-                            SubjectId = new Guid("00000000-0000-0000-0000-000000000021"),
-                            Title = "3.4 - Khối lượng: g, kg"
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000009"),
+                            Title = "Thống kê và xác suất"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000073"),
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Đơn vị đo dung tích",
+                            Description = "Ôn tập tổng hợp: số đến 1000, 4 phép tính, đo lường, thống kê, hình học.",
                             IsCurriculum = true,
-                            SubjectId = new Guid("00000000-0000-0000-0000-000000000021"),
-                            Title = "3.5 - Dung tích: ml, l"
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000009"),
+                            Title = "Ôn tập cuối năm"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000074"),
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Làm quen với thống kê cơ bản",
+                            Description = "Chủ điểm 1 Tập 1: Đọc hiểu văn bản về tuổi thơ, tự hào bản thân. Tập viết chữ hoa A-E.",
                             IsCurriculum = true,
-                            SubjectId = new Guid("00000000-0000-0000-0000-000000000021"),
-                            Title = "4.1 - Thu thập và phân loại dữ liệu"
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000010"),
+                            Title = "Em là búp măng non"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000075"),
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Làm quen với xác suất đơn giản",
+                            Description = "Chủ điểm 2 Tập 1: Văn bản về ngày đầu đến trường, niềm vui học tập. Chữ hoa F-H.",
                             IsCurriculum = true,
-                            SubjectId = new Guid("00000000-0000-0000-0000-000000000021"),
-                            Title = "4.2 - Khả năng xảy ra của sự kiện"
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000010"),
+                            Title = "Em đi học"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000076"),
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Đọc, viết số có 5 chữ số",
+                            Description = "Chủ điểm 3 Tập 1: Đọc về tình bạn, sẻ chia. Chữ hoa I-L.",
                             IsCurriculum = true,
-                            SubjectId = new Guid("00000000-0000-0000-0000-000000000021"),
-                            Title = "5.1 - Các số đến 10,000"
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000010"),
+                            Title = "Niềm vui và tình bạn"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000077"),
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Đọc, viết số có 6 chữ số",
+                            Description = "Chủ điểm 4 Tập 1: Gia đình, ông bà, cha mẹ. Chữ hoa M.",
                             IsCurriculum = true,
-                            SubjectId = new Guid("00000000-0000-0000-0000-000000000021"),
-                            Title = "5.2 - Các số đến 100,000"
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000010"),
+                            Title = "Mái ấm gia đình"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000078"),
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Hàng và lớp của số",
+                            Description = "Ôn tập các chủ điểm 1-4, kiểm tra đọc hiểu, chính tả, viết đoạn văn.",
                             IsCurriculum = true,
-                            SubjectId = new Guid("00000000-0000-0000-0000-000000000021"),
-                            Title = "5.3 - Cấu tạo thập phân"
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000010"),
+                            Title = "Ôn tập học kì 1"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000079"),
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "So sánh các số lớn",
+                            Description = "Chủ điểm 1 Tập 2: Thiên nhiên, cảnh vật đẹp. Chữ hoa N-P.",
                             IsCurriculum = true,
-                            SubjectId = new Guid("00000000-0000-0000-0000-000000000021"),
-                            Title = "5.4 - So sánh số trong phạm vi 100,000"
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000010"),
+                            Title = "Vẻ đẹp quanh em"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000080"),
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Cộng trừ số có nhiều chữ số",
+                            Description = "Chủ điểm 2 Tập 2: Bảo vệ môi trường, yêu thiên nhiên. Chữ hoa Q-S.",
                             IsCurriculum = true,
-                            SubjectId = new Guid("00000000-0000-0000-0000-000000000021"),
-                            Title = "6.1 - Cộng, trừ có nhớ (số lớn)"
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000010"),
+                            Title = "Hành tinh xanh của em"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000081"),
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Nhân chia trong phạm vi 100,000",
+                            Description = "Chủ điểm 3 Tập 2: Truyền thống, phẩm chất người Việt. Chữ hoa T-V.",
                             IsCurriculum = true,
-                            SubjectId = new Guid("00000000-0000-0000-0000-000000000021"),
-                            Title = "6.2 - Nhân, chia số lớn"
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000010"),
+                            Title = "Con người Việt Nam"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000082"),
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Thứ tự thực hiện phép tính",
+                            Description = "Chủ điểm 4 Tập 2: Quê hương đất nước. Chữ hoa X-Y.",
                             IsCurriculum = true,
-                            SubjectId = new Guid("00000000-0000-0000-0000-000000000021"),
-                            Title = "6.3 - Tính giá trị biểu thức"
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000010"),
+                            Title = "Quê hương em"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000083"),
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Công thức tính chu vi các hình",
+                            Description = "Chủ điểm 5 Tập 2: Mở rộng hiểu biết về thế giới. Tốc độ đọc 80-100 tiếng/phút.",
                             IsCurriculum = true,
-                            SubjectId = new Guid("00000000-0000-0000-0000-000000000021"),
-                            Title = "7.1 - Chu vi: Tam giác, tứ giác, chữ nhật, vuông"
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000010"),
+                            Title = "Thế giới trong mắt em"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000084"),
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "S = dài x rộng, S = cạnh x cạnh",
+                            Description = "Phonics: /p/, /r/, /s/, /t/, /ʌ/. Từ vựng: popcorn, riding, sea, tea, bus. Mẫu câu cơ bản.",
                             IsCurriculum = true,
-                            SubjectId = new Guid("00000000-0000-0000-0000-000000000021"),
-                            Title = "7.2 - Diện tích: Chữ nhật, vuông"
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000011"),
+                            Title = "Unit 1-5: Letters Pp-Uu"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000085"),
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Đơn vị tiền tệ và quy đổi",
+                            Description = "Ôn tập tổng hợp các âm P-U, từ vựng và mẫu câu đã học.",
                             IsCurriculum = true,
-                            SubjectId = new Guid("00000000-0000-0000-0000-000000000021"),
-                            Title = "7.3 - Tiền Việt Nam"
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000011"),
+                            Title = "Review 1 (Units 1-5)"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000086"),
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Đọc giờ chính xác",
+                            Description = "Phonics: /v/, /w/, /ks/, /j/, /z/. Từ vựng: van, water, fox, yams, zebra.",
                             IsCurriculum = true,
-                            SubjectId = new Guid("00000000-0000-0000-0000-000000000021"),
-                            Title = "8.1 - Xem đồng hồ (chính xác đến phút)"
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000011"),
+                            Title = "Unit 6-10: Letters Vv-Zz"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000087"),
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Năm nhuận, năm thường",
+                            Description = "Ôn tập tổng hợp các âm V-Z, từ vựng và mẫu câu đã học.",
                             IsCurriculum = true,
-                            SubjectId = new Guid("00000000-0000-0000-0000-000000000021"),
-                            Title = "8.2 - Tháng - Năm"
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000011"),
+                            Title = "Review 2 (Units 6-10)"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000088"),
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Bài toán tìm số khi biết gấp/giảm",
+                            Description = "Phonics nâng cao: i_e /aɪ/, oa /əʊ/, short i /ɪ/, short o /ɒ/, ui/ou /uː/, a_e /eɪ/. Present continuous, Would you like...?",
                             IsCurriculum = true,
-                            SubjectId = new Guid("00000000-0000-0000-0000-000000000021"),
-                            Title = "9.1 - Toán gấp, giảm số"
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000011"),
+                            Title = "Unit 11-16: Diphthongs & Digraphs"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000089"),
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Bài toán so sánh hai số",
+                            Description = "Ôn tập tổng hợp diphthongs, digraphs, mẫu câu nâng cao.",
                             IsCurriculum = true,
-                            SubjectId = new Guid("00000000-0000-0000-0000-000000000021"),
-                            Title = "9.2 - Toán so sánh"
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000011"),
+                            Title = "Review 3 (Units 11-16)"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000090"),
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Bài toán nhiều phép tính",
+                            Description = "Bài 1: Nhận thức thời gian là vô giá. Quản lý thời gian, lập thời gian biểu.",
                             IsCurriculum = true,
-                            SubjectId = new Guid("00000000-0000-0000-0000-000000000021"),
-                            Title = "9.3 - Toán hai bước tính"
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000012"),
+                            Title = "Quý trọng thời gian"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000091"),
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Ôn tập tổng hợp chương trình lớp 3",
+                            Description = "Bài 2: Dũng cảm nhận lỗi, sửa sai. Trung thực và trách nhiệm.",
                             IsCurriculum = true,
-                            SubjectId = new Guid("00000000-0000-0000-0000-000000000021"),
-                            Title = "9.4 - Ôn tập cuối năm lớp 3"
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000012"),
+                            Title = "Nhận lỗi và sửa lỗi"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000092"),
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Đọc, viết số có 6 chữ số",
+                            Description = "Bài 3-4: Giữ gìn, sắp xếp đồ dùng cá nhân và gia đình.",
                             IsCurriculum = true,
-                            SubjectId = new Guid("00000000-0000-0000-0000-000000000031"),
-                            Title = "1.1 - Số có 6 chữ số"
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000012"),
+                            Title = "Bảo quản đồ dùng cá nhân và gia đình"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000093"),
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Cấu tạo số theo hàng và lớp",
+                            Description = "Bài 5-6: Văn hóa chào hỏi, cây tình bạn, sẻ chia khi bạn gặp khó khăn.",
                             IsCurriculum = true,
-                            SubjectId = new Guid("00000000-0000-0000-0000-000000000031"),
-                            Title = "1.2 - Hàng và lớp (triệu, nghìn, đơn vị)"
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000012"),
+                            Title = "Kính trọng thầy cô và yêu quý bạn bè"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000094"),
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "So sánh số có 6 chữ số",
+                            Description = "Bài 7: Tôn trọng mọi nghề nghiệp, trân quý thành quả lao động.",
                             IsCurriculum = true,
-                            SubjectId = new Guid("00000000-0000-0000-0000-000000000031"),
-                            Title = "1.3 - So sánh số tự nhiên lớn"
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000012"),
+                            Title = "Quý trọng lao động"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000095"),
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Làm tròn đến chục, trăm, nghìn",
+                            Description = "Bài 8: Bảo vệ môi trường, lối sống xanh.",
                             IsCurriculum = true,
-                            SubjectId = new Guid("00000000-0000-0000-0000-000000000031"),
-                            Title = "1.4 - Làm tròn số"
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000012"),
+                            Title = "Gìn giữ cảnh quan thiên nhiên"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000096"),
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Cộng trừ số có 6 chữ số",
+                            Description = "Bài 9: Xếp hàng, giữ trật tự, văn hóa ứng xử nơi công cộng.",
                             IsCurriculum = true,
-                            SubjectId = new Guid("00000000-0000-0000-0000-000000000031"),
-                            Title = "2.1 - Cộng, trừ số lớn"
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000012"),
+                            Title = "Tuân thủ quy định nơi công cộng"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000097"),
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Thuật toán nhân số có 2 chữ số",
+                            Description = "Bài 10: Nhận diện nguy hiểm, số điện thoại khẩn cấp (113, 114, 115), thoát hiểm.",
                             IsCurriculum = true,
-                            SubjectId = new Guid("00000000-0000-0000-0000-000000000031"),
-                            Title = "2.2 - Nhân với số có 2 chữ số"
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000012"),
+                            Title = "Phòng tránh tai nạn, thương tích"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000098"),
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Thuật toán chia số lớn",
+                            Description = "Nghề nghiệp người thân, phòng ngộ độc, an toàn khi sử dụng đồ dùng trong nhà.",
                             IsCurriculum = true,
-                            SubjectId = new Guid("00000000-0000-0000-0000-000000000031"),
-                            Title = "2.3 - Chia số có nhiều chữ số"
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000013"),
+                            Title = "Gia đình"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000099"),
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Phân loại và đo góc",
+                            Description = "Khu vực trường, phòng chức năng, sinh hoạt lớp, vệ sinh trường lớp.",
                             IsCurriculum = true,
-                            SubjectId = new Guid("00000000-0000-0000-0000-000000000031"),
-                            Title = "3.1 - Các loại góc: Vuông, nhọn, tù, bẹt"
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000013"),
+                            Title = "Trường học"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000100"),
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Tính chất và cách vẽ",
+                            Description = "Di tích lịch sử địa phương, an toàn giao thông, giữ gìn cảnh quan.",
                             IsCurriculum = true,
-                            SubjectId = new Guid("00000000-0000-0000-0000-000000000031"),
-                            Title = "3.2 - Đường thẳng song song"
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000013"),
+                            Title = "Cộng đồng"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000101"),
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Tính chất và cách vẽ",
+                            Description = "Các bộ phận cây (rễ, thân, lá). Môi trường sống động vật. Bảo vệ sinh vật.",
                             IsCurriculum = true,
-                            SubjectId = new Guid("00000000-0000-0000-0000-000000000031"),
-                            Title = "3.3 - Đường thẳng vuông góc"
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000013"),
+                            Title = "Thực vật và động vật"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000102"),
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "1 yến = 10kg, 1 tạ = 100kg, 1 tấn = 1000kg",
+                            Description = "Cơ quan vận động (cơ, xương), tiêu hóa, bài tiết. Phòng bệnh.",
                             IsCurriculum = true,
-                            SubjectId = new Guid("00000000-0000-0000-0000-000000000031"),
-                            Title = "4.1 - Khối lượng: Yến, Tạ, Tấn"
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000013"),
+                            Title = "Con người và sức khỏe"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000103"),
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Các đơn vị đo diện tích",
+                            Description = "Các mùa trong năm, hiện tượng thời tiết, thiên tai và cách phòng tránh.",
                             IsCurriculum = true,
-                            SubjectId = new Guid("00000000-0000-0000-0000-000000000031"),
-                            Title = "4.2 - Diện tích: mm², cm², dm², m²"
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000013"),
+                            Title = "Trái Đất và bầu trời"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000104"),
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Tử số, mẫu số, ý nghĩa phân số",
+                            Description = "Bài 1-2: Đồ dùng mĩ thuật, pha trộn màu cơ bản tạo màu nhị hợp (cam, lục, tím).",
                             IsCurriculum = true,
-                            SubjectId = new Guid("00000000-0000-0000-0000-000000000031"),
-                            Title = "5.1 - Khái niệm phân số"
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000014"),
+                            Title = "Mĩ thuật trong nhà trường"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000105"),
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Tính chất cơ bản của phân số",
+                            Description = "Bài 3-4: Khối lập phương, khối cầu, khối trụ. Mô hình đồ vật từ hình khối.",
                             IsCurriculum = true,
-                            SubjectId = new Guid("00000000-0000-0000-0000-000000000031"),
-                            Title = "5.2 - Phân số bằng nhau"
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000014"),
+                            Title = "Sự thú vị đến từ những hình khối"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000106"),
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Chia cả tử và mẫu cho ƯCLN",
+                            Description = "Bài 5-6: Nét thẳng, cong, gấp khúc, xoắn ốc. Họa tiết trang trí.",
                             IsCurriculum = true,
-                            SubjectId = new Guid("00000000-0000-0000-0000-000000000031"),
-                            Title = "5.3 - Rút gọn phân số"
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000014"),
+                            Title = "Sự kì diệu của đường nét"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000107"),
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Nhân cả tử và mẫu với cùng một số",
+                            Description = "Bài 7-8: Kỹ thuật xoay, nặn, ấn dẹt, ghép dính. Tạo hình con vật.",
                             IsCurriculum = true,
-                            SubjectId = new Guid("00000000-0000-0000-0000-000000000031"),
-                            Title = "5.4 - Quy đồng mẫu số"
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000014"),
+                            Title = "Sáng tạo với đất nặn"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000108"),
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "So sánh phân số cùng mẫu, khác mẫu",
+                            Description = "Bài 9-10: Vẽ chân dung người thân, tranh sinh hoạt vui chơi.",
                             IsCurriculum = true,
-                            SubjectId = new Guid("00000000-0000-0000-0000-000000000031"),
-                            Title = "5.5 - So sánh phân số"
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000014"),
+                            Title = "Gia đình và bạn bè"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000109"),
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Cộng phân số cùng mẫu và khác mẫu",
+                            Description = "Bài 11-12: In độc bản từ lá cây, cắt dán tranh vườn hoa.",
                             IsCurriculum = true,
-                            SubjectId = new Guid("00000000-0000-0000-0000-000000000031"),
-                            Title = "6.1 - Cộng phân số"
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000014"),
+                            Title = "Thiên nhiên xanh"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000110"),
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Trừ phân số cùng mẫu và khác mẫu",
+                            Description = "Bài 13-14: Tranh Gà đàn, Lợn ăn lá ráy, Đám cưới chuột. Đồ chơi dân gian.",
                             IsCurriculum = true,
-                            SubjectId = new Guid("00000000-0000-0000-0000-000000000031"),
-                            Title = "6.2 - Trừ phân số"
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000014"),
+                            Title = "Tìm hiểu mĩ thuật - Tranh dân gian Đông Hồ"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000111"),
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Nhân tử với tử, mẫu với mẫu",
+                            Description = "Bài 15-16: Vẽ phương tiện giao thông, tranh phong cảnh quê hương.",
                             IsCurriculum = true,
-                            SubjectId = new Guid("00000000-0000-0000-0000-000000000031"),
-                            Title = "6.3 - Nhân phân số"
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000014"),
+                            Title = "Giao thông và quê hương"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000112"),
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Nhân với phân số nghịch đảo",
+                            Description = "Hát bài về ngày mới. Vỗ tay theo nhịp. Làm quen nhạc cụ Body Percussion.",
                             IsCurriculum = true,
-                            SubjectId = new Guid("00000000-0000-0000-0000-000000000031"),
-                            Title = "6.4 - Chia phân số"
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000015"),
+                            Title = "Rộn ràng ngày mới"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000113"),
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "S = đáy x cao",
+                            Description = "Hát bài về tình bạn. Nhạc cụ Maracas. Chơi trò chơi âm nhạc.",
                             IsCurriculum = true,
-                            SubjectId = new Guid("00000000-0000-0000-0000-000000000031"),
-                            Title = "7.1 - Hình bình hành"
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000015"),
+                            Title = "Nhịp điệu bạn bè"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000114"),
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "S = (d₁ x d₂) / 2",
+                            Description = "Hát bài về trường lớp. Thực hành Body Percussion nâng cao.",
                             IsCurriculum = true,
-                            SubjectId = new Guid("00000000-0000-0000-0000-000000000031"),
-                            Title = "7.2 - Hình thoi"
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000015"),
+                            Title = "Vui đến trường"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000115"),
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Dạng toán tổng hiệu",
+                            Description = "Hát bài về đoàn kết. Nghe nhạc cổ điển. Vận động theo nhạc.",
                             IsCurriculum = true,
-                            SubjectId = new Guid("00000000-0000-0000-0000-000000000031"),
-                            Title = "8.1 - Tìm 2 số biết Tổng và Hiệu"
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000015"),
+                            Title = "Đoàn kết yêu thương"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000116"),
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Dạng toán tổng tỉ",
+                            Description = "Hát bài về mùa xuân, Tết. Nghe nhạc truyền thống.",
                             IsCurriculum = true,
-                            SubjectId = new Guid("00000000-0000-0000-0000-000000000031"),
-                            Title = "8.2 - Tìm 2 số biết Tổng và Tỉ"
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000015"),
+                            Title = "Mùa xuân"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000117"),
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Dạng toán hiệu tỉ",
+                            Description = "Hát bài về gia đình. Ôn tập nốt nhạc. Biểu diễn nhóm.",
                             IsCurriculum = true,
-                            SubjectId = new Guid("00000000-0000-0000-0000-000000000031"),
-                            Title = "8.3 - Tìm 2 số biết Hiệu và Tỉ"
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000015"),
+                            Title = "Gia đình"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000118"),
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Đọc và vẽ biểu đồ cột",
+                            Description = "Hát bài về thiên nhiên. Nhận biết nhịp 2/4. Sáng tạo âm nhạc.",
                             IsCurriculum = true,
-                            SubjectId = new Guid("00000000-0000-0000-0000-000000000031"),
-                            Title = "9.1 - Biểu đồ cột"
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000015"),
+                            Title = "Thiên nhiên"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000119"),
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Đọc và vẽ biểu đồ tranh",
+                            Description = "Ôn tập tổng kết năm học. Biểu diễn, liên hoan âm nhạc.",
                             IsCurriculum = true,
-                            SubjectId = new Guid("00000000-0000-0000-0000-000000000031"),
-                            Title = "9.2 - Biểu đồ tranh"
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000015"),
+                            Title = "Vui đón hè"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000120"),
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Ôn tập tổng hợp chương trình lớp 4",
+                            Description = "Tuần 1-4: Hình dáng, sở thích, cảm xúc, sự thay đổi so với lớp 1.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000016"),
+                            Title = "Khám phá bản thân"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000121"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Tuần 5-8: Ngăn nắp, quý trọng thời gian, tự chăm sóc, an toàn.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000016"),
+                            Title = "Rèn luyện bản thân"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000122"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Tuần 9-12: Truyền thống nhà trường, vệ sinh, xây dựng tình bạn, biết ơn thầy cô.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000016"),
+                            Title = "Xây dựng nhà trường"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000123"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Tuần 13-15: Gia đình yêu thương, quan tâm chăm sóc, truyền thống gia đình.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000016"),
+                            Title = "Em với gia đình"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000124"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Tuần 16-18: Hàng xóm, lễ hội địa phương, ngày Tết.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000016"),
+                            Title = "Em với cộng đồng"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000125"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Tuần 19-21: Bảo vệ môi trường, tiết kiệm năng lượng, trồng cây.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000016"),
+                            Title = "Em với môi trường"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000126"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Tuần 22-24: Tìm hiểu nghề nghiệp, đóng vai, ước mơ nghề nghiệp.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000016"),
+                            Title = "Nghề nghiệp quanh em"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000127"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Ôn tập số đến 1000, cộng trừ có nhớ. Bổ sung kiến thức lớp 2.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000017"),
+                            Title = "Ôn tập và bổ sung - Số đến 1000"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000128"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Bảng nhân chia 6, 7, 8, 9. Nhân chia trong phạm vi 1000.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000017"),
+                            Title = "Bảng nhân và bảng chia"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000129"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Góc vuông, góc không vuông. Hình tròn, tâm, bán kính. Đơn vị: mm, g, ml.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000017"),
+                            Title = "Hình học và đo lường"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000130"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Nhân số có 2-3 chữ số với số có 1 chữ số. Chia số có 2-3 chữ số cho số có 1 chữ số.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000017"),
+                            Title = "Phép nhân và phép chia trong phạm vi 1000"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000131"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Bảng số liệu, biểu đồ tranh. Sự kiện chắc chắn, có thể, không thể.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000017"),
+                            Title = "Thống kê và xác suất"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000132"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Ôn tập: bảng nhân chia, hình học, đo lường, thống kê.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000017"),
+                            Title = "Ôn tập học kì 1"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000133"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Số có 4-5 chữ số: hàng nghìn, hàng chục nghìn. Đọc, viết, so sánh.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000017"),
+                            Title = "Các số đến 100 000"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000134"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Cộng trừ số có nhiều chữ số. Tính giá trị biểu thức.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000017"),
+                            Title = "Phép cộng, phép trừ trong phạm vi 100 000"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000135"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Chu vi, diện tích hình chữ nhật, hình vuông. Công thức tính.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000017"),
+                            Title = "Chu vi và diện tích"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000136"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Nhân chia số có nhiều chữ số. Bài toán giải bằng hai phép tính.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000017"),
+                            Title = "Phép nhân, phép chia trong phạm vi 100 000"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000137"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Các loại tiền Việt Nam. Tháng, năm, thế kỷ. Bài toán liên quan đến tiền.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000017"),
+                            Title = "Tiền Việt Nam và thời gian"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000138"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Ôn tập tổng hợp: số đến 100 000, 4 phép tính, chu vi-diện tích, tiền, thời gian.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000017"),
+                            Title = "Ôn tập cuối năm"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000139"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Chủ điểm 1 Tập 1: Đọc hiểu về du lịch, trải nghiệm. Tốc độ đọc 70-80 tiếng/phút.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000018"),
+                            Title = "Trải nghiệm thú vị"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000140"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Chủ điểm 2 Tập 1: Trường lớp, thầy cô, bạn bè.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000018"),
+                            Title = "Cổng trường rộng mở"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000141"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Chủ điểm 3 Tập 1: Gia đình, yêu thương, chăm sóc.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000018"),
+                            Title = "Mái ấm gia đình"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000142"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Chủ điểm 4 Tập 1: Cộng đồng, xã hội, đoàn kết.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000018"),
+                            Title = "Mái nhà chung"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000143"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Chủ điểm 5 Tập 1: Truyện cổ tích, truyện ngụ ngôn.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000018"),
+                            Title = "Những câu chuyện thú vị"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000144"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Ôn tập: đọc hiểu, viết đoạn văn ngắn, chính tả, từ vựng HK1.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000018"),
+                            Title = "Ôn tập học kì 1"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000145"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Chủ điểm 1 Tập 2: Các loại hình nghệ thuật, sáng tạo.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000018"),
+                            Title = "Nghệ thuật"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000146"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Chủ điểm 2 Tập 2: Cảnh đẹp quê hương, phong tục.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000018"),
+                            Title = "Quê hương"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000147"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Chủ điểm 3 Tập 2: Lịch sử, truyền thống dân tộc.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000018"),
+                            Title = "Đất nước ngàn năm"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000148"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Chủ điểm 4 Tập 2: Bảo vệ môi trường, thiên nhiên.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000018"),
+                            Title = "Trái đất xanh"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000149"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Chủ điểm 5 Tập 2: Mở rộng hiểu biết về thế giới.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000018"),
+                            Title = "Thế giới trong mắt em"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000150"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Hello/Goodbye, school things (pen, book, ruler), colours (red, blue, green), numbers 1-10.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000019"),
+                            Title = "Unit 1-5: Greetings, School, Colours"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000151"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Family members, jobs (teacher, doctor), body parts, pets. This is my..., He/She is a...",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000019"),
+                            Title = "Unit 6-10: Family, Jobs, Body"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000152"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Ôn tập từ vựng và mẫu câu chủ đề trường học, gia đình, nghề nghiệp.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000019"),
+                            Title = "Review 1 (Units 1-10)"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000153"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Rooms in house, toys, outdoor activities. Where is...? I have... Do you like...?",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000019"),
+                            Title = "Unit 11-15: House, Toys, Activities"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000154"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Zoo animals, food, clothes, weather. What's the weather like? I'm wearing...",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000019"),
+                            Title = "Unit 16-20: Animals, Food, Clothes"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000155"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Ôn tập tổng hợp từ vựng, mẫu câu, phonics toàn bộ 20 unit.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000019"),
+                            Title = "Review 2 (Units 11-20)"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000156"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Bài 1: Nhận diện biển báo, luật giao thông cơ bản, qua đường an toàn.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000020"),
+                            Title = "An toàn giao thông"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000157"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Bài 2: Tự hào về đất nước, cờ Tổ quốc, Quốc ca.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000020"),
+                            Title = "Yêu Tổ quốc Việt Nam"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000158"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Bài 3: Chăm chỉ học tập, ham tìm hiểu kiến thức mới.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000020"),
+                            Title = "Ham học hỏi"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000159"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Bài 4: Giá trị của lời hứa, trách nhiệm với lời nói.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000020"),
+                            Title = "Giữ lời hứa"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000160"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Bài 5: Giữ gìn và phát huy truyền thống tốt đẹp của gia đình.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000020"),
+                            Title = "Truyền thống gia đình"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000161"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Bài 6: Tình làng nghĩa xóm, giúp đỡ láng giềng.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000020"),
+                            Title = "Quan tâm hàng xóm, láng giềng"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000162"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Bài 7: Đồng cảm với người khác, biết chia sẻ, giúp đỡ.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000020"),
+                            Title = "Thấu hiểu và chia sẻ"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000163"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Bài 8: Tôn trọng sự khác biệt về ngoại hình, dân tộc, vùng miền.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000020"),
+                            Title = "Tôn trọng sự khác biệt"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000164"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Bài 9-10: Nhận biết và kiểm soát cảm xúc giận dữ, buồn bã.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000020"),
+                            Title = "Kiềm chế cảm xúc tiêu cực"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000165"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Họ hàng, quan hệ gia đình mở rộng, phòng cháy chữa cháy trong gia đình.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000021"),
+                            Title = "Gia đình"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000166"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Môi trường trường học, an toàn trường lớp, phòng thí nghiệm đơn giản.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000021"),
+                            Title = "Trường học"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000167"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Các hoạt động cộng đồng, phong tục địa phương, nghề nghiệp.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000021"),
+                            Title = "Cộng đồng"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000168"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Bộ phận cây (rễ, thân, lá, hoa, quả). Các nhóm động vật, chuỗi thức ăn đơn giản.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000021"),
+                            Title = "Thực vật và động vật"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000169"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Hệ tiêu hóa, tuần hoàn, thần kinh. Phòng bệnh truyền nhiễm.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000021"),
+                            Title = "Con người và sức khỏe"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000170"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Hệ Mặt Trời, Trái Đất quay. Các đới khí hậu (nhiệt đới, ôn đới, hàn đới).",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000021"),
+                            Title = "Trái Đất và bầu trời"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000171"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Bài 1-2: Kết hợp nét, hình, màu sắc. Tạo bức tranh tổng hợp.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000022"),
+                            Title = "Nét, hình và màu"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000172"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Bài 3-4: Vẽ tranh trường lớp, bạn bè, hoạt động trường học.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000022"),
+                            Title = "Trường học của em"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000173"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Bài 5-6: Vẽ chân dung gia đình, sinh hoạt ngày Tết.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000022"),
+                            Title = "Gia đình thân yêu"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000174"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Bài 7-8: Tạo sản phẩm mĩ thuật từ vật liệu tái chế.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000022"),
+                            Title = "Sáng tạo từ vật liệu tái chế"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000175"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Bài 9-10: Làm rối tay, diều giấy từ vật liệu đơn giản.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000022"),
+                            Title = "Đồ chơi dân gian"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000176"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Bài 11-12: Tìm hiểu, thưởng thức và vẽ lại tranh dân gian.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000022"),
+                            Title = "Tranh dân gian"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000177"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Bài 13-14: Vẽ tranh phong cảnh thiên nhiên.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000022"),
+                            Title = "Thiên nhiên tươi đẹp"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000178"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Bài 15-16: Ôn tập, trưng bày sản phẩm mĩ thuật cả năm.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000022"),
+                            Title = "Tổng kết và trưng bày"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000179"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Hát bài về xuân, Tết. Ôn tập nốt nhạc Đô-Rê-Mi-Pha-Son-La-Si.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000023"),
+                            Title = "Vui đón xuân"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000180"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Hát bài về gia đình. Thực hành cao độ nốt nhạc.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000023"),
+                            Title = "Gia đình yêu thương"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000181"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Hát bài về trường lớp. Nhịp 2/4, 3/4.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000023"),
+                            Title = "Mái trường mến yêu"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000182"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Hát bài về tình bạn. Nghe nhạc cổ điển.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000023"),
+                            Title = "Vòng tay bạn bè"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000183"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Hát bài về thiên nhiên. Sáng tạo vận động.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000023"),
+                            Title = "Thiên nhiên quanh em"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000184"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Dân ca Việt Nam, nhạc cụ dân tộc.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000023"),
+                            Title = "Quê hương"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000185"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Làm quen Piano/Organ. Nghe nhạc phương Tây.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000023"),
+                            Title = "Thế giới âm nhạc"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000186"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Ôn tập, biểu diễn cuối năm. Thang 7 nốt Đô-Si.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000023"),
+                            Title = "Vui đón hè"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000187"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Tuần 1-4: Truyền thống nhà trường, nội quy, các hoạt động tập thể.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000024"),
+                            Title = "Em và trường tiểu học"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000188"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Tuần 5-8: Điểm mạnh, điểm yếu, kế hoạch rèn luyện.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000024"),
+                            Title = "Khám phá bản thân"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000189"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Tuần 9-12: Trách nhiệm với bản thân, gia đình, trường lớp.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000024"),
+                            Title = "Trách nhiệm của em"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000190"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Tuần 13-16: Công việc nhà, giúp đỡ gia đình, ngày Tết.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000024"),
+                            Title = "Em với gia đình"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000191"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Tuần 17-20: Tham gia hoạt động cộng đồng, thiện nguyện.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000024"),
+                            Title = "Em với cộng đồng"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000192"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Tuần 21-24: Phân loại rác, tái chế, giảm thiểu ô nhiễm.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000024"),
+                            Title = "Vệ sinh môi trường"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000193"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Tuần 25-28: Kỹ năng phòng cháy, thoát hiểm, phòng tránh thiên tai.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000024"),
+                            Title = "Phòng hỏa hoạn và thiên tai"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000194"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Tuần 29-35: Bảo vệ môi trường, trồng cây, tổng kết năm học.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000024"),
+                            Title = "Môi trường xanh"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000195"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Bài 1-2: Các bộ phận máy tính (CPU, màn hình, bàn phím, chuột). Bật/tắt máy tính.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000025"),
+                            Title = "Máy tính và em"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000196"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Bài 3-4: Internet là gì? Trình duyệt web, truy cập website an toàn.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000025"),
+                            Title = "Mạng Internet"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000197"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Bài 5-6: Tệp và thư mục. Tạo, đổi tên, xóa thư mục trên Desktop.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000025"),
+                            Title = "Lưu trữ thông tin"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000198"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Bài 7-8: An toàn thông tin cá nhân, không chia sẻ mật khẩu, tôn trọng bản quyền.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000025"),
+                            Title = "Đạo đức số"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000199"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Bài 9-10: Tập gõ phím, sử dụng chuột thành thạo. Trò chơi luyện gõ.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000025"),
+                            Title = "Ứng dụng: Bàn phím và chuột"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000200"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Bài 11-12: Phần mềm Paint, vẽ hình đơn giản. Thuật toán cơ bản (tuần tự).",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000025"),
+                            Title = "Giải quyết vấn đề với máy tính"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000201"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Đèn, quạt, radio, tivi – nhận biết và sử dụng an toàn các thiết bị.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000026"),
+                            Title = "Công nghệ và đời sống"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000202"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Chọn giống, gieo hạt, chăm sóc cây hoa trong chậu. Quan sát sinh trưởng.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000026"),
+                            Title = "Trồng hoa trong chậu"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000203"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Lắp ráp xe đồ chơi, đèn giao thông từ bộ lắp ghép kỹ thuật.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000026"),
+                            Title = "Lắp ráp mô hình"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000204"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Số có 6 chữ số, hàng và lớp (đơn vị, nghìn, triệu). Đọc, viết, so sánh, sắp xếp.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000027"),
+                            Title = "Số có nhiều chữ số"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000205"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Làm tròn số đến hàng nghìn, hàng chục nghìn. Ước lượng kết quả.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000027"),
+                            Title = "Làm tròn số và ước lượng"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000206"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Nhân số có nhiều chữ số với số có 2 chữ số. Tính chất giao hoán, kết hợp, phân phối.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000027"),
+                            Title = "Phép nhân"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000207"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Chia số có nhiều chữ số cho số có 2 chữ số. Chia có dư, kiểm tra phép chia.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000027"),
+                            Title = "Phép chia"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000208"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Góc vuông, nhọn, tù, bẹt. Hai đường thẳng vuông góc, song song.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000027"),
+                            Title = "Hình học: Góc và đường thẳng"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000209"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Yến, tạ, tấn. Diện tích: mm², cm², dm², m². Đổi đơn vị đo.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000027"),
+                            Title = "Đo lường"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000210"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Ôn tập: số có nhiều chữ số, 4 phép tính, hình học, đo lường.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000027"),
+                            Title = "Ôn tập học kì 1"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000211"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Khái niệm phân số, rút gọn, quy đồng mẫu số. Cộng, trừ, nhân, chia phân số.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000027"),
+                            Title = "Phân số"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000212"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Đặc điểm, chu vi, diện tích hình bình hành và hình thoi.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000027"),
+                            Title = "Hình bình hành và hình thoi"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000213"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Tỉ số của hai số. Bài toán tìm hai số khi biết tổng-hiệu, tổng-tỉ, hiệu-tỉ.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000027"),
+                            Title = "Tỉ số"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000214"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Biểu đồ cột và biểu đồ tranh. Đọc, vẽ, phân tích biểu đồ.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000027"),
+                            Title = "Biểu đồ"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000215"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Ôn tập tổng hợp: phân số, hình bình hành/thoi, tỉ số, biểu đồ.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000027"),
+                            Title = "Ôn tập cuối năm"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000216"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Chủ điểm 1 Tập 1: Danh từ. Đọc hiểu về cá tính, sự độc đáo mỗi người.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000028"),
+                            Title = "Mỗi người một vẻ"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000217"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Chủ điểm 2 Tập 1: Động từ. Du lịch, trải nghiệm thiên nhiên.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000028"),
+                            Title = "Trải nghiệm và khám phá"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000218"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Chủ điểm 3 Tập 1: Tính từ. Sách, kiến thức, ham đọc sách.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000028"),
+                            Title = "Kho tàng tri thức"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000219"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Chủ điểm 4 Tập 1: Biện pháp nhân hóa. Ước mơ, hoài bão.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000028"),
+                            Title = "Chắp cánh ước mơ"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000220"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Ôn tập: danh từ, động từ, tính từ, nhân hóa. Viết đoạn văn tả người, kể chuyện.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000028"),
+                            Title = "Ôn tập học kì 1"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000221"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Chủ điểm 1 Tập 2: Câu và thành phần câu (CN-VN). Tình yêu thương.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000028"),
+                            Title = "Sống để yêu thương"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000222"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Chủ điểm 2 Tập 2: Trạng ngữ. Biết ơn, truyền thống.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000028"),
+                            Title = "Uống nước nhớ nguồn"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000223"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Chủ điểm 3 Tập 2: Dấu ngoặc kép. Quê hương, đất nước.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000028"),
+                            Title = "Quê hương trong tôi"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000224"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Chủ điểm 4 Tập 2: Từ ngữ, câu tưởng tượng. Hòa bình, nhân đạo.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000028"),
+                            Title = "Vì một thế giới bình yên"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000225"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Ôn tập: câu, trạng ngữ, dấu câu. Viết thư, giấy mời, tả cây cối.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000028"),
+                            Title = "Ôn tập cuối năm"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000226"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Countries, nationalities (Where are you from?). Telling time (What time is it?).",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000029"),
+                            Title = "Unit 1-2: Countries & Time"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000227"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Days of the week (What day is it today?). Birthdays, months, ordinal numbers.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000029"),
+                            Title = "Unit 3-4: Days & Birthdays"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000228"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Can/Can't for abilities. School facilities (library, gym, canteen).",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000029"),
+                            Title = "Unit 5-6: Abilities & School"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000229"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "School timetable, subjects (I have Maths on Monday). Favourite subjects.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000029"),
+                            Title = "Unit 7-8: Timetable & Subjects"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000230"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Sports activities (play football, swim). Summer holidays, past activities.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000029"),
+                            Title = "Unit 9-10: Sports & Holidays"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000231"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Ôn tập học kì 1: quốc gia, thời gian, trường học, thể thao.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000029"),
+                            Title = "Review 1 (Units 1-10)"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000232"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Jobs (doctor, farmer, teacher). Workplaces (hospital, school, office).",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000029"),
+                            Title = "Unit 11-12: Family Jobs & Workplaces"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000233"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Describing people (tall, short, hair). Daily activities (get up, go to school).",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000029"),
+                            Title = "Unit 13-14: Appearance & Daily Activities"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000234"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Weekend activities (What do you do at the weekend?). Weather (sunny, rainy, cloudy).",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000029"),
+                            Title = "Unit 15-16: Weekend & Weather"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000235"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "City places (park, cinema). Shopping (How much is it? It's...).",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000029"),
+                            Title = "Unit 17-18: City & Shopping"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000236"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Zoo animals, describing animals. Summer holiday plans.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000029"),
+                            Title = "Unit 19-20: Animals & Summer"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000237"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Ôn tập học kì 2: nghề nghiệp, hoạt động, thời tiết, mua sắm.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000029"),
+                            Title = "Review 2 (Units 11-20)"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000238"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Bài 1-2: Anh hùng dân tộc, kính trọng người có công.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000030"),
+                            Title = "Biết ơn người có công với đất nước"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000239"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Bài 3-4: Đồng cảm, tương trợ, hoạt động nhân đạo.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000030"),
+                            Title = "Cảm thông và giúp đỡ người khó khăn"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000240"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Bài 5: Chăm chỉ lao động, quý trọng sản phẩm lao động.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000030"),
+                            Title = "Yêu lao động"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000241"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Bài 6-7: Không lấy đồ không thuộc về mình, bảo vệ tài sản chung.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000030"),
+                            Title = "Tôn trọng tài sản của người khác"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000242"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Bài 8-9: Tình bạn lành mạnh, giải quyết mâu thuẫn hòa bình.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000030"),
+                            Title = "Quan hệ bạn bè"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000243"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Bài 10: Quyền được học tập, vui chơi, bảo vệ. Bổn phận đối với gia đình, xã hội.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000030"),
+                            Title = "Quyền và bổn phận trẻ em"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000244"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Nước: 3 thể (rắn, lỏng, khí), chuyển thể (bay hơi, ngưng tụ, đông đặc, nóng chảy). Không khí.",
                             IsCurriculum = true,
                             SubjectId = new Guid("00000000-0000-0000-0000-000000000031"),
-                            Title = "9.3 - Ôn tập cuối năm lớp 4"
+                            Title = "Chất"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000245"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Ánh sáng (truyền thẳng, phản xạ), âm thanh (rung động, cao-thấp), nhiệt (truyền nhiệt, cách nhiệt).",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000031"),
+                            Title = "Năng lượng"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000246"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Trao đổi chất ở thực vật, động vật. Hô hấp, quang hợp. Thích nghi môi trường.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000031"),
+                            Title = "Thực vật và động vật"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000247"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Vi khuẩn có ích, vi khuẩn gây bệnh. Nấm men, nấm mốc. Bảo quản thực phẩm.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000031"),
+                            Title = "Nấm và vi khuẩn"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000248"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Dinh dưỡng cân bằng, vitamin, khoáng chất. Vệ sinh an toàn thực phẩm.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000031"),
+                            Title = "Con người và sức khỏe"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000249"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Hệ sinh thái, chuỗi thức ăn (sinh vật sản xuất, tiêu thụ, phân hủy). Bảo vệ đa dạng sinh học.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000031"),
+                            Title = "Sinh vật và môi trường"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000250"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Gam màu nóng, lạnh, trung tính. Hòa sắc, tương phản.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000032"),
+                            Title = "Màu sắc trong nghệ thuật"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000251"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Trống đồng Đông Sơn, gốm sứ Bát Tràng. Vẽ họa tiết truyền thống.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000032"),
+                            Title = "Di sản văn hóa"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000252"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Kỹ thuật vẽ chân dung, tỉ lệ khuôn mặt, biểu cảm.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000032"),
+                            Title = "Chân dung và con người"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000253"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Vẽ tranh phong cảnh, bảo vệ môi trường.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000032"),
+                            Title = "Thiên nhiên và môi trường"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000254"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Nhận biết kiến trúc truyền thống Việt Nam (đình, chùa). Vẽ phối cảnh đơn giản.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000032"),
+                            Title = "Kiến trúc"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000255"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Vẽ tranh đề tài cuộc sống, sinh hoạt hàng ngày.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000032"),
+                            Title = "Cuộc sống quanh em"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000256"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Tranh của Tô Ngọc Vân, Van Gogh. Phân tích bố cục, màu sắc.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000032"),
+                            Title = "Thưởng thức mĩ thuật"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000257"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Khuông nhạc, khóa Son. Nốt nhạc trên khuông.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000033"),
+                            Title = "Khởi đầu mới"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000258"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Dân ca các vùng miền. Nhạc cụ: Đàn Bầu, Đàn Tranh.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000033"),
+                            Title = "Giai điệu quê hương"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000259"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Hát bài về thầy cô. Thực hành đọc nhạc.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000033"),
+                            Title = "Thầy cô và mái trường"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000260"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Mozart, Beethoven – thần đồng âm nhạc. Thưởng thức nhạc cổ điển.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000033"),
+                            Title = "Tuổi thơ và ước mơ"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000261"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Sáo Recorder hoặc Melodica. Thực hành chơi nhạc cụ.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000033"),
+                            Title = "Ước mơ bay xa"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000262"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Hát bài Tết, xuân. Ôn tập tổng kết năm học.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000033"),
+                            Title = "Vui đón xuân"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000263"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Xây dựng lớp học hạnh phúc, tự quản, hoạt động Đội.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000034"),
+                            Title = "Nhà trường"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000264"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Hoạt động thiện nguyện, tham gia sự kiện cộng đồng.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000034"),
+                            Title = "Cộng đồng"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000265"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Khám phá thiên nhiên, bảo vệ môi trường sống.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000034"),
+                            Title = "Thiên nhiên"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000266"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Quản lý chi tiêu đơn giản, phòng chống đuối nước.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000034"),
+                            Title = "Kỹ năng tự phục vụ"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000267"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Tìm hiểu nghề nghiệp, đóng vai, lập kế hoạch tương lai.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000034"),
+                            Title = "Nghề nghiệp"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000268"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Phân biệt phần cứng (hardware) và phần mềm (software). Bộ nhớ.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000035"),
+                            Title = "Phần cứng và phần mềm"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000269"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Sử dụng trình duyệt, tìm kiếm Google, đánh giá nguồn thông tin.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000035"),
+                            Title = "Internet và tìm kiếm"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000270"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Quản lý tệp, sao chép, di chuyển, nén/giải nén.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000035"),
+                            Title = "Tệp và thư mục nâng cao"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000271"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Tôn trọng bản quyền phần mềm, hình ảnh, nhạc. Quy tắc sử dụng.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000035"),
+                            Title = "Bản quyền số"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000272"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Microsoft Word: nhập văn bản, định dạng chữ, chèn hình ảnh.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000035"),
+                            Title = "Soạn thảo văn bản"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000273"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Giao diện Scratch, khối lệnh, lập trình hoạt hình và trò chơi đơn giản.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000035"),
+                            Title = "Lập trình Scratch"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000274"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Kỹ thuật gieo hạt, trồng, chăm sóc cây hoa và cây cảnh.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000036"),
+                            Title = "Trồng hoa và cây cảnh"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000275"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Lắp ráp cái đu, rô-bốt, bập bênh, đồ chơi dân gian từ bộ lắp ghép.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000036"),
+                            Title = "Lắp ráp mô hình kỹ thuật"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000276"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Bản đồ, lược đồ, biểu đồ. Cách sử dụng bản đồ để học địa lí.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000037"),
+                            Title = "Phương tiện học tập Lịch sử và Địa lí"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000277"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Đặc điểm tự nhiên, dân cư, kinh tế địa phương.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000037"),
+                            Title = "Địa phương em"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000278"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Đặc điểm địa hình, khí hậu, dân tộc. Đền Hùng, truyền thuyết Hùng Vương.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000037"),
+                            Title = "Trung du và miền núi Bắc Bộ"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000279"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Đồng bằng sông Hồng, kinh thành Thăng Long, Văn Miếu – Quốc Tử Giám.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000037"),
+                            Title = "Đồng bằng Bắc Bộ"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000280"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Đặc điểm bờ biển, kinh tế. Di sản: Cố đô Huế, phố cổ Hội An.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000037"),
+                            Title = "Duyên hải miền Trung"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000281"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Tây Nguyên: cồng chiêng, cà phê. Nam Bộ: TP.HCM, địa đạo Củ Chi, đồng bằng sông Cửu Long.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000037"),
+                            Title = "Tây Nguyên và Nam Bộ"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000282"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Ôn tập phân số. Khái niệm số thập phân, chuyển đổi phân số ↔ số thập phân.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000038"),
+                            Title = "Ôn tập phân số và số thập phân"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000283"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Cộng, trừ, nhân, chia số thập phân. Tính giá trị biểu thức.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000038"),
+                            Title = "Bốn phép tính với số thập phân"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000284"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Tam giác, hình thang (chu vi, diện tích). Hình tròn (chu vi, diện tích). Hình hộp chữ nhật, lập phương (diện tích xung quanh, toàn phần, thể tích).",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000038"),
+                            Title = "Hình học"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000285"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Khái niệm phần trăm (%). Tìm tỉ số phần trăm, tìm giá trị theo %. Bài toán lãi suất cơ bản.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000038"),
+                            Title = "Tỉ số phần trăm"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000286"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Đổi đơn vị đo. Vận tốc, quãng đường, thời gian: s = v × t.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000038"),
+                            Title = "Đo lường và chuyển động đều"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000287"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Biểu đồ hình quạt (đọc, nhận xét). Xác suất thực nghiệm.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000038"),
+                            Title = "Thống kê và xác suất"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000288"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Ôn tập tổng hợp chuẩn bị chuyển cấp: số thập phân, phân số, hình học, đo lường, tỉ số %.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000038"),
+                            Title = "Ôn tập cuối năm"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000289"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Chủ điểm 1: Từ đồng nghĩa. Tả phong cảnh. Đọc hiểu về tuổi thơ.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000039"),
+                            Title = "Thế giới tuổi thơ"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000290"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Chủ điểm 2: Từ trái nghĩa. Văn bản về cộng đồng, sẻ chia.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000039"),
+                            Title = "Cộng đồng"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000291"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Chủ điểm 3: Từ đồng âm, từ nhiều nghĩa. Tả người. Văn bản về quê hương.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000039"),
+                            Title = "Quê hương"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000292"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Ôn tập: từ đồng nghĩa, trái nghĩa, đồng âm, nhiều nghĩa. Viết bài tả phong cảnh, tả người.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000039"),
+                            Title = "Ôn tập học kì 1"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000293"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Chủ điểm 4: Đại từ, quan hệ từ. Kể chuyện sáng tạo. Bảo vệ môi trường.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000039"),
+                            Title = "Bảo vệ môi trường"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000294"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Chủ điểm 5: Câu đơn, câu ghép. Văn bản về trẻ em, tương lai.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000039"),
+                            Title = "Chủ nhân tương lai"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000295"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Chủ điểm 6: Ôn tập tổng hợp chuyển cấp. Hệ thống ngữ pháp, từ vựng.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000039"),
+                            Title = "Vững bước vào cấp hai"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000296"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Addresses, daily routines, hobbies. Where do you live? What do you do every day?",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000040"),
+                            Title = "Me & My Friends"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000297"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "School subjects, events, school rules. Present continuous tense.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000040"),
+                            Title = "My School"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000298"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Holidays, transport, folk tales. Past Simple tense.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000040"),
+                            Title = "The World Around Us"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000299"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Ôn tập: daily routines, school, holidays. Grammar: present simple/continuous, past simple.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000040"),
+                            Title = "Review 1 (Themes 1-3)"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000300"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Jobs, health & safety. Future Simple (will), Should for advice.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000040"),
+                            Title = "The Future"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000301"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Vietnamese and world festivals. Descriptions, traditions, food.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000040"),
+                            Title = "Festivals"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000302"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Ôn tập: jobs, health, festivals. Grammar: future simple, should, overall review.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000040"),
+                            Title = "Review 2 (Themes 4-5)"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000303"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Anh hùng dân tộc, đền đáp công ơn, ngày thương binh liệt sĩ 27/7.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000041"),
+                            Title = "Biết ơn người có công với đất nước"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000304"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Tôn trọng giới tính, dân tộc, tín ngưỡng. Không phân biệt đối xử.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000041"),
+                            Title = "Tôn trọng sự khác biệt"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000305"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Ý chí, nghị lực vượt khó. Gương người thành công từ hoàn cảnh khó khăn.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000041"),
+                            Title = "Vượt qua khó khăn"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000306"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Trách nhiệm bảo vệ môi trường, ứng phó biến đổi khí hậu.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000041"),
+                            Title = "Bảo vệ môi trường"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000307"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Công ước Liên Hợp Quốc về quyền trẻ em. Bổn phận của trẻ em.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000041"),
+                            Title = "Quyền và bổn phận trẻ em"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000308"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Hòa bình thế giới, hữu nghị giữa các dân tộc.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000041"),
+                            Title = "Tình hữu nghị quốc tế"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000309"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Hỗn hợp, dung dịch. Biến đổi lý học, hóa học. Lọc, lắng, bay hơi.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000042"),
+                            Title = "Chất và biến đổi hóa học"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000310"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Mạch điện đơn giản (pin, bóng đèn, công tắc). Năng lượng tái tạo (mặt trời, gió).",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000042"),
+                            Title = "Năng lượng"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000311"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Sinh sản ở người. Tuổi dậy thì. Vệ sinh cơ thể.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000042"),
+                            Title = "Con người"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000312"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Sinh sản hữu tính, vô tính ở thực vật và động vật.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000042"),
+                            Title = "Thực vật và động vật"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000313"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Ứng dụng vi sinh vật: lên men (sữa chua, dưa muối). Nấm có ích và nấm độc.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000042"),
+                            Title = "Vi khuẩn và nấm nâng cao"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000314"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Ô nhiễm (không khí, nước, đất). Bảo tồn tài nguyên, phát triển bền vững.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000042"),
+                            Title = "Môi trường và tài nguyên"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000315"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Gam màu nóng, lạnh trong thiết kế. Trang trí họa tiết.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000043"),
+                            Title = "Màu sắc trang trí"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000316"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Múa rối nước, nghệ thuật truyền thống Việt Nam.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000043"),
+                            Title = "Di sản văn hóa"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000317"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Kỹ thuật vẽ dáng người chuyển động, tỉ lệ cơ thể.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000043"),
+                            Title = "Tạo hình dáng người"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000318"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Thiết kế bao bì sản phẩm, typography cơ bản.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000043"),
+                            Title = "Thiết kế đồ họa"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000319"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Luật xa gần (phối cảnh), vẽ phong cảnh có chiều sâu.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000043"),
+                            Title = "Kiến trúc và không gian"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000320"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Tranh cổ động, tranh đề tài xã hội. Trưng bày cuối năm.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000043"),
+                            Title = "Cuộc sống quanh em"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000321"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Nhịp 2/4. Hát bài về buổi sáng. Lý thuyết nhịp.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000044"),
+                            Title = "Reo vang bình minh"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000322"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Hát Xoan, Quan họ. Nhạc cụ: Đàn Nguyệt, Đàn Tì Bà.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000044"),
+                            Title = "Giai điệu quê hương"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000323"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Dấu luyến, dấu nối trong bài hát. Bài hát về thầy cô, cha mẹ.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000044"),
+                            Title = "Lòng biết ơn"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000324"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Chopin, Tchaikovsky. Nghe nhạc cổ điển phương Tây.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000044"),
+                            Title = "Âm nhạc năm châu"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000325"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Sáo Recorder nâng cao. Hát bè 2 bè. Bài hát về hòa bình.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000044"),
+                            Title = "Khát vọng hòa bình"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000326"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Bài hát về Bác Hồ. Ôn tập tổng kết năm học.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000044"),
+                            Title = "Nhớ ơn Bác Hồ"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000327"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Tự quản lớp học, xây dựng video kỉ niệm, hoạt động Đội nâng cao.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000045"),
+                            Title = "Nhà trường"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000328"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Hành trình về nguồn, góc cộng đồng xanh, hoạt động thiện nguyện.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000045"),
+                            Title = "Cộng đồng"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000329"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Biến đổi khí hậu, ứng phó thiên tai, bảo vệ đa dạng sinh học.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000045"),
+                            Title = "Thiên nhiên"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000330"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "An toàn trên mạng Internet, quản lý chi tiêu, hội chợ mini.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000045"),
+                            Title = "Kỹ năng sống"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000331"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Tìm hiểu nghề nghiệp, chuẩn bị kỹ năng chuyển cấp lên THCS.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000045"),
+                            Title = "Nghề nghiệp và chuẩn bị lên lớp 6"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000332"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Kỹ thuật tìm kiếm nâng cao trên Google, đánh giá độ tin cậy nguồn thông tin.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000046"),
+                            Title = "Tìm kiếm nâng cao"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000333"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Tạo và sử dụng email. Gửi, nhận, trả lời thư. An toàn email.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000046"),
+                            Title = "Email"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000334"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Google Drive: tải lên, chia sẻ tập tin, cộng tác trực tuyến.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000046"),
+                            Title = "Lưu trữ đám mây"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000335"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Bắt nạt trên mạng (cyberbullying), quyền riêng tư, ứng xử văn minh trên mạng.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000046"),
+                            Title = "Công dân số"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000336"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "PowerPoint: tạo bài trình chiếu, chèn văn bản, hình ảnh, hiệu ứng.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000046"),
+                            Title = "Đa phương tiện và trình chiếu"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000337"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Vòng lặp, câu lệnh điều kiện, biến số. Lập trình trò chơi và ứng dụng.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000046"),
+                            Title = "Lập trình Scratch nâng cao"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000338"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Vai trò công nghệ trong cuộc sống. Thiết bị công nghệ thông dụng.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000047"),
+                            Title = "Công nghệ và đời sống"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000339"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Quy trình thiết kế: ý tưởng → bản vẽ → chế tạo → thử nghiệm.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000047"),
+                            Title = "Thiết kế kỹ thuật tổng quát"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000340"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Lắp ráp xe chạy điện, máy bay mô hình từ bộ lắp ghép.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000047"),
+                            Title = "Lắp ráp mô hình điện"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000341"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Chuẩn bị bể cá, chọn giống, chăm sóc cá cảnh.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000047"),
+                            Title = "Nuôi cá cảnh"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000342"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Sử dụng phần mềm vẽ để thiết kế logo, poster đơn giản.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000047"),
+                            Title = "Thiết kế đồ họa số"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000343"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Vai trò công nghệ trong các nghề. Định hướng nghề nghiệp.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000047"),
+                            Title = "Công nghệ và nghề nghiệp"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000344"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Địa lí: Vị trí, hình dạng đất nước. Biển đảo, Hoàng Sa, Trường Sa.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000048"),
+                            Title = "Đất nước Việt Nam"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000345"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Địa hình, khí hậu, sông ngòi. Đặc điểm thiên nhiên các vùng miền.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000048"),
+                            Title = "Thiên nhiên Việt Nam"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000346"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "5 châu lục, 4 đại dương. Đặc điểm chính của các châu lục.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000048"),
+                            Title = "Các châu lục và đại dương"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000347"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Lịch sử: Phong trào yêu nước, Đảng Cộng sản Việt Nam ra đời, Cách mạng Tháng Tám 1945.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000048"),
+                            Title = "Việt Nam đầu thế kỷ XX - 1945"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000348"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Chiến thắng Điện Biên Phủ 1954, Hiệp định Giơ-ne-vơ.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000048"),
+                            Title = "Kháng chiến chống Pháp"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000349"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Chiến dịch Hồ Chí Minh, giải phóng miền Nam 30/4/1975, thống nhất đất nước.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000048"),
+                            Title = "Kháng chiến chống Mỹ"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000350"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Thời kỳ đổi mới từ 1986, hội nhập quốc tế, thành tựu phát triển.",
+                            IsCurriculum = true,
+                            SubjectId = new Guid("00000000-0000-0000-0000-000000000048"),
+                            Title = "Xây dựng và đổi mới"
                         });
                 });
 

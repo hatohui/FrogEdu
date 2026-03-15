@@ -118,10 +118,13 @@ class SubscriptionService {
 	/**
 	 * Get subscription dashboard statistics (Admin only)
 	 */
-	async getDashboardStats(): Promise<SubscriptionDashboardStatsResponse> {
+	async getDashboardStats(
+		timeRange: string = '30d'
+	): Promise<SubscriptionDashboardStatsResponse> {
 		const response =
 			await axiosInstance.get<SubscriptionDashboardStatsResponse>(
-				`${this.baseUrl}/admin/dashboard-stats`
+				`${this.baseUrl}/admin/dashboard-stats`,
+				{ params: { timeRange } }
 			)
 		return response.data
 	}

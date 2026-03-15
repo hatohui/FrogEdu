@@ -189,9 +189,12 @@ class UserService {
 		return response.data
 	}
 
-	async getUserDashboardStats(): Promise<UserDashboardStatsResponse> {
+	async getUserDashboardStats(
+		timeRange: string = '30d'
+	): Promise<UserDashboardStatsResponse> {
 		const response = await axiosInstance.get<UserDashboardStatsResponse>(
-			`${this.baseUrl}/users/dashboard-stats`
+			`${this.baseUrl}/users/dashboard-stats`,
+			{ params: { timeRange } }
 		)
 		return response.data
 	}

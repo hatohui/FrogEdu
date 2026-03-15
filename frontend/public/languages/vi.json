@@ -787,10 +787,16 @@
 			"exams_on": "Bài thi ngày {{date}}",
 			"select_date": "Chọn một ngày để xem bài thi",
 			"exam_session": "Phiên thi",
+			"practice_test": "Bài luyện tập",
+			"practice": "Luyện tập",
 			"no_exams": "Không có bài thi trong ngày này.",
 			"all_upcoming": "Tất cả bài thi sắp tới",
 			"retries_allowed": "Cho phép {{count}} lần thử lại",
-			"attempts": "{{count}} lần thử"
+			"attempts": "{{count}} lần thử",
+			"attempts_of": "{{used}} / {{total}} lần thử",
+			"start_exam": "Bắt đầu thi",
+			"retry_exam": "Thử lại",
+			"view_results": "Xem kết quả"
 		},
 		"exam_sessions": {
 			"title": "Phiên thi",
@@ -960,6 +966,11 @@
 				"ai_explaining": "Đang hỏi AI...",
 				"ai_explanation_title": "Giải thích từ AI",
 				"ai_explanation_error": "Không thể lấy giải thích. Vui lòng thử lại.",
+				"socratic_title": "Gợi ý Socratic",
+				"socratic_button": "Lấy gợi ý giảng dạy",
+				"socratic_loading": "Đang tạo gợi ý...",
+				"socratic_error": "Không thể tạo gợi ý. Vui lòng thử lại.",
+				"teaching_note": "Ghi chú giảng dạy",
 				"essay_type_label": "Câu hỏi tự luận",
 				"essay_your_answer": "Câu trả lời của bạn",
 				"essay_rubric_label": "Tiêu chí chấm điểm",
@@ -1709,6 +1720,22 @@
 	"analytics": {
 		"title": "Phân tích",
 		"subtitle": "Thống kê và hiệu suất nền tảng",
+		"time_range": {
+			"label": "Khoảng thời gian",
+			"last_7_days": "7 ngày qua",
+			"last_30_days": "30 ngày qua",
+			"last_90_days": "90 ngày qua",
+			"last_year": "Năm qua",
+			"all_time": "Tất cả"
+		},
+		"ai_usage": {
+			"title": "Sử dụng AI",
+			"total_requests": "Tổng yêu cầu AI",
+			"total_requests_description": "Tổng số yêu cầu sử dụng AI",
+			"over_time": "Sử dụng AI theo thời gian",
+			"over_time_description": "Số lượng yêu cầu AI theo thời gian",
+			"requests": "Yêu cầu"
+		},
 		"user_growth": "Tăng trưởng người dùng (30 ngày qua)",
 		"role_distribution": "Phân bố vai trò",
 		"verification_status": "Trạng thái xác minh",

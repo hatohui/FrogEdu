@@ -12,6 +12,8 @@ from .requests import (
     ExplainQuestionResponse,
     GradeEssayRequest,
     GradeEssayResponse,
+    SocraticHintsRequest,
+    SocraticHintsResponse,
 )
 
 __all__ = [
@@ -28,4 +30,6 @@ __all__ = [
     "ExplainQuestionResponse",
     "GradeEssayRequest",
     "GradeEssayResponse",
+    "SocraticHintsRequest",
+    "SocraticHintsResponse",
 ]

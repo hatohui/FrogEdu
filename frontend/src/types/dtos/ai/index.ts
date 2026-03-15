@@ -15,4 +15,6 @@ export type {
 	GenerateSingleQuestionRequest,
 	AIMatrixTopicConfig,
 	ExplainQuestionRequest,
+	SocraticHintsRequest,
+	SocraticHintsResponse,
 } from './request'

@@ -1,0 +1,18 @@
+{
+  "curriculum": "Standard Elementary 2026",
+  "subjects": {
+    "math": {
+      "progression": [
+        "knowledge/grade_1/math/basics.md",
+        "knowledge/grade_2/math/overview.md",
+        "knowledge/grade_3/math/multiplication.md"
+      ]
+    },
+    "literacy": {
+      "progression": [
+        "knowledge/grade_1/ela/phonics.md",
+        "knowledge/grade_2/ela/reading.md"
+      ]
+    }
+  }
+}

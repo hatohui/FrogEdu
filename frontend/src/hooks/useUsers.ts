@@ -12,7 +12,8 @@ export const userKeys = {
 	lists: () => [...userKeys.all, 'list'] as const,
 	list: (params: GetAllUsersParams) => [...userKeys.lists(), params] as const,
 	statistics: () => [...userKeys.all, 'statistics'] as const,
-	dashboardStats: () => [...userKeys.all, 'dashboard-stats'] as const,
+	dashboardStats: (timeRange?: string) =>
+		[...userKeys.all, 'dashboard-stats', timeRange ?? '30d'] as const,
 	details: () => [...userKeys.all, 'detail'] as const,
 	detail: (id: string) => [...userKeys.details(), id] as const,
 	roles: () => ['roles'] as const,
@@ -44,10 +45,10 @@ export function useUserStatistics() {
 }
 
 // Get user dashboard stats (growth chart, role distribution, verification status)
-export function useUserDashboardStats() {
+export function useUserDashboardStats(timeRange: string = '30d') {
 	return useQuery({
-		queryKey: userKeys.dashboardStats(),
-		queryFn: () => userService.getUserDashboardStats(),
+		queryKey: userKeys.dashboardStats(timeRange),
+		queryFn: () => userService.getUserDashboardStats(timeRange),
 		staleTime: 5 * 60 * 1000,
 	})
 }

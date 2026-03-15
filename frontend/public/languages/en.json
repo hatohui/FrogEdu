@@ -585,10 +585,16 @@
 			"exams_on": "Exams on {{date}}",
 			"select_date": "Select a date to view exams",
 			"exam_session": "Exam Session",
+			"practice_test": "Practice Test",
+			"practice": "Practice",
 			"no_exams": "No exams on this date.",
 			"all_upcoming": "All Upcoming Exams",
 			"retries_allowed": "{{count}} retries allowed",
-			"attempts": "{{count}} attempts"
+			"attempts": "{{count}} attempts",
+			"attempts_of": "{{used}} / {{total}} attempts",
+			"start_exam": "Start Exam",
+			"retry_exam": "Retry",
+			"view_results": "View Results"
 		},
 		"exam_sessions": {
 			"title": "Exam Sessions",
@@ -758,6 +764,11 @@
 				"ai_explaining": "Asking AI...",
 				"ai_explanation_title": "AI Explanation",
 				"ai_explanation_error": "Could not get explanation. Please try again.",
+				"socratic_title": "Socratic Hints",
+				"socratic_button": "Get Teaching Hints",
+				"socratic_loading": "Generating hints...",
+				"socratic_error": "Could not generate hints. Please try again.",
+				"teaching_note": "Teaching Note",
 				"retake_button": "Retake Exam",
 				"back_to_results": "Back to My Results",
 				"empty_answers": "No answers recorded for this attempt.",
@@ -1717,6 +1728,22 @@
 	"analytics": {
 		"title": "Analytics",
 		"subtitle": "Platform insights and performance metrics",
+		"time_range": {
+			"label": "Time Range",
+			"last_7_days": "Last 7 Days",
+			"last_30_days": "Last 30 Days",
+			"last_90_days": "Last 90 Days",
+			"last_year": "Last Year",
+			"all_time": "All Time"
+		},
+		"ai_usage": {
+			"title": "AI Usage",
+			"total_requests": "Total AI Requests",
+			"total_requests_description": "Total number of AI-powered requests",
+			"over_time": "AI Usage Over Time",
+			"over_time_description": "Number of AI requests over time",
+			"requests": "Requests"
+		},
 		"user_growth": "User Growth (Last 30 Days)",
 		"role_distribution": "Role Distribution",
 		"verification_status": "Verification Status",

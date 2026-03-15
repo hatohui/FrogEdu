@@ -1,17 +1,29 @@
 import React, { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Link } from 'react-router'
+import { Link, useNavigate } from 'react-router'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Calendar } from '@/components/ui/calendar'
 import { Skeleton } from '@/components/ui/skeleton'
-import { CalendarDays, FileText, Clock, ChevronLeft } from 'lucide-react'
+import {
+	CalendarDays,
+	FileText,
+	Clock,
+	ChevronLeft,
+	PlayCircle,
+	RotateCcw,
+	Eye,
+	FlaskConical,
+	CalendarClock,
+	CheckCircle2,
+} from 'lucide-react'
 import { useStudentExamSessions } from '@/hooks/useExamSessions'
 import type { ExamSession } from '@/types/model/class-service'
 
 const CalendarPage = (): React.ReactElement => {
 	const { t } = useTranslation()
+	const navigate = useNavigate()
 	const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date())
 	const { data: examSessions, isLoading } = useStudentExamSessions(false)
 
@@ -48,19 +60,31 @@ const CalendarPage = (): React.ReactElement => {
 				label: t('pages.exam_sessions.status.active'),
 				variant: 'default' as const,
 				className: 'bg-green-600',
+				icon: <PlayCircle className='h-3 w-3' />,
 			}
 		if (session.isUpcoming)
 			return {
 				label: t('pages.exam_sessions.status.upcoming'),
 				variant: 'secondary' as const,
 				className: '',
+				icon: <CalendarClock className='h-3 w-3' />,
 			}
 		return {
 			label: t('pages.exam_sessions.status.ended'),
 			variant: 'outline' as const,
 			className: '',
+			icon: <CheckCircle2 className='h-3 w-3' />,
 		}
 	}
+
+	const canStart = (session: ExamSession) =>
+		session.isCurrentlyActive && session.attemptCount === 0
+
+	const canRetry = (session: ExamSession) =>
+		session.isCurrentlyActive &&
+		session.isRetryable &&
+		session.attemptCount > 0 &&
+		session.attemptCount < session.retryTimes
 
 	if (isLoading) {
 		return (
@@ -137,21 +161,34 @@ const CalendarPage = (): React.ReactElement => {
 								{selectedDateSessions.map(session => {
 									const status = getSessionStatus(session)
 									return (
-										<Link
+										<div
 											key={session.id}
-											to={`/app/exam-sessions/${session.id}`}
-											className='block'
+											className='p-4 rounded-lg border hover:bg-accent/50 transition-colors'
 										>
-											<div className='flex items-center justify-between p-4 rounded-lg border hover:bg-accent transition-colors'>
-												<div className='flex items-center gap-3'>
-													<div className='w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center'>
-														<FileText className='h-5 w-5 text-primary' />
+											<div className='flex items-start justify-between gap-4'>
+												<div className='flex items-start gap-3 min-w-0'>
+													<div className='w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0'>
+														{session.isPractice ? (
+															<FlaskConical className='h-5 w-5 text-primary' />
+														) : (
+															<FileText className='h-5 w-5 text-primary' />
+														)}
 													</div>
-													<div>
-														<p className='font-medium text-sm'>
-															{t('pages.calendar.exam_session')}
-														</p>
-														<p className='text-xs text-muted-foreground'>
+													<div className='min-w-0'>
+														<div className='flex items-center gap-2 flex-wrap'>
+															<p className='font-medium text-sm'>
+																{session.isPractice
+																	? t('pages.calendar.practice_test')
+																	: t('pages.calendar.exam_session')}
+															</p>
+															{session.isPractice && (
+																<Badge variant='secondary' className='text-xs'>
+																	<FlaskConical className='h-3 w-3 mr-1' />
+																	{t('pages.calendar.practice')}
+																</Badge>
+															)}
+														</div>
+														<p className='text-xs text-muted-foreground mt-0.5'>
 															{new Date(session.startTime).toLocaleTimeString(
 																[],
 																{
@@ -168,32 +205,69 @@ const CalendarPage = (): React.ReactElement => {
 																}
 															)}
 														</p>
-														{session.isRetryable && (
-															<p className='text-xs text-muted-foreground'>
-																{t('pages.calendar.retries_allowed', {
-																	count: session.retryTimes,
-																})}
-															</p>
-														)}
+														<p className='text-xs text-muted-foreground'>
+															{session.isRetryable
+																? t('pages.calendar.attempts_of', {
+																		used: session.attemptCount,
+																		total: session.retryTimes,
+																	})
+																: t('pages.calendar.attempts_of', {
+																		used: session.attemptCount,
+																		total: 1,
+																	})}
+														</p>
 													</div>
 												</div>
-												<div className='flex items-center gap-2'>
-													{session.attemptCount > 0 && (
-														<Badge variant='outline'>
-															{t('pages.calendar.attempts', {
-																count: session.attemptCount,
-															})}
-														</Badge>
-													)}
+												<div className='flex items-center gap-2 shrink-0'>
 													<Badge
 														variant={status.variant}
-														className={status.className}
+														className={`gap-1 ${status.className}`}
 													>
+														{status.icon}
 														{status.label}
 													</Badge>
 												</div>
 											</div>
-										</Link>
+											{/* Action buttons */}
+											<div className='flex items-center gap-2 mt-3 ml-13'>
+												{canStart(session) && (
+													<Button
+														size='sm'
+														onClick={() =>
+															navigate(`/app/exam-sessions/${session.id}/take`)
+														}
+													>
+														<PlayCircle className='h-4 w-4 mr-1' />
+														{t('pages.calendar.start_exam')}
+													</Button>
+												)}
+												{canRetry(session) && (
+													<Button
+														size='sm'
+														onClick={() =>
+															navigate(`/app/exam-sessions/${session.id}/take`)
+														}
+													>
+														<RotateCcw className='h-4 w-4 mr-1' />
+														{t('pages.calendar.retry_exam')}
+													</Button>
+												)}
+												{session.attemptCount > 0 && (
+													<Button
+														size='sm'
+														variant='outline'
+														onClick={() =>
+															navigate(
+																`/app/exam-sessions/${session.id}/my-results`
+															)
+														}
+													>
+														<Eye className='h-4 w-4 mr-1' />
+														{t('pages.calendar.view_results')}
+													</Button>
+												)}
+											</div>
+										</div>
 									)
 								})}
 							</div>
@@ -229,42 +303,93 @@ const CalendarPage = (): React.ReactElement => {
 									.map(session => {
 										const status = getSessionStatus(session)
 										return (
-											<Link
+											<div
 												key={session.id}
-												to={`/app/exam-sessions/${session.id}`}
-												className='block'
+												className='flex items-center justify-between p-3 rounded-lg border hover:bg-accent transition-colors'
 											>
-												<div className='flex items-center justify-between p-3 rounded-lg border hover:bg-accent transition-colors'>
-													<div className='flex items-center gap-3'>
-														<div className='w-8 h-8 rounded bg-primary/10 flex items-center justify-center'>
+												<div className='flex items-center gap-3'>
+													<div className='w-8 h-8 rounded bg-primary/10 flex items-center justify-center'>
+														{session.isPractice ? (
+															<FlaskConical className='h-4 w-4 text-primary' />
+														) : (
 															<FileText className='h-4 w-4 text-primary' />
-														</div>
-														<div>
-															<p className='font-medium text-sm'>
-																{t('pages.calendar.exam_session')}
-															</p>
-															<p className='text-xs text-muted-foreground'>
-																{new Date(
-																	session.startTime
-																).toLocaleDateString()}{' '}
-																{new Date(session.startTime).toLocaleTimeString(
-																	[],
-																	{
-																		hour: '2-digit',
-																		minute: '2-digit',
-																	}
-																)}
-															</p>
-														</div>
+														)}
 													</div>
+													<div>
+														<div className='flex items-center gap-2'>
+															<p className='font-medium text-sm'>
+																{session.isPractice
+																	? t('pages.calendar.practice_test')
+																	: t('pages.calendar.exam_session')}
+															</p>
+															{session.isPractice && (
+																<Badge variant='secondary' className='text-xs'>
+																	{t('pages.calendar.practice')}
+																</Badge>
+															)}
+														</div>
+														<p className='text-xs text-muted-foreground'>
+															{new Date(session.startTime).toLocaleDateString()}{' '}
+															{new Date(session.startTime).toLocaleTimeString(
+																[],
+																{
+																	hour: '2-digit',
+																	minute: '2-digit',
+																}
+															)}
+														</p>
+													</div>
+												</div>
+												<div className='flex items-center gap-2'>
+													{canStart(session) && (
+														<Button
+															size='sm'
+															onClick={() =>
+																navigate(
+																	`/app/exam-sessions/${session.id}/take`
+																)
+															}
+														>
+															<PlayCircle className='h-4 w-4 mr-1' />
+															{t('pages.calendar.start_exam')}
+														</Button>
+													)}
+													{canRetry(session) && (
+														<Button
+															size='sm'
+															onClick={() =>
+																navigate(
+																	`/app/exam-sessions/${session.id}/take`
+																)
+															}
+														>
+															<RotateCcw className='h-4 w-4 mr-1' />
+															{t('pages.calendar.retry_exam')}
+														</Button>
+													)}
+													{session.attemptCount > 0 && (
+														<Button
+															size='sm'
+															variant='outline'
+															onClick={() =>
+																navigate(
+																	`/app/exam-sessions/${session.id}/my-results`
+																)
+															}
+														>
+															<Eye className='h-4 w-4 mr-1' />
+															{t('pages.calendar.view_results')}
+														</Button>
+													)}
 													<Badge
 														variant={status.variant}
-														className={status.className}
+														className={`gap-1 ${status.className}`}
 													>
+														{status.icon}
 														{status.label}
 													</Badge>
 												</div>
-											</Link>
+											</div>
 										)
 									})}
 							</div>

@@ -63,7 +63,8 @@ public sealed class UpdateExamSessionCommandHandler
                 request.ShouldShuffleQuestions,
                 request.ShouldShuffleAnswers,
                 request.AllowPartialScoring,
-                userId
+                userId,
+                request.IsPractice
             );
 
             _examSessionRepository.Update(session);
@@ -88,6 +89,7 @@ public sealed class UpdateExamSessionCommandHandler
                     session.ShouldShuffleQuestions,
                     session.ShouldShuffleAnswers,
                     session.AllowPartialScoring,
+                    session.IsPractice,
                     session.IsCurrentlyActive(),
                     session.IsUpcoming(),
                     session.HasEnded(),

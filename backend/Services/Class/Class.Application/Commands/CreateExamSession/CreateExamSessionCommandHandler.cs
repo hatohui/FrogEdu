@@ -63,7 +63,8 @@ public sealed class CreateExamSessionCommandHandler
                 request.ShouldShuffleQuestions,
                 request.ShouldShuffleAnswers,
                 request.AllowPartialScoring,
-                teacherId
+                teacherId,
+                request.IsPractice
             );
 
             await _examSessionRepository.AddAsync(session, cancellationToken);
@@ -106,6 +107,7 @@ public sealed class CreateExamSessionCommandHandler
             session.ShouldShuffleQuestions,
             session.ShouldShuffleAnswers,
             session.AllowPartialScoring,
+            session.IsPractice,
             session.IsCurrentlyActive(),
             session.IsUpcoming(),
             session.HasEnded(),
