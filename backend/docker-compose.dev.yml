@@ -157,6 +157,7 @@ services:
       ASPNETCORE_ENVIRONMENT: Development
       ASPNETCORE_URLS: http://+:8080
       CLASS_DB_CONNECTION_STRING: "postgresql://root:root@frog-class-db:5434/class?sslmode=disable"
+      EXAM_SERVICE_URL: "http://frog-exam-service:8080"
     ports:
       - "8002:8080"
     volumes:

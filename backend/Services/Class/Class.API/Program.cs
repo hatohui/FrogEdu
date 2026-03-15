@@ -47,6 +47,14 @@ builder.Services.AddDevelopmentCors();
 
 var app = builder.Build();
 
+// Apply pending EF migrations at startup (idempotent — safe to run on every startup)
+using (var scope = app.Services.CreateScope())
+{
+    var db =
+        scope.ServiceProvider.GetRequiredService<FrogEdu.Class.Infrastructure.Persistence.ClassDbContext>();
+    await db.Database.MigrateAsync();
+}
+
 // Path rewriting
 app.UsePathPrefixRewrite("/api/classes");
 

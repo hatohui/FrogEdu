@@ -22,6 +22,7 @@ public class StudentAnswerConfiguration : IEntityTypeConfiguration<StudentAnswer
 
         builder.Property(a => a.IsCorrect).IsRequired().HasDefaultValue(false);
         builder.Property(a => a.IsPartiallyCorrect).IsRequired().HasDefaultValue(false);
+        builder.Property(a => a.EssayFeedback).HasColumnType("text");
 
         // Indexes
         builder.HasIndex(a => a.AttemptId).HasDatabaseName("IX_StudentAnswers_AttemptId");

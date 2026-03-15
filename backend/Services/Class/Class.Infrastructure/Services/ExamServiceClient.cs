@@ -20,10 +20,11 @@ public sealed class ExamServiceClient : IExamServiceClient
         _httpClient = httpClient;
         _logger = logger;
 
-        _examServiceUrl =
+        _examServiceUrl = (
             configuration["Services:ExamService:Url"]
             ?? Environment.GetEnvironmentVariable("EXAM_SERVICE_URL")
-            ?? "http://localhost:5002/api/exams";
+            ?? "http://localhost:5002/api/exams"
+        ).TrimEnd('/');
     }
 
     public async Task<ExamWithQuestionsDto?> GetExamWithAnswersAsync(
