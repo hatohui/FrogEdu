@@ -337,17 +337,17 @@ const SubscriptionPage = (): React.ReactElement => {
 
 					{/* Breakdown by type */}
 					<div className='grid gap-4 sm:grid-cols-2'>
-					{!isStudent && (
-						<div className='rounded-lg border p-4 space-y-1'>
-							<div className='flex items-center gap-2'>
-								<Brain className='h-4 w-4 text-purple-500' />
-								<span className='text-sm font-medium'>
-									{t('pages.subscription.usage.questions_generated')}
-								</span>
+						{!isStudent && (
+							<div className='rounded-lg border p-4 space-y-1'>
+								<div className='flex items-center gap-2'>
+									<Brain className='h-4 w-4 text-purple-500' />
+									<span className='text-sm font-medium'>
+										{t('pages.subscription.usage.questions_generated')}
+									</span>
+								</div>
+								<p className='text-2xl font-bold'>{generationCount}</p>
 							</div>
-							<p className='text-2xl font-bold'>{generationCount}</p>
-						</div>
-					)}
+						)}
 						<div className='rounded-lg border p-4 space-y-1'>
 							<div className='flex items-center gap-2'>
 								<Sparkles className='h-4 w-4 text-amber-500' />
