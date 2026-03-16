@@ -19,6 +19,7 @@ import {
 	PencilRuler,
 	ShieldCheck,
 	HelpCircle,
+	History,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
@@ -73,6 +74,12 @@ const navItems: NavItem[] = [
 		labelKey: 'navigation.classes',
 		href: '/app/classes',
 		icon: Users,
+	},
+	{
+		labelKey: 'navigation.exam_history',
+		href: '/app/exam-sessions/history',
+		icon: History,
+		studentOnly: true,
 	},
 	{
 		labelKey: 'navigation.calendar',

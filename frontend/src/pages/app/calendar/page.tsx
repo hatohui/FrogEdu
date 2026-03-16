@@ -17,6 +17,7 @@ import {
 	FlaskConical,
 	CalendarClock,
 	CheckCircle2,
+	History,
 } from 'lucide-react'
 import { useStudentExamSessions } from '@/hooks/useExamSessions'
 import type { ExamSession } from '@/types/model/class-service'
@@ -84,7 +85,7 @@ const CalendarPage = (): React.ReactElement => {
 		session.isCurrentlyActive &&
 		session.isRetryable &&
 		session.attemptCount > 0 &&
-		session.attemptCount < session.retryTimes
+		session.attemptCount <= session.retryTimes
 
 	if (isLoading) {
 		return (
@@ -107,7 +108,7 @@ const CalendarPage = (): React.ReactElement => {
 						<ChevronLeft className='h-5 w-5' />
 					</Button>
 				</Link>
-				<div>
+				<div className='flex-1'>
 					<h1 className='text-3xl font-bold tracking-tight flex items-center gap-2'>
 						<CalendarDays className='h-8 w-8' />
 						{t('pages.calendar.title')}
@@ -116,6 +117,12 @@ const CalendarPage = (): React.ReactElement => {
 						{t('pages.calendar.subtitle')}
 					</p>
 				</div>
+				<Link to='/app/exam-sessions/history'>
+					<Button variant='outline' className='gap-2'>
+						<History className='h-4 w-4' />
+						{t('navigation.exam_history')}
+					</Button>
+				</Link>
 			</div>
 
 			<div className='grid gap-6 lg:grid-cols-[auto_1fr]'>

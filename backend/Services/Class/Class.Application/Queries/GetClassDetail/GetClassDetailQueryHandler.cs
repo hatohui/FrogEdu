@@ -11,14 +11,17 @@ public sealed class GetClassDetailQueryHandler
 {
     private readonly IClassRoomRepository _classRoomRepository;
     private readonly IUserServiceClient _userServiceClient;
+    private readonly IExamSessionRepository _examSessionRepository;
 
     public GetClassDetailQueryHandler(
         IClassRoomRepository classRoomRepository,
-        IUserServiceClient userServiceClient
+        IUserServiceClient userServiceClient,
+        IExamSessionRepository examSessionRepository
     )
     {
         _classRoomRepository = classRoomRepository;
         _userServiceClient = userServiceClient;
+        _examSessionRepository = examSessionRepository;
     }
 
     public async Task<ClassDetailResponse?> Handle(
@@ -52,6 +55,12 @@ public sealed class GetClassDetailQueryHandler
             })
             .ToList();
 
+        var examSessions = await _examSessionRepository.GetByClassIdAsync(
+            classroom.Id,
+            cancellationToken
+        );
+        var sessionByExamId = examSessions.ToDictionary(s => s.ExamId, s => s.Id);
+
         var assignments = classroom
             .Assignments.Select(a => new AssignmentResponse(
                 a.Id,
@@ -62,7 +71,8 @@ public sealed class GetClassDetailQueryHandler
                 a.IsMandatory,
                 a.Weight,
                 a.IsActive(),
-                a.IsOverdue()
+                a.IsOverdue(),
+                sessionByExamId.GetValueOrDefault(a.ExamId)
             ))
             .ToList();
 

@@ -104,7 +104,7 @@ const ExamSessionsPage = (): React.ReactElement => {
 		session.isCurrentlyActive &&
 		session.isRetryable &&
 		session.attemptCount > 0 &&
-		session.attemptCount < session.retryTimes
+		session.attemptCount <= session.retryTimes
 
 	// Get class name for display
 	const getClassName = (classId: string) => {

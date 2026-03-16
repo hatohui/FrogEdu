@@ -105,7 +105,7 @@ public sealed class StartExamAttemptCommandHandler
                 a.Status != Domain.Enums.AttemptStatus.InProgress
             );
             var canAttempt = session.IsRetryable
-                ? completedAttemptCount < session.RetryTimes
+                ? completedAttemptCount <= session.RetryTimes
                 : completedAttemptCount == 0;
             if (!canAttempt)
                 return Result<StudentExamAttemptResponse>.Failure(

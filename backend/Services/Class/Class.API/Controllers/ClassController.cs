@@ -339,6 +339,7 @@ public class ClassController(IMediator mediator) : BaseController
     /// <summary>
     /// Remove a student from a class (Teacher who owns the class or Admin)
     /// </summary>
+    [HttpDelete("{classId:guid}/students/{studentId:guid}")]
     [Authorize]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]

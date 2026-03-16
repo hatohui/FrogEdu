@@ -9,5 +9,6 @@ public sealed record AssignmentResponse(
     bool IsMandatory,
     int Weight,
     bool IsActive,
-    bool IsOverdue
+    bool IsOverdue,
+    Guid? ExamSessionId = null
 );

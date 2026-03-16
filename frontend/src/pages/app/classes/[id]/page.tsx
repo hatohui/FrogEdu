@@ -622,6 +622,7 @@ const ClassDetailPage: React.FC = () => {
 											{t('pages.dashboard.classes.detail.status')}
 										</TableHead>
 										{canManage && <TableHead className='w-[50px]' />}
+										{!canManage && <TableHead>{t('labels.actions')}</TableHead>}
 									</TableRow>
 								</TableHeader>
 								<TableBody>
@@ -683,6 +684,38 @@ const ClassDetailPage: React.FC = () => {
 													</div>
 												)}
 											</TableCell>
+											{!canManage && assignment.examSessionId && (
+												<TableCell>
+													<div className='flex gap-2'>
+														{assignment.isActive && (
+															<Button
+																size='sm'
+																variant='default'
+																onClick={() =>
+																	navigate(
+																		`/app/exam-sessions/${assignment.examSessionId}/take`
+																	)
+																}
+															>
+																{t('pages.exam_sessions.actions.start_exam')}
+															</Button>
+														)}
+														<Button
+															size='sm'
+															variant='outline'
+															onClick={() =>
+																navigate(
+																	`/app/exam-sessions/${assignment.examSessionId}/my-results`
+																)
+															}
+														>
+															{t(
+																'pages.exam_sessions.history.actions.view_results'
+															)}
+														</Button>
+													</div>
+												</TableCell>
+											)}
 											{canManage && (
 												<TableCell>
 													<DropdownMenu>

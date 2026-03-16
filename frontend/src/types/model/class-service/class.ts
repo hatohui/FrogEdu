@@ -26,6 +26,7 @@ export interface ClassAssignment {
 	id: string
 	classId: string
 	examId: string
+	examSessionId?: string
 	startDate: string
 	dueDate: string
 	isMandatory: boolean
