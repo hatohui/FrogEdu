@@ -25,6 +25,13 @@ import { Separator } from '@/components/ui/separator'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from '@/components/ui/select'
+import {
 	Table,
 	TableBody,
 	TableCell,
@@ -1067,15 +1074,25 @@ const ClassDetailPage: React.FC = () => {
 							<Label htmlFor='edit-class-grade'>
 								{t('pages.dashboard.classes.form.grade')}
 							</Label>
-							<Input
-								id='edit-class-grade'
-								value={editClassGrade}
-								onChange={e => setEditClassGrade(e.target.value)}
-								placeholder={t(
-									'pages.dashboard.classes.form.grade_placeholder',
-									{ defaultValue: 'e.g. Grade 1' }
-								)}
-							/>
+							<Select value={editClassGrade} onValueChange={setEditClassGrade}>
+								<SelectTrigger id='edit-class-grade'>
+									<SelectValue
+										placeholder={t(
+											'pages.dashboard.classes.form.grade_placeholder',
+											{ defaultValue: 'Select grade' }
+										)}
+									/>
+								</SelectTrigger>
+								<SelectContent>
+									{Array.from({ length: 5 }, (_, i) => i + 1).map(grade => (
+										<SelectItem key={grade} value={grade.toString()}>
+											{t('pages.dashboard.classes.form.grade_option', {
+												grade,
+											})}
+										</SelectItem>
+									))}
+								</SelectContent>
+							</Select>
 						</div>
 						<div className='grid gap-2'>
 							<Label htmlFor='edit-class-max'>

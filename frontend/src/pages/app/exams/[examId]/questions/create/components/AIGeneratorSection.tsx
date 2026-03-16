@@ -87,7 +87,7 @@ interface AIGeneratorSectionProps {
 		topicDescription?: string
 	) => Promise<AIGeneratedQuestion | undefined>
 	onGenerateMatrix?: () => Promise<void>
-	onEditQuestion: (question: AIGeneratedQuestion) => void
+	onEditQuestion: (question: AIGeneratedQuestion, index: number) => void
 	onSaveQuestion: (question: AIGeneratedQuestion, index: number) => void
 	onSaveAllQuestions?: () => Promise<void>
 	onRemoveQuestion: (index: number) => void

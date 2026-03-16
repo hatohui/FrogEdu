@@ -36,6 +36,9 @@ Bug:
 
 - When the teacher choose to edit the questions that was generated, and save it. The edited question is saved separately as a new question and the old one that we choose to edit is not deleted, which causes duplicates in the question bank. We need to implement a way to update the existing question instead of creating a new one when the teacher edits a generated question.
 
+- analytics.ai_usage_over_time
+  analytics.ai_usage_description key 'analytics.ai_usage (en)' returned an object instead of string.
+
 Rules to follow:
 
 - Strictly follows CLEAN architecture for backend

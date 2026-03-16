@@ -13,7 +13,7 @@ import type { AIGeneratedQuestion } from '@/types/model/ai-service'
 interface AIQuestionPreviewProps {
 	question: AIGeneratedQuestion
 	index: number
-	onEdit: (question: AIGeneratedQuestion) => void
+	onEdit: (question: AIGeneratedQuestion, index: number) => void
 	onSave: (question: AIGeneratedQuestion, index: number) => void
 	onRemove: (index: number) => void
 	isSaving?: boolean
@@ -68,7 +68,7 @@ export const AIQuestionPreview: React.FC<AIQuestionPreviewProps> = ({
 						<Button
 							size='sm'
 							variant='outline'
-							onClick={() => onEdit(question)}
+							onClick={() => onEdit(question, index)}
 						>
 							<PenLine className='h-4 w-4 mr-1' />
 							Edit

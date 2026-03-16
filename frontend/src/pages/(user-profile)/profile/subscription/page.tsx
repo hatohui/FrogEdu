@@ -10,6 +10,7 @@ import {
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Skeleton } from '@/components/ui/skeleton'
+import { Progress } from '@/components/ui/progress'
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -31,10 +32,18 @@ import {
 	Sparkles,
 	XCircle,
 	AlertTriangle,
+	BarChart3,
+	Infinity,
 } from 'lucide-react'
-import { useSubscription } from '@/hooks/useSubscription'
+import {
+	useSubscription,
+	useAIUsageLimit,
+	useAIUsageHistory,
+} from '@/hooks/useSubscription'
+import { useTranslation } from 'react-i18next'
 
 const SubscriptionPage = (): React.ReactElement => {
+	const { t } = useTranslation()
 	const {
 		subscription,
 		tiers,
@@ -47,6 +56,16 @@ const SubscriptionPage = (): React.ReactElement => {
 		isFree,
 		isCancelled,
 	} = useSubscription()
+
+	const { usedCount, maxAllowed, remaining, isUnlimited } = useAIUsageLimit()
+	const { data: usageHistory } = useAIUsageHistory()
+
+	// Count usage by action type
+	const generationCount =
+		usageHistory?.filter(r => r.actionType === 'question_generation').length ??
+		0
+	const explanationCount =
+		usageHistory?.filter(r => r.actionType === 'explain_question').length ?? 0
 
 	const formatDate = (dateString?: string) => {
 		if (!dateString) return 'N/A'
@@ -269,6 +288,71 @@ const SubscriptionPage = (): React.ReactElement => {
 							</Button>
 						</div>
 					)}
+				</CardContent>
+			</Card>
+
+			{/* Usage Statistics */}
+			<Card>
+				<CardHeader>
+					<CardTitle className='flex items-center gap-2'>
+						<BarChart3 className='h-5 w-5' />
+						{t('pages.subscription.usage.title')}
+					</CardTitle>
+					<CardDescription>
+						{t('pages.subscription.usage.description')}
+					</CardDescription>
+				</CardHeader>
+				<CardContent className='space-y-6'>
+					{/* Overall AI Usage */}
+					<div className='space-y-2'>
+						<div className='flex items-center justify-between text-sm'>
+							<span className='font-medium'>
+								{t('pages.subscription.usage.ai_requests')}
+							</span>
+							<span className='text-muted-foreground'>
+								{isUnlimited ? (
+									<span className='inline-flex items-center gap-1'>
+										{usedCount} / <Infinity className='h-4 w-4' />
+									</span>
+								) : (
+									`${usedCount} / ${maxAllowed ?? 0}`
+								)}
+							</span>
+						</div>
+						{!isUnlimited && maxAllowed && (
+							<Progress
+								value={Math.min((usedCount / maxAllowed) * 100, 100)}
+								className='h-2'
+							/>
+						)}
+						{!isUnlimited && (
+							<p className='text-xs text-muted-foreground'>
+								{t('pages.subscription.usage.remaining', { count: remaining })}
+							</p>
+						)}
+					</div>
+
+					{/* Breakdown by type */}
+					<div className='grid gap-4 sm:grid-cols-2'>
+						<div className='rounded-lg border p-4 space-y-1'>
+							<div className='flex items-center gap-2'>
+								<Brain className='h-4 w-4 text-purple-500' />
+								<span className='text-sm font-medium'>
+									{t('pages.subscription.usage.questions_generated')}
+								</span>
+							</div>
+							<p className='text-2xl font-bold'>{generationCount}</p>
+						</div>
+						<div className='rounded-lg border p-4 space-y-1'>
+							<div className='flex items-center gap-2'>
+								<Sparkles className='h-4 w-4 text-amber-500' />
+								<span className='text-sm font-medium'>
+									{t('pages.subscription.usage.explanations_used')}
+								</span>
+							</div>
+							<p className='text-2xl font-bold'>{explanationCount}</p>
+						</div>
+					</div>
 				</CardContent>
 			</Card>
 

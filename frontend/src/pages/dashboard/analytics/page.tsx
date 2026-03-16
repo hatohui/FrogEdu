@@ -136,7 +136,7 @@ const AnalyticsPage = (): React.ReactElement => {
 			bgColor: 'bg-emerald-100 dark:bg-emerald-950',
 		},
 		{
-			title: t('analytics.ai_usage'),
+			title: t('analytics.ai_usage.title'),
 			value: subStats?.totalAIUsageCount?.toString() ?? '0',
 			icon: Bot,
 			color: 'text-teal-600',
@@ -255,7 +255,9 @@ const AnalyticsPage = (): React.ReactElement => {
 					<TabsTrigger value='subscriptions'>
 						{t('analytics.subscriptions')}
 					</TabsTrigger>
-					<TabsTrigger value='ai-usage'>{t('analytics.ai_usage')}</TabsTrigger>
+					<TabsTrigger value='ai-usage'>
+						{t('analytics.ai_usage.title')}
+					</TabsTrigger>
 				</TabsList>
 
 				{/* Overview Tab */}
@@ -906,10 +908,10 @@ const AnalyticsPage = (): React.ReactElement => {
 						<CardHeader>
 							<CardTitle className='flex items-center gap-2'>
 								<Bot className='h-5 w-5' />
-								{t('analytics.ai_usage_over_time')}
+								{t('analytics.ai_usage.over_time')}
 							</CardTitle>
 							<CardDescription>
-								{t('analytics.ai_usage_description')}
+								{t('analytics.ai_usage.over_time_description')}
 							</CardDescription>
 						</CardHeader>
 						<CardContent>
@@ -980,14 +982,14 @@ const AnalyticsPage = (): React.ReactElement => {
 					<div className='grid gap-4 md:grid-cols-2'>
 						<Card>
 							<CardHeader>
-								<CardTitle>{t('analytics.ai_total_requests')}</CardTitle>
+								<CardTitle>{t('analytics.ai_usage.total_requests')}</CardTitle>
 							</CardHeader>
 							<CardContent>
 								<div className='text-4xl font-bold'>
 									{subStats?.totalAIUsageCount?.toLocaleString() ?? '0'}
 								</div>
 								<p className='text-sm text-muted-foreground mt-1'>
-									{t('analytics.ai_total_requests_description')}
+									{t('analytics.ai_usage.total_requests_description')}
 								</p>
 							</CardContent>
 						</Card>

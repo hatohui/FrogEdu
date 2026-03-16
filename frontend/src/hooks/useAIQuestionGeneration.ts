@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import { aiService } from '@/services/ai.service'
@@ -12,6 +12,29 @@ import type {
 } from '@/types/model/ai-service'
 import type { CognitiveLevel, QuestionType } from '@/types/model/exam-service'
 
+const STORAGE_KEY = 'frogedu_generated_questions'
+
+function loadPersistedQuestions(): AIGeneratedQuestion[] {
+	try {
+		const stored = sessionStorage.getItem(STORAGE_KEY)
+		return stored ? JSON.parse(stored) : []
+	} catch {
+		return []
+	}
+}
+
+function persistQuestions(questions: AIGeneratedQuestion[]) {
+	try {
+		if (questions.length === 0) {
+			sessionStorage.removeItem(STORAGE_KEY)
+		} else {
+			sessionStorage.setItem(STORAGE_KEY, JSON.stringify(questions))
+		}
+	} catch {
+		// sessionStorage may be full or unavailable
+	}
+}
+
 /**
  * Hook for AI question generation functionality
  * Requires Pro subscription to use AI features
@@ -22,8 +45,13 @@ export const useAIQuestionGeneration = () => {
 
 	const [generationState, setGenerationState] = useState<AIGenerationState>({
 		isGenerating: false,
-		generatedQuestions: [],
+		generatedQuestions: loadPersistedQuestions(),
 	})
+
+	// Persist generated questions to sessionStorage
+	useEffect(() => {
+		persistQuestions(generationState.generatedQuestions)
+	}, [generationState.generatedQuestions])
 
 	// Generate multiple questions from matrix
 	const generateQuestionsMutation = useMutation({

@@ -139,6 +139,11 @@ const CreateQuestionPage = (): React.ReactElement => {
 		Set<string>
 	>(new Set())
 
+	// Track which AI-generated question index is being edited (to avoid duplicates)
+	const [editingGeneratedIndex, setEditingGeneratedIndex] = useState<
+		number | null
+	>(null)
+
 	// Remaining questions needed per matrix row
 	const matrixRemainingCounts = React.useMemo(() => {
 		if (!matrix) return {}
@@ -268,6 +273,12 @@ const CreateQuestionPage = (): React.ReactElement => {
 				refetchExamQuestions()
 			}
 
+			// If editing an AI-generated question, remove it from the generated list
+			if (editingGeneratedIndex !== null) {
+				removeGeneratedQuestion(editingGeneratedIndex)
+				setEditingGeneratedIndex(null)
+			}
+
 			// Reset form for creating another question
 			resetForm()
 			toast.success(t('pages.exams.questions.toast.created'))
@@ -277,8 +288,12 @@ const CreateQuestionPage = (): React.ReactElement => {
 	}
 
 	// Edit AI generated question
-	const handleEditGeneratedQuestion = (question: AIGeneratedQuestion) => {
+	const handleEditGeneratedQuestion = (
+		question: AIGeneratedQuestion,
+		index: number
+	) => {
 		loadAIQuestion(question)
+		setEditingGeneratedIndex(index)
 		setCreationMode('manual')
 	}
 

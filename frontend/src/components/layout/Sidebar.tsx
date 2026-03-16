@@ -12,13 +12,13 @@ import {
 	LayoutDashboard,
 	Grid3x3,
 	Users,
-	ClipboardList,
 	CalendarDays,
 	CreditCard,
 	Eye,
 	GraduationCap,
 	PencilRuler,
 	ShieldCheck,
+	HelpCircle,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
@@ -64,14 +64,15 @@ const navItems: NavItem[] = [
 		roles: ['Admin', 'Teacher'],
 	},
 	{
+		labelKey: 'navigation.question_bank',
+		href: '/app/questions',
+		icon: HelpCircle,
+		roles: ['Admin', 'Teacher'],
+	},
+	{
 		labelKey: 'navigation.classes',
 		href: '/app/classes',
 		icon: Users,
-	},
-	{
-		labelKey: 'navigation.exam_sessions',
-		href: '/app/exam-sessions',
-		icon: ClipboardList,
 	},
 	{
 		labelKey: 'navigation.calendar',
