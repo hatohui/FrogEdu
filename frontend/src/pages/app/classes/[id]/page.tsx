@@ -1,13 +1,15 @@
-﻿import React, { useState } from 'react'
+import React, { useState } from 'react'
 import { useParams, Link, useNavigate } from 'react-router'
 import {
-	useClassDetail,
-	useAssignExam,
-	useAdminAssignExam,
-	useRemoveStudent,
-	useUpdateAssignment,
-	useDeleteAssignment,
-	useUpdateClass,
+useClassDetail,
+useAssignExam,
+useAdminAssignExam,
+useRemoveStudent,
+useUpdateAssignment,
+useDeleteAssignment,
+useUpdateClass,
+useReinviteStudent,
+useAcceptReinvite,
 } from '@/hooks/useClasses'
 import { useExamNames } from '@/hooks/useExams'
 import { useStudentExamSessions } from '@/hooks/useExamSessions'
@@ -48,6 +50,7 @@ import {
 	DialogHeader,
 	DialogTitle,
 } from '@/components/ui/dialog'
+import { Alert, AlertDescription } from '@/components/ui/alert'
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -66,6 +69,7 @@ import {
 	Users,
 	MoreVertical,
 	UserMinus,
+	UserPlus,
 	User,
 	Edit,
 	Trash2,
@@ -99,6 +103,8 @@ const ClassDetailPage: React.FC = () => {
 	const updateAssignmentMutation = useUpdateAssignment()
 	const deleteAssignmentMutation = useDeleteAssignment()
 	const updateClassMutation = useUpdateClass()
+	const reinviteStudentMutation = useReinviteStudent()
+	const acceptReinviteMutation = useAcceptReinvite()
 
 	// Assign exam dialog state
 	const [assignDialogOpen, setAssignDialogOpen] = useState(false)
@@ -141,6 +147,7 @@ const ClassDetailPage: React.FC = () => {
 		user?.role?.name === 'Teacher' && classDetail?.teacherId === user?.cognitoId
 
 	const isAdmin = user?.role?.name === 'Admin'
+	const isStudent = user?.role?.name === 'Student'
 
 	const canManage = isTeacher || isAdmin
 
@@ -290,6 +297,8 @@ const ClassDetailPage: React.FC = () => {
 				return <Badge variant='destructive'>{status}</Badge>
 			case 'Withdrawn':
 				return <Badge variant='outline'>{status}</Badge>
+			case 'Reinvited':
+				return <Badge variant='secondary'>{t('pages.classes.detail.reinvited_status')}</Badge>
 			default:
 				return <Badge variant='outline'>{status}</Badge>
 		}
@@ -341,6 +350,30 @@ const ClassDetailPage: React.FC = () => {
 					{t('pages.classes.detail.back_to_classes')}
 				</Button>
 			</Link>
+
+			{/* Kicked / Reinvited status banner */}
+			{isStudent && classDetail.myEnrollmentStatus === 'Kicked' && (
+				<Alert variant='destructive'>
+					<AlertTriangle className='h-4 w-4' />
+					<AlertDescription>
+						{t('pages.classes.detail.kicked_banner')}
+					</AlertDescription>
+				</Alert>
+			)}
+			{isStudent && classDetail.myEnrollmentStatus === 'Reinvited' && (
+				<Alert>
+					<AlertDescription className='flex items-center justify-between'>
+						<span>{t('pages.classes.detail.reinvite_pending_banner')}</span>
+						<Button
+							size='sm'
+							onClick={() => acceptReinviteMutation.mutate(id!)}
+							disabled={acceptReinviteMutation.isPending}
+						>
+							{t('pages.classes.detail.accept_reinvite')}
+						</Button>
+					</AlertDescription>
+				</Alert>
+			)}
 
 			{/* Header */}
 			<div className='flex items-start justify-between'>
@@ -572,19 +605,38 @@ const ClassDetailPage: React.FC = () => {
 																	<User className='h-4 w-4 mr-2' />
 																	{t('pages.classes.detail.view_profile')}
 																</DropdownMenuItem>
-																<DropdownMenuSeparator />
-																<DropdownMenuItem
-																	className='text-destructive'
-																	onClick={() =>
-																		openRemoveDialog(
-																			enrollment.studentId,
-																			studentName
-																		)
-																	}
-																>
-																	<UserMinus className='h-4 w-4 mr-2' />
-																	{t('pages.classes.detail.remove_from_class')}
-																</DropdownMenuItem>
+																{enrollment.status === 'Kicked' ? (
+																	<>
+																		<DropdownMenuSeparator />
+																		<DropdownMenuItem
+																			onClick={() =>
+																				reinviteStudentMutation.mutate({
+																					classId: id!,
+																					studentId: enrollment.studentId,
+																				})
+																			}
+																		>
+																			<UserPlus className='h-4 w-4 mr-2' />
+																			{t('pages.classes.detail.reinvite')}
+																		</DropdownMenuItem>
+																	</>
+																) : (
+																	<>
+																		<DropdownMenuSeparator />
+																		<DropdownMenuItem
+																			className='text-destructive'
+																			onClick={() =>
+																				openRemoveDialog(
+																					enrollment.studentId,
+																					studentName
+																				)
+																			}
+																		>
+																			<UserMinus className='h-4 w-4 mr-2' />
+																			{t('pages.classes.detail.remove_from_class')}
+																		</DropdownMenuItem>
+																	</>
+																)}
 															</DropdownMenuContent>
 														</DropdownMenu>
 													</TableCell>

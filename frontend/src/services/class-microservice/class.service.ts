@@ -71,6 +71,19 @@ export const classService = {
 		)
 	},
 
+	reinviteStudent: async (
+		classId: string,
+		studentId: string
+	): Promise<void> => {
+		await axiosInstance.post(
+			`${baseUrl}/classes/${classId}/students/${studentId}/reinvite`
+		)
+	},
+
+	acceptReinvite: async (classId: string): Promise<void> => {
+		await axiosInstance.post(`${baseUrl}/classes/${classId}/reinvite/accept`)
+	},
+
 	// ─── Assignments ───
 
 	assignExam: async (

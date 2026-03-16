@@ -1,9 +1,11 @@
+using FrogEdu.Class.Application.Commands.AcceptReinvite;
 using FrogEdu.Class.Application.Commands.AdminAssignExam;
 using FrogEdu.Class.Application.Commands.AssignExam;
 using FrogEdu.Class.Application.Commands.AwardBadge;
 using FrogEdu.Class.Application.Commands.CreateClass;
 using FrogEdu.Class.Application.Commands.DeleteAssignment;
 using FrogEdu.Class.Application.Commands.JoinClass;
+using FrogEdu.Class.Application.Commands.ReinviteStudent;
 using FrogEdu.Class.Application.Commands.RemoveStudent;
 using FrogEdu.Class.Application.Commands.UpdateAssignment;
 using FrogEdu.Class.Application.Commands.UpdateClass;
@@ -67,7 +69,9 @@ public class ClassController(IMediator mediator) : BaseController
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetClassById(Guid id, CancellationToken cancellationToken)
     {
-        var query = new GetClassDetailQuery(id);
+        var userIdStr = GetAuthenticatedUserId();
+        Guid? requestingUserId = Guid.TryParse(userIdStr, out var uid) ? uid : null;
+        var query = new GetClassDetailQuery(id, requestingUserId);
         var result = await _mediator.Send(query, cancellationToken);
 
         if (result is null)
@@ -356,6 +360,54 @@ public class ClassController(IMediator mediator) : BaseController
 
         if (!success)
             return BadRequest("Failed to remove student from class");
+
+        return NoContent();
+    }
+
+    /// <summary>
+    /// Reinvite a kicked student (Teacher who owns the class or Admin)
+    /// </summary>
+    [HttpPost("{classId:guid}/students/{studentId:guid}/reinvite")]
+    [Authorize]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> ReinviteStudent(
+        Guid classId,
+        Guid studentId,
+        CancellationToken cancellationToken
+    )
+    {
+        var command = new ReinviteStudentCommand(classId, studentId);
+        var success = await _mediator.Send(command, cancellationToken);
+
+        if (!success)
+            return BadRequest("Failed to reinvite student. Student may not be in kicked status.");
+
+        return NoContent();
+    }
+
+    /// <summary>
+    /// Accept a reinvite to a class (Student only; uses JWT identity)
+    /// </summary>
+    [HttpPost("{classId:guid}/reinvite/accept")]
+    [Authorize]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> AcceptReinvite(
+        Guid classId,
+        CancellationToken cancellationToken
+    )
+    {
+        var userIdStr = GetAuthenticatedUserId();
+        if (!Guid.TryParse(userIdStr, out var studentId))
+            return Unauthorized();
+
+        var command = new AcceptReinviteCommand(classId, studentId);
+        var success = await _mediator.Send(command, cancellationToken);
+
+        if (!success)
+            return BadRequest("Failed to accept reinvite. You may not have a pending reinvite.");
 
         return NoContent();
     }

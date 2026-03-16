@@ -82,6 +82,15 @@ public sealed class GetClassDetailQueryHandler
             ))
             .ToList();
 
+        string? myEnrollmentStatus = null;
+        if (request.RequestingUserId.HasValue)
+        {
+            var myEnrollment = classroom.Enrollments.FirstOrDefault(e =>
+                e.StudentId == request.RequestingUserId.Value
+            );
+            myEnrollmentStatus = myEnrollment?.Status.ToString();
+        }
+
         return new ClassDetailResponse(
             classroom.Id,
             classroom.Name,
@@ -95,7 +104,8 @@ public sealed class GetClassDetailQueryHandler
             classroom.CreatedAt,
             classroom.Enrollments.Count(e => e.Status == EnrollmentStatus.Active),
             enrollments,
-            assignments
+            assignments,
+            myEnrollmentStatus
         );
     }
 }

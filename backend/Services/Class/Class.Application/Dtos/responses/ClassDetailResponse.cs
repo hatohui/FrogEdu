@@ -13,7 +13,8 @@ public sealed record ClassDetailResponse(
     DateTime CreatedAt,
     int StudentCount,
     IReadOnlyList<EnrollmentWithUserDto> Enrollments,
-    IReadOnlyList<AssignmentResponse> Assignments
+    IReadOnlyList<AssignmentResponse> Assignments,
+    string? MyEnrollmentStatus
 );
 
 public sealed record EnrollmentDto(Guid Id, Guid StudentId, DateTime JoinedAt, string Status);

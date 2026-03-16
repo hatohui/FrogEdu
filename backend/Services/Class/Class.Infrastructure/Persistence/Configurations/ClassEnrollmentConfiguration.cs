@@ -21,6 +21,8 @@ public class ClassEnrollmentConfiguration : IEntityTypeConfiguration<ClassEnroll
 
         builder.Property(ce => ce.Status).IsRequired().HasConversion<string>().HasMaxLength(50);
 
+        builder.Property(ce => ce.ReinvitedAt).IsRequired(false);
+
         // Indexes
         builder.HasIndex(ce => ce.ClassId).HasDatabaseName("IX_ClassEnrollments_ClassId");
 

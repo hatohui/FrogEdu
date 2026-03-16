@@ -10,6 +10,7 @@ public sealed class ClassEnrollment : Entity
     public Guid StudentId { get; private set; }
     public DateTime JoinedAt { get; private set; }
     public EnrollmentStatus Status { get; private set; }
+    public DateTime? ReinvitedAt { get; private set; }
 
     private ClassEnrollment() { }
 
@@ -52,10 +53,25 @@ public sealed class ClassEnrollment : Entity
 
     public void Activate()
     {
-        if (Status == EnrollmentStatus.Kicked)
-            throw new InvalidOperationException("Cannot activate a kicked student");
+        Status = EnrollmentStatus.Active;
+    }
+
+    public void Reinvite()
+    {
+        if (Status != EnrollmentStatus.Kicked)
+            throw new InvalidOperationException("Can only reinvite a kicked student");
+
+        Status = EnrollmentStatus.Reinvited;
+        ReinvitedAt = DateTime.UtcNow;
+    }
+
+    public void AcceptReinvite()
+    {
+        if (Status != EnrollmentStatus.Reinvited)
+            throw new InvalidOperationException("Student has not been reinvited");
 
         Status = EnrollmentStatus.Active;
+        AddDomainEvent(new StudentEnrolledDomainEvent(ClassId, StudentId));
     }
 
     public void Deactivate()

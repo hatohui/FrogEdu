@@ -125,6 +125,15 @@ public sealed class ClassRoom : AuditableEntity
         )
             throw new InvalidOperationException("Student is already enrolled in this classroom");
 
+        // If a prior enrollment exists (kicked/withdrawn), reactivate it instead of creating a duplicate
+        var existingEnrollment = _enrollments.FirstOrDefault(e => e.StudentId == studentId);
+        if (existingEnrollment is not null)
+        {
+            existingEnrollment.Activate();
+            AddDomainEvent(new StudentEnrolledDomainEvent(Id, studentId));
+            return;
+        }
+
         var enrollment = ClassEnrollment.Create(Id, studentId);
         _enrollments.Add(enrollment);
         AddDomainEvent(new StudentEnrolledDomainEvent(Id, studentId));

@@ -3,4 +3,5 @@ using MediatR;
 
 namespace FrogEdu.Class.Application.Queries.GetClassDetail;
 
-public sealed record GetClassDetailQuery(Guid ClassId) : IRequest<ClassDetailResponse?>;
+public sealed record GetClassDetailQuery(Guid ClassId, Guid? RequestingUserId = null)
+    : IRequest<ClassDetailResponse?>;

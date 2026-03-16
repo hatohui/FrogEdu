@@ -40,6 +40,7 @@ import {
 	useAIUsageLimit,
 	useAIUsageHistory,
 } from '@/hooks/useSubscription'
+import { useMe } from '@/hooks/auth/useMe'
 import { useTranslation } from 'react-i18next'
 
 const SubscriptionPage = (): React.ReactElement => {
@@ -59,6 +60,8 @@ const SubscriptionPage = (): React.ReactElement => {
 
 	const { usedCount, maxAllowed, remaining, isUnlimited } = useAIUsageLimit()
 	const { data: usageHistory } = useAIUsageHistory()
+	const { user } = useMe()
+	const isStudent = user?.role?.name === 'Student'
 
 	// Count usage by action type
 	const generationCount =
@@ -334,6 +337,7 @@ const SubscriptionPage = (): React.ReactElement => {
 
 					{/* Breakdown by type */}
 					<div className='grid gap-4 sm:grid-cols-2'>
+					{!isStudent && (
 						<div className='rounded-lg border p-4 space-y-1'>
 							<div className='flex items-center gap-2'>
 								<Brain className='h-4 w-4 text-purple-500' />
@@ -343,6 +347,7 @@ const SubscriptionPage = (): React.ReactElement => {
 							</div>
 							<p className='text-2xl font-bold'>{generationCount}</p>
 						</div>
+					)}
 						<div className='rounded-lg border p-4 space-y-1'>
 							<div className='flex items-center gap-2'>
 								<Sparkles className='h-4 w-4 text-amber-500' />

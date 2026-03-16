@@ -531,7 +531,12 @@
 				"remove_student_title": "Remove Student",
 				"remove_student_description": "Are you sure you want to remove {{name}} from this class? This action cannot be undone.",
 				"remove_student": "Remove Student",
-				"removing": "Removing..."
+				"removing": "Removing...",
+				"reinvite": "Reinvite",
+				"accept_reinvite": "Accept Invite",
+				"kicked_banner": "You have been removed from this class. Contact your teacher if you believe this is a mistake.",
+				"reinvite_pending_banner": "Your teacher has invited you back to this class.",
+				"reinvited_status": "Reinvited"
 			},
 			"card": {
 				"grade_badge": "Grade {{grade}}",

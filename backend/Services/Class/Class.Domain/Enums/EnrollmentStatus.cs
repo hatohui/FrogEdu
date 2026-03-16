@@ -6,4 +6,5 @@ public enum EnrollmentStatus
     Inactive = 2,
     Kicked = 3,
     Withdrawn = 4,
+    Reinvited = 5,
 }

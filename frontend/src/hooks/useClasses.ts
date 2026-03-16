@@ -276,6 +276,51 @@ export function useRemoveStudent() {
 	})
 }
 
+/**
+ * Hook to reinvite a kicked student (Teacher/Admin)
+ */
+export function useReinviteStudent() {
+	const queryClient = useQueryClient()
+
+	return useMutation({
+		mutationFn: ({
+			classId,
+			studentId,
+		}: {
+			classId: string
+			studentId: string
+		}) => classService.reinviteStudent(classId, studentId),
+		onSuccess: (_, variables) => {
+			queryClient.invalidateQueries({
+				queryKey: classKeys.detail(variables.classId),
+			})
+		},
+		onError: (error: Error) => {
+			toast.error(error.message || 'Failed to reinvite student')
+		},
+	})
+}
+
+/**
+ * Hook to accept a reinvite to a class (Student)
+ */
+export function useAcceptReinvite() {
+	const queryClient = useQueryClient()
+
+	return useMutation({
+		mutationFn: (classId: string) => classService.acceptReinvite(classId),
+		onSuccess: (_, classId) => {
+			queryClient.invalidateQueries({
+				queryKey: classKeys.detail(classId),
+			})
+			queryClient.invalidateQueries({ queryKey: classKeys.all() })
+		},
+		onError: (error: Error) => {
+			toast.error(error.message || 'Failed to accept reinvite')
+		},
+	})
+}
+
 export function useClassDashboardStats() {
 	return useQuery({
 		queryKey: ['classes', 'dashboard-stats'],

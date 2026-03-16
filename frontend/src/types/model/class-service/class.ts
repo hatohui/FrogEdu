@@ -35,7 +35,12 @@ export interface ClassAssignment {
 	isOverdue: boolean
 }
 
-export type EnrollmentStatus = 'Active' | 'Inactive' | 'Kicked' | 'Withdrawn'
+export type EnrollmentStatus =
+	| 'Active'
+	| 'Inactive'
+	| 'Kicked'
+	| 'Withdrawn'
+	| 'Reinvited'
 
 export interface ClassDetail {
 	id: string
@@ -51,4 +56,5 @@ export interface ClassDetail {
 	studentCount: number
 	enrollments: ClassEnrollment[]
 	assignments: ClassAssignment[]
+	myEnrollmentStatus: EnrollmentStatus | null
 }
