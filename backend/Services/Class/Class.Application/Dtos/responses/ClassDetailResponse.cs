@@ -9,6 +9,7 @@ public sealed record ClassDetailResponse(
     string? BannerUrl,
     bool IsActive,
     Guid TeacherId,
+    string? TeacherName,
     DateTime CreatedAt,
     int StudentCount,
     IReadOnlyList<EnrollmentWithUserDto> Enrollments,

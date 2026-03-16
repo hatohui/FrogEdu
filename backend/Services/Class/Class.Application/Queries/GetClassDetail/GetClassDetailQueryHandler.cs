@@ -61,6 +61,12 @@ public sealed class GetClassDetailQueryHandler
         );
         var sessionByExamId = examSessions.ToDictionary(s => s.ExamId, s => s.Id);
 
+        var teacher = await _userServiceClient.GetUserByIdAsync(
+            classroom.TeacherId,
+            cancellationToken
+        );
+        var teacherName = teacher is not null ? $"{teacher.FirstName} {teacher.LastName}" : null;
+
         var assignments = classroom
             .Assignments.Select(a => new AssignmentResponse(
                 a.Id,
@@ -85,6 +91,7 @@ public sealed class GetClassDetailQueryHandler
             classroom.BannerUrl,
             classroom.IsActive,
             classroom.TeacherId,
+            teacherName,
             classroom.CreatedAt,
             classroom.Enrollments.Count(e => e.Status == EnrollmentStatus.Active),
             enrollments,

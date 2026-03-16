@@ -1,4 +1,4 @@
-import React from 'react'
+﻿import React from 'react'
 import { useNavigate } from 'react-router'
 import { useTranslation } from 'react-i18next'
 import { useStudentExamSessions } from '@/hooks/useExamSessions'
@@ -20,7 +20,7 @@ import {
 	TableHeader,
 	TableRow,
 } from '@/components/ui/table'
-import { History, Clock, TrendingUp, Eye } from 'lucide-react'
+import { History, Clock, TrendingUp, Eye, Lock } from 'lucide-react'
 import { format } from 'date-fns'
 
 const ExamHistoryPage = (): React.ReactElement => {
@@ -182,17 +182,34 @@ const ExamHistoryPage = (): React.ReactElement => {
 										<TableCell>{getSessionStatusBadge(session)}</TableCell>
 										<TableCell className='text-right'>
 											<div className='flex items-center justify-end gap-2'>
-												{session.isCurrentlyActive && (
-													<Button
-														size='sm'
-														onClick={() =>
-															navigate(`/app/exam-sessions/${session.id}/take`)
-														}
-													>
-														{t('pages.exam_sessions.history.actions.take_exam')}
-													</Button>
-												)}
-												{session.hasEnded && session.attemptCount > 0 && (
+												{session.isCurrentlyActive &&
+													session.attemptCount <= session.retryTimes && (
+														<Button
+															size='sm'
+															onClick={() =>
+																navigate(
+																	`/app/exam-sessions/${session.id}/take`
+																)
+															}
+														>
+															{t(
+																'pages.exam_sessions.history.actions.take_exam'
+															)}
+														</Button>
+													)}
+												{session.isCurrentlyActive &&
+													session.attemptCount > session.retryTimes && (
+														<Badge
+															variant='outline'
+															className='gap-1 text-muted-foreground'
+														>
+															<Lock className='h-3 w-3' />
+															{t(
+																'pages.exam_sessions.history.actions.no_attempts_left'
+															)}
+														</Badge>
+													)}
+												{session.attemptCount > 0 && (
 													<Button
 														size='sm'
 														variant='outline'
@@ -205,7 +222,7 @@ const ExamHistoryPage = (): React.ReactElement => {
 													>
 														<Eye className='h-4 w-4' />
 														{t(
-															'pages.exam_sessions.history.actions.view_results'
+															'pages.exam_sessions.history.actions.review_answers'
 														)}
 													</Button>
 												)}

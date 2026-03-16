@@ -1,4 +1,4 @@
-{
+﻿{
 	"config": {
 		"select_language": "Select language"
 	},
@@ -822,7 +822,9 @@
 				},
 				"actions": {
 					"take_exam": "Take Exam",
-					"view_results": "View Results"
+					"view_results": "View Results",
+					"review_answers": "Review Answers",
+					"no_attempts_left": "No attempts left"
 				},
 				"view_results": "View Results",
 				"ongoing": "Ongoing",

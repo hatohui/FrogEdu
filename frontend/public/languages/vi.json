@@ -1,4 +1,4 @@
-{
+﻿{
 	"config": {
 		"select_language": "Chọn ngôn ngữ"
 	},
@@ -733,7 +733,15 @@
 				"status_active": "Đang diễn ra",
 				"status_overdue": "Quá hạn",
 				"status_upcoming": "Sắp tới",
-				"status_completed": "Hoàn thành"
+				"status_completed": "Hoàn thành",
+"student": "Học sinh",
+"edit_details": "Chỉnh sửa chi tiết",
+"view_profile": "Xem hồ sơ",
+"remove_from_class": "Xoá khỏi lớp",
+"remove_student_title": "Xoá học sinh",
+"remove_student_description": "Bạn có chắc muốn xoá {{name}} khỏi lớp này? Hành động này không thể hoàn tác.",
+"remove_student": "Xoá học sinh",
+"removing": "Đang xoá..."
 			},
 			"card": {
 				"grade_badge": "Khối {{grade}}",
@@ -1024,7 +1032,9 @@
 				},
 				"actions": {
 					"take_exam": "Làm bài thi",
-					"view_results": "Xem kết quả"
+					"view_results": "Xem kết quả",
+					"review_answers": "Xem lại bài làm",
+					"no_attempts_left": "Hết lượt làm bài"
 				},
 				"view_results": "Xem kết quả",
 				"ongoing": "Đang diễn ra",

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+﻿import React, { useState } from 'react'
 import { useParams, Link, useNavigate } from 'react-router'
 import {
 	useClassDetail,
@@ -10,6 +10,7 @@ import {
 	useUpdateClass,
 } from '@/hooks/useClasses'
 import { useExamNames } from '@/hooks/useExams'
+import { useStudentExamSessions } from '@/hooks/useExamSessions'
 import { useMe } from '@/hooks/auth/useMe'
 import { Button } from '@/components/ui/button'
 import {
@@ -65,6 +66,7 @@ import {
 	Users,
 	MoreVertical,
 	UserMinus,
+	User,
 	Edit,
 	Trash2,
 } from 'lucide-react'
@@ -141,6 +143,16 @@ const ClassDetailPage: React.FC = () => {
 	const isAdmin = user?.role?.name === 'Admin'
 
 	const canManage = isTeacher || isAdmin
+
+	const { data: studentSessions = [] } = useStudentExamSessions()
+	const sessionById = React.useMemo(
+		() =>
+			studentSessions.reduce(
+				(acc, s) => ({ ...acc, [s.id]: s }),
+				{} as Record<string, (typeof studentSessions)[0]>
+			),
+		[studentSessions]
+	)
 
 	const copyInviteCode = () => {
 		if (classDetail?.inviteCode) {
@@ -411,6 +423,23 @@ const ClassDetailPage: React.FC = () => {
 									</p>
 								</div>
 							</div>
+
+							{isAdmin && (
+								<div className='flex items-center gap-3'>
+									<div className='flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10'>
+										<User className='h-5 w-5 text-primary' />
+									</div>
+									<div>
+										<p className='text-sm text-muted-foreground'>
+											{t('pages.classes.detail.teacher')}
+										</p>
+										<p className='font-medium'>
+											{classDetail.teacherName ??
+												t('pages.classes.detail.teacher_unknown')}
+										</p>
+									</div>
+								</div>
+							)}
 						</div>
 
 						<Separator />
@@ -540,6 +569,7 @@ const ClassDetailPage: React.FC = () => {
 																<DropdownMenuItem
 																	onClick={() => navigate(`/app/classes/${id}`)}
 																>
+																	<User className='h-4 w-4 mr-2' />
 																	{t('pages.classes.detail.view_profile')}
 																</DropdownMenuItem>
 																<DropdownMenuSeparator />
@@ -687,7 +717,7 @@ const ClassDetailPage: React.FC = () => {
 											{!canManage && assignment.examSessionId && (
 												<TableCell>
 													<div className='flex gap-2'>
-														{assignment.isActive && (
+														{sessionById[assignment.examSessionId]?.isCurrentlyActive && (
 															<Button
 																size='sm'
 																variant='default'
@@ -700,19 +730,21 @@ const ClassDetailPage: React.FC = () => {
 																{t('pages.exam_sessions.actions.start_exam')}
 															</Button>
 														)}
-														<Button
-															size='sm'
-															variant='outline'
-															onClick={() =>
-																navigate(
-																	`/app/exam-sessions/${assignment.examSessionId}/my-results`
-																)
-															}
-														>
-															{t(
-																'pages.exam_sessions.history.actions.view_results'
-															)}
-														</Button>
+														{(sessionById[assignment.examSessionId]?.attemptCount ?? 0) > 0 && (
+															<Button
+																size='sm'
+																variant='outline'
+																onClick={() =>
+																	navigate(
+																		`/app/exam-sessions/${assignment.examSessionId}/my-results`
+																	)
+																}
+															>
+																{t(
+																	'pages.exam_sessions.history.actions.view_results'
+																)}
+															</Button>
+														)}
 													</div>
 												</TableCell>
 											)}

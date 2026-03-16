@@ -23,7 +23,7 @@ import { useStudentExamSessions } from '@/hooks/useExamSessions'
 import type { ExamSession } from '@/types/model/class-service'
 
 const CalendarPage = (): React.ReactElement => {
-	const { t } = useTranslation()
+	const { t, i18n } = useTranslation()
 	const navigate = useNavigate()
 	const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date())
 	const { data: examSessions, isLoading } = useStudentExamSessions(false)
@@ -152,7 +152,7 @@ const CalendarPage = (): React.ReactElement => {
 							<Clock className='h-5 w-5' />
 							{selectedDate
 								? t('pages.calendar.exams_on', {
-										date: selectedDate.toLocaleDateString(undefined, {
+										date: selectedDate.toLocaleDateString(i18n.language, {
 											weekday: 'long',
 											year: 'numeric',
 											month: 'long',
@@ -197,7 +197,7 @@ const CalendarPage = (): React.ReactElement => {
 														</div>
 														<p className='text-xs text-muted-foreground mt-0.5'>
 															{new Date(session.startTime).toLocaleTimeString(
-																[],
+																i18n.language,
 																{
 																	hour: '2-digit',
 																	minute: '2-digit',
@@ -205,7 +205,7 @@ const CalendarPage = (): React.ReactElement => {
 															)}{' '}
 															-{' '}
 															{new Date(session.endTime).toLocaleTimeString(
-																[],
+																i18n.language,
 																{
 																	hour: '2-digit',
 																	minute: '2-digit',
@@ -336,9 +336,11 @@ const CalendarPage = (): React.ReactElement => {
 															)}
 														</div>
 														<p className='text-xs text-muted-foreground'>
-															{new Date(session.startTime).toLocaleDateString()}{' '}
+															{new Date(session.startTime).toLocaleDateString(
+																i18n.language
+															)}{' '}
 															{new Date(session.startTime).toLocaleTimeString(
-																[],
+																i18n.language,
 																{
 																	hour: '2-digit',
 																	minute: '2-digit',

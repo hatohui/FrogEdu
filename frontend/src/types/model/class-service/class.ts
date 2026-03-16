@@ -46,6 +46,7 @@ export interface ClassDetail {
 	bannerUrl: string | null
 	isActive: boolean
 	teacherId: string
+	teacherName: string | null
 	createdAt: string
 	studentCount: number
 	enrollments: ClassEnrollment[]
