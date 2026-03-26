@@ -13,10 +13,8 @@ const useTanstackConfig = (
 
 	// Helper to determine if error should be displayed
 	const shouldShowError = (error: Error): boolean => {
-		// Don't show errors for axios errors with specific status codes
 		if (error instanceof AxiosError) {
 			const status = error.response?.status
-			// Don't show toast for 404s (empty data), 401 (handled by auth), or network errors during queries
 			if (status === 404 || status === 401) {
 				return false
 			}
@@ -27,8 +25,6 @@ const useTanstackConfig = (
 	return {
 		queryCache: new QueryCache({
 			onError: error => {
-				// Don't show toast for query errors (background fetches)
-				// Only log to console for debugging
 				if (shouldShowError(error)) {
 					console.error('Query error:', error)
 				}

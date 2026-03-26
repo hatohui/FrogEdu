@@ -34,10 +34,10 @@ const examSchema = (t: TFunction) =>
 			.string()
 			.min(3, t('forms.exams.validation.name_min'))
 			.max(200, t('forms.exams.validation.name_max')),
-		description: z
-			.string()
-			.min(10, t('forms.exams.validation.description_min'))
-			.max(1000, t('forms.exams.validation.description_max')),
+		description: z.regex(
+			/^(?:\S+\s+){10,}\S+$/,
+			t('forms.exams.validation.description_min_words')
+		),
 		grade: z
 			.number()
 			.int()

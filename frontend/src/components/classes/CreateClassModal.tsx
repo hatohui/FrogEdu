@@ -57,7 +57,6 @@ const createClassSchema = (t: TFunction) =>
 				t('forms.classes.validation.max_students_limit')
 			),
 		bannerUrl: z
-			.string()
 			.url(t('forms.classes.validation.banner_url_invalid'))
 			.optional()
 			.or(z.literal('')),

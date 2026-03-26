@@ -72,6 +72,8 @@ const ExamDetailPage = (): React.ReactElement => {
 	const [matrixSearchQuery, setMatrixSearchQuery] = useState('')
 
 	const { data: exam, isLoading: isLoadingExam } = useExam(examId || '')
+
+	console.log('Exam data:', exam)
 	const { data: questions = [], isLoading: isLoadingQuestions } =
 		useExamQuestions(examId || '')
 	const { data: matrix } = useMatrixByExamId(examId || '')
@@ -235,6 +237,8 @@ const ExamDetailPage = (): React.ReactElement => {
 			</div>
 		)
 	}
+
+	console.log('Subject:', subjects.find(s => s.id === exam.subjectId)?.name)
 
 	const totalPoints = questions.reduce((sum, q) => sum + (q.point || 0), 0)
 

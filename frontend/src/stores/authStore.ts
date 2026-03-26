@@ -13,7 +13,7 @@ interface AuthState {
 	isAuthenticated: boolean
 	isLoading: boolean
 	error: string | null
-	cachedRoleId: string | null // Cache roleId to avoid repeated /me calls
+	cachedRoleId: string | null
 	signIn: (email: string, password: string) => Promise<void>
 	signUp: (
 		email: string,

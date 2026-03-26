@@ -43,6 +43,8 @@ export function useSubjects(grade?: number, enabled: boolean = true) {
 		enabled: enabled,
 		queryFn: async () => {
 			const response = await examService.getSubjects(grade)
+			console.log(response.data)
+
 			return response.data?.subjects || []
 		},
 	})
@@ -88,6 +90,8 @@ export function useExam(examId: string) {
 		queryKey: examKeys.detail(examId),
 		queryFn: async () => {
 			const response = await examService.getExamById(examId)
+			console.log(response.data)
+
 			return response.data
 		},
 		enabled: !!examId,
@@ -214,7 +218,6 @@ export function useMatrixByExamId(examId: string) {
 				const response = await examService.getMatrixByExamId(examId)
 				return response.data
 			} catch (error) {
-				// If matrix doesn't exist (404), return null instead of throwing
 				if (
 					(error as { response?: { status?: number } })?.response?.status ===
 					404
